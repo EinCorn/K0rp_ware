@@ -39,7 +39,7 @@ function render(nextState) {
   Object.assign(state, nextState)
 
   renderDigits(String(state.globalClicks), String(previousClicks))
-  elements.counter.style.color = getCounterColor(state.globalClicks)
+  elements.counter.style.setProperty('--progress-color', getCounterColor(state.globalClicks))
   elements.pin.setAttribute('aria-pressed', state.alwaysOnTop ? 'true' : 'false')
   elements.pin.setAttribute('aria-label', state.alwaysOnTop ? 'Unpin window' : 'Pin window')
   elements.pin.setAttribute('title', state.alwaysOnTop ? 'Unpin window' : 'Pin window')
