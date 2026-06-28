@@ -1,19 +1,33 @@
-import ClickAuditBridge from './ClickAuditBridge'
 import './Dashboard.css'
 
 function Dashboard() {
   return (
-    <main className="dashboard-shell single-module">
-      <section className="hero-panel compact-hero">
-        <p className="system-label">K0rp_ware / desktop companion</p>
-        <h1>ClickAudit</h1>
+    <main className="dashboard-shell hub-shell">
+      <section className="hero-panel hub-hero">
+        <p className="system-label">K0rp_ware / hub</p>
+        <h1>Dashboard</h1>
         <p className="hero-copy">
-          Local aggregate click counter. The desktop companion exposes a localhost status response;
-          this web panel mirrors it when available.
+          Local-first desk tools. Each module runs as its own small organism; the hub only exposes
+          what is currently stable enough to look at directly.
         </p>
       </section>
 
-      <ClickAuditBridge />
+      <section className="hub-module-grid" aria-label="Available K0rp_ware apps">
+        <article className="module-card hub-module-card">
+          <div>
+            <p className="system-label">Desktop companion / live</p>
+            <h2>ClickAudit</h2>
+            <p>
+              Aggregate click counter with a local desktop companion, localhost status mirror, and
+              pin-on-top control.
+            </p>
+          </div>
+          <div className="module-card-footer">
+            <span className="module-status">available</span>
+            <a href="/?app=click-audit">Open</a>
+          </div>
+        </article>
+      </section>
     </main>
   )
 }
