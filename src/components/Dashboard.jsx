@@ -1,4 +1,5 @@
 import ClickAuditBridge from './ClickAuditBridge'
+import './Dashboard.css'
 
 function Dashboard() {
   return (
