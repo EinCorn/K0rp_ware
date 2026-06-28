@@ -1,5 +1,6 @@
 import { invoke } from '@tauri-apps/api/core'
 import './styles.css'
+import './mode.css'
 
 const app = document.querySelector('#app')
 
@@ -9,10 +10,13 @@ const IDLE_NUDGE = 0.0008
 const TAP_MOVE_THRESHOLD = 6
 const RAINBOW_START_SPEED = 0.34
 const CONFETTI_START_SPEED = 0.6
+const MODE_CLICK = 'click'
+const MODE_MANUAL = 'manual'
 const CONFETTI_COLORS = ['#ff2d55', '#ff453a', '#ff9500', '#ffd60a', '#30d158', '#00c7be', '#64d2ff', '#0a84ff', '#bf5af2']
 
 const state = {
   alwaysOnTop: false,
+  spinMode: MODE_MANUAL,
 }
 
 const motion = {
@@ -33,10 +37,11 @@ const drag = {
 
 app.innerHTML = `
   <section class="fidget-shell" aria-label="K0rp Fidget">
+    <button id="mode" class="mode-button" type="button" aria-label="Manual spin mode" title="Manual mode: drag to spin, hold to stop">✋</button>
     <button id="pin" class="pin-button" type="button" aria-label="Pin window" title="Pin window">📌</button>
     <div class="fidget-stage">
       <div id="confetti-layer" class="fidget-confetti-layer" aria-hidden="true"></div>
-      <div id="spinner" class="fidget-spinner" role="button" tabindex="0" aria-label="Fidget spinner. Click, drag, scroll, or press Space.">
+      <div id="spinner" class="fidget-spinner" role="button" tabindex="0" aria-label="Fidget spinner. Toggle mode, then click or drag.">
         <span class="spinner-rainbow spinner-rainbow-outer" aria-hidden="true"></span>
         <span class="spinner-rainbow spinner-rainbow-inner" aria-hidden="true"></span>
         <span class="spinner-blur" aria-hidden="true"></span>
@@ -50,6 +55,7 @@ app.innerHTML = `
 `
 
 const elements = {
+  mode: document.querySelector('#mode'),
   pin: document.querySelector('#pin'),
   spinner: document.querySelector('#spinner'),
   confettiLayer: document.querySelector('#confetti-layer'),
@@ -74,6 +80,10 @@ function getPointerAngle(event, element) {
   const centerY = rect.top + rect.height / 2
 
   return Math.atan2(event.clientY - centerY, event.clientX - centerX) * (180 / Math.PI)
+}
+
+function isClickMode() {
+  return state.spinMode === MODE_CLICK
 }
 
 function tick(timestamp) {
@@ -152,7 +162,35 @@ function flick(direction = Math.random() > 0.5 ? 1 : -1, strength = 1) {
   pulseSpinner()
 }
 
+function updateModeButton() {
+  const clickMode = isClickMode()
+
+  elements.mode.textContent = clickMode ? '↻' : '✋'
+  elements.mode.classList.toggle('is-click-mode', clickMode)
+  elements.mode.classList.toggle('is-manual-mode', !clickMode)
+  elements.mode.setAttribute('aria-pressed', clickMode ? 'true' : 'false')
+  elements.mode.setAttribute('aria-label', clickMode ? 'Click spin mode' : 'Manual spin mode')
+  elements.mode.setAttribute('title', clickMode ? 'Click mode: click to spin, no grabbing' : 'Manual mode: drag to spin, hold to stop')
+}
+
+function toggleSpinMode() {
+  drag.active = false
+  elements.spinner.classList.remove('is-dragging')
+  state.spinMode = isClickMode() ? MODE_MANUAL : MODE_CLICK
+  updateModeButton()
+}
+
+function onClick(event) {
+  if (!isClickMode()) return
+
+  const rect = elements.spinner.getBoundingClientRect()
+  const direction = event.clientX >= rect.left + rect.width / 2 ? 1 : -1
+  flick(direction, 0.95)
+}
+
 function onPointerDown(event) {
+  if (isClickMode()) return
+
   elements.spinner.setPointerCapture(event.pointerId)
   drag.active = true
   drag.angle = getPointerAngle(event, elements.spinner)
@@ -161,11 +199,11 @@ function onPointerDown(event) {
   drag.startY = event.clientY
   drag.moved = false
   elements.spinner.classList.add('is-dragging')
-  motion.velocity *= 0.35
+  motion.velocity = 0
 }
 
 function onPointerMove(event) {
-  if (!drag.active) return
+  if (!drag.active || isClickMode()) return
 
   const moveX = event.clientX - drag.startX
   const moveY = event.clientY - drag.startY
@@ -187,18 +225,19 @@ function onPointerMove(event) {
 }
 
 function onPointerUp(event) {
+  if (!drag.active || isClickMode()) return
+
   if (elements.spinner.hasPointerCapture(event.pointerId)) {
     elements.spinner.releasePointerCapture(event.pointerId)
   }
 
   const wasTap = !drag.moved
-  const direction = event.clientX >= drag.startX ? 1 : -1
 
   drag.active = false
   elements.spinner.classList.remove('is-dragging')
 
   if (wasTap) {
-    flick(direction, 0.95)
+    motion.velocity = 0
     return
   }
 
@@ -206,6 +245,8 @@ function onPointerUp(event) {
 }
 
 function onWheel(event) {
+  if (isClickMode()) return
+
   event.preventDefault()
   motion.velocity = clamp(motion.velocity + event.deltaY * -0.06, -MAX_VELOCITY, MAX_VELOCITY)
 }
@@ -217,18 +258,20 @@ async function setAlwaysOnTop(enabled) {
   elements.pin.setAttribute('title', state.alwaysOnTop ? 'Unpin window' : 'Pin window')
 }
 
+elements.mode.addEventListener('click', toggleSpinMode)
+elements.spinner.addEventListener('click', onClick)
 elements.spinner.addEventListener('pointerdown', onPointerDown)
 elements.spinner.addEventListener('pointermove', onPointerMove)
 elements.spinner.addEventListener('pointerup', onPointerUp)
 elements.spinner.addEventListener('pointercancel', onPointerUp)
 elements.spinner.addEventListener('wheel', onWheel, { passive: false })
-elements.spinner.addEventListener('dblclick', () => flick())
 elements.spinner.addEventListener('keydown', (event) => {
-  if (event.code === 'Space' || event.key === 'Enter') {
+  if (isClickMode() && (event.code === 'Space' || event.key === 'Enter')) {
     event.preventDefault()
     flick()
   }
 })
 elements.pin.addEventListener('click', () => setAlwaysOnTop(!state.alwaysOnTop))
 
+updateModeButton()
 window.requestAnimationFrame(tick)
