@@ -4,6 +4,7 @@ import './FidgetPage.css'
 const FRICTION = 0.992
 const MAX_VELOCITY = 42
 const IDLE_NUDGE = 0.0008
+const TAP_MOVE_THRESHOLD = 6
 
 function normalizeDelta(degrees) {
   let delta = degrees
@@ -31,7 +32,7 @@ function FidgetPage() {
   const angleRef = useRef(0)
   const velocityRef = useRef(0)
   const lastFrameTimeRef = useRef(0)
-  const dragRef = useRef({ active: false, angle: 0, time: 0 })
+  const dragRef = useRef({ active: false, angle: 0, time: 0, startX: 0, startY: 0, moved: false })
 
   useEffect(() => {
     let animationFrame = 0
@@ -70,9 +71,9 @@ function FidgetPage() {
     return () => window.cancelAnimationFrame(animationFrame)
   }, [])
 
-  function flick(direction = Math.random() > 0.5 ? 1 : -1) {
+  function flick(direction = Math.random() > 0.5 ? 1 : -1, strength = 1) {
     velocityRef.current = clamp(
-      velocityRef.current + direction * (18 + Math.random() * 14),
+      velocityRef.current + direction * (14 + Math.random() * 12) * strength,
       -MAX_VELOCITY,
       MAX_VELOCITY,
     )
@@ -87,6 +88,9 @@ function FidgetPage() {
       active: true,
       angle: getPointerAngle(event, spinner),
       time: performance.now(),
+      startX: event.clientX,
+      startY: event.clientY,
+      moved: false,
     }
     spinner.classList.add('is-dragging')
     velocityRef.current *= 0.35
@@ -95,6 +99,13 @@ function FidgetPage() {
   function onPointerMove(event) {
     const spinner = spinnerRef.current
     if (!spinner || !dragRef.current.active) return
+
+    const moveX = event.clientX - dragRef.current.startX
+    const moveY = event.clientY - dragRef.current.startY
+
+    if (Math.hypot(moveX, moveY) > TAP_MOVE_THRESHOLD) {
+      dragRef.current.moved = true
+    }
 
     const now = performance.now()
     const nextAngle = getPointerAngle(event, spinner)
@@ -116,8 +127,17 @@ function FidgetPage() {
       spinner.releasePointerCapture(event.pointerId)
     }
 
+    const wasTap = !dragRef.current.moved
+    const direction = event.clientX >= dragRef.current.startX ? 1 : -1
+
     dragRef.current.active = false
     spinner.classList.remove('is-dragging')
+
+    if (wasTap) {
+      flick(direction, 0.95)
+      return
+    }
+
     velocityRef.current = clamp(velocityRef.current * 1.22, -MAX_VELOCITY, MAX_VELOCITY)
   }
 
@@ -130,14 +150,20 @@ function FidgetPage() {
     <main className="fidget-page-shell">
       <a className="fidget-back" href="/">Back</a>
       <section className="fidget-panel" aria-label="K0rp Fidget prototype">
-        <p className="fidget-label">K0rp_ware / fidget / prototype</p>
+        <header className="fidget-titlebar">
+          <span className="fidget-dot" />
+          <span className="fidget-dot" />
+          <span className="fidget-dot" />
+          <strong>K0rp Fidget</strong>
+        </header>
+        <button className="fidget-pin" type="button" aria-label="Pin window" title="Pin window">📌</button>
         <div className="fidget-stage">
           <div
             ref={spinnerRef}
             className="fidget-spinner"
             role="button"
             tabIndex="0"
-            aria-label="Fidget spinner. Drag, flick, scroll, or press Space."
+            aria-label="Fidget spinner. Click, drag, scroll, or press Space."
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
@@ -164,9 +190,6 @@ function FidgetPage() {
             <span className="spinner-core"><span /></span>
           </div>
         </div>
-        <button className="fidget-flick-button" type="button" onClick={() => flick()}>
-          Flick
-        </button>
       </section>
     </main>
   )
