@@ -31,7 +31,7 @@ function Dashboard() {
         <article className="module-card hub-module-card">
           <div>
             <p className="system-label">Desktop companion / stable toy</p>
-            <h2>Fidlat</h2>
+            <h2>Fidget</h2>
             <p>
               Local fidget spinner with click/manual modes, pin-on-top control, rainbow spin feedback,
               and absolutely no measurable business value.
