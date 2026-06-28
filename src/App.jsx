@@ -5,6 +5,7 @@ import ClickAudit from './modules/clickAudit/ClickAudit'
 import DopamineFidget from './modules/dopamineFidget/DopamineFidget'
 import StatusLamp from './modules/statusLamp/StatusLamp'
 import './App.css'
+import './modules.css'
 
 const moduleRoutes = {
   'archive-bloom': ArchiveBloom,
