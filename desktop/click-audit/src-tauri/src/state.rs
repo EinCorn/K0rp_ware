@@ -1,7 +1,12 @@
-use serde::Serialize;
+use directories::ProjectDirs;
+use serde::{Deserialize, Serialize};
+use std::fs;
+use std::path::PathBuf;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::{SystemTime, UNIX_EPOCH};
+
+const SAVE_EVERY_CLICKS: u64 = 10;
 
 #[derive(Clone)]
 pub struct CounterState {
@@ -12,6 +17,7 @@ struct CounterStateInner {
     count: AtomicU64,
     always_on_top: AtomicBool,
     started_at_unix_ms: AtomicU64,
+    store_path: PathBuf,
 }
 
 #[derive(Clone, Serialize)]
@@ -25,13 +31,29 @@ pub struct CounterSnapshot {
     pub privacy_mode: &'static str,
 }
 
+#[derive(Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct StoredCounterState {
+    global_clicks: u64,
+    started_at_unix_ms: u64,
+}
+
 impl CounterState {
     pub fn new() -> Self {
+        let store_path = get_store_path();
+        let stored_state = read_stored_state(&store_path);
+        let started_at = if stored_state.started_at_unix_ms == 0 {
+            current_unix_ms()
+        } else {
+            stored_state.started_at_unix_ms
+        };
+
         Self {
             inner: Arc::new(CounterStateInner {
-                count: AtomicU64::new(0),
+                count: AtomicU64::new(stored_state.global_clicks),
                 always_on_top: AtomicBool::new(false),
-                started_at_unix_ms: AtomicU64::new(current_unix_ms()),
+                started_at_unix_ms: AtomicU64::new(started_at),
+                store_path,
             }),
         }
     }
@@ -70,8 +92,30 @@ impl CounterState {
     }
 
     pub fn add_one(&self) -> Option<CounterSnapshot> {
-        self.inner.count.fetch_add(1, Ordering::Relaxed);
+        let next_count = self.inner.count.fetch_add(1, Ordering::Relaxed) + 1;
+
+        if next_count % SAVE_EVERY_CLICKS == 0 {
+            self.persist();
+        }
+
         Some(self.snapshot())
+    }
+
+    fn persist(&self) {
+        let stored_state = StoredCounterState {
+            global_clicks: self.inner.count.load(Ordering::Relaxed),
+            started_at_unix_ms: self.inner.started_at_unix_ms.load(Ordering::Relaxed),
+        };
+
+        if let Some(parent) = self.inner.store_path.parent() {
+            let _ = fs::create_dir_all(parent);
+        }
+
+        if let Ok(data) = serde_json::to_vec_pretty(&stored_state) {
+            let temporary_path = self.inner.store_path.with_extension("json.tmp");
+            let _ = fs::write(&temporary_path, data);
+            let _ = fs::rename(&temporary_path, &self.inner.store_path);
+        }
     }
 }
 
@@ -79,6 +123,38 @@ impl Default for CounterState {
     fn default() -> Self {
         Self::new()
     }
+}
+
+impl Drop for CounterStateInner {
+    fn drop(&mut self) {
+        let stored_state = StoredCounterState {
+            global_clicks: self.count.load(Ordering::Relaxed),
+            started_at_unix_ms: self.started_at_unix_ms.load(Ordering::Relaxed),
+        };
+
+        if let Some(parent) = self.store_path.parent() {
+            let _ = fs::create_dir_all(parent);
+        }
+
+        if let Ok(data) = serde_json::to_vec_pretty(&stored_state) {
+            let temporary_path = self.store_path.with_extension("json.tmp");
+            let _ = fs::write(&temporary_path, data);
+            let _ = fs::rename(&temporary_path, &self.store_path);
+        }
+    }
+}
+
+fn read_stored_state(path: &PathBuf) -> StoredCounterState {
+    fs::read(path)
+        .ok()
+        .and_then(|data| serde_json::from_slice::<StoredCounterState>(&data).ok())
+        .unwrap_or_default()
+}
+
+fn get_store_path() -> PathBuf {
+    ProjectDirs::from("dev", "k0rp", "ClickAudit")
+        .map(|dirs| dirs.data_local_dir().join("state.json"))
+        .unwrap_or_else(|| PathBuf::from(".click-audit-state.json"))
 }
 
 fn current_unix_ms() -> u64 {
