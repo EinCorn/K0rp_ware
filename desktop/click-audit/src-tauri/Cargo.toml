@@ -5,10 +5,6 @@ description = "Local-only aggregate click counter for K0rp_ware"
 authors = ["K0rp_ware"]
 edition = "2021"
 
-[lib]
-name = "k0rp_click_audit_lib"
-crate-type = ["staticlib", "cdylib", "rlib"]
-
 [build-dependencies]
 tauri-build = { version = "2.4.0", features = [] }
 
