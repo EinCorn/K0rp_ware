@@ -7,6 +7,7 @@ import { writeStorage } from '../../core/storage'
 import { formatElapsed } from '../../core/time'
 import { STATUS_LAMP_STORAGE_KEY, messages, statuses } from './statusLampData'
 import { getInitialStatus } from './statusLampState'
+import './statusLamp.css'
 
 function StatusLamp({ isDetached }) {
   const [state, setState] = useState(getInitialStatus)
