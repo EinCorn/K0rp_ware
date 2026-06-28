@@ -99,6 +99,14 @@ h1 {
   z-index: 2;
 }
 
+.confetti-burst {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+
 .confetti-pixel {
   position: absolute;
   width: var(--s);
@@ -106,7 +114,7 @@ h1 {
   transform: translate(0, 0) rotate(0deg);
   opacity: 0;
   image-rendering: pixelated;
-  animation: confetti-burst 780ms cubic-bezier(0.16, 0.9, 0.22, 1) forwards;
+  animation: confetti-burst 1200ms cubic-bezier(0.16, 0.9, 0.22, 1) forwards;
 }
 
 @keyframes confetti-burst {
@@ -115,8 +123,12 @@ h1 {
     transform: translate(0, 0) scale(0.6) rotate(0deg);
   }
 
-  12% {
+  10% {
     opacity: 1;
+  }
+
+  72% {
+    opacity: 0.86;
   }
 
   100% {
