@@ -16,11 +16,14 @@
         "title": "K0rp Bloom",
         "width": 230,
         "height": 230,
+        "minWidth": 230,
+        "minHeight": 230,
         "resizable": false,
+        "alwaysOnTop": false,
         "decorations": true
       }
     ],
     "security": { "csp": null }
   },
-  "bundle": { "active": false, "icon": [] }
+  "bundle": { "active": false, "icon": ["icons/icon.png"] }
 }
