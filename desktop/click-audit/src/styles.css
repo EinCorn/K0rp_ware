@@ -66,45 +66,79 @@ button {
   min-height: 0;
   background: var(--liquid-gradient);
   box-shadow:
-    inset 0 12px 18px rgba(255, 255, 255, 0.1),
-    inset 0 -22px 28px rgba(0, 0, 0, 0.24),
-    0 -8px 28px rgba(255, 80, 80, 0.16);
-  opacity: 0.58;
+    inset 0 10px 18px rgba(255, 255, 255, 0.06),
+    inset 0 -22px 28px rgba(0, 0, 0, 0.26),
+    0 -8px 24px rgba(0, 0, 0, 0.12);
+  opacity: 0.54;
   transition:
     height 560ms cubic-bezier(0.2, 0.8, 0.2, 1),
     background 560ms ease;
 }
 
+.liquid-fill::before {
+  content: '';
+  position: absolute;
+  left: -14%;
+  right: -14%;
+  top: -10px;
+  height: 22px;
+  background:
+    radial-gradient(ellipse at 12% 56%, rgba(255, 255, 255, 0.11), transparent 31%),
+    radial-gradient(ellipse at 37% 42%, rgba(0, 0, 0, 0.1), transparent 35%),
+    radial-gradient(ellipse at 68% 58%, rgba(255, 255, 255, 0.08), transparent 28%),
+    radial-gradient(ellipse at 92% 45%, rgba(0, 0, 0, 0.08), transparent 32%);
+  border-radius: 48% 43% 57% 46%;
+  filter: blur(1.2px);
+  opacity: 0.58;
+  transform-origin: center;
+  animation: liquid-surface-a 7.3s ease-in-out infinite;
+  pointer-events: none;
+}
+
 .liquid-fill::after {
   content: '';
   position: absolute;
-  inset: 0;
+  inset: -18% -12%;
   background:
-    radial-gradient(circle at 20% 18%, rgba(255, 255, 255, 0.12), transparent 26%),
-    radial-gradient(circle at 82% 74%, rgba(0, 0, 0, 0.18), transparent 30%);
+    radial-gradient(circle at 18% 22%, rgba(255, 255, 255, 0.08), transparent 24%),
+    radial-gradient(circle at 73% 35%, rgba(0, 0, 0, 0.1), transparent 28%),
+    radial-gradient(circle at 44% 82%, rgba(255, 255, 255, 0.05), transparent 22%),
+    radial-gradient(circle at 91% 76%, rgba(0, 0, 0, 0.08), transparent 25%);
   mix-blend-mode: soft-light;
+  opacity: 0.6;
+  animation: liquid-texture-shift 13s ease-in-out infinite alternate;
   pointer-events: none;
 }
 
 .liquid-wave {
   position: absolute;
-  left: -50%;
-  top: -14px;
-  width: 200%;
-  height: 28px;
+  left: -18%;
+  top: -13px;
+  width: 136%;
+  height: 26px;
   background:
-    radial-gradient(ellipse at 50% 85%, rgba(255, 255, 255, 0.34) 0 28%, rgba(255, 255, 255, 0.18) 34%, transparent 58%) 0 0 / 38px 26px repeat-x;
-  opacity: 0.8;
-  filter: blur(0.2px);
-  animation: liquid-drift 3.8s linear infinite;
+    radial-gradient(ellipse at 22% 52%, rgba(255, 255, 255, 0.08), transparent 34%),
+    radial-gradient(ellipse at 62% 45%, rgba(0, 0, 0, 0.11), transparent 38%),
+    radial-gradient(ellipse at 86% 62%, rgba(255, 255, 255, 0.06), transparent 32%);
+  border-radius: 42% 58% 46% 54%;
+  opacity: 0.46;
+  filter: blur(1.6px);
+  transform-origin: center;
+  animation: liquid-surface-b 9.7s ease-in-out infinite;
 }
 
 .liquid-wave-b {
-  top: -10px;
-  background-size: 52px 22px;
-  opacity: 0.34;
-  animation-duration: 6.2s;
-  animation-direction: reverse;
+  left: -26%;
+  top: -8px;
+  width: 152%;
+  height: 18px;
+  background:
+    radial-gradient(ellipse at 18% 65%, rgba(0, 0, 0, 0.08), transparent 34%),
+    radial-gradient(ellipse at 51% 42%, rgba(255, 255, 255, 0.06), transparent 29%),
+    radial-gradient(ellipse at 78% 55%, rgba(0, 0, 0, 0.09), transparent 36%);
+  opacity: 0.42;
+  animation-duration: 12.4s;
+  animation-name: liquid-surface-c;
 }
 
 .digit-deck {
@@ -402,13 +436,67 @@ button {
   animation: confetti-burst 1200ms cubic-bezier(0.16, 0.9, 0.22, 1) forwards;
 }
 
-@keyframes liquid-drift {
+@keyframes liquid-surface-a {
   0% {
-    transform: translateX(0);
+    transform: translateX(-2%) translateY(0) scaleX(1) rotate(-0.4deg);
+  }
+
+  33% {
+    transform: translateX(3%) translateY(1px) scaleX(1.04) rotate(0.2deg);
+  }
+
+  67% {
+    transform: translateX(-1%) translateY(-1px) scaleX(0.98) rotate(0.5deg);
   }
 
   100% {
-    transform: translateX(38px);
+    transform: translateX(-2%) translateY(0) scaleX(1) rotate(-0.4deg);
+  }
+}
+
+@keyframes liquid-surface-b {
+  0% {
+    transform: translateX(0) translateY(0) scaleX(1) rotate(0.3deg);
+  }
+
+  41% {
+    transform: translateX(7%) translateY(-1px) scaleX(0.94) rotate(-0.5deg);
+  }
+
+  72% {
+    transform: translateX(-4%) translateY(1px) scaleX(1.06) rotate(0.2deg);
+  }
+
+  100% {
+    transform: translateX(0) translateY(0) scaleX(1) rotate(0.3deg);
+  }
+}
+
+@keyframes liquid-surface-c {
+  0% {
+    transform: translateX(5%) translateY(1px) scaleX(1.08) rotate(-0.2deg);
+  }
+
+  38% {
+    transform: translateX(-6%) translateY(0) scaleX(0.96) rotate(0.6deg);
+  }
+
+  81% {
+    transform: translateX(3%) translateY(-1px) scaleX(1.02) rotate(-0.4deg);
+  }
+
+  100% {
+    transform: translateX(5%) translateY(1px) scaleX(1.08) rotate(-0.2deg);
+  }
+}
+
+@keyframes liquid-texture-shift {
+  0% {
+    transform: translate3d(-1%, 0, 0) rotate(0deg) scale(1);
+  }
+
+  100% {
+    transform: translate3d(2%, -2%, 0) rotate(1.5deg) scale(1.03);
   }
 }
 
