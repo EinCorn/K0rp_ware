@@ -7,6 +7,8 @@
 - Added Compliance Pebble dopamine fidget module.
 - Added Archive Bloom single-player procedure game.
 - Added module-specific styling and updated README routes.
+- Added experimental StatusLamp Pin mode using Document Picture-in-Picture when supported.
+- Added GitHub Actions workflow for automatic Cloudflare Workers deploys.
 
 ## 0.1.1
 
