@@ -8,6 +8,7 @@ const app = document.querySelector('#app')
 const COLOR_TARGET_CLICKS = 5_000
 const CONFETTI_CHANCE = 0.1
 const CONFETTI_COLORS = ['#ff4f5e', '#ffb84d', '#f7ff5c', '#64ff8f', '#56d9ff', '#9f7bff', '#ff62d2']
+const DEV_MILLION_TEST_VALUE = 1_000_000
 
 const state = {
   app: 'click-audit',
@@ -131,6 +132,12 @@ elements.pin.addEventListener('click', async () => {
 
 elements.reset.addEventListener('click', async () => {
   render(await invoke('reset_counting'))
+})
+
+window.addEventListener('keydown', async (event) => {
+  if (event.key.toLowerCase() === 'm') {
+    render(await invoke('set_count_for_dev', { count: DEV_MILLION_TEST_VALUE }))
+  }
 })
 
 listen('click-audit:update', (event) => render(event.payload))
