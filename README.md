@@ -21,7 +21,7 @@ Production currently exposes stable v0.2 modules:
   - no coordinates
   - no screenshots
   - no window titles
-- **Fidlat**
+- **Fidget**
   - local fidget spinner toy
   - click/manual modes
   - desktop pin-on-top control
@@ -53,7 +53,7 @@ POST http://127.0.0.1:47891/always-on-top?enabled=true
 POST http://127.0.0.1:47891/always-on-top?enabled=false
 ```
 
-## Fidlat desktop development
+## Fidget desktop development
 
 ```bash
 cd desktop/fidget
