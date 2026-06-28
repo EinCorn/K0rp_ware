@@ -20,8 +20,9 @@ const state = {
 
 app.innerHTML = `
   <section class="shell">
-    <button id="pin" class="pin-button" type="button" aria-label="Pin window" title="Pin window">📌</button>
-    <h1 id="counter">0</h1>
+    <button id="reset" class="corner-button reset-button" type="button" aria-label="Reset counter" title="Reset counter">×</button>
+    <button id="pin" class="corner-button pin-button" type="button" aria-label="Pin window" title="Pin window">📌</button>
+    <div id="counter" class="digit-deck" aria-label="Click count"></div>
     <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
   </section>
 `
@@ -29,6 +30,7 @@ app.innerHTML = `
 const elements = {
   counter: document.querySelector('#counter'),
   pin: document.querySelector('#pin'),
+  reset: document.querySelector('#reset'),
   confettiLayer: document.querySelector('#confetti-layer'),
 }
 
@@ -36,7 +38,7 @@ function render(nextState) {
   const previousClicks = state.globalClicks
   Object.assign(state, nextState)
 
-  elements.counter.textContent = state.globalClicks.toLocaleString('en-US')
+  renderDigits(String(state.globalClicks), String(previousClicks))
   elements.counter.style.color = getCounterColor(state.globalClicks)
   elements.pin.setAttribute('aria-pressed', state.alwaysOnTop ? 'true' : 'false')
   elements.pin.setAttribute('aria-label', state.alwaysOnTop ? 'Unpin window' : 'Pin window')
@@ -45,6 +47,31 @@ function render(nextState) {
   if (state.globalClicks > previousClicks && Math.random() < CONFETTI_CHANCE) {
     burstConfetti()
   }
+}
+
+function renderDigits(currentValue, previousValue) {
+  const currentDigits = currentValue.split('')
+  const previousDigits = previousValue.padStart(currentDigits.length, ' ').split('')
+  const fragment = document.createDocumentFragment()
+
+  elements.counter.dataset.digits = String(currentDigits.length)
+  elements.counter.setAttribute('aria-label', `${currentValue} clicks`)
+
+  currentDigits.forEach((digit, index) => {
+    const card = document.createElement('span')
+    const changed = previousDigits[index] !== digit
+
+    card.className = changed ? 'digit-card flip' : 'digit-card'
+    card.style.animationDelay = `${Math.min(index * 12, 72)}ms`
+    card.innerHTML = `
+      <span class="digit-face digit-top"><span>${digit}</span></span>
+      <span class="digit-face digit-bottom"><span>${digit}</span></span>
+      <span class="digit-hinge"></span>
+    `
+    fragment.appendChild(card)
+  })
+
+  elements.counter.replaceChildren(fragment)
 }
 
 function getCounterColor(clicks) {
@@ -91,6 +118,10 @@ async function refresh() {
 
 elements.pin.addEventListener('click', async () => {
   render(await invoke('set_always_on_top', { enabled: !state.alwaysOnTop }))
+})
+
+elements.reset.addEventListener('click', async () => {
+  render(await invoke('reset_counting'))
 })
 
 listen('click-audit:update', (event) => render(event.payload))
