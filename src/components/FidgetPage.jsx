@@ -6,7 +6,7 @@ const MAX_VELOCITY = 42
 const IDLE_NUDGE = 0.0008
 const TAP_MOVE_THRESHOLD = 6
 const RAINBOW_START_SPEED = 0.34
-const CONFETTI_START_SPEED = 0.78
+const CONFETTI_START_SPEED = 0.6
 const CONFETTI_COLORS = ['#ff2d55', '#ff453a', '#ff9500', '#ffd60a', '#30d158', '#00c7be', '#64d2ff', '#0a84ff', '#bf5af2']
 
 function normalizeDelta(degrees) {
