@@ -1,0 +1,54 @@
+.top-nav-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.mode-notice {
+  margin: 0;
+  padding: 12px 16px;
+  border: 1px solid var(--border);
+  background: var(--panel-soft);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+.lamp-actions {
+  margin-top: 18px;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.lamp-actions button {
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  color: #1a150f;
+  background: var(--accent);
+  font: inherit;
+  padding: 10px 16px;
+  cursor: pointer;
+}
+
+.status-shell.pinned {
+  min-height: 100vh;
+  padding: 10px;
+  background: var(--bg);
+}
+
+.pinned-body {
+  margin: 0;
+  min-width: 320px;
+  background: var(--bg);
+  overflow: hidden;
+}
+
+.status-shell.pinned .lamp-body {
+  padding: 18px;
+}
+
+.status-shell.pinned .status-buttons {
+  max-height: 180px;
+  overflow: auto;
+  padding-right: 4px;
+}
