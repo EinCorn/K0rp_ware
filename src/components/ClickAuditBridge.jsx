@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { fetchClickAuditState, setClickAuditAlwaysOnTop } from '../core/clickAuditClient'
 
 const POLL_MS = 500
@@ -34,7 +34,7 @@ function ClickAuditBridge() {
         }
 
         setConnection('disconnected')
-        setError('Local ClickAudit endpoint is not reachable from this browser.')
+        setError('Waiting for the local ClickAudit companion on 127.0.0.1:47891.')
       } finally {
         if (isMounted) {
           timeoutId = window.setTimeout(poll, POLL_MS)
@@ -51,6 +51,14 @@ function ClickAuditBridge() {
     }
   }, [])
 
+  const apiResponse = useMemo(() => {
+    if (!state) {
+      return '{\n  "status": "waiting-for-local-companion"\n}'
+    }
+
+    return JSON.stringify(state, null, 2)
+  }, [state])
+
   async function togglePin() {
     const nextPinnedState = !Boolean(state?.alwaysOnTop)
     setIsCommandPending(true)
@@ -62,7 +70,7 @@ function ClickAuditBridge() {
       setConnection('connected')
     } catch {
       setConnection('disconnected')
-      setError('Pin command failed. Check whether ClickAudit is running locally.')
+      setError('Pin command failed. Check whether the desktop companion is running locally.')
     } finally {
       setIsCommandPending(false)
     }
@@ -76,7 +84,7 @@ function ClickAuditBridge() {
     <section className="local-bridge-panel minimal" aria-label="ClickAudit local counter">
       <div className="bridge-counter-row">
         <div>
-          <p className="system-label">ClickAudit / local</p>
+          <p className="system-label">API mirror / 127.0.0.1:47891</p>
           <strong className="bridge-counter">{clicks.toLocaleString('en-US')}</strong>
         </div>
 
@@ -90,6 +98,7 @@ function ClickAuditBridge() {
         </div>
       </div>
 
+      <pre className="api-response"><code>{apiResponse}</code></pre>
       {error && <p className="bridge-error">{error}</p>}
     </section>
   )
