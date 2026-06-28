@@ -3,8 +3,9 @@
   --bloom-panel: #0b0b0a;
   --bloom-text: #f1e9d8;
   --bloom-muted: rgba(241, 233, 216, 0.58);
-  --bloom-good: #35d06f;
-  --bloom-bad: #ff4b47;
+  --bloom-green: #35d06f;
+  --bloom-yellow: #ffd447;
+  --bloom-red: #ff4b47;
 }
 
 .bloom-page-shell {
@@ -102,20 +103,21 @@
 
 .bloom-board {
   position: absolute;
-  left: 28px;
-  right: 28px;
-  top: 62px;
-  bottom: 36px;
+  left: 39px;
+  right: 39px;
+  top: 70px;
+  bottom: 42px;
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 8px;
+  gap: 6px;
   align-content: center;
   justify-content: center;
+  z-index: 2;
 }
 
 .bloom-stone {
-  width: 22px;
-  height: 22px;
+  width: 17px;
+  height: 17px;
   justify-self: center;
   align-self: center;
   border: 1px solid rgba(255, 255, 255, 0.16);
@@ -127,31 +129,74 @@
 }
 
 .bloom-stone:hover {
-  transform: scale(1.14);
+  transform: scale(1.16);
 }
 
 .bloom-stone.is-red,
+.bloom-stone.is-yellow,
 .bloom-stone.is-green {
   background: radial-gradient(circle at 34% 28%, rgba(255, 255, 255, 0.42), transparent 24%), radial-gradient(circle at 64% 72%, rgba(0, 0, 0, 0.34), transparent 48%), var(--stone-color);
-  box-shadow: 0 0 10px var(--stone-glow), inset 0 1px 0 rgba(255, 255, 255, 0.34), inset 0 -7px 10px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 0 10px var(--stone-glow), inset 0 1px 0 rgba(255, 255, 255, 0.34), inset 0 -6px 9px rgba(0, 0, 0, 0.22);
 }
 
 .bloom-stone.is-red {
-  --stone-color: var(--bloom-bad);
+  --stone-color: var(--bloom-red);
   --stone-glow: rgba(255, 75, 71, 0.24);
 }
 
+.bloom-stone.is-yellow {
+  --stone-color: var(--bloom-yellow);
+  --stone-glow: rgba(255, 212, 71, 0.22);
+}
+
 .bloom-stone.is-green {
-  --stone-color: var(--bloom-good);
+  --stone-color: var(--bloom-green);
   --stone-glow: rgba(53, 208, 111, 0.2);
 }
 
-.bloom-stone.has-bloomed {
-  animation: stone-bloom 380ms cubic-bezier(0.16, 0.9, 0.22, 1) both;
+.bloom-stone.step-yellow {
+  animation: stone-step-yellow 320ms cubic-bezier(0.16, 0.9, 0.22, 1) both;
+}
+
+.bloom-stone.bloom-green {
+  animation: stone-bloom-green 520ms cubic-bezier(0.14, 0.94, 0.22, 1) both;
 }
 
 .bloom-panel.is-clearing .bloom-stone.is-green {
-  animation: all-clear-pulse 520ms ease both;
+  animation: all-clear-pulse 720ms ease both;
+}
+
+.bloom-clear-burst {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+  z-index: 5;
+}
+
+.bloom-clear-burst span {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: var(--bloom-green);
+  box-shadow: 0 0 8px rgba(53, 208, 111, 0.8), 0 0 18px rgba(255, 212, 71, 0.24);
+  opacity: 0;
+  animation: clear-burst 720ms cubic-bezier(0.12, 0.82, 0.18, 1) var(--delay) forwards;
+}
+
+.bloom-clear-burst span:nth-child(3n + 1) {
+  background: var(--bloom-yellow);
+  box-shadow: 0 0 8px rgba(255, 212, 71, 0.8), 0 0 18px rgba(53, 208, 111, 0.2);
+}
+
+.bloom-clear-burst span:nth-child(4n) {
+  width: 3px;
+  height: 3px;
 }
 
 .bloom-scorebar {
@@ -169,6 +214,7 @@
   font-size: 10px;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  z-index: 6;
 }
 
 .bloom-scorebar strong {
@@ -182,13 +228,27 @@
   text-align: right;
 }
 
-@keyframes stone-bloom {
-  0% { transform: scale(0.72); filter: brightness(1.5) saturate(1.4); }
-  58% { transform: scale(1.34); }
+@keyframes stone-step-yellow {
+  0% { transform: scale(0.72); filter: brightness(1.35) saturate(1.25); }
+  60% { transform: scale(1.22); }
+  100% { transform: scale(1); filter: brightness(1) saturate(1); }
+}
+
+@keyframes stone-bloom-green {
+  0% { transform: scale(0.68); filter: brightness(1.8) saturate(1.55); }
+  44% { transform: scale(1.42); box-shadow: 0 0 20px rgba(53, 208, 111, 0.62), inset 0 1px 0 rgba(255, 255, 255, 0.42); }
+  72% { transform: scale(0.92); }
   100% { transform: scale(1); filter: brightness(1) saturate(1); }
 }
 
 @keyframes all-clear-pulse {
   0%, 100% { filter: brightness(1); }
-  50% { filter: brightness(1.55) saturate(1.35); }
+  42% { filter: brightness(1.65) saturate(1.45); }
+}
+
+@keyframes clear-burst {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.3); }
+  12% { opacity: 1; }
+  70% { opacity: 0.9; }
+  100% { opacity: 0; transform: translate(var(--x), var(--y)) scale(1.05); }
 }
