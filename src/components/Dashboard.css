@@ -34,6 +34,19 @@
   min-height: 260px;
 }
 
+.module-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-end;
+}
+
+.module-card-actions a:first-child {
+  color: #1a150f;
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
 .hub-nav {
   display: flex;
   justify-content: flex-start;
