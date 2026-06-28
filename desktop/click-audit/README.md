@@ -24,7 +24,7 @@ The only global input it observes is mouse button down events, and only to incre
 
 Windows-first proof of concept.
 
-macOS and Linux builds can open the UI, but global click counting is stubbed until platform-specific permission handling is added.
+macOS and Linux builds can open the UI. Global click counting may require platform permissions or may fail depending on the system environment. The app will show a local notice if input counting cannot start.
 
 ## Development
 
