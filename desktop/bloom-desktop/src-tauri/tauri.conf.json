@@ -27,7 +27,7 @@
   },
   "bundle": {
     "active": true,
-    "icon": ["icons/icon.png"],
+    "icon": ["icons/icon.png", "icons/icon.ico"],
     "category": "Utility",
     "shortDescription": "Local status-stone puzzle toy",
     "longDescription": "Local-only status-stone puzzle toy for K0rp_ware. No telemetry."
