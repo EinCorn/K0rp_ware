@@ -3,7 +3,7 @@ mod click_hook;
 mod state;
 
 use state::{CounterSnapshot, CounterState};
-use tauri::{Manager, State};
+use tauri::State;
 
 #[tauri::command]
 fn get_state(state: State<'_, CounterState>) -> CounterSnapshot {
