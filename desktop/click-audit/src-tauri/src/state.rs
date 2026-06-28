@@ -91,6 +91,12 @@ impl CounterState {
         self.snapshot()
     }
 
+    pub fn set_count_for_dev(&self, count: u64) -> CounterSnapshot {
+        self.inner.count.store(count, Ordering::Relaxed);
+        self.persist();
+        self.snapshot()
+    }
+
     pub fn set_always_on_top(&self, enabled: bool) -> CounterSnapshot {
         self.inner.always_on_top.store(enabled, Ordering::Relaxed);
         self.snapshot()
