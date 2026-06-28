@@ -60,7 +60,7 @@ function renderDigits(currentValue, previousValue) {
   currentDigits.forEach((digit, index) => {
     const previousDigit = previousDigits[index]
     const changed = previousDigit !== digit
-    const topFlapDigit = previousDigit === ' ' ? digit : previousDigit
+    const oldDigit = previousDigit === ' ' ? digit : previousDigit
     const card = document.createElement('span')
 
     card.className = changed ? 'digit-card is-changing' : 'digit-card'
@@ -70,7 +70,8 @@ function renderDigits(currentValue, previousValue) {
       <span class="digit-face digit-bottom"><span>${digit}</span></span>
       ${
         changed
-          ? `<span class="digit-flap digit-flap-top"><span>${topFlapDigit}</span></span>
+          ? `<span class="digit-flap digit-flap-top"><span>${oldDigit}</span></span>
+             <span class="digit-flap digit-hold-bottom"><span>${oldDigit}</span></span>
              <span class="digit-flap digit-flap-bottom"><span>${digit}</span></span>`
           : ''
       }
