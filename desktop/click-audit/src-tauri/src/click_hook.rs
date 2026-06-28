@@ -5,10 +5,12 @@ use tauri::{AppHandle, Emitter};
 
 pub fn start_counter(state: CounterState, app_handle: AppHandle) {
     thread::spawn(move || {
+        let update_handle = app_handle.clone();
+
         let callback = move |event: Event| {
             if matches!(event.event_type, EventType::ButtonPress(_)) {
                 if let Some(snapshot) = state.add_one() {
-                    let _ = app_handle.emit("click-audit:update", snapshot);
+                    let _ = update_handle.emit("click-audit:update", snapshot);
                 }
             }
         };
