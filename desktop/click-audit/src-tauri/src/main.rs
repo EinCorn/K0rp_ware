@@ -44,8 +44,9 @@ fn main() {
     tauri::Builder::default()
         .manage(state.clone())
         .setup(move |app| {
-            api::start_local_api(state.clone());
-            click_hook::start_counter(state.clone(), app.handle().clone());
+            let app_handle = app.handle().clone();
+            api::start_local_api(state.clone(), app_handle.clone());
+            click_hook::start_counter(state.clone(), app_handle);
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
