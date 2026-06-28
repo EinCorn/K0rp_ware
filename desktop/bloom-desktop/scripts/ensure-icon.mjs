@@ -4,9 +4,11 @@ import { fileURLToPath } from 'node:url'
 import { deflateSync } from 'node:zlib'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const iconPath = join(__dirname, '..', 'src-tauri', 'icons', 'icon.png')
+const iconDir = join(__dirname, '..', 'src-tauri', 'icons')
+const pngPath = join(iconDir, 'icon.png')
+const icoPath = join(iconDir, 'icon.ico')
 
-if (existsSync(iconPath)) {
+if (existsSync(pngPath) && existsSync(icoPath)) {
   process.exit(0)
 }
 
@@ -46,9 +48,39 @@ const png = Buffer.concat([
   chunk('IEND', Buffer.alloc(0)),
 ])
 
-mkdirSync(dirname(iconPath), { recursive: true })
-writeFileSync(iconPath, png)
-console.log(`Created ${iconPath}`)
+mkdirSync(iconDir, { recursive: true })
+
+if (!existsSync(pngPath)) {
+  writeFileSync(pngPath, png)
+  console.log(`Created ${pngPath}`)
+}
+
+if (!existsSync(icoPath)) {
+  writeFileSync(icoPath, icoFromPng(png, width, height))
+  console.log(`Created ${icoPath}`)
+}
+
+function icoFromPng(pngData, iconWidth, iconHeight) {
+  const headerSize = 6
+  const entrySize = 16
+  const imageOffset = headerSize + entrySize
+  const ico = Buffer.alloc(imageOffset + pngData.length)
+
+  ico.writeUInt16LE(0, 0)
+  ico.writeUInt16LE(1, 2)
+  ico.writeUInt16LE(1, 4)
+  ico.writeUInt8(iconWidth >= 256 ? 0 : iconWidth, 6)
+  ico.writeUInt8(iconHeight >= 256 ? 0 : iconHeight, 7)
+  ico.writeUInt8(0, 8)
+  ico.writeUInt8(0, 9)
+  ico.writeUInt16LE(1, 10)
+  ico.writeUInt16LE(32, 12)
+  ico.writeUInt32LE(pngData.length, 14)
+  ico.writeUInt32LE(imageOffset, 18)
+  pngData.copy(ico, imageOffset)
+
+  return ico
+}
 
 function chunk(type, data) {
   const typeBuffer = Buffer.from(type)
