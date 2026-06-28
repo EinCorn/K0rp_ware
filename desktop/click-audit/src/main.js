@@ -15,19 +15,8 @@ const state = {
 
 app.innerHTML = `
   <section class="shell">
-    <header class="window-header">
-      <div class="window-dots" aria-hidden="true">
-        <span></span>
-        <span></span>
-        <span></span>
-      </div>
-      <p>K0rp_ware / ClickAudit</p>
-    </header>
-
-    <section class="body">
-      <h1 id="counter">0</h1>
-      <button id="pin" type="button">Pin</button>
-    </section>
+    <button id="pin" class="pin-button" type="button" aria-label="Pin window" title="Pin window">⌖</button>
+    <h1 id="counter">0</h1>
   </section>
 `
 
@@ -40,8 +29,9 @@ function render(nextState) {
   Object.assign(state, nextState)
 
   elements.counter.textContent = state.globalClicks.toLocaleString('en-US')
-  elements.pin.textContent = state.alwaysOnTop ? 'Unpin' : 'Pin'
   elements.pin.setAttribute('aria-pressed', state.alwaysOnTop ? 'true' : 'false')
+  elements.pin.setAttribute('aria-label', state.alwaysOnTop ? 'Unpin window' : 'Pin window')
+  elements.pin.setAttribute('title', state.alwaysOnTop ? 'Unpin window' : 'Pin window')
 }
 
 async function refresh() {
