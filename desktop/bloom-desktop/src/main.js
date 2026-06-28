@@ -4,16 +4,19 @@ import './styles.css'
 const appWindow = getCurrentWindow()
 const app = document.querySelector('#app')
 const TOTAL = 25
+const STORAGE_KEY = 'k0rp-bloom-state-v1'
 const GREEN = 'green'
 const YELLOW = 'yellow'
 const RED = 'red'
+const VALID_STATUSES = new Set([GREEN, YELLOW, RED])
 const CLEAR_PARTICLES = [
   [-82, -44, 0], [-58, -74, 18], [-22, -86, 34], [19, -82, 8], [56, -66, 28], [84, -34, 12],
   [92, 2, 40], [72, 42, 22], [42, 76, 0], [6, 88, 30], [-32, 82, 14], [-68, 54, 36],
   [-94, 18, 6], [-76, -8, 24], [-40, -38, 44], [36, -30, 16], [60, 12, 46], [-10, 42, 10],
 ]
 
-const state = { score: 0, wave: 1, board: makeBoard(1), locked: false, pinned: false }
+const savedGame = loadGame()
+const state = { score: savedGame.score, wave: savedGame.wave, board: savedGame.board, locked: false, pinned: false }
 
 app.innerHTML = `
   <section class="game-shell">
@@ -59,6 +62,55 @@ function makeBoard(wave) {
   })
 }
 
+function normalizeBoard(board, wave) {
+  if (!Array.isArray(board) || board.length !== TOTAL) {
+    return makeBoard(wave)
+  }
+
+  return board.map((item) => ({
+    status: VALID_STATUSES.has(item?.status) ? item.status : GREEN,
+    fresh: '',
+  }))
+}
+
+function loadGame() {
+  try {
+    const rawState = window.localStorage.getItem(STORAGE_KEY)
+    if (!rawState) throw new Error('No stored Bloom state')
+
+    const storedState = JSON.parse(rawState)
+    const wave = Number.isInteger(storedState.wave) && storedState.wave > 0 ? storedState.wave : 1
+    const score = Number.isInteger(storedState.score) && storedState.score >= 0 ? storedState.score : 0
+
+    return {
+      score,
+      wave,
+      board: normalizeBoard(storedState.board, wave),
+    }
+  } catch {
+    return {
+      score: 0,
+      wave: 1,
+      board: makeBoard(1),
+    }
+  }
+}
+
+function saveGame() {
+  try {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        score: state.score,
+        wave: state.wave,
+        board: state.board.map(({ status }) => ({ status })),
+      }),
+    )
+  } catch {
+    // Local persistence is non-critical; Bloom remains playable without it.
+  }
+}
+
 function nextStatus(status) {
   if (status === RED) return YELLOW
   if (status === YELLOW) return GREEN
@@ -97,12 +149,14 @@ function play(index) {
       state.wave += 1
       state.board = makeBoard(state.wave)
       state.locked = false
+      saveGame()
       render()
     }, 760)
     return
   }
 
   state.score += 1
+  saveGame()
   render()
 }
 
@@ -129,6 +183,7 @@ function reset() {
   state.board = makeBoard(1)
   state.locked = false
   els.burst.replaceChildren()
+  saveGame()
   render()
 }
 
