@@ -1,3 +1,4 @@
+import { invoke } from '@tauri-apps/api/core'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import './styles.css'
 import './frameless.css'
@@ -22,7 +23,7 @@ const state = { score: savedGame.score, wave: savedGame.wave, board: savedGame.b
 
 app.innerHTML = `
   <section class="game-shell">
-    <div class="drag-region" data-tauri-drag-region aria-hidden="true"></div>
+    <div id="drag" class="drag-region" data-tauri-drag-region aria-hidden="true"></div>
     <button id="pin" class="corner pin" type="button" title="Pin window">📌</button>
     <button id="reset" class="corner reset" type="button" title="Reset">↺</button>
     <button id="close" class="corner close" type="button" title="Close Bloom">×</button>
@@ -34,6 +35,7 @@ app.innerHTML = `
 
 const els = {
   shell: document.querySelector('.game-shell'),
+  drag: document.querySelector('#drag'),
   board: document.querySelector('#board'),
   burst: document.querySelector('#burst'),
   score: document.querySelector('#score'),
@@ -192,12 +194,18 @@ function reset() {
   render()
 }
 
+function startWindowMove(event) {
+  event.preventDefault()
+  invoke('begin_window_move').catch(() => {})
+}
+
 async function setPinned(enabled) {
   await appWindow.setAlwaysOnTop(enabled)
   state.pinned = enabled
   els.pin.setAttribute('aria-pressed', state.pinned ? 'true' : 'false')
 }
 
+els.drag.addEventListener('mousedown', startWindowMove)
 els.reset.addEventListener('click', reset)
 els.pin.addEventListener('click', () => setPinned(!state.pinned))
 els.close.addEventListener('click', () => appWindow.close())
