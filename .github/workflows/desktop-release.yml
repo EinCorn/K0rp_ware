@@ -65,7 +65,7 @@ jobs:
 
           if [ -d "$bundle_dir/macos" ]; then
             while IFS= read -r -d '' app_path; do
-              ditto -c -k --sequesterRsrc --keepParent "$app_path" "release-assets/${{ matrix.asset }}.app.zip"
+              ditto -c -k --sequesterRsrc --keepParent "$app_path" "release-assets/${{ matrix.asset }}-macos.app.zip"
             done < <(find "$bundle_dir/macos" -maxdepth 1 -name '*.app' -print0)
           fi
 
@@ -82,10 +82,73 @@ jobs:
           path: release-assets/*
           if-no-files-found: error
 
+  build-windows:
+    name: Build ${{ matrix.name }} for Windows
+    runs-on: windows-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: ClickAudit
+            path: desktop/click-audit
+            asset: K0rp-ClickAudit
+          - name: Fidget
+            path: desktop/fidget
+            asset: K0rp-Fidget
+          - name: Bloom
+            path: desktop/bloom-desktop
+            asset: K0rp-Bloom
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.path }}
+        run: npm install
+
+      - name: Ensure icon
+        working-directory: ${{ matrix.path }}
+        run: node scripts/ensure-icon.mjs
+
+      - name: Build desktop app
+        working-directory: ${{ matrix.path }}
+        run: npm run build
+
+      - name: Collect Windows assets
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path release-assets | Out-Null
+          $bundleDir = "${{ matrix.path }}/src-tauri/target/release/bundle"
+          Get-ChildItem -Path $bundleDir -Recurse -Include *.msi,*.exe,*.zip |
+            ForEach-Object {
+              $extension = $_.Extension
+              $target = Join-Path "release-assets" "${{ matrix.asset }}-windows$extension"
+              Copy-Item $_.FullName $target -Force
+            }
+          Get-ChildItem release-assets
+
+      - name: Upload app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}-windows
+          path: release-assets/*
+          if-no-files-found: error
+
   publish-release:
     name: Publish release
     runs-on: ubuntu-latest
-    needs: build-macos
+    needs:
+      - build-macos
+      - build-windows
     steps:
       - name: Checkout
         uses: actions/checkout@v4
