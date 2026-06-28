@@ -9,6 +9,7 @@
 - Added module-specific styling and updated README routes.
 - Added experimental StatusLamp Pin mode using Document Picture-in-Picture when supported.
 - Added GitHub Actions workflow for automatic Cloudflare Workers deploys.
+- Added `desktop/click-audit` Tauri scaffold for a local-only portable click counter.
 
 ## 0.1.1
 
