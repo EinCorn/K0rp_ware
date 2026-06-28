@@ -49,6 +49,7 @@ pub struct SourceClickSnapshot {
 struct StoredCounterState {
     global_clicks: u64,
     started_at_unix_ms: u64,
+    #[serde(default)]
     source_clicks: StoredSourceClicks,
 }
 
