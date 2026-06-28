@@ -1,16 +1,50 @@
-# React + Vite
+# K0rp_ware
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Small web-based desk parasites for controlled procrastination, ritualized delay, and professionally framed non-output.
 
-Currently, two official plugins are available:
+## Version 0.1 — Desk Parasite Prototype
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Current module:
 
-## React Compiler
+- **StatusLamp** — a compact status module for work-adjacent conditions such as `Buffering`, `Waiting for Context`, and `Strategically Unavailable`.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The app is intentionally frontend-only for now:
 
-## Expanding the ESLint configuration
+- React + Vite
+- no backend
+- no login
+- localStorage for current StatusLamp state
+- detachable popup mode via `window.open()`
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Local development
+
+```bash
+npm install
+npm run dev
+```
+
+## Build
+
+```bash
+npm run build
+```
+
+## Routes
+
+Dashboard:
+
+```text
+/
+```
+
+StatusLamp:
+
+```text
+/?app=status-lamp
+```
+
+Detached StatusLamp:
+
+```text
+/?app=status-lamp&mode=detached
+```
