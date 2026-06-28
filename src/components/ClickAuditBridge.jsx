@@ -77,6 +77,13 @@ function ClickAuditBridge() {
   }
 
   const clicks = state?.globalClicks ?? 0
+  const sourceClicks = state?.sourceClicks ?? {}
+  const sourceRows = [
+    ['ClickAudit', sourceClicks.clickAudit ?? 0],
+    ['Fidget', sourceClicks.fidget ?? 0],
+    ['Bloom', sourceClicks.bloom ?? 0],
+    ['Work?', sourceClicks.workQuestion ?? clicks],
+  ]
   const isConnected = connection === 'connected'
   const alwaysOnTop = Boolean(state?.alwaysOnTop)
 
@@ -96,6 +103,15 @@ function ClickAuditBridge() {
             {alwaysOnTop ? 'Unpin' : 'Pin'}
           </button>
         </div>
+      </div>
+
+      <div className="bridge-source-grid" aria-label="Click source breakdown">
+        {sourceRows.map(([label, value]) => (
+          <div className="bridge-source-card" key={label}>
+            <span>{label}</span>
+            <strong>{Number(value).toLocaleString('en-US')}</strong>
+          </div>
+        ))}
       </div>
 
       <pre className="api-response"><code>{apiResponse}</code></pre>
