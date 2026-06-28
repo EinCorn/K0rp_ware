@@ -23,8 +23,23 @@ function Dashboard() {
             </p>
           </div>
           <div className="module-card-footer">
-            <span className="module-status">available</span>
+            <span className="module-status">v0.2</span>
             <a href="/?app=click-audit">Open</a>
+          </div>
+        </article>
+
+        <article className="module-card hub-module-card">
+          <div>
+            <p className="system-label">Desktop companion / stable toy</p>
+            <h2>Fidlat</h2>
+            <p>
+              Local fidget spinner with click/manual modes, pin-on-top control, rainbow spin feedback,
+              and absolutely no measurable business value.
+            </p>
+          </div>
+          <div className="module-card-footer">
+            <span className="module-status">v0.2</span>
+            <a href="/?app=fidget">Open</a>
           </div>
         </article>
       </section>
