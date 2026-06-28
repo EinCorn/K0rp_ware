@@ -83,6 +83,11 @@ impl CounterState {
     }
 
     pub fn reset(&self) -> CounterSnapshot {
+        self.inner.count.store(0, Ordering::Relaxed);
+        self.inner
+            .started_at_unix_ms
+            .store(current_unix_ms(), Ordering::Relaxed);
+        self.persist();
         self.snapshot()
     }
 
