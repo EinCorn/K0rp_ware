@@ -1,5 +1,6 @@
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import './styles.css'
+import './frameless.css'
 
 const appWindow = getCurrentWindow()
 const app = document.querySelector('#app')
@@ -20,8 +21,10 @@ const state = { score: savedGame.score, wave: savedGame.wave, board: savedGame.b
 
 app.innerHTML = `
   <section class="game-shell">
-    <button id="reset" class="corner reset" type="button" title="Reset">×</button>
+    <div class="drag-region" data-tauri-drag-region aria-hidden="true"></div>
     <button id="pin" class="corner pin" type="button" title="Pin window">📌</button>
+    <button id="reset" class="corner reset" type="button" title="Reset">↺</button>
+    <button id="close" class="corner close" type="button" title="Close Bloom">×</button>
     <div id="board" class="board"></div>
     <div id="burst" class="clear-burst" aria-hidden="true"></div>
     <footer class="score"><span>score</span><strong id="score">0</strong><span id="wave">wave 1</span></footer>
@@ -36,6 +39,7 @@ const els = {
   wave: document.querySelector('#wave'),
   pin: document.querySelector('#pin'),
   reset: document.querySelector('#reset'),
+  close: document.querySelector('#close'),
 }
 
 function getCounts(wave) {
@@ -195,4 +199,5 @@ async function setPinned(enabled) {
 
 els.reset.addEventListener('click', reset)
 els.pin.addEventListener('click', () => setPinned(!state.pinned))
+els.close.addEventListener('click', () => appWindow.close())
 render()
