@@ -71,12 +71,24 @@ function FidgetPage() {
     return () => window.cancelAnimationFrame(animationFrame)
   }, [])
 
+  function pulseSpinner() {
+    const spinner = spinnerRef.current
+    if (!spinner) return
+
+    spinner.classList.remove('is-flicked')
+    void spinner.offsetWidth
+    spinner.classList.add('is-flicked')
+
+    window.setTimeout(() => spinner.classList.remove('is-flicked'), 520)
+  }
+
   function flick(direction = Math.random() > 0.5 ? 1 : -1, strength = 1) {
     velocityRef.current = clamp(
       velocityRef.current + direction * (14 + Math.random() * 12) * strength,
       -MAX_VELOCITY,
       MAX_VELOCITY,
     )
+    pulseSpinner()
   }
 
   function onPointerDown(event) {
@@ -177,6 +189,8 @@ function FidgetPage() {
             }}
             onDoubleClick={() => flick()}
           >
+            <span className="spinner-rainbow spinner-rainbow-outer" aria-hidden="true" />
+            <span className="spinner-rainbow spinner-rainbow-inner" aria-hidden="true" />
             <span className="spinner-blur" aria-hidden="true" />
             <span className="spinner-arm spinner-arm-a">
               <span className="spinner-lobe"><span /></span>
