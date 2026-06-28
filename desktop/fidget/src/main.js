@@ -41,7 +41,7 @@ const drag = {
 
 app.innerHTML = `
   <section class="fidget-shell" aria-label="K0rp Fidget">
-    <div class="drag-region" data-tauri-drag-region aria-hidden="true"></div>
+    <div id="drag" class="drag-region" data-tauri-drag-region aria-hidden="true"></div>
     <button id="pin" class="pin-button" type="button" aria-label="Pin window" title="Pin window">📌</button>
     <button id="mode" class="mode-button" type="button" aria-label="Manual spin mode" title="Manual mode: drag to spin, hold to stop">✋</button>
     <button id="close" class="close-button" type="button" aria-label="Close Fidget" title="Close Fidget">×</button>
@@ -61,6 +61,7 @@ app.innerHTML = `
 `
 
 const elements = {
+  drag: document.querySelector('#drag'),
   mode: document.querySelector('#mode'),
   pin: document.querySelector('#pin'),
   close: document.querySelector('#close'),
@@ -258,6 +259,11 @@ function onWheel(event) {
   motion.velocity = clamp(motion.velocity + event.deltaY * -0.06, -MAX_VELOCITY, MAX_VELOCITY)
 }
 
+function startWindowMove(event) {
+  event.preventDefault()
+  invoke('begin_window_move').catch(() => {})
+}
+
 async function setAlwaysOnTop(enabled) {
   state.alwaysOnTop = await invoke('set_always_on_top', { enabled })
   elements.pin.setAttribute('aria-pressed', state.alwaysOnTop ? 'true' : 'false')
@@ -265,6 +271,7 @@ async function setAlwaysOnTop(enabled) {
   elements.pin.setAttribute('title', state.alwaysOnTop ? 'Unpin window' : 'Pin window')
 }
 
+elements.drag.addEventListener('mousedown', startWindowMove)
 elements.mode.addEventListener('click', toggleSpinMode)
 elements.spinner.addEventListener('click', onClick)
 elements.spinner.addEventListener('pointerdown', onPointerDown)
