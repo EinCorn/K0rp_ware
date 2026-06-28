@@ -58,14 +58,22 @@ function renderDigits(currentValue, previousValue) {
   elements.counter.setAttribute('aria-label', `${currentValue} clicks`)
 
   currentDigits.forEach((digit, index) => {
+    const previousDigit = previousDigits[index]
+    const changed = previousDigit !== digit
+    const topFlapDigit = previousDigit === ' ' ? digit : previousDigit
     const card = document.createElement('span')
-    const changed = previousDigits[index] !== digit
 
-    card.className = changed ? 'digit-card flip' : 'digit-card'
+    card.className = changed ? 'digit-card is-changing' : 'digit-card'
     card.style.animationDelay = `${Math.min(index * 12, 72)}ms`
     card.innerHTML = `
       <span class="digit-face digit-top"><span>${digit}</span></span>
       <span class="digit-face digit-bottom"><span>${digit}</span></span>
+      ${
+        changed
+          ? `<span class="digit-flap digit-flap-top"><span>${topFlapDigit}</span></span>
+             <span class="digit-flap digit-flap-bottom"><span>${digit}</span></span>`
+          : ''
+      }
       <span class="digit-hinge"></span>
     `
     fragment.appendChild(card)
