@@ -105,7 +105,8 @@ button {
   height: clamp(58px, 22vw, 96px);
 }
 
-.digit-face {
+.digit-face,
+.digit-flap {
   position: absolute;
   left: 0;
   width: 100%;
@@ -122,7 +123,18 @@ button {
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.18);
 }
 
-.digit-face span {
+.digit-face {
+  z-index: 1;
+}
+
+.digit-flap {
+  z-index: 4;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+
+.digit-face span,
+.digit-flap span {
   position: absolute;
   left: 0;
   width: 100%;
@@ -135,35 +147,58 @@ button {
 
 .digit-deck[data-digits='4'] .digit-face,
 .digit-deck[data-digits='5'] .digit-face,
-.digit-deck[data-digits='6'] .digit-face {
+.digit-deck[data-digits='6'] .digit-face,
+.digit-deck[data-digits='4'] .digit-flap,
+.digit-deck[data-digits='5'] .digit-flap,
+.digit-deck[data-digits='6'] .digit-flap {
   font-size: clamp(50px, 17vw, 88px);
 }
 
 .digit-deck[data-digits='7'] .digit-face,
 .digit-deck[data-digits='8'] .digit-face,
-.digit-deck[data-digits='9'] .digit-face {
+.digit-deck[data-digits='9'] .digit-face,
+.digit-deck[data-digits='7'] .digit-flap,
+.digit-deck[data-digits='8'] .digit-flap,
+.digit-deck[data-digits='9'] .digit-flap {
   font-size: clamp(40px, 14vw, 72px);
 }
 
-.digit-top {
+.digit-top,
+.digit-flap-top {
   top: 0;
   border-bottom: 1px solid rgba(0, 0, 0, 0.26);
   transform-origin: bottom;
 }
 
-.digit-bottom {
+.digit-bottom,
+.digit-flap-bottom {
   bottom: 0;
   background: var(--card-bottom);
   border-top: 1px solid rgba(255, 255, 255, 0.25);
   transform-origin: top;
 }
 
-.digit-top span {
+.digit-top span,
+.digit-flap-top span {
   top: 0;
 }
 
-.digit-bottom span {
+.digit-bottom span,
+.digit-flap-bottom span {
   bottom: 0;
+}
+
+.digit-flap-bottom {
+  transform: rotateX(88deg);
+}
+
+.digit-card.is-changing .digit-flap-top {
+  animation: flip-away-top 360ms cubic-bezier(0.4, 0.05, 0.2, 1) both;
+}
+
+.digit-card.is-changing .digit-flap-bottom {
+  animation: flip-in-bottom 360ms cubic-bezier(0.18, 0.8, 0.22, 1) both;
+  animation-delay: 150ms;
 }
 
 .digit-hinge {
@@ -176,7 +211,7 @@ button {
   box-shadow:
     0 -1px 0 rgba(0, 0, 0, 0.28),
     0 1px 0 rgba(0, 0, 0, 0.18);
-  z-index: 5;
+  z-index: 6;
 }
 
 .digit-card::after {
@@ -189,16 +224,8 @@ button {
   background:
     radial-gradient(circle at left center, var(--card-edge) 0 5px, transparent 6px),
     radial-gradient(circle at right center, var(--card-edge) 0 5px, transparent 6px);
-  z-index: 6;
+  z-index: 7;
   pointer-events: none;
-}
-
-.digit-card.flip .digit-top {
-  animation: flip-top 360ms cubic-bezier(0.4, 0.05, 0.2, 1) both;
-}
-
-.digit-card.flip .digit-bottom {
-  animation: flip-bottom 360ms cubic-bezier(0.18, 0.8, 0.22, 1) both;
 }
 
 .corner-button {
@@ -220,7 +247,7 @@ button {
     opacity 140ms ease,
     transform 140ms ease,
     filter 140ms ease;
-  z-index: 7;
+  z-index: 8;
 }
 
 .corner-button:hover {
@@ -272,26 +299,34 @@ button {
   animation: confetti-burst 1200ms cubic-bezier(0.16, 0.9, 0.22, 1) forwards;
 }
 
-@keyframes flip-top {
+@keyframes flip-away-top {
   0% {
     filter: brightness(1);
+    opacity: 1;
     transform: rotateX(0deg);
   }
 
+  99% {
+    opacity: 1;
+  }
+
   100% {
     filter: brightness(0.72);
-    transform: rotateX(-84deg);
+    opacity: 0;
+    transform: rotateX(-88deg);
   }
 }
 
-@keyframes flip-bottom {
+@keyframes flip-in-bottom {
   0% {
     filter: brightness(0.72);
-    transform: rotateX(84deg);
+    opacity: 1;
+    transform: rotateX(88deg);
   }
 
   100% {
     filter: brightness(1);
+    opacity: 0;
     transform: rotateX(0deg);
   }
 }
