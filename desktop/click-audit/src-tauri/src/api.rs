@@ -53,6 +53,14 @@ pub fn start_local_api(state: CounterState, app_handle: AppHandle) {
                 continue;
             }
 
+            if method == Method::Post && path.starts_with("/app-click") {
+                let source = query_param(&path, "source").unwrap_or("unknown");
+                let snapshot = state.report_app_click(source);
+                emit_update(&app_handle, &snapshot);
+                let _ = request.respond(json_response(&snapshot));
+                continue;
+            }
+
             if method == Method::Post && path.starts_with("/always-on-top") {
                 let enabled = path.contains("enabled=true");
 
@@ -74,6 +82,20 @@ pub fn start_local_api(state: CounterState, app_handle: AppHandle) {
 
 fn emit_update(app_handle: &AppHandle, snapshot: &CounterSnapshot) {
     let _ = app_handle.emit("click-audit:update", snapshot);
+}
+
+fn query_param<'a>(path: &'a str, key: &str) -> Option<&'a str> {
+    let query = path.split_once('?')?.1;
+
+    query.split('&').find_map(|pair| {
+        let (left, right) = pair.split_once('=')?;
+
+        if left == key {
+            Some(right)
+        } else {
+            None
+        }
+    })
 }
 
 fn json_response(snapshot: &CounterSnapshot) -> Response<std::io::Cursor<Vec<u8>>> {
