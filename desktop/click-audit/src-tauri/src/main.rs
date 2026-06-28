@@ -26,6 +26,11 @@ fn reset_counting(state: State<'_, CounterState>) -> CounterSnapshot {
 }
 
 #[tauri::command]
+fn set_count_for_dev(state: State<'_, CounterState>, count: u64) -> CounterSnapshot {
+    state.set_count_for_dev(count)
+}
+
+#[tauri::command]
 fn set_always_on_top(
     window: tauri::Window,
     state: State<'_, CounterState>,
@@ -54,6 +59,7 @@ fn main() {
             start_counting,
             pause_counting,
             reset_counting,
+            set_count_for_dev,
             set_always_on_top
         ])
         .run(tauri::generate_context!())
