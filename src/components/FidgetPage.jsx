@@ -1,5 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './FidgetPage.css'
+import './FidgetMode.css'
 
 const FRICTION = 0.992
 const MAX_VELOCITY = 42
@@ -7,6 +8,8 @@ const IDLE_NUDGE = 0.0008
 const TAP_MOVE_THRESHOLD = 6
 const RAINBOW_START_SPEED = 0.34
 const CONFETTI_START_SPEED = 0.6
+const MODE_CLICK = 'click'
+const MODE_MANUAL = 'manual'
 const CONFETTI_COLORS = ['#ff2d55', '#ff453a', '#ff9500', '#ffd60a', '#30d158', '#00c7be', '#64d2ff', '#0a84ff', '#bf5af2']
 
 function normalizeDelta(degrees) {
@@ -31,6 +34,7 @@ function getPointerAngle(event, element) {
 }
 
 function FidgetPage() {
+  const [spinMode, setSpinMode] = useState(MODE_MANUAL)
   const spinnerRef = useRef(null)
   const confettiLayerRef = useRef(null)
   const angleRef = useRef(0)
@@ -38,6 +42,7 @@ function FidgetPage() {
   const lastFrameTimeRef = useRef(0)
   const lastConfettiAtRef = useRef(0)
   const dragRef = useRef({ active: false, angle: 0, time: 0, startX: 0, startY: 0, moved: false })
+  const isClickMode = spinMode === MODE_CLICK
 
   useEffect(() => {
     let animationFrame = 0
@@ -82,6 +87,12 @@ function FidgetPage() {
 
     return () => window.cancelAnimationFrame(animationFrame)
   }, [])
+
+  function toggleSpinMode() {
+    dragRef.current.active = false
+    spinnerRef.current?.classList.remove('is-dragging')
+    setSpinMode((currentMode) => (currentMode === MODE_CLICK ? MODE_MANUAL : MODE_CLICK))
+  }
 
   function emitRainbowConfetti(speed) {
     const layer = confettiLayerRef.current
@@ -132,9 +143,20 @@ function FidgetPage() {
     pulseSpinner()
   }
 
-  function onPointerDown(event) {
+  function onClick(event) {
+    if (!isClickMode) return
+
     const spinner = spinnerRef.current
     if (!spinner) return
+
+    const rect = spinner.getBoundingClientRect()
+    const direction = event.clientX >= rect.left + rect.width / 2 ? 1 : -1
+    flick(direction, 0.95)
+  }
+
+  function onPointerDown(event) {
+    const spinner = spinnerRef.current
+    if (!spinner || isClickMode) return
 
     spinner.setPointerCapture(event.pointerId)
     dragRef.current = {
@@ -146,12 +168,12 @@ function FidgetPage() {
       moved: false,
     }
     spinner.classList.add('is-dragging')
-    velocityRef.current *= 0.35
+    velocityRef.current = 0
   }
 
   function onPointerMove(event) {
     const spinner = spinnerRef.current
-    if (!spinner || !dragRef.current.active) return
+    if (!spinner || !dragRef.current.active || isClickMode) return
 
     const moveX = event.clientX - dragRef.current.startX
     const moveY = event.clientY - dragRef.current.startY
@@ -174,20 +196,19 @@ function FidgetPage() {
 
   function onPointerUp(event) {
     const spinner = spinnerRef.current
-    if (!spinner) return
+    if (!spinner || !dragRef.current.active || isClickMode) return
 
     if (spinner.hasPointerCapture(event.pointerId)) {
       spinner.releasePointerCapture(event.pointerId)
     }
 
     const wasTap = !dragRef.current.moved
-    const direction = event.clientX >= dragRef.current.startX ? 1 : -1
 
     dragRef.current.active = false
     spinner.classList.remove('is-dragging')
 
     if (wasTap) {
-      flick(direction, 0.95)
+      velocityRef.current = 0
       return
     }
 
@@ -195,6 +216,8 @@ function FidgetPage() {
   }
 
   function onWheel(event) {
+    if (isClickMode) return
+
     event.preventDefault()
     velocityRef.current = clamp(velocityRef.current + event.deltaY * -0.06, -MAX_VELOCITY, MAX_VELOCITY)
   }
@@ -209,6 +232,15 @@ function FidgetPage() {
           <span className="fidget-dot" />
           <strong>K0rp Fidget</strong>
         </header>
+        <button
+          className={`fidget-mode-toggle ${isClickMode ? 'is-click-mode' : 'is-manual-mode'}`}
+          type="button"
+          aria-label={isClickMode ? 'Click spin mode' : 'Manual spin mode'}
+          title={isClickMode ? 'Click mode: click to spin, no grabbing' : 'Manual mode: drag to spin, hold to stop'}
+          onClick={toggleSpinMode}
+        >
+          {isClickMode ? '↻' : '✋'}
+        </button>
         <button className="fidget-pin" type="button" aria-label="Pin window" title="Pin window">📌</button>
         <div className="fidget-stage">
           <div ref={confettiLayerRef} className="fidget-confetti-layer" aria-hidden="true" />
@@ -217,19 +249,19 @@ function FidgetPage() {
             className="fidget-spinner"
             role="button"
             tabIndex="0"
-            aria-label="Fidget spinner. Click, drag, scroll, or press Space."
+            aria-label="Fidget spinner. Toggle mode, then click or drag."
+            onClick={onClick}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
             onPointerUp={onPointerUp}
             onPointerCancel={onPointerUp}
             onWheel={onWheel}
             onKeyDown={(event) => {
-              if (event.code === 'Space' || event.key === 'Enter') {
+              if (isClickMode && (event.code === 'Space' || event.key === 'Enter')) {
                 event.preventDefault()
                 flick()
               }
             }}
-            onDoubleClick={() => flick()}
           >
             <span className="spinner-rainbow spinner-rainbow-outer" aria-hidden="true" />
             <span className="spinner-rainbow spinner-rainbow-inner" aria-hidden="true" />
