@@ -37,6 +37,25 @@ Production currently exposes stable v0.2 modules:
 
 Other web modules remain in the repository as parked experiments, but they are not shown on the production dashboard.
 
+## Desktop downloads
+
+The dashboard shows each stable module with these actions:
+
+```text
+Open web
+Download app
+```
+
+The desktop action opens the latest repository release. When a stable desktop cut is ready, create a new release with the packaged app files. The dashboard link stays stable because it always targets the latest release.
+
+Recommended release labels:
+
+```text
+k0rp-ware-v0.2
+k0rp-ware-v0.3
+k0rp-ware-v0.4
+```
+
 ## Local web development
 
 ```bash
