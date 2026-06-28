@@ -1,7 +1,9 @@
 import { invoke } from '@tauri-apps/api/core'
 import { listen } from '@tauri-apps/api/event'
+import { getCurrentWindow } from '@tauri-apps/api/window'
 import './styles.css'
 
+const appWindow = getCurrentWindow()
 const app = document.querySelector('#app')
 
 // Development tuning. Production can move this back toward 1_000_000.
@@ -23,14 +25,16 @@ const state = {
 
 app.innerHTML = `
   <section class="shell">
+    <div class="drag-region" data-tauri-drag-region aria-hidden="true"></div>
     <div id="liquid" class="progress-liquid" aria-hidden="true">
       <div class="liquid-fill">
         <span class="liquid-wave liquid-wave-a"></span>
         <span class="liquid-wave liquid-wave-b"></span>
       </div>
     </div>
-    <button id="reset" class="corner-button reset-button" type="button" aria-label="Reset counter" title="Reset counter">×</button>
     <button id="pin" class="corner-button pin-button" type="button" aria-label="Pin window" title="Pin window">📌</button>
+    <button id="reset" class="corner-button reset-button" type="button" aria-label="Reset counter" title="Reset counter">↺</button>
+    <button id="close" class="corner-button close-button" type="button" aria-label="Close ClickAudit" title="Close ClickAudit">×</button>
     <div id="counter" class="digit-deck" aria-label="Click count"></div>
     <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
   </section>
@@ -41,6 +45,7 @@ const elements = {
   liquid: document.querySelector('#liquid'),
   pin: document.querySelector('#pin'),
   reset: document.querySelector('#reset'),
+  close: document.querySelector('#close'),
   confettiLayer: document.querySelector('#confetti-layer'),
 }
 
@@ -202,6 +207,8 @@ elements.pin.addEventListener('click', async () => {
 elements.reset.addEventListener('click', async () => {
   render(await invoke('reset_counting'))
 })
+
+elements.close.addEventListener('click', () => appWindow.close())
 
 window.addEventListener('keydown', async (event) => {
   if (event.key.toLowerCase() === 'm') {
