@@ -1,5 +1,6 @@
 import ClickAuditPage from './components/ClickAuditPage'
 import Dashboard from './components/Dashboard'
+import FidgetPage from './components/FidgetPage'
 import './App.css'
 
 function App() {
@@ -8,6 +9,10 @@ function App() {
 
   if (appId === 'click-audit') {
     return <ClickAuditPage />
+  }
+
+  if (appId === 'fidget') {
+    return <FidgetPage />
   }
 
   return <Dashboard />
