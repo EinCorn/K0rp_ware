@@ -1,0 +1,28 @@
+.fidget-mode-toggle {
+  position: absolute;
+  top: 55px;
+  left: 7px;
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  opacity: 0.56;
+  z-index: 6;
+}
+
+.fidget-mode-toggle:hover {
+  opacity: 0.96;
+  transform: scale(1.14);
+}
+
+.fidget-mode-toggle.is-click-mode {
+  opacity: 0.9;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.18));
+}
