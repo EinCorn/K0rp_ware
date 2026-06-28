@@ -1,21 +1,41 @@
 .drag-region {
   position: absolute;
-  inset: 0 28px auto 28px;
-  height: 30px;
-  z-index: 8;
+  left: 7px;
+  top: 7px;
+  width: 16px;
+  height: 16px;
+  border-radius: 3px;
+  background:
+    repeating-linear-gradient(
+      135deg,
+      rgba(241, 233, 216, 0.28) 0 2px,
+      transparent 2px 5px
+    );
+  cursor: grab;
+  opacity: 0.7;
+  z-index: 10;
   pointer-events: auto;
+}
+
+.drag-region:hover {
+  opacity: 1;
+  filter: drop-shadow(0 0 5px rgba(241, 233, 216, 0.18));
+}
+
+.drag-region:active {
+  cursor: grabbing;
 }
 
 .pin-button {
   left: 7px;
   right: auto;
-  top: 7px;
+  top: 31px;
   font-size: 12px;
 }
 
 .reset-button {
   left: 7px;
-  top: 31px;
+  top: 55px;
   font-size: 12px;
   font-weight: 600;
 }
