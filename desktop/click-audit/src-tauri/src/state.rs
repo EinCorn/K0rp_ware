@@ -15,6 +15,9 @@ pub struct CounterState {
 
 struct CounterStateInner {
     count: AtomicU64,
+    click_audit_clicks: AtomicU64,
+    fidget_clicks: AtomicU64,
+    bloom_clicks: AtomicU64,
     always_on_top: AtomicBool,
     started_at_unix_ms: AtomicU64,
     store_path: PathBuf,
@@ -26,9 +29,19 @@ pub struct CounterSnapshot {
     pub app: &'static str,
     pub running: bool,
     pub global_clicks: u64,
+    pub source_clicks: SourceClickSnapshot,
     pub started_at_unix_ms: Option<u64>,
     pub always_on_top: bool,
     pub privacy_mode: &'static str,
+}
+
+#[derive(Clone, Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+pub struct SourceClickSnapshot {
+    pub click_audit: u64,
+    pub fidget: u64,
+    pub bloom: u64,
+    pub work_question: u64,
 }
 
 #[derive(Default, Deserialize, Serialize)]
@@ -36,6 +49,15 @@ pub struct CounterSnapshot {
 struct StoredCounterState {
     global_clicks: u64,
     started_at_unix_ms: u64,
+    source_clicks: StoredSourceClicks,
+}
+
+#[derive(Default, Deserialize, Serialize)]
+#[serde(rename_all = "camelCase")]
+struct StoredSourceClicks {
+    click_audit: u64,
+    fidget: u64,
+    bloom: u64,
 }
 
 impl CounterState {
@@ -51,6 +73,9 @@ impl CounterState {
         Self {
             inner: Arc::new(CounterStateInner {
                 count: AtomicU64::new(stored_state.global_clicks),
+                click_audit_clicks: AtomicU64::new(stored_state.source_clicks.click_audit),
+                fidget_clicks: AtomicU64::new(stored_state.source_clicks.fidget),
+                bloom_clicks: AtomicU64::new(stored_state.source_clicks.bloom),
                 always_on_top: AtomicBool::new(false),
                 started_at_unix_ms: AtomicU64::new(started_at),
                 store_path,
@@ -59,6 +84,11 @@ impl CounterState {
     }
 
     pub fn snapshot(&self) -> CounterSnapshot {
+        let global_clicks = self.inner.count.load(Ordering::Relaxed);
+        let click_audit = self.inner.click_audit_clicks.load(Ordering::Relaxed);
+        let fidget = self.inner.fidget_clicks.load(Ordering::Relaxed);
+        let bloom = self.inner.bloom_clicks.load(Ordering::Relaxed);
+        let known_k0rp_clicks = click_audit.saturating_add(fidget).saturating_add(bloom);
         let started_at_unix_ms = match self.inner.started_at_unix_ms.load(Ordering::Relaxed) {
             0 => None,
             value => Some(value),
@@ -67,10 +97,16 @@ impl CounterState {
         CounterSnapshot {
             app: "click-audit",
             running: true,
-            global_clicks: self.inner.count.load(Ordering::Relaxed),
+            global_clicks,
+            source_clicks: SourceClickSnapshot {
+                click_audit,
+                fidget,
+                bloom,
+                work_question: global_clicks.saturating_sub(known_k0rp_clicks),
+            },
             started_at_unix_ms,
             always_on_top: self.inner.always_on_top.load(Ordering::Relaxed),
-            privacy_mode: "aggregate-only",
+            privacy_mode: "aggregate-and-local-app-source",
         }
     }
 
@@ -84,6 +120,9 @@ impl CounterState {
 
     pub fn reset(&self) -> CounterSnapshot {
         self.inner.count.store(0, Ordering::Relaxed);
+        self.inner.click_audit_clicks.store(0, Ordering::Relaxed);
+        self.inner.fidget_clicks.store(0, Ordering::Relaxed);
+        self.inner.bloom_clicks.store(0, Ordering::Relaxed);
         self.inner
             .started_at_unix_ms
             .store(current_unix_ms(), Ordering::Relaxed);
@@ -102,6 +141,24 @@ impl CounterState {
         self.snapshot()
     }
 
+    pub fn report_app_click(&self, source: &str) -> CounterSnapshot {
+        match source {
+            "click-audit" | "clickAudit" => {
+                self.inner.click_audit_clicks.fetch_add(1, Ordering::Relaxed);
+            }
+            "fidget" => {
+                self.inner.fidget_clicks.fetch_add(1, Ordering::Relaxed);
+            }
+            "bloom" => {
+                self.inner.bloom_clicks.fetch_add(1, Ordering::Relaxed);
+            }
+            _ => {}
+        }
+
+        self.persist();
+        self.snapshot()
+    }
+
     pub fn add_one(&self) -> Option<CounterSnapshot> {
         let next_count = self.inner.count.fetch_add(1, Ordering::Relaxed) + 1;
 
@@ -116,6 +173,11 @@ impl CounterState {
         let stored_state = StoredCounterState {
             global_clicks: self.inner.count.load(Ordering::Relaxed),
             started_at_unix_ms: self.inner.started_at_unix_ms.load(Ordering::Relaxed),
+            source_clicks: StoredSourceClicks {
+                click_audit: self.inner.click_audit_clicks.load(Ordering::Relaxed),
+                fidget: self.inner.fidget_clicks.load(Ordering::Relaxed),
+                bloom: self.inner.bloom_clicks.load(Ordering::Relaxed),
+            },
         };
 
         if let Some(parent) = self.inner.store_path.parent() {
@@ -141,6 +203,11 @@ impl Drop for CounterStateInner {
         let stored_state = StoredCounterState {
             global_clicks: self.count.load(Ordering::Relaxed),
             started_at_unix_ms: self.started_at_unix_ms.load(Ordering::Relaxed),
+            source_clicks: StoredSourceClicks {
+                click_audit: self.click_audit_clicks.load(Ordering::Relaxed),
+                fidget: self.fidget_clicks.load(Ordering::Relaxed),
+                bloom: self.bloom_clicks.load(Ordering::Relaxed),
+            },
         };
 
         if let Some(parent) = self.store_path.parent() {
