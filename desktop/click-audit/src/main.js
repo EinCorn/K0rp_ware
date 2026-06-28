@@ -56,6 +56,7 @@ function renderDigits(currentValue, previousValue) {
   const fragment = document.createDocumentFragment()
 
   elements.counter.dataset.digits = String(currentDigits.length)
+  elements.counter.dataset.size = getDigitDeckSize(currentDigits.length)
   elements.counter.setAttribute('aria-label', `${currentValue} clicks`)
 
   currentDigits.forEach((digit, index) => {
@@ -82,6 +83,13 @@ function renderDigits(currentValue, previousValue) {
   })
 
   elements.counter.replaceChildren(fragment)
+}
+
+function getDigitDeckSize(digitCount) {
+  if (digitCount <= 3) return 'standard'
+  if (digitCount <= 6) return 'compact'
+  if (digitCount <= 9) return 'dense'
+  return 'micro'
 }
 
 function getCounterColor(clicks) {
