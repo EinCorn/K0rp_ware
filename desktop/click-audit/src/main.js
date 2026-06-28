@@ -2,6 +2,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { listen } from '@tauri-apps/api/event'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import './styles.css'
+import './frameless.css'
 
 const appWindow = getCurrentWindow()
 const app = document.querySelector('#app')
