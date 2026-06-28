@@ -10,7 +10,6 @@ pub struct CounterState {
 
 struct CounterStateInner {
     count: AtomicU64,
-    running: AtomicBool,
     always_on_top: AtomicBool,
     started_at_unix_ms: AtomicU64,
 }
@@ -31,9 +30,8 @@ impl CounterState {
         Self {
             inner: Arc::new(CounterStateInner {
                 count: AtomicU64::new(0),
-                running: AtomicBool::new(false),
                 always_on_top: AtomicBool::new(false),
-                started_at_unix_ms: AtomicU64::new(0),
+                started_at_unix_ms: AtomicU64::new(current_unix_ms()),
             }),
         }
     }
@@ -46,7 +44,7 @@ impl CounterState {
 
         CounterSnapshot {
             app: "click-audit",
-            running: self.is_running(),
+            running: true,
             global_clicks: self.inner.count.load(Ordering::Relaxed),
             started_at_unix_ms,
             always_on_top: self.inner.always_on_top.load(Ordering::Relaxed),
@@ -55,25 +53,14 @@ impl CounterState {
     }
 
     pub fn start(&self) -> CounterSnapshot {
-        self.inner.running.store(true, Ordering::Relaxed);
-
-        if self.inner.started_at_unix_ms.load(Ordering::Relaxed) == 0 {
-            self.inner
-                .started_at_unix_ms
-                .store(current_unix_ms(), Ordering::Relaxed);
-        }
-
         self.snapshot()
     }
 
     pub fn pause(&self) -> CounterSnapshot {
-        self.inner.running.store(false, Ordering::Relaxed);
         self.snapshot()
     }
 
     pub fn reset(&self) -> CounterSnapshot {
-        self.inner.count.store(0, Ordering::Relaxed);
-        self.inner.started_at_unix_ms.store(0, Ordering::Relaxed);
         self.snapshot()
     }
 
@@ -83,16 +70,8 @@ impl CounterState {
     }
 
     pub fn add_one(&self) -> Option<CounterSnapshot> {
-        if !self.is_running() {
-            return None;
-        }
-
         self.inner.count.fetch_add(1, Ordering::Relaxed);
         Some(self.snapshot())
-    }
-
-    pub fn is_running(&self) -> bool {
-        self.inner.running.load(Ordering::Relaxed)
     }
 }
 
