@@ -15,9 +15,9 @@
         "label": "main",
         "title": "K0rp ClickAudit",
         "width": 300,
-        "height": 240,
-        "minWidth": 240,
-        "minHeight": 180,
+        "height": 300,
+        "minWidth": 260,
+        "minHeight": 260,
         "resizable": false,
         "alwaysOnTop": false,
         "decorations": true
