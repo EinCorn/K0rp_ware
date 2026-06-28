@@ -29,7 +29,7 @@
   },
   "bundle": {
     "active": false,
-    "icon": [],
+    "icon": ["icons/icon.png"],
     "category": "Utility",
     "shortDescription": "Local fidget spinner toy",
     "longDescription": "Local-only fidget spinner toy for K0rp_ware. No telemetry. No purpose."
