@@ -29,6 +29,7 @@
   },
   "bundle": {
     "active": false,
+    "icon": [],
     "category": "Utility",
     "shortDescription": "Local aggregate click counter",
     "longDescription": "Local-only aggregate mouse click counter for K0rp_ware."
