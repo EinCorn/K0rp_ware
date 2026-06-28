@@ -3,8 +3,10 @@ import { listen } from '@tauri-apps/api/event'
 import './styles.css'
 
 const app = document.querySelector('#app')
-const COLOR_TARGET_CLICKS = 1_000_000
-const CONFETTI_CHANCE = 0.002
+
+// Development tuning. Production can move this back toward 1_000_000.
+const COLOR_TARGET_CLICKS = 5_000
+const CONFETTI_CHANCE = 0.1
 const CONFETTI_COLORS = ['#ff4f5e', '#ffb84d', '#f7ff5c', '#64ff8f', '#56d9ff', '#9f7bff', '#ff62d2']
 
 const state = {
@@ -47,17 +49,19 @@ function render(nextState) {
 
 function getCounterColor(clicks) {
   const progress = Math.min(Math.max(clicks / COLOR_TARGET_CLICKS, 0), 1)
-  const saturation = Math.min(progress * 125, 100)
-  const lightness = 94 - progress * 30
-  const hueProgress = progress < 0.08 ? 0 : (progress - 0.08) / 0.92
-  const hue = hueProgress * 280
+  const hue = progress * 280
+  const saturation = Math.min(progress * 130, 100)
+  const lightness = 94 - progress * 28
 
   return `hsl(${hue.toFixed(2)} ${saturation.toFixed(2)}% ${lightness.toFixed(2)}%)`
 }
 
 function burstConfetti() {
+  const burst = document.createElement('div')
   const fragment = document.createDocumentFragment()
   const particleCount = 34 + Math.floor(Math.random() * 18)
+
+  burst.className = 'confetti-burst'
 
   for (let index = 0; index < particleCount; index += 1) {
     const particle = document.createElement('span')
@@ -76,8 +80,9 @@ function burstConfetti() {
     fragment.appendChild(particle)
   }
 
-  elements.confettiLayer.appendChild(fragment)
-  window.setTimeout(() => elements.confettiLayer.replaceChildren(), 900)
+  burst.appendChild(fragment)
+  elements.confettiLayer.appendChild(burst)
+  window.setTimeout(() => burst.remove(), 1400)
 }
 
 async function refresh() {
