@@ -1,6 +1,7 @@
-import { invoke } from '@tauri-apps/api/core'
+import { getCurrentWindow } from '@tauri-apps/api/window'
 import './styles.css'
 
+const appWindow = getCurrentWindow()
 const app = document.querySelector('#app')
 const TOTAL = 25
 const BASE_RED = 7
@@ -75,7 +76,8 @@ function reset() {
 }
 
 async function setPinned(enabled) {
-  state.pinned = await invoke('set_always_on_top', { enabled })
+  await appWindow.setAlwaysOnTop(enabled)
+  state.pinned = enabled
   els.pin.setAttribute('aria-pressed', state.pinned ? 'true' : 'false')
 }
 
