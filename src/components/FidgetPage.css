@@ -124,6 +124,28 @@
   pointer-events: none;
 }
 
+.fidget-stage::after {
+  content: '';
+  position: absolute;
+  inset: 28px;
+  border-radius: 999px;
+  background:
+    conic-gradient(
+      from 0deg,
+      rgba(255, 59, 48, 0.04),
+      rgba(255, 149, 0, 0.03),
+      rgba(255, 214, 10, 0.04),
+      rgba(48, 209, 88, 0.03),
+      rgba(100, 210, 255, 0.04),
+      rgba(94, 92, 230, 0.04),
+      rgba(191, 90, 242, 0.04),
+      rgba(255, 59, 48, 0.04)
+    );
+  filter: blur(14px);
+  opacity: 0.72;
+  pointer-events: none;
+}
+
 .fidget-spinner {
   --spin-speed: 0;
   --spin-wobble: 0deg;
@@ -139,7 +161,7 @@
   will-change: transform, filter;
   filter:
     drop-shadow(0 18px 20px rgba(0, 0, 0, 0.42))
-    drop-shadow(0 0 calc(16px * var(--spin-speed)) rgba(241, 233, 216, 0.24));
+    drop-shadow(0 0 calc(18px * var(--spin-speed)) rgba(241, 233, 216, 0.2));
 }
 
 .fidget-spinner:focus-visible {
@@ -150,24 +172,92 @@
   cursor: grabbing;
 }
 
+.spinner-rainbow,
 .spinner-blur {
   position: absolute;
-  inset: 4px;
   border-radius: 999px;
+  pointer-events: none;
+}
+
+.spinner-rainbow-outer {
+  inset: -18px;
   background:
     conic-gradient(
       from 0deg,
-      rgba(255, 69, 58, calc(0.32 * var(--spin-speed))) 0deg 42deg,
-      transparent 43deg 92deg,
-      rgba(255, 214, 10, calc(0.28 * var(--spin-speed))) 93deg 148deg,
-      transparent 149deg 210deg,
-      rgba(94, 92, 230, calc(0.32 * var(--spin-speed))) 211deg 276deg,
-      transparent 277deg 360deg
+      #ff2d55,
+      #ff3b30,
+      #ff9500,
+      #ffd60a,
+      #30d158,
+      #00c7be,
+      #64d2ff,
+      #0a84ff,
+      #5e5ce6,
+      #bf5af2,
+      #ff2d55
     );
-  filter: blur(calc(2px + 13px * var(--spin-speed)));
-  opacity: calc(0.06 + 0.88 * var(--spin-speed));
-  transform: scale(calc(0.84 + 0.13 * var(--spin-speed)));
-  pointer-events: none;
+  filter:
+    blur(calc(4px + 18px * var(--spin-speed)))
+    saturate(calc(1.2 + 1.3 * var(--spin-speed)));
+  opacity: calc(0.02 + 0.72 * var(--spin-speed));
+  transform: scale(calc(0.72 + 0.28 * var(--spin-speed)));
+  mix-blend-mode: screen;
+  animation: rainbow-drift 1.9s linear infinite;
+}
+
+.spinner-rainbow-inner {
+  inset: 20px;
+  background:
+    conic-gradient(
+      from 180deg,
+      rgba(255, 45, 85, 0.92),
+      rgba(255, 149, 0, 0.86),
+      rgba(255, 214, 10, 0.88),
+      rgba(48, 209, 88, 0.82),
+      rgba(0, 199, 190, 0.84),
+      rgba(10, 132, 255, 0.86),
+      rgba(191, 90, 242, 0.9),
+      rgba(255, 45, 85, 0.92)
+    );
+  filter:
+    blur(calc(2px + 8px * var(--spin-speed)))
+    saturate(calc(1.1 + 1.1 * var(--spin-speed)));
+  opacity: calc(0.01 + 0.42 * var(--spin-speed));
+  transform: scale(calc(0.62 + 0.18 * var(--spin-speed)));
+  mix-blend-mode: screen;
+  animation: rainbow-drift-reverse 1.25s linear infinite;
+}
+
+.spinner-blur {
+  inset: 2px;
+  background:
+    conic-gradient(
+      from 0deg,
+      rgba(255, 45, 85, calc(0.4 * var(--spin-speed))) 0deg 38deg,
+      transparent 39deg 76deg,
+      rgba(255, 214, 10, calc(0.32 * var(--spin-speed))) 77deg 134deg,
+      transparent 135deg 178deg,
+      rgba(48, 209, 88, calc(0.3 * var(--spin-speed))) 179deg 210deg,
+      rgba(10, 132, 255, calc(0.34 * var(--spin-speed))) 211deg 258deg,
+      transparent 259deg 302deg,
+      rgba(191, 90, 242, calc(0.38 * var(--spin-speed))) 303deg 346deg,
+      transparent 347deg 360deg
+    );
+  filter: blur(calc(2px + 12px * var(--spin-speed)));
+  opacity: calc(0.04 + 0.92 * var(--spin-speed));
+  transform: scale(calc(0.82 + 0.13 * var(--spin-speed)));
+}
+
+.fidget-spinner.is-flicked .spinner-rainbow-outer {
+  animation:
+    rainbow-drift 1.9s linear infinite,
+    rainbow-pop 520ms cubic-bezier(0.18, 0.82, 0.18, 1) both;
+}
+
+.fidget-spinner.is-flicked .spinner-rainbow-inner {
+  animation:
+    rainbow-drift-reverse 1.25s linear infinite,
+    rainbow-pop-tight 520ms cubic-bezier(0.18, 0.82, 0.18, 1) both;
 }
 
 .spinner-arm {
@@ -279,6 +369,50 @@
   box-shadow:
     inset 0 1px 2px rgba(255, 255, 255, 0.12),
     0 1px 1px rgba(255, 255, 255, 0.12);
+}
+
+@keyframes rainbow-drift {
+  0% {
+    rotate: 0deg;
+  }
+
+  100% {
+    rotate: 360deg;
+  }
+}
+
+@keyframes rainbow-drift-reverse {
+  0% {
+    rotate: 360deg;
+  }
+
+  100% {
+    rotate: 0deg;
+  }
+}
+
+@keyframes rainbow-pop {
+  0% {
+    opacity: 0.95;
+    transform: scale(0.62);
+  }
+
+  100% {
+    opacity: calc(0.02 + 0.72 * var(--spin-speed));
+    transform: scale(calc(0.72 + 0.28 * var(--spin-speed)));
+  }
+}
+
+@keyframes rainbow-pop-tight {
+  0% {
+    opacity: 0.74;
+    transform: scale(0.54);
+  }
+
+  100% {
+    opacity: calc(0.01 + 0.42 * var(--spin-speed));
+    transform: scale(calc(0.62 + 0.18 * var(--spin-speed)));
+  }
 }
 
 @media (max-width: 320px) {
