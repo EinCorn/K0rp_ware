@@ -38,6 +38,11 @@ fn report_app_click(state: State<'_, CounterState>, source: String) -> CounterSn
 }
 
 #[tauri::command]
+fn begin_window_move(window: tauri::Window) -> Result<(), String> {
+    window.start_dragging().map_err(|error| error.to_string())
+}
+
+#[tauri::command]
 fn set_always_on_top(
     window: tauri::Window,
     state: State<'_, CounterState>,
@@ -68,6 +73,7 @@ fn main() {
             reset_counting,
             set_count_for_dev,
             report_app_click,
+            begin_window_move,
             set_always_on_top
         ])
         .run(tauri::generate_context!())
