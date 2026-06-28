@@ -1,0 +1,28 @@
+.mode-button {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  width: 16px;
+  height: 16px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+  opacity: 0.5;
+  z-index: 6;
+}
+
+.mode-button:hover {
+  opacity: 0.96;
+  transform: scale(1.14);
+}
+
+.mode-button.is-click-mode {
+  opacity: 0.9;
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.18));
+}
