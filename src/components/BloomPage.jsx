@@ -1,10 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './BloomPage.css'
 
 const BOARD_SIZE = 25
+const STORAGE_KEY = 'k0rp-bloom-state-v1'
 const STATUS_GREEN = 'green'
 const STATUS_YELLOW = 'yellow'
 const STATUS_RED = 'red'
+const VALID_STATUSES = new Set([STATUS_GREEN, STATUS_YELLOW, STATUS_RED])
 const CLEAR_PARTICLES = [
   [-82, -44, 0],
   [-58, -74, 18],
@@ -68,17 +70,81 @@ function getNextStatus(status) {
   return STATUS_GREEN
 }
 
+function normalizeBoard(wave, board) {
+  if (!Array.isArray(board) || board.length !== BOARD_SIZE) {
+    return createBoard(wave)
+  }
+
+  return board.map((stone, index) => {
+    const status = VALID_STATUSES.has(stone?.status) ? stone.status : STATUS_GREEN
+
+    return {
+      id: `${wave}-${index}`,
+      status,
+      bloomPhase: '',
+    }
+  })
+}
+
+function loadGame() {
+  try {
+    const rawState = window.localStorage.getItem(STORAGE_KEY)
+    if (!rawState) throw new Error('No stored Bloom state')
+
+    const storedState = JSON.parse(rawState)
+    const wave = Number.isInteger(storedState.wave) && storedState.wave > 0 ? storedState.wave : 1
+    const score = Number.isInteger(storedState.score) && storedState.score >= 0 ? storedState.score : 0
+
+    return {
+      score,
+      wave,
+      board: normalizeBoard(wave, storedState.board),
+    }
+  } catch {
+    return {
+      score: 0,
+      wave: 1,
+      board: createBoard(1),
+    }
+  }
+}
+
+function saveGame({ score, wave, board }) {
+  try {
+    window.localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({
+        score,
+        wave,
+        board: board.map(({ status }) => ({ status })),
+      }),
+    )
+  } catch {
+    // Local persistence is a convenience layer; gameplay should never depend on it.
+  }
+}
+
 function BloomPage() {
-  const [score, setScore] = useState(0)
-  const [wave, setWave] = useState(1)
-  const [board, setBoard] = useState(() => createBoard(1))
+  const [initialState] = useState(() => loadGame())
+  const [score, setScore] = useState(initialState.score)
+  const [wave, setWave] = useState(initialState.wave)
+  const [board, setBoard] = useState(initialState.board)
   const [isClearing, setIsClearing] = useState(false)
 
+  useEffect(() => {
+    if (!isClearing) {
+      saveGame({ score, wave, board })
+    }
+  }, [score, wave, board, isClearing])
+
   function resetGame() {
+    const nextBoard = createBoard(1)
+
     setScore(0)
     setWave(1)
     setIsClearing(false)
-    setBoard(createBoard(1))
+    setBoard(nextBoard)
+    saveGame({ score: 0, wave: 1, board: nextBoard })
   }
 
   function hitStone(index) {
@@ -111,7 +177,11 @@ function BloomPage() {
         window.setTimeout(() => {
           setWave((currentWave) => {
             const nextWave = currentWave + 1
-            setBoard(createBoard(nextWave))
+            const nextWaveBoard = createBoard(nextWave)
+
+            setBoard(nextWaveBoard)
+            saveGame({ score: score + 11, wave: nextWave, board: nextWaveBoard })
+
             return nextWave
           })
           setIsClearing(false)
