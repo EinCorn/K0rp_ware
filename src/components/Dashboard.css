@@ -66,6 +66,37 @@
   border-color: var(--accent);
 }
 
+.bridge-source-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 22px;
+}
+
+.bridge-source-card {
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.14);
+}
+
+.bridge-source-card span {
+  display: block;
+  color: var(--muted);
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.bridge-source-card strong {
+  display: block;
+  margin-top: 8px;
+  color: var(--text-h);
+  font-family: var(--mono);
+  font-size: clamp(22px, 4vw, 42px);
+  line-height: 1;
+}
+
 .api-response {
   margin: 22px 0 0;
   padding: 18px;
