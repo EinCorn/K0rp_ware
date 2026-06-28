@@ -5,9 +5,11 @@ import './styles.css'
 const app = document.querySelector('#app')
 
 // Development tuning. Production can move this back toward 1_000_000.
-const COLOR_TARGET_CLICKS = 5_000
+const PROGRESS_TARGET_CLICKS = 2_500
+const COLOR_TARGET_CLICKS = PROGRESS_TARGET_CLICKS
 const CONFETTI_CHANCE = 0.1
 const CONFETTI_COLORS = ['#ff4f5e', '#ffb84d', '#f7ff5c', '#64ff8f', '#56d9ff', '#9f7bff', '#ff62d2']
+const LIQUID_PALETTE = ['#ff3b30', '#ff9f0a', '#ffd60a', '#34c759', '#00c7be', '#0a84ff', '#bf5af2']
 const DEV_MILLION_TEST_VALUE = 1_000_000
 
 const state = {
@@ -21,6 +23,12 @@ const state = {
 
 app.innerHTML = `
   <section class="shell">
+    <div id="liquid" class="progress-liquid" aria-hidden="true">
+      <div class="liquid-fill">
+        <span class="liquid-wave liquid-wave-a"></span>
+        <span class="liquid-wave liquid-wave-b"></span>
+      </div>
+    </div>
     <button id="reset" class="corner-button reset-button" type="button" aria-label="Reset counter" title="Reset counter">×</button>
     <button id="pin" class="corner-button pin-button" type="button" aria-label="Pin window" title="Pin window">📌</button>
     <div id="counter" class="digit-deck" aria-label="Click count"></div>
@@ -30,6 +38,7 @@ app.innerHTML = `
 
 const elements = {
   counter: document.querySelector('#counter'),
+  liquid: document.querySelector('#liquid'),
   pin: document.querySelector('#pin'),
   reset: document.querySelector('#reset'),
   confettiLayer: document.querySelector('#confetti-layer'),
@@ -39,8 +48,12 @@ function render(nextState) {
   const previousClicks = state.globalClicks
   Object.assign(state, nextState)
 
+  const progress = getProgress(state.globalClicks)
+
   renderDigits(String(state.globalClicks), String(previousClicks))
   elements.counter.style.setProperty('--progress-color', getCounterColor(state.globalClicks))
+  elements.liquid.style.setProperty('--liquid-progress', `${(progress * 100).toFixed(2)}%`)
+  elements.liquid.style.setProperty('--liquid-gradient', getLiquidGradient(progress))
   elements.pin.setAttribute('aria-pressed', state.alwaysOnTop ? 'true' : 'false')
   elements.pin.setAttribute('aria-label', state.alwaysOnTop ? 'Unpin window' : 'Pin window')
   elements.pin.setAttribute('title', state.alwaysOnTop ? 'Unpin window' : 'Pin window')
@@ -92,13 +105,61 @@ function getDigitDeckSize(digitCount) {
   return 'micro'
 }
 
+function getProgress(clicks) {
+  return Math.min(Math.max(clicks / PROGRESS_TARGET_CLICKS, 0), 1)
+}
+
 function getCounterColor(clicks) {
-  const progress = Math.min(Math.max(clicks / COLOR_TARGET_CLICKS, 0), 1)
+  const progress = getProgress(clicks)
   const hue = progress * 280
   const saturation = Math.min(progress * 130, 100)
   const lightness = 94 - progress * 28
 
   return `hsl(${hue.toFixed(2)} ${saturation.toFixed(2)}% ${lightness.toFixed(2)}%)`
+}
+
+function getLiquidGradient(progress) {
+  const safeProgress = Math.max(progress, 0.001)
+  const stops = []
+  const maxIndex = LIQUID_PALETTE.length - 1
+
+  LIQUID_PALETTE.forEach((color, index) => {
+    const colorProgress = index / maxIndex
+
+    if (colorProgress <= progress) {
+      stops.push(`${color} ${((colorProgress / safeProgress) * 100).toFixed(2)}%`)
+    }
+  })
+
+  const bottomColor = getPaletteColorAt(progress)
+  stops.push(`${bottomColor} 100%`)
+
+  return `linear-gradient(to bottom, ${stops.join(', ')})`
+}
+
+function getPaletteColorAt(progress) {
+  const scaledProgress = Math.min(Math.max(progress, 0), 1) * (LIQUID_PALETTE.length - 1)
+  const leftIndex = Math.floor(scaledProgress)
+  const rightIndex = Math.min(leftIndex + 1, LIQUID_PALETTE.length - 1)
+  const amount = scaledProgress - leftIndex
+
+  return mixHexColors(LIQUID_PALETTE[leftIndex], LIQUID_PALETTE[rightIndex], amount)
+}
+
+function mixHexColors(left, right, amount) {
+  const leftRgb = hexToRgb(left)
+  const rightRgb = hexToRgb(right)
+  const mixed = leftRgb.map((channel, index) => Math.round(channel + (rightRgb[index] - channel) * amount))
+
+  return `rgb(${mixed[0]} ${mixed[1]} ${mixed[2]})`
+}
+
+function hexToRgb(hex) {
+  return [
+    Number.parseInt(hex.slice(1, 3), 16),
+    Number.parseInt(hex.slice(3, 5), 16),
+    Number.parseInt(hex.slice(5, 7), 16),
+  ]
 }
 
 function burstConfetti() {
