@@ -171,6 +171,7 @@ button {
 }
 
 .digit-bottom,
+.digit-hold-bottom,
 .digit-flap-bottom {
   bottom: 0;
   background: var(--card-bottom);
@@ -184,21 +185,33 @@ button {
 }
 
 .digit-bottom span,
+.digit-hold-bottom span,
 .digit-flap-bottom span {
   bottom: 0;
 }
 
+.digit-hold-bottom {
+  z-index: 5;
+  transform: rotateX(0deg);
+}
+
 .digit-flap-bottom {
+  z-index: 6;
+  opacity: 0;
   transform: rotateX(88deg);
 }
 
 .digit-card.is-changing .digit-flap-top {
-  animation: flip-away-top 360ms cubic-bezier(0.4, 0.05, 0.2, 1) both;
+  animation: flip-away-top 430ms cubic-bezier(0.4, 0.05, 0.2, 1) both;
+}
+
+.digit-card.is-changing .digit-hold-bottom {
+  animation: hold-old-bottom 330ms linear forwards;
 }
 
 .digit-card.is-changing .digit-flap-bottom {
-  animation: flip-in-bottom 360ms cubic-bezier(0.18, 0.8, 0.22, 1) both;
-  animation-delay: 150ms;
+  animation: flip-in-bottom 480ms cubic-bezier(0.18, 0.8, 0.22, 1) forwards;
+  animation-delay: 260ms;
 }
 
 .digit-hinge {
@@ -211,7 +224,7 @@ button {
   box-shadow:
     0 -1px 0 rgba(0, 0, 0, 0.28),
     0 1px 0 rgba(0, 0, 0, 0.18);
-  z-index: 6;
+  z-index: 7;
 }
 
 .digit-card::after {
@@ -224,7 +237,7 @@ button {
   background:
     radial-gradient(circle at left center, var(--card-edge) 0 5px, transparent 6px),
     radial-gradient(circle at right center, var(--card-edge) 0 5px, transparent 6px);
-  z-index: 7;
+  z-index: 8;
   pointer-events: none;
 }
 
@@ -247,7 +260,7 @@ button {
     opacity 140ms ease,
     transform 140ms ease,
     filter 140ms ease;
-  z-index: 8;
+  z-index: 9;
 }
 
 .corner-button:hover {
@@ -306,14 +319,21 @@ button {
     transform: rotateX(0deg);
   }
 
-  99% {
-    opacity: 1;
-  }
-
   100% {
     filter: brightness(0.72);
     opacity: 0;
     transform: rotateX(-88deg);
+  }
+}
+
+@keyframes hold-old-bottom {
+  0%,
+  74% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
   }
 }
 
@@ -326,7 +346,7 @@ button {
 
   100% {
     filter: brightness(1);
-    opacity: 0;
+    opacity: 1;
     transform: rotateX(0deg);
   }
 }
