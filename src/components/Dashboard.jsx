@@ -1,5 +1,7 @@
 import './Dashboard.css'
 
+const releaseUrl = ['https://github.com', 'EinCorn', 'K0rp_ware', 'releases', 'latest'].join('/')
+
 function Dashboard() {
   return (
     <main className="dashboard-shell hub-shell">
@@ -24,7 +26,10 @@ function Dashboard() {
           </div>
           <div className="module-card-footer">
             <span className="module-status">v0.2</span>
-            <a href="/?app=click-audit">Open</a>
+            <div className="module-card-actions">
+              <a href="/?app=click-audit">Open web</a>
+              <a href={releaseUrl}>Download app</a>
+            </div>
           </div>
         </article>
 
@@ -39,7 +44,10 @@ function Dashboard() {
           </div>
           <div className="module-card-footer">
             <span className="module-status">v0.2</span>
-            <a href="/?app=fidget">Open</a>
+            <div className="module-card-actions">
+              <a href="/?app=fidget">Open web</a>
+              <a href={releaseUrl}>Download app</a>
+            </div>
           </div>
         </article>
 
@@ -54,7 +62,10 @@ function Dashboard() {
           </div>
           <div className="module-card-footer">
             <span className="module-status">v0.2</span>
-            <a href="/?app=bloom">Open</a>
+            <div className="module-card-actions">
+              <a href="/?app=bloom">Open web</a>
+              <a href={releaseUrl}>Download app</a>
+            </div>
           </div>
         </article>
       </section>
