@@ -50,7 +50,7 @@ The desktop action opens the latest repository release. The dashboard link stays
 
 ## Create a desktop release
 
-GitHub Actions builds the three macOS desktop apps and attaches them to a release.
+GitHub Actions builds the three desktop apps for macOS and Windows, then attaches them to a release.
 
 Tag-based release:
 
@@ -64,6 +64,14 @@ Or run the workflow manually in GitHub Actions:
 
 ```text
 K0rp desktop release -> Run workflow -> release_tag: k0rp-ware-v0.2
+```
+
+Expected release assets include macOS app archives plus Windows installer/executable assets for:
+
+```text
+K0rp ClickAudit
+K0rp Fidget
+K0rp Bloom
 ```
 
 Recommended future labels:
