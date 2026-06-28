@@ -1,0 +1,119 @@
+name: K0rp desktop release
+
+on:
+  push:
+    tags:
+      - 'k0rp-ware-v*'
+  workflow_dispatch:
+    inputs:
+      release_tag:
+        description: 'Release tag to create or update'
+        required: true
+        default: 'k0rp-ware-v0.2'
+
+permissions:
+  contents: write
+
+jobs:
+  build-macos:
+    name: Build ${{ matrix.name }} for macOS
+    runs-on: macos-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: ClickAudit
+            path: desktop/click-audit
+            asset: K0rp-ClickAudit
+          - name: Fidget
+            path: desktop/fidget
+            asset: K0rp-Fidget
+          - name: Bloom
+            path: desktop/bloom-desktop
+            asset: K0rp-Bloom
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.path }}
+        run: npm install
+
+      - name: Ensure icon
+        working-directory: ${{ matrix.path }}
+        run: node scripts/ensure-icon.mjs
+
+      - name: Build desktop app
+        working-directory: ${{ matrix.path }}
+        run: npm run build
+
+      - name: Collect macOS assets
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p release-assets
+          bundle_dir="${{ matrix.path }}/src-tauri/target/release/bundle"
+
+          if [ -d "$bundle_dir/macos" ]; then
+            while IFS= read -r -d '' app_path; do
+              ditto -c -k --sequesterRsrc --keepParent "$app_path" "release-assets/${{ matrix.asset }}.app.zip"
+            done < <(find "$bundle_dir/macos" -maxdepth 1 -name '*.app' -print0)
+          fi
+
+          if [ -d "$bundle_dir" ]; then
+            find "$bundle_dir" -type f \( -name '*.dmg' -o -name '*.pkg' -o -name '*.zip' \) -exec cp {} release-assets/ \;
+          fi
+
+          ls -la release-assets
+
+      - name: Upload app artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.asset }}-macos
+          path: release-assets/*
+          if-no-files-found: error
+
+  publish-release:
+    name: Publish release
+    runs-on: ubuntu-latest
+    needs: build-macos
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+
+      - name: Create or update release
+        shell: bash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            tag="${{ github.event.inputs.release_tag }}"
+          else
+            tag="${GITHUB_REF_NAME}"
+          fi
+
+          notes_file="docs/v0.2-notes.md"
+
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release $tag already exists. Uploading assets."
+          else
+            gh release create "$tag" --title "$tag" --notes-file "$notes_file" --target "$GITHUB_SHA"
+          fi
+
+          find artifacts -type f -print0 | xargs -0 gh release upload "$tag" --clobber
