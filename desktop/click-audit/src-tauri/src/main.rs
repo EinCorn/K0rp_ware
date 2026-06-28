@@ -33,6 +33,11 @@ fn set_count_for_dev(state: State<'_, CounterState>, count: u64) -> CounterSnaps
 }
 
 #[tauri::command]
+fn report_app_click(state: State<'_, CounterState>, source: String) -> CounterSnapshot {
+    state.report_app_click(&source)
+}
+
+#[tauri::command]
 fn set_always_on_top(
     window: tauri::Window,
     state: State<'_, CounterState>,
@@ -62,6 +67,7 @@ fn main() {
             pause_counting,
             reset_counting,
             set_count_for_dev,
+            report_app_click,
             set_always_on_top
         ])
         .run(tauri::generate_context!())
