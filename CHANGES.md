@@ -10,6 +10,7 @@
 - Added experimental StatusLamp Pin mode using Document Picture-in-Picture when supported.
 - Added GitHub Actions workflow for automatic Cloudflare Workers deploys.
 - Added `desktop/click-audit` Tauri scaffold for a local-only portable click counter.
+- Added Dashboard ↔ ClickAudit localhost bridge for live mirrored progress and basic remote commands.
 
 ## 0.1.1
 
