@@ -46,12 +46,29 @@ Open web
 Download app
 ```
 
-The desktop action opens the latest repository release. When a stable desktop cut is ready, create a new release with the packaged app files. The dashboard link stays stable because it always targets the latest release.
+The desktop action opens the latest repository release. The dashboard link stays stable because it always targets the latest release.
 
-Recommended release labels:
+## Create a desktop release
+
+GitHub Actions builds the three macOS desktop apps and attaches them to a release.
+
+Tag-based release:
+
+```bash
+git pull
+git tag k0rp-ware-v0.2
+git push origin k0rp-ware-v0.2
+```
+
+Or run the workflow manually in GitHub Actions:
 
 ```text
-k0rp-ware-v0.2
+K0rp desktop release -> Run workflow -> release_tag: k0rp-ware-v0.2
+```
+
+Recommended future labels:
+
+```text
 k0rp-ware-v0.3
 k0rp-ware-v0.4
 ```
