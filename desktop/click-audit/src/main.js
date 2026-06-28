@@ -15,7 +15,7 @@ const state = {
 
 app.innerHTML = `
   <section class="shell">
-    <button id="pin" class="pin-button" type="button" aria-label="Pin window" title="Pin window">⌖</button>
+    <button id="pin" class="pin-button" type="button" aria-label="Pin window" title="Pin window">📌</button>
     <h1 id="counter">0</h1>
   </section>
 `
