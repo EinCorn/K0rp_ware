@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "Toy",
+  "productName": "K0rp Bloom",
   "version": "0.1.0",
-  "identifier": "dev.local.toy",
+  "identifier": "dev.local.k0rp-bloom",
   "build": {
     "beforeDevCommand": "npm run dev:web",
     "devUrl": "http://127.0.0.1:1422",
@@ -13,7 +13,7 @@
     "windows": [
       {
         "label": "main",
-        "title": "Toy",
+        "title": "K0rp Bloom",
         "width": 230,
         "height": 230,
         "resizable": false,
