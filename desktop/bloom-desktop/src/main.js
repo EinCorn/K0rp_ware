@@ -4,7 +4,15 @@ import './styles.css'
 const appWindow = getCurrentWindow()
 const app = document.querySelector('#app')
 const TOTAL = 25
-const BASE_RED = 7
+const GREEN = 'green'
+const YELLOW = 'yellow'
+const RED = 'red'
+const CLEAR_PARTICLES = [
+  [-82, -44, 0], [-58, -74, 18], [-22, -86, 34], [19, -82, 8], [56, -66, 28], [84, -34, 12],
+  [92, 2, 40], [72, 42, 22], [42, 76, 0], [6, 88, 30], [-32, 82, 14], [-68, 54, 36],
+  [-94, 18, 6], [-76, -8, 24], [-40, -38, 44], [36, -30, 16], [60, 12, 46], [-10, 42, 10],
+]
+
 const state = { score: 0, wave: 1, board: makeBoard(1), locked: false, pinned: false }
 
 app.innerHTML = `
@@ -12,6 +20,7 @@ app.innerHTML = `
     <button id="reset" class="corner reset" type="button" title="Reset">×</button>
     <button id="pin" class="corner pin" type="button" title="Pin window">📌</button>
     <div id="board" class="board"></div>
+    <div id="burst" class="clear-burst" aria-hidden="true"></div>
     <footer class="score"><span>score</span><strong id="score">0</strong><span id="wave">wave 1</span></footer>
   </section>
 `
@@ -19,17 +28,41 @@ app.innerHTML = `
 const els = {
   shell: document.querySelector('.game-shell'),
   board: document.querySelector('#board'),
+  burst: document.querySelector('#burst'),
   score: document.querySelector('#score'),
   wave: document.querySelector('#wave'),
   pin: document.querySelector('#pin'),
   reset: document.querySelector('#reset'),
 }
 
+function getCounts(wave) {
+  const red = wave >= 15 ? Math.min(1 + Math.floor((wave - 15) / 4), 6) : 0
+  const yellow = Math.min(5 + Math.floor((wave - 1) / 3), TOTAL - red - 5)
+  return { red, yellow }
+}
+
 function makeBoard(wave) {
-  const count = Math.min(BASE_RED + Math.floor(wave / 2), TOTAL - 3)
-  const red = new Set()
-  while (red.size < count) red.add(Math.floor(Math.random() * TOTAL))
-  return Array.from({ length: TOTAL }, (_, index) => ({ green: !red.has(index), fresh: false }))
+  const { red, yellow } = getCounts(wave)
+  const indexes = Array.from({ length: TOTAL }, (_, index) => index)
+
+  for (let index = indexes.length - 1; index > 0; index -= 1) {
+    const swap = Math.floor(Math.random() * (index + 1))
+    ;[indexes[index], indexes[swap]] = [indexes[swap], indexes[index]]
+  }
+
+  const reds = new Set(indexes.slice(0, red))
+  const yellows = new Set(indexes.slice(red, red + yellow))
+
+  return Array.from({ length: TOTAL }, (_, index) => {
+    const status = reds.has(index) ? RED : yellows.has(index) ? YELLOW : GREEN
+    return { status, fresh: '' }
+  })
+}
+
+function nextStatus(status) {
+  if (status === RED) return YELLOW
+  if (status === YELLOW) return GREEN
+  return GREEN
 }
 
 function render() {
@@ -37,7 +70,7 @@ function render() {
   state.board.forEach((item, index) => {
     const button = document.createElement('button')
     button.type = 'button'
-    button.className = `stone ${item.green ? 'green' : 'red'} ${item.fresh ? 'fresh' : ''}`
+    button.className = `stone ${item.status} ${item.fresh}`
     button.addEventListener('click', () => play(index))
     els.board.appendChild(button)
   })
@@ -47,19 +80,25 @@ function render() {
 }
 
 function play(index) {
-  if (state.locked || state.board[index].green) return
-  state.board = state.board.map((item, itemIndex) => itemIndex === index ? { green: true, fresh: true } : item)
+  if (state.locked || state.board[index].status === GREEN) return
 
-  if (state.board.every((item) => item.green)) {
-    state.score += 10
+  state.board = state.board.map((item, itemIndex) => {
+    if (itemIndex !== index) return { ...item, fresh: '' }
+    const status = nextStatus(item.status)
+    return { status, fresh: status === GREEN ? 'bloom' : 'step' }
+  })
+
+  if (state.board.every((item) => item.status === GREEN)) {
+    state.score += 11
     state.locked = true
     render()
+    explode()
     window.setTimeout(() => {
       state.wave += 1
       state.board = makeBoard(state.wave)
       state.locked = false
       render()
-    }, 520)
+    }, 760)
     return
   }
 
@@ -67,11 +106,29 @@ function play(index) {
   render()
 }
 
+function explode() {
+  els.burst.replaceChildren()
+  const fragment = document.createDocumentFragment()
+
+  CLEAR_PARTICLES.forEach(([x, y, delay], index) => {
+    const particle = document.createElement('span')
+    particle.style.setProperty('--x', `${x}px`)
+    particle.style.setProperty('--y', `${y}px`)
+    particle.style.setProperty('--delay', `${delay}ms`)
+    if (index % 3 === 0) particle.classList.add('yellow')
+    fragment.appendChild(particle)
+  })
+
+  els.burst.appendChild(fragment)
+  window.setTimeout(() => els.burst.replaceChildren(), 900)
+}
+
 function reset() {
   state.score = 0
   state.wave = 1
   state.board = makeBoard(1)
   state.locked = false
+  els.burst.replaceChildren()
   render()
 }
 
