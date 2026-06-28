@@ -1,5 +1,6 @@
 import { openDetachedWindow } from '../core/detachedWindow'
 import { modules } from '../moduleRegistry'
+import ClickAuditBridge from './ClickAuditBridge'
 import ModuleCard from './ModuleCard'
 
 function Dashboard() {
@@ -21,6 +22,8 @@ function Dashboard() {
           </button>
         </div>
       </section>
+
+      <ClickAuditBridge />
 
       <section className="module-grid" aria-label="Available modules">
         {modules.map((module) => (
