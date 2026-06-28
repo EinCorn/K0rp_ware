@@ -103,15 +103,17 @@
 
 .bloom-board {
   position: absolute;
-  left: 39px;
-  right: 39px;
-  top: 70px;
-  bottom: 42px;
+  left: 50%;
+  top: 71px;
+  width: 117px;
+  height: 117px;
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 6px;
+  grid-template-columns: repeat(5, 17px);
+  grid-auto-rows: 17px;
+  gap: 8px;
   align-content: center;
   justify-content: center;
+  transform: translateX(-50%);
   z-index: 2;
 }
 
