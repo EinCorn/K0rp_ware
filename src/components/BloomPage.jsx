@@ -2,20 +2,70 @@ import { useState } from 'react'
 import './BloomPage.css'
 
 const BOARD_SIZE = 25
-const RED_BASE_COUNT = 7
+const STATUS_GREEN = 'green'
+const STATUS_YELLOW = 'yellow'
+const STATUS_RED = 'red'
+const CLEAR_PARTICLES = [
+  [-82, -44, 0],
+  [-58, -74, 18],
+  [-22, -86, 34],
+  [19, -82, 8],
+  [56, -66, 28],
+  [84, -34, 12],
+  [92, 2, 40],
+  [72, 42, 22],
+  [42, 76, 0],
+  [6, 88, 30],
+  [-32, 82, 14],
+  [-68, 54, 36],
+  [-94, 18, 6],
+  [-76, -8, 24],
+  [-40, -38, 44],
+  [36, -30, 16],
+  [60, 12, 46],
+  [-10, 42, 10],
+]
+
+function getStatusCounts(wave = 1) {
+  const redCount = wave >= 15 ? Math.min(1 + Math.floor((wave - 15) / 4), 6) : 0
+  const yellowCount = Math.min(5 + Math.floor((wave - 1) / 3), BOARD_SIZE - redCount - 5)
+
+  return { redCount, yellowCount }
+}
 
 function createBoard(wave = 1) {
-  const redCount = Math.min(RED_BASE_COUNT + Math.floor(wave / 2), BOARD_SIZE - 3)
-  const redIndexes = new Set()
+  const { redCount, yellowCount } = getStatusCounts(wave)
+  const indexes = Array.from({ length: BOARD_SIZE }, (_, index) => index)
 
-  while (redIndexes.size < redCount) {
-    redIndexes.add(Math.floor(Math.random() * BOARD_SIZE))
+  for (let index = indexes.length - 1; index > 0; index -= 1) {
+    const swapIndex = Math.floor(Math.random() * (index + 1))
+    ;[indexes[index], indexes[swapIndex]] = [indexes[swapIndex], indexes[index]]
   }
 
-  return Array.from({ length: BOARD_SIZE }, (_, index) => ({
-    id: `${wave}-${index}`,
-    isGreen: !redIndexes.has(index),
-  }))
+  const redIndexes = new Set(indexes.slice(0, redCount))
+  const yellowIndexes = new Set(indexes.slice(redCount, redCount + yellowCount))
+
+  return Array.from({ length: BOARD_SIZE }, (_, index) => {
+    let status = STATUS_GREEN
+
+    if (redIndexes.has(index)) {
+      status = STATUS_RED
+    } else if (yellowIndexes.has(index)) {
+      status = STATUS_YELLOW
+    }
+
+    return {
+      id: `${wave}-${index}`,
+      status,
+      bloomPhase: '',
+    }
+  })
+}
+
+function getNextStatus(status) {
+  if (status === STATUS_RED) return STATUS_YELLOW
+  if (status === STATUS_YELLOW) return STATUS_GREEN
+  return STATUS_GREEN
 }
 
 function BloomPage() {
@@ -37,16 +87,24 @@ function BloomPage() {
     setBoard((currentBoard) => {
       const currentStone = currentBoard[index]
 
-      if (!currentStone || currentStone.isGreen) {
+      if (!currentStone || currentStone.status === STATUS_GREEN) {
         return currentBoard
       }
 
-      const nextBoard = currentBoard.map((stone, stoneIndex) => (
-        stoneIndex === index ? { ...stone, isGreen: true, bloomed: true } : stone
-      ))
-      const cleared = nextBoard.every((stone) => stone.isGreen)
+      const nextBoard = currentBoard.map((stone, stoneIndex) => {
+        if (stoneIndex !== index) return { ...stone, bloomPhase: '' }
 
-      setScore((currentScore) => currentScore + (cleared ? 10 : 1))
+        const nextStatus = getNextStatus(stone.status)
+
+        return {
+          ...stone,
+          status: nextStatus,
+          bloomPhase: nextStatus === STATUS_GREEN ? 'bloom-green' : 'step-yellow',
+        }
+      })
+      const cleared = nextBoard.every((stone) => stone.status === STATUS_GREEN)
+
+      setScore((currentScore) => currentScore + (cleared ? 11 : 1))
 
       if (cleared) {
         setIsClearing(true)
@@ -57,7 +115,7 @@ function BloomPage() {
             return nextWave
           })
           setIsClearing(false)
-        }, 520)
+        }, 760)
       }
 
       return nextBoard
@@ -80,13 +138,23 @@ function BloomPage() {
           {board.map((stone, index) => (
             <button
               key={stone.id}
-              className={`bloom-stone ${stone.isGreen ? 'is-green' : 'is-red'} ${stone.bloomed ? 'has-bloomed' : ''}`}
+              className={`bloom-stone is-${stone.status} ${stone.bloomPhase}`}
               type="button"
-              aria-label={stone.isGreen ? 'Green status stone' : 'Red status stone'}
+              aria-label={`${stone.status} status stone`}
               onClick={() => hitStone(index)}
             />
           ))}
         </div>
+        {isClearing && (
+          <div className="bloom-clear-burst" aria-hidden="true">
+            {CLEAR_PARTICLES.map(([x, y, delay], index) => (
+              <span
+                key={`${x}-${y}-${index}`}
+                style={{ '--x': `${x}px`, '--y': `${y}px`, '--delay': `${delay}ms` }}
+              />
+            ))}
+          </div>
+        )}
         <footer className="bloom-scorebar">
           <span>score</span>
           <strong>{score}</strong>
