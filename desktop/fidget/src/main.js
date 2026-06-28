@@ -1,7 +1,10 @@
 import { invoke } from '@tauri-apps/api/core'
+import { getCurrentWindow } from '@tauri-apps/api/window'
 import './styles.css'
 import './mode.css'
+import './frameless.css'
 
+const appWindow = getCurrentWindow()
 const app = document.querySelector('#app')
 
 const FRICTION = 0.992
@@ -37,8 +40,10 @@ const drag = {
 
 app.innerHTML = `
   <section class="fidget-shell" aria-label="K0rp Fidget">
-    <button id="mode" class="mode-button" type="button" aria-label="Manual spin mode" title="Manual mode: drag to spin, hold to stop">✋</button>
+    <div class="drag-region" data-tauri-drag-region aria-hidden="true"></div>
     <button id="pin" class="pin-button" type="button" aria-label="Pin window" title="Pin window">📌</button>
+    <button id="mode" class="mode-button" type="button" aria-label="Manual spin mode" title="Manual mode: drag to spin, hold to stop">✋</button>
+    <button id="close" class="close-button" type="button" aria-label="Close Fidget" title="Close Fidget">×</button>
     <div class="fidget-stage">
       <div id="confetti-layer" class="fidget-confetti-layer" aria-hidden="true"></div>
       <div id="spinner" class="fidget-spinner" role="button" tabindex="0" aria-label="Fidget spinner. Toggle mode, then click or drag.">
@@ -57,6 +62,7 @@ app.innerHTML = `
 const elements = {
   mode: document.querySelector('#mode'),
   pin: document.querySelector('#pin'),
+  close: document.querySelector('#close'),
   spinner: document.querySelector('#spinner'),
   confettiLayer: document.querySelector('#confetti-layer'),
 }
@@ -272,6 +278,7 @@ elements.spinner.addEventListener('keydown', (event) => {
   }
 })
 elements.pin.addEventListener('click', () => setAlwaysOnTop(!state.alwaysOnTop))
+elements.close.addEventListener('click', () => appWindow.close())
 
 updateModeButton()
 window.requestAnimationFrame(tick)
