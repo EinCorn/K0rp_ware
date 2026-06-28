@@ -1,0 +1,12 @@
+[package]
+name = "k0rp-fidget"
+version = "0.1.0"
+description = "Local fidget spinner toy for K0rp_ware"
+authors = ["K0rp_ware"]
+edition = "2021"
+
+[build-dependencies]
+tauri-build = { version = "2.6.3", features = [] }
+
+[dependencies]
+tauri = { version = "2.11.3", features = [] }
