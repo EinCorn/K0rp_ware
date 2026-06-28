@@ -27,7 +27,7 @@ const state = {
 
 app.innerHTML = `
   <section class="shell">
-    <div class="drag-region" data-tauri-drag-region aria-hidden="true"></div>
+    <div id="drag" class="drag-region" data-tauri-drag-region aria-hidden="true"></div>
     <div id="liquid" class="progress-liquid" aria-hidden="true">
       <div class="liquid-fill">
         <span class="liquid-wave liquid-wave-a"></span>
@@ -43,6 +43,7 @@ app.innerHTML = `
 `
 
 const elements = {
+  drag: document.querySelector('#drag'),
   counter: document.querySelector('#counter'),
   liquid: document.querySelector('#liquid'),
   pin: document.querySelector('#pin'),
@@ -201,6 +202,13 @@ function burstConfetti() {
 async function refresh() {
   render(await invoke('get_state'))
 }
+
+function startWindowMove(event) {
+  event.preventDefault()
+  invoke('begin_window_move').catch(() => {})
+}
+
+elements.drag.addEventListener('mousedown', startWindowMove)
 
 elements.pin.addEventListener('click', async () => {
   render(await invoke('set_always_on_top', { enabled: !state.alwaysOnTop }))
