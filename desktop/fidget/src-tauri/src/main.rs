@@ -1,3 +1,5 @@
+#![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
+
 #[tauri::command]
 fn set_always_on_top(window: tauri::Window, enabled: bool) -> Result<bool, String> {
     window
