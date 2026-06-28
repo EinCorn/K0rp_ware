@@ -1,10 +1,12 @@
 {
-  "name": "status-toy",
+  "name": "k0rp-bloom",
   "private": true,
   "version": "0.1.0",
   "type": "module",
   "scripts": {
+    "predev": "node scripts/ensure-icon.mjs",
     "dev": "tauri dev",
+    "prebuild": "node scripts/ensure-icon.mjs",
     "build": "tauri build",
     "dev:web": "vite --host 127.0.0.1 --port 1422",
     "build:web": "vite build",
