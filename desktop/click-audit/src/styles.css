@@ -116,7 +116,7 @@ button {
   background: var(--card-top);
   font-family: var(--mono);
   font-weight: 900;
-  font-size: clamp(68px, 23vw, 116px);
+  font-size: clamp(62px, 20vw, 106px);
   line-height: 1;
   letter-spacing: -0.08em;
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.18);
@@ -124,23 +124,25 @@ button {
 
 .digit-face span {
   position: absolute;
-  left: 50%;
-  top: 50%;
+  left: 0;
   width: 100%;
+  height: 200%;
+  display: grid;
+  place-items: center;
   text-align: center;
-  transform: translate(-50%, -50%);
+  transform: none;
 }
 
 .digit-deck[data-digits='4'] .digit-face,
 .digit-deck[data-digits='5'] .digit-face,
 .digit-deck[data-digits='6'] .digit-face {
-  font-size: clamp(54px, 20vw, 96px);
+  font-size: clamp(50px, 17vw, 88px);
 }
 
 .digit-deck[data-digits='7'] .digit-face,
 .digit-deck[data-digits='8'] .digit-face,
 .digit-deck[data-digits='9'] .digit-face {
-  font-size: clamp(46px, 16vw, 80px);
+  font-size: clamp(40px, 14vw, 72px);
 }
 
 .digit-top {
@@ -157,11 +159,11 @@ button {
 }
 
 .digit-top span {
-  clip-path: inset(0 0 50% 0);
+  top: 0;
 }
 
 .digit-bottom span {
-  clip-path: inset(50% 0 0 0);
+  bottom: 0;
 }
 
 .digit-hinge {
