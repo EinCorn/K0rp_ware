@@ -243,9 +243,9 @@ button {
 
 .corner-button {
   position: absolute;
-  top: 12px;
-  width: 32px;
-  height: 32px;
+  top: 7px;
+  width: 16px;
+  height: 16px;
   display: grid;
   place-items: center;
   border: 0;
@@ -265,23 +265,23 @@ button {
 
 .corner-button:hover {
   opacity: 0.95;
-  transform: scale(1.12);
+  transform: scale(1.14);
 }
 
 .reset-button {
-  left: 12px;
-  font-size: 25px;
+  left: 7px;
+  font-size: 13px;
   font-weight: 300;
 }
 
 .pin-button {
-  right: 12px;
-  font-size: 24px;
+  right: 7px;
+  font-size: 12px;
 }
 
 .pin-button[aria-pressed='true'] {
   opacity: 0.96;
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.22));
+  filter: drop-shadow(0 0 5px rgba(255, 255, 255, 0.22));
 }
 
 .confetti-layer {
