@@ -42,6 +42,21 @@ function Dashboard() {
             <a href="/?app=fidget">Open</a>
           </div>
         </article>
+
+        <article className="module-card hub-module-card">
+          <div>
+            <p className="system-label">Desktop companion / status toy</p>
+            <h2>Bloom</h2>
+            <p>
+              Status-stone puzzle with green, yellow, and red indicators, slower wave progression,
+              satisfying bloom feedback, and a tiny clear-board explosion.
+            </p>
+          </div>
+          <div className="module-card-footer">
+            <span className="module-status">v0.2</span>
+            <a href="/?app=bloom">Open</a>
+          </div>
+        </article>
       </section>
     </main>
   )
