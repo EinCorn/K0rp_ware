@@ -4,7 +4,6 @@
   --panel: #242018;
   --panel-deep: #1b1813;
   --border: rgba(210, 196, 166, 0.14);
-  --border-strong: rgba(210, 196, 166, 0.28);
   --accent: #b8975b;
   --sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   --mono: 'SFMono-Regular', 'Roboto Mono', Consolas, 'Liberation Mono', Menlo, monospace;
@@ -56,30 +55,34 @@ h1 {
 
 .pin-button {
   position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 28px;
-  height: 28px;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
   display: grid;
   place-items: center;
-  border: 1px solid var(--border-strong);
-  border-radius: 999px;
-  color: var(--text-h);
-  background: rgba(255, 255, 255, 0.045);
+  border: 0;
+  border-radius: 0;
+  color: inherit;
+  background: transparent;
   cursor: pointer;
-  font-size: 15px;
+  font-size: 24px;
   line-height: 1;
-  opacity: 0.64;
+  opacity: 0.58;
+  padding: 0;
+  transform: scale(1);
+  transition:
+    opacity 140ms ease,
+    transform 140ms ease,
+    filter 140ms ease;
 }
 
 .pin-button:hover {
   opacity: 1;
-  border-color: var(--accent);
+  transform: scale(1.12);
 }
 
 .pin-button[aria-pressed='true'] {
-  color: #1a150f;
-  border-color: var(--accent);
-  background: var(--accent);
-  opacity: 0.95;
+  opacity: 0.96;
+  filter: drop-shadow(0 0 8px rgba(184, 151, 91, 0.35));
 }
