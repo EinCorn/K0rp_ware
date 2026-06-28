@@ -27,6 +27,13 @@ Production currently exposes stable v0.2 modules:
   - desktop pin-on-top control
   - no telemetry
   - no meaningful business value
+- **Bloom**
+  - local status-stone puzzle toy
+  - green, yellow, and red indicator stones
+  - slower wave progression
+  - red stones begin appearing from wave 15
+  - desktop pin-on-top control
+  - no telemetry
 
 Other web modules remain in the repository as parked experiments, but they are not shown on the production dashboard.
 
@@ -57,6 +64,14 @@ POST http://127.0.0.1:47891/always-on-top?enabled=false
 
 ```bash
 cd desktop/fidget
+npm install
+npm run dev
+```
+
+## Bloom desktop development
+
+```bash
+cd desktop/bloom-desktop
 npm install
 npm run dev
 ```
