@@ -63,7 +63,7 @@ function StatusLamp({ isDetached }) {
     setNotice('')
 
     if (!supportsPinnedWindow()) {
-      setNotice('Pin mode is not supported in this browser. Opening a normal detached window instead.')
+      setNotice('Pin režim není v tomhle prohlížeči podporovaný. Otevírám běžné oddělené okno.')
       openDetachedWindow('status-lamp')
       return
     }
@@ -71,9 +71,9 @@ function StatusLamp({ isDetached }) {
     try {
       const nextPinWindow = await requestPinnedWindow({ width: 420, height: 680 })
       setPinWindow(nextPinWindow)
-      setNotice('Pinned mode active. The desk parasite should stay above other windows in supported browsers.')
+      setNotice('Pin režim aktivní. Stolní modul by měl držet nad ostatními okny v podporovaných prohlížečích.')
     } catch {
-      setNotice('Pinned mode was blocked or closed. Opening a normal detached window instead.')
+      setNotice('Pin režim byl blokován nebo zavřen. Otevírám běžné oddělené okno.')
       openDetachedWindow('status-lamp')
     }
   }
@@ -95,11 +95,11 @@ function StatusLamp({ isDetached }) {
   return (
     <main className={isDetached ? 'status-shell detached' : 'status-shell'}>
       {!isDetached && (
-        <nav className="top-nav" aria-label="Dashboard navigation">
-          <a href="/">Dashboard</a>
+        <nav className="top-nav" aria-label="Navigace pultu">
+          <a href="/">Pult</a>
           <div className="top-nav-actions">
             <button type="button" onClick={() => openDetachedWindow('status-lamp')}>
-              Detach
+              Oddělit
             </button>
             <button type="button" onClick={pinStatusLamp}>
               Pin
@@ -139,11 +139,11 @@ function StatusLampPanel({ currentStatus, elapsed, isPinned, message, onChangeSt
           <span></span>
           <span></span>
         </div>
-        <p>K0rp_ware / StatusLamp{isPinned ? ' / pinned' : ''}</p>
+        <p>K0rp_ware / Stavová lampa{isPinned ? ' / pin' : ''}</p>
       </div>
 
       <div className="lamp-body">
-        <p className="system-label">Current work-adjacent condition</p>
+        <p className="system-label">Aktuální pracovní mezistav</p>
         <div className="lamp-status-row">
           <span className="status-light" aria-hidden="true"></span>
           <h1>{currentStatus.label}</h1>
@@ -152,18 +152,18 @@ function StatusLampPanel({ currentStatus, elapsed, isPinned, message, onChangeSt
 
         <div className="readout-grid">
           <div className="readout-card">
-            <span>Elapsed</span>
+            <span>Čas</span>
             <strong>{elapsed}</strong>
           </div>
           <div className="readout-card">
             <span>Compliance</span>
-            <strong>Unverified</strong>
+            <strong>Neověřeno</strong>
           </div>
         </div>
 
         <blockquote className="message-feed">{message}</blockquote>
 
-        <div className="status-buttons" aria-label="Status options">
+        <div className="status-buttons" aria-label="Možnosti stavu">
           {statuses.map((status) => (
             <button
               className={status.id === currentStatus.id ? 'active' : ''}
@@ -179,7 +179,7 @@ function StatusLampPanel({ currentStatus, elapsed, isPinned, message, onChangeSt
         {showActions && (
           <div className="lamp-actions">
             <button type="button" onClick={onPin}>
-              Pin on top
+              Připíchnout nahoru
             </button>
           </div>
         )}
