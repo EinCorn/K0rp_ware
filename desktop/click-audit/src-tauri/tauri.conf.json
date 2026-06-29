@@ -31,7 +31,7 @@
     "active": true,
     "icon": ["icons/icon.png", "icons/icon.ico"],
     "category": "Utility",
-    "shortDescription": "Local aggregate click counter",
-    "longDescription": "Local-only aggregate mouse click counter for K0rp_ware."
+    "shortDescription": "Lokální souhrnné počítadlo kliků",
+    "longDescription": "Lokální souhrnné počítadlo kliků pro K0rp_ware. Bez telemetrie, bez souřadnic, bez názvů oken."
   }
 }
