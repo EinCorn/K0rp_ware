@@ -43,12 +43,12 @@ const drag = {
 app.innerHTML = `
   <section class="fidget-shell" aria-label="K0rp Fidget">
     <div id="drag" class="drag-region" data-tauri-drag-region aria-hidden="true"></div>
-    <button id="pin" class="pin-button" type="button" aria-label="Pin window" title="Pin window">📌</button>
-    <button id="mode" class="mode-button" type="button" aria-label="Manual spin mode" title="Manual mode: drag to spin, hold to stop">✋</button>
-    <button id="close" class="close-button" type="button" aria-label="Close Fidget" title="Close Fidget">×</button>
+    <button id="pin" class="pin-button" type="button" aria-label="Připíchnout okno" title="Připíchnout okno">📌</button>
+    <button id="mode" class="mode-button" type="button" aria-label="Ruční režim otáčení" title="Ruční režim: táhni pro roztočení, podrž pro zastavení">✋</button>
+    <button id="close" class="close-button" type="button" aria-label="Zavřít Fidget" title="Zavřít Fidget">×</button>
     <div class="fidget-stage">
       <div id="confetti-layer" class="fidget-confetti-layer" aria-hidden="true"></div>
-      <div id="spinner" class="fidget-spinner" role="button" tabindex="0" aria-label="Fidget spinner. Toggle mode, then click or drag.">
+      <div id="spinner" class="fidget-spinner" role="button" tabindex="0" aria-label="Fidget spinner. Přepni režim a potom klikej nebo táhni.">
         <span class="spinner-rainbow spinner-rainbow-outer" aria-hidden="true"></span>
         <span class="spinner-rainbow spinner-rainbow-inner" aria-hidden="true"></span>
         <span class="spinner-blur" aria-hidden="true"></span>
@@ -178,8 +178,8 @@ function updateModeButton() {
   elements.mode.classList.toggle('is-click-mode', clickMode)
   elements.mode.classList.toggle('is-manual-mode', !clickMode)
   elements.mode.setAttribute('aria-pressed', clickMode ? 'true' : 'false')
-  elements.mode.setAttribute('aria-label', clickMode ? 'Click spin mode' : 'Manual spin mode')
-  elements.mode.setAttribute('title', clickMode ? 'Click mode: click to spin, no grabbing' : 'Manual mode: drag to spin, hold to stop')
+  elements.mode.setAttribute('aria-label', clickMode ? 'Klikací režim otáčení' : 'Ruční režim otáčení')
+  elements.mode.setAttribute('title', clickMode ? 'Klikací režim: klikni a nech točit, žádné chytání' : 'Ruční režim: táhni pro roztočení, podrž pro zastavení')
 }
 
 function toggleSpinMode() {
@@ -268,8 +268,8 @@ function startWindowMove(event) {
 async function setAlwaysOnTop(enabled) {
   state.alwaysOnTop = await invoke('set_always_on_top', { enabled })
   elements.pin.setAttribute('aria-pressed', state.alwaysOnTop ? 'true' : 'false')
-  elements.pin.setAttribute('aria-label', state.alwaysOnTop ? 'Unpin window' : 'Pin window')
-  elements.pin.setAttribute('title', state.alwaysOnTop ? 'Unpin window' : 'Pin window')
+  elements.pin.setAttribute('aria-label', state.alwaysOnTop ? 'Odepnout okno' : 'Připíchnout okno')
+  elements.pin.setAttribute('title', state.alwaysOnTop ? 'Odepnout okno' : 'Připíchnout okno')
 }
 
 elements.drag.addEventListener('mousedown', startWindowMove)
