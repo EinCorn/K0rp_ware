@@ -1,24 +1,40 @@
 :root {
-  --korp-control-strip: 42px;
+  --korp-control-strip: 64px;
   --korp-window-pad: 12px;
 }
 
-.board {
-  left: calc(var(--korp-control-strip) + var(--korp-window-pad));
-  right: var(--korp-window-pad);
-  top: 40px;
-  bottom: 56px;
-  gap: 6px;
-  padding: 10px;
+.game-shell .board {
+  left: 76px !important;
+  right: 14px !important;
+  top: 42px !important;
+  bottom: 58px !important;
+  gap: 5px !important;
+  padding: 8px !important;
+  align-content: center !important;
+  justify-content: center !important;
 }
 
-.stone {
-  width: 18px;
-  height: 18px;
+.game-shell .stone {
+  width: 16px !important;
+  height: 16px !important;
 }
 
-.score {
-  left: calc(var(--korp-control-strip) + var(--korp-window-pad));
-  right: var(--korp-window-pad);
-  height: 30px;
+.game-shell .score {
+  left: 76px !important;
+  right: 14px !important;
+  bottom: 10px !important;
+  height: 30px !important;
+  grid-template-columns: 1fr auto 1fr !important;
+}
+
+.game-shell .score span:first-child {
+  font-size: 9px !important;
+}
+
+.game-shell .score strong {
+  font-size: 15px !important;
+}
+
+.game-shell .score span:last-child {
+  font-size: 9px !important;
 }
