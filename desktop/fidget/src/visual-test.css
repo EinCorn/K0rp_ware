@@ -125,7 +125,7 @@ body {
   right: auto;
   width: 24px !important;
   height: 24px !important;
-  background-image: url('./assets/icon-pin.svg') !important;
+  background-image: url('./assets/korp-ui-pin.svg') !important;
 }
 
 .mode-button {
@@ -140,7 +140,7 @@ body {
   top: 7px !important;
   width: 25px !important;
   height: 25px !important;
-  background-image: url('./assets/icon-close.svg') !important;
+  background-image: url('./assets/korp-ui-close.svg') !important;
 }
 
 .pin-button[aria-pressed='true'] {
