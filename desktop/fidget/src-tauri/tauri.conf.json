@@ -31,7 +31,7 @@
     "active": true,
     "icon": ["icons/icon.png", "icons/icon.ico"],
     "category": "Utility",
-    "shortDescription": "Local fidget spinner toy",
-    "longDescription": "Local-only fidget spinner toy for K0rp_ware. No telemetry. No purpose."
+    "shortDescription": "Lokální fidget spinner",
+    "longDescription": "Lokální fidget spinner pro K0rp_ware. Bez telemetrie. Bez pracovního účelu."
   }
 }
