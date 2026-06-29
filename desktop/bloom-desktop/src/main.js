@@ -25,12 +25,12 @@ const state = { score: savedGame.score, wave: savedGame.wave, board: savedGame.b
 app.innerHTML = `
   <section class="game-shell">
     <div id="drag" class="drag-region" data-tauri-drag-region aria-hidden="true"></div>
-    <button id="pin" class="corner pin" type="button" title="Pin window">📌</button>
-    <button id="reset" class="corner reset" type="button" title="Reset">↺</button>
-    <button id="close" class="corner close" type="button" title="Close Bloom">×</button>
-    <div id="board" class="board"></div>
+    <button id="pin" class="corner pin" type="button" aria-label="Připíchnout okno" title="Připíchnout okno">📌</button>
+    <button id="reset" class="corner reset" type="button" aria-label="Resetovat Bloom" title="Resetovat Bloom">↺</button>
+    <button id="close" class="corner close" type="button" aria-label="Zavřít Bloom" title="Zavřít Bloom">×</button>
+    <div id="board" class="board" aria-label="Stavový board Bloomu"></div>
     <div id="burst" class="clear-burst" aria-hidden="true"></div>
-    <footer class="score"><span>score</span><strong id="score">0</strong><span id="wave">wave 1</span></footer>
+    <footer class="score"><span>skóre</span><strong id="score">0</strong><span id="wave">vlna 1</span></footer>
   </section>
 `
 
@@ -84,7 +84,7 @@ function normalizeBoard(board, wave) {
 function loadGame() {
   try {
     const rawState = window.localStorage.getItem(STORAGE_KEY)
-    if (!rawState) throw new Error('No stored Bloom state')
+    if (!rawState) throw new Error('Bloom nemá uložený stav')
 
     const storedState = JSON.parse(rawState)
     const wave = Number.isInteger(storedState.wave) && storedState.wave > 0 ? storedState.wave : 1
@@ -115,7 +115,7 @@ function saveGame() {
       }),
     )
   } catch {
-    // Local persistence is non-critical; Bloom remains playable without it.
+    // Lokální uložení je pomocná vrstva; Bloom zůstává hratelný i bez ní.
   }
 }
 
@@ -131,11 +131,12 @@ function render() {
     const button = document.createElement('button')
     button.type = 'button'
     button.className = `stone ${item.status} ${item.fresh}`
+    button.setAttribute('aria-label', `Stavový kámen: ${item.status}`)
     button.addEventListener('click', () => play(index))
     els.board.appendChild(button)
   })
   els.score.textContent = String(state.score)
-  els.wave.textContent = `wave ${state.wave}`
+  els.wave.textContent = `vlna ${state.wave}`
   els.shell.classList.toggle('clear', state.locked)
 }
 
@@ -204,6 +205,8 @@ async function setPinned(enabled) {
   await appWindow.setAlwaysOnTop(enabled)
   state.pinned = enabled
   els.pin.setAttribute('aria-pressed', state.pinned ? 'true' : 'false')
+  els.pin.setAttribute('aria-label', state.pinned ? 'Odepnout okno' : 'Připíchnout okno')
+  els.pin.setAttribute('title', state.pinned ? 'Odepnout okno' : 'Připíchnout okno')
 }
 
 els.drag.addEventListener('mousedown', startWindowMove)
