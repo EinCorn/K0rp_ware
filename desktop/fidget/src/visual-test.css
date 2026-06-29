@@ -1,0 +1,179 @@
+:root {
+  --korp-void: #070706;
+  --korp-panel: #17140f;
+  --korp-panel-2: #252119;
+  --korp-line: rgba(216, 207, 189, 0.18);
+  --korp-line-strong: rgba(216, 207, 189, 0.34);
+  --korp-paper: #d8cfbd;
+  --korp-muted: #8f8574;
+  --korp-rose: #d97b80;
+  --korp-red: #ba5148;
+  --korp-yellow: #c9a33e;
+  --korp-green: #6f9a57;
+  --korp-font-ui: 'SFMono-Regular', 'Roboto Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+html,
+body,
+#app,
+.fidget-shell,
+.fidget-shell * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+button,
+.fidget-spinner {
+  -webkit-user-drag: none;
+}
+
+body {
+  font-family: var(--korp-font-ui);
+  background: transparent;
+}
+
+.fidget-shell {
+  border: 2px solid rgba(0, 0, 0, 0.86);
+  outline: 1px solid var(--korp-line-strong);
+  border-radius: 12px;
+  background:
+    linear-gradient(rgba(255,255,255,0.024) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px),
+    radial-gradient(circle at 50% 56%, rgba(212, 202, 181, 0.12), transparent 42%),
+    linear-gradient(180deg, #2a261f 0%, #14120f 100%);
+  background-size: 7px 7px, 9px 9px, auto, auto;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    inset 0 0 0 5px rgba(0,0,0,0.24),
+    0 16px 42px rgba(0,0,0,0.55);
+}
+
+.fidget-shell::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at 18% 20%, rgba(255,255,255,0.07), transparent 1px),
+    radial-gradient(circle at 74% 82%, rgba(0,0,0,0.18), transparent 1px);
+  background-size: 13px 17px, 19px 23px;
+  opacity: 0.42;
+  pointer-events: none;
+  mix-blend-mode: overlay;
+  z-index: 1;
+}
+
+.fidget-stage {
+  inset: 18px 18px 18px 34px;
+  border: 1px solid rgba(0,0,0,0.78);
+  outline: 1px solid var(--korp-line);
+  background:
+    radial-gradient(circle at 50% 52%, rgba(212, 202, 181, 0.13), transparent 48%),
+    radial-gradient(circle at 50% 50%, rgba(0,0,0,0.24), transparent 62%),
+    rgba(0,0,0,0.16);
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.06),
+    inset 0 -12px 18px rgba(0,0,0,0.25);
+  z-index: 2;
+}
+
+.fidget-stage::before {
+  inset: 22px;
+  border: 1px solid rgba(216, 207, 189, 0.08);
+  border-radius: 999px;
+}
+
+.drag-region {
+  left: 8px;
+  top: 8px;
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(0,0,0,0.55);
+  background:
+    repeating-linear-gradient(135deg, rgba(216, 207, 189, 0.48) 0 3px, transparent 3px 7px),
+    rgba(0,0,0,0.16);
+  opacity: 0.9;
+}
+
+.pin-button,
+.mode-button,
+.close-button {
+  width: 24px;
+  height: 24px;
+  border: 1px solid rgba(0,0,0,0.78);
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.08), rgba(0,0,0,0.2)),
+    #15130f;
+  color: var(--korp-paper);
+  opacity: 0.88;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,0.08),
+    0 4px 8px rgba(0,0,0,0.38);
+  font-family: var(--korp-font-ui);
+  image-rendering: pixelated;
+}
+
+.pin-button {
+  left: 8px;
+  top: 38px;
+  right: auto;
+  color: var(--korp-rose);
+  font-size: 14px;
+}
+
+.mode-button {
+  left: 8px;
+  top: 68px;
+  color: var(--korp-yellow);
+  font-size: 14px;
+}
+
+.close-button {
+  right: 8px;
+  top: 8px;
+  color: #ff7c72;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,0.09), rgba(0,0,0,0.26)),
+    rgba(150, 55, 50, 0.55);
+}
+
+.pin-button[aria-pressed='true'],
+.mode-button[aria-pressed='true'] {
+  filter: drop-shadow(0 0 6px currentColor);
+  outline: 1px solid color-mix(in srgb, currentColor 45%, transparent);
+}
+
+.fidget-spinner {
+  width: 142px;
+  height: 142px;
+  filter:
+    drop-shadow(0 18px 18px rgba(0,0,0,0.52))
+    drop-shadow(0 0 calc(20px * var(--rainbow-speed)) rgba(216, 207, 189, 0.16));
+}
+
+.spinner-arm::before,
+.spinner-lobe,
+.spinner-core {
+  --arm-main: #575048;
+  --arm-dark: #1e1b17;
+  --arm-light: #8a8171;
+}
+
+.spinner-core::after {
+  content: 'Ø';
+  position: absolute;
+  color: rgba(0,0,0,0.42);
+  font-family: var(--korp-font-ui);
+  font-size: 22px;
+  font-weight: 800;
+}
+
+.spinner-rainbow-outer {
+  opacity: calc(0.5 * var(--rainbow-speed));
+  filter: blur(calc(4px + 12px * var(--rainbow-speed))) saturate(calc(0.8 + 1.2 * var(--rainbow-speed)));
+}
+
+.rainbow-confetti {
+  border-radius: 999px;
+  box-shadow: 0 0 8px currentColor;
+}
