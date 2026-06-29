@@ -1,40 +1,70 @@
-:root {
-  --korp-control-strip: 64px;
-  --korp-window-pad: 12px;
+.bloom-stage {
+  position: absolute;
+  left: 42px;
+  right: 18px;
+  top: 24px;
+  bottom: 54px;
+  display: grid;
+  place-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.78);
+  outline: 1px solid rgba(216, 207, 189, 0.18);
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.16);
+  z-index: 2;
 }
 
-.game-shell .board {
-  left: 76px !important;
-  right: 14px !important;
-  top: 42px !important;
-  bottom: 58px !important;
-  gap: 5px !important;
-  padding: 8px !important;
-  align-content: center !important;
-  justify-content: center !important;
+.bloom-board {
+  position: relative;
+  width: 126px;
+  height: 126px;
+  display: grid;
+  grid-template-columns: repeat(5, 18px);
+  grid-template-rows: repeat(5, 18px);
+  gap: 5px;
+  padding: 7px;
+  align-content: center;
+  justify-content: center;
+  border: 1px solid rgba(0, 0, 0, 0.78);
+  outline: 1px solid rgba(216, 207, 189, 0.18);
+  border-radius: 5px;
+  background: rgba(0, 0, 0, 0.18);
 }
 
-.game-shell .stone {
-  width: 16px !important;
-  height: 16px !important;
+.bloom-board .stone {
+  width: 18px !important;
+  height: 18px !important;
 }
 
-.game-shell .score {
-  left: 76px !important;
-  right: 14px !important;
-  bottom: 10px !important;
-  height: 30px !important;
-  grid-template-columns: 1fr auto 1fr !important;
+.bloom-score {
+  position: absolute;
+  left: 42px;
+  right: 18px;
+  bottom: 10px;
+  height: 30px;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 8px;
+  padding: 0 10px;
+  border: 1px solid rgba(0, 0, 0, 0.72);
+  outline: 1px solid rgba(216, 207, 189, 0.18);
+  background: rgba(0, 0, 0, 0.28);
+  color: rgba(241, 233, 216, 0.7);
+  font-family: 'SFMono-Regular', 'Roboto Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+  font-size: 9px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  z-index: 6;
 }
 
-.game-shell .score span:first-child {
-  font-size: 9px !important;
+.bloom-score strong {
+  color: #d97b80;
+  font-size: 15px;
+  line-height: 1;
+  letter-spacing: 0;
 }
 
-.game-shell .score strong {
-  font-size: 15px !important;
-}
-
-.game-shell .score span:last-child {
-  font-size: 9px !important;
+.bloom-score span:last-child {
+  color: #c9a33e;
+  text-align: right;
 }
