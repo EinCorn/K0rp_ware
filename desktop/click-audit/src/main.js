@@ -8,7 +8,7 @@ import './source-report.js'
 const appWindow = getCurrentWindow()
 const app = document.querySelector('#app')
 
-// Development tuning. Production can move this back toward 1_000_000.
+// Vývojové ladění. Produkce se může vrátit blíž k 1_000_000.
 const PROGRESS_TARGET_CLICKS = 2_500
 const COLOR_TARGET_CLICKS = PROGRESS_TARGET_CLICKS
 const CONFETTI_CHANCE = 0.1
@@ -34,10 +34,10 @@ app.innerHTML = `
         <span class="liquid-wave liquid-wave-b"></span>
       </div>
     </div>
-    <button id="pin" class="corner-button pin-button" type="button" aria-label="Pin window" title="Pin window">📌</button>
-    <button id="reset" class="corner-button reset-button" type="button" aria-label="Reset counter" title="Reset counter">↺</button>
-    <button id="close" class="corner-button close-button" type="button" aria-label="Close ClickAudit" title="Close ClickAudit">×</button>
-    <div id="counter" class="digit-deck" aria-label="Click count"></div>
+    <button id="pin" class="corner-button pin-button" type="button" aria-label="Připíchnout okno" title="Připíchnout okno">📌</button>
+    <button id="reset" class="corner-button reset-button" type="button" aria-label="Resetovat počítadlo" title="Resetovat počítadlo">↺</button>
+    <button id="close" class="corner-button close-button" type="button" aria-label="Zavřít ClickAudit" title="Zavřít ClickAudit">×</button>
+    <div id="counter" class="digit-deck" aria-label="Počet kliků"></div>
     <div id="confetti-layer" class="confetti-layer" aria-hidden="true"></div>
   </section>
 `
@@ -63,8 +63,8 @@ function render(nextState) {
   elements.liquid.style.setProperty('--liquid-progress', `${(progress * 100).toFixed(2)}%`)
   elements.liquid.style.setProperty('--liquid-gradient', getLiquidGradient(progress))
   elements.pin.setAttribute('aria-pressed', state.alwaysOnTop ? 'true' : 'false')
-  elements.pin.setAttribute('aria-label', state.alwaysOnTop ? 'Unpin window' : 'Pin window')
-  elements.pin.setAttribute('title', state.alwaysOnTop ? 'Unpin window' : 'Pin window')
+  elements.pin.setAttribute('aria-label', state.alwaysOnTop ? 'Odepnout okno' : 'Připíchnout okno')
+  elements.pin.setAttribute('title', state.alwaysOnTop ? 'Odepnout okno' : 'Připíchnout okno')
 
   if (state.globalClicks > previousClicks && Math.random() < CONFETTI_CHANCE) {
     burstConfetti()
@@ -78,7 +78,7 @@ function renderDigits(currentValue, previousValue) {
 
   elements.counter.dataset.digits = String(currentDigits.length)
   elements.counter.dataset.size = getDigitDeckSize(currentDigits.length)
-  elements.counter.setAttribute('aria-label', `${currentValue} clicks`)
+  elements.counter.setAttribute('aria-label', `${currentValue} kliků`)
 
   currentDigits.forEach((digit, index) => {
     const previousDigit = previousDigits[index]
