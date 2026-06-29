@@ -224,8 +224,8 @@ function FidgetPage() {
 
   return (
     <main className="fidget-page-shell">
-      <a className="fidget-back" href="/">Back</a>
-      <section className="fidget-panel" aria-label="K0rp Fidget prototype">
+      <a className="fidget-back" href="/">Zpět</a>
+      <section className="fidget-panel" aria-label="Prototyp K0rp Fidget">
         <header className="fidget-titlebar">
           <span className="fidget-dot" />
           <span className="fidget-dot" />
@@ -235,13 +235,13 @@ function FidgetPage() {
         <button
           className={`fidget-mode-toggle ${isClickMode ? 'is-click-mode' : 'is-manual-mode'}`}
           type="button"
-          aria-label={isClickMode ? 'Click spin mode' : 'Manual spin mode'}
-          title={isClickMode ? 'Click mode: click to spin, no grabbing' : 'Manual mode: drag to spin, hold to stop'}
+          aria-label={isClickMode ? 'Klikací režim otáčení' : 'Ruční režim otáčení'}
+          title={isClickMode ? 'Klikací režim: klikni a nech točit, žádné chytání' : 'Ruční režim: táhni pro roztočení, podrž pro zastavení'}
           onClick={toggleSpinMode}
         >
           {isClickMode ? '↻' : '✋'}
         </button>
-        <button className="fidget-pin" type="button" aria-label="Pin window" title="Pin window">📌</button>
+        <button className="fidget-pin" type="button" aria-label="Připíchnout okno" title="Připíchnout okno">📌</button>
         <div className="fidget-stage">
           <div ref={confettiLayerRef} className="fidget-confetti-layer" aria-hidden="true" />
           <div
@@ -249,7 +249,7 @@ function FidgetPage() {
             className="fidget-spinner"
             role="button"
             tabIndex="0"
-            aria-label="Fidget spinner. Toggle mode, then click or drag."
+            aria-label="Fidget spinner. Přepni režim a potom klikej nebo táhni."
             onClick={onClick}
             onPointerDown={onPointerDown}
             onPointerMove={onPointerMove}
