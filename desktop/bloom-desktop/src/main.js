@@ -3,6 +3,7 @@ import { getCurrentWindow } from '@tauri-apps/api/window'
 import './styles.css'
 import './frameless.css'
 import './drag-corner.css'
+import './visual-test.css'
 import './source-report.js'
 
 const appWindow = getCurrentWindow()
