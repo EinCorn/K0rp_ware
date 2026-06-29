@@ -1,3 +1,4 @@
+import BloomPage from './components/BloomPage'
 import ClickAuditPage from './components/ClickAuditPage'
 import Dashboard from './components/Dashboard'
 import FidgetPage from './components/FidgetPage'
@@ -13,6 +14,10 @@ function App() {
 
   if (appId === 'fidget') {
     return <FidgetPage />
+  }
+
+  if (appId === 'bloom') {
+    return <BloomPage />
   }
 
   return <Dashboard />
