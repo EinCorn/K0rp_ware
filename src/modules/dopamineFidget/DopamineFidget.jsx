@@ -2,13 +2,13 @@ import { useMemo, useState } from 'react'
 import { openDetachedWindow } from '../../core/detachedWindow'
 
 const phrases = [
-  'Impulse acknowledged.',
-  'Tiny relief recorded.',
-  'No output required.',
-  'Micro-comfort approved.',
-  'The pebble remains compliant.',
-  'Pressure converted into ambiguity.',
-  'A harmless click has been filed.',
+  'Impuls vzat na vědomí.',
+  'Drobná úleva zaznamenána.',
+  'Výstup není vyžadován.',
+  'Mikro-komfort schválen.',
+  'Kamínek zůstává v compliance.',
+  'Tlak převeden do nejednoznačnosti.',
+  'Neškodný klik byl založen.',
 ]
 
 function DopamineFidget({ isDetached }) {
@@ -25,10 +25,10 @@ function DopamineFidget({ isDetached }) {
   return (
     <main className={isDetached ? 'status-shell detached' : 'status-shell'}>
       {!isDetached && (
-        <nav className="top-nav" aria-label="Dashboard navigation">
-          <a href="/">Dashboard</a>
+        <nav className="top-nav" aria-label="Navigace pultu">
+          <a href="/">Pult</a>
           <button type="button" onClick={() => openDetachedWindow('dopamine-fidget')}>
-            Detach
+            Oddělit
           </button>
         </nav>
       )}
@@ -44,26 +44,26 @@ function DopamineFidget({ isDetached }) {
         </div>
 
         <div className="utility-body fidget-body">
-          <p className="system-label">Non-productive tactile reassurance</p>
+          <p className="system-label">Neproduktivní hmatové ujištění</p>
           <h1>Compliance Pebble</h1>
           <p className="status-description">
-            Press the approved object. Nothing improves. That is not a defect.
+            Zmáčkni schválený objekt. Nic se nezlepší. To není závada.
           </p>
 
-          <button className="pebble-button" type="button" onClick={pressPebble} aria-label="Press compliance pebble">
+          <button className="pebble-button" type="button" onClick={pressPebble} aria-label="Zmáčknout compliance kamínek">
             <span className="pebble-glow" key={pulseKey}></span>
             <span className="pebble-core"></span>
-            <span className="pebble-label">PRESS</span>
+            <span className="pebble-label">STISK</span>
           </button>
 
           <div className="readout-grid">
             <div className="readout-card">
-              <span>Approved presses</span>
+              <span>Schválené stisky</span>
               <strong>{pressCount}</strong>
             </div>
             <div className="readout-card">
-              <span>Effect</span>
-              <strong>None</strong>
+              <span>Efekt</span>
+              <strong>Žádný</strong>
             </div>
           </div>
 
