@@ -52,3 +52,50 @@
 .close-button {
   z-index: 12;
 }
+
+.pin-button,
+.reset-button,
+.close-button {
+  border: 0 !important;
+  outline: 0 !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: contain !important;
+  box-shadow: none !important;
+  color: transparent !important;
+  text-shadow: none !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  opacity: 1 !important;
+  padding: 0 !important;
+  image-rendering: pixelated;
+}
+
+.pin-button {
+  width: 24px !important;
+  height: 24px !important;
+  left: 8px !important;
+  top: 43px !important;
+  background-image: url('./assets/korp-ui-pin.svg') !important;
+}
+
+.reset-button {
+  width: 24px !important;
+  height: 24px !important;
+  left: 8px !important;
+  top: 68px !important;
+  background-image: url('./assets/korp-ui-reset.svg') !important;
+}
+
+.close-button {
+  width: 25px !important;
+  height: 25px !important;
+  right: 7px !important;
+  top: 7px !important;
+  background-image: url('./assets/korp-ui-close.svg') !important;
+}
+
+.pin-button[aria-pressed='true'] {
+  filter: drop-shadow(0 0 6px rgba(217, 123, 128, 0.52));
+}
