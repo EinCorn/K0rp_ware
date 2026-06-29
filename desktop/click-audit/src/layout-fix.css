@@ -1,0 +1,16 @@
+.progress-liquid {
+  inset: 18px 18px 18px 42px;
+}
+
+.digit-deck {
+  position: absolute;
+  left: 42px;
+  right: 18px;
+  top: 24px;
+  bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  max-width: none;
+}
