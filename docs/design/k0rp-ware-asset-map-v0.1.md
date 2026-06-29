@@ -30,29 +30,48 @@ Pravidlo: neduplikovat silné logo, samotný znak a název na jednom místě. He
 
 ## Základní ikony
 
+První průchod v repu:
+
 ```text
 icons/
-  drag-corner.svg
   close.svg
+  grip.svg
   pin.svg
   reset.svg
-  mode-click.svg
-  mode-manual.svg
-  open-web.svg
+  click.svg
+  manual.svg
+  open.svg
   download.svg
 ```
 
-Ikony mají být malé, čitelné, jednoduché, pixel-friendly a barvené přes `currentColor`.
+Význam:
+
+```text
+close = zavřít
+grip = úchop okna
+pin = připíchnout
+reset = resetovat
+click = klikací režim
+manual = ruční režim
+open = otevřít web
+download = stáhnout appku
+```
+
+Ikony mají být malé, čitelné, jednoduché, pixel-friendly a barvené přes currentColor.
 
 ## Modulové ikony
+
+První sada:
 
 ```text
 icons/modules/
   click-audit.svg
   fidget.svg
   bloom.svg
-  work-question.svg
+  unknown.svg
 ```
+
+`unknown.svg` je dočasná ikona pro neurčený nebo fallback stav. Později ji můžeme přejmenovat nebo nahradit přesnějším symbolem.
 
 Použití: dashboard, source breakdown, případně app icons.
 
@@ -68,6 +87,25 @@ textures/
 Textury mají být malé, opakovatelné, tlumené a použitelné jako CSS background. Účel: šum, mřížka, špinavý panel.
 
 ## Frames
+
+První kanonický frame asset:
+
+```text
+frames/
+  app-shell.webp
+```
+
+Dočasné lokální kopie pro desktop buildy:
+
+```text
+desktop/click-audit/src/assets/app-shell.webp
+desktop/fidget/src/assets/app-shell.webp
+desktop/bloom-desktop/src/assets/app-shell.webp
+```
+
+`app-shell.webp` je jednotný rámeček pro malé desktop appky: tmavý panel, vnitřní pracovní plocha, spodní Ø footer a průduchy po stranách. Je to první skutečný hmotný UI artefakt K0rp_ware.
+
+Další plánované frame assety:
 
 ```text
 frames/
@@ -104,6 +142,8 @@ Reference nejsou produkční assety. Slouží pro držení vizuálního směru: 
 
 1. opravit layout test skinu,
 2. vytvořit základní SVG control ikony,
-3. vytvořit 2 až 3 textury,
-4. sjednotit panel/button systém,
-5. teprve potom řešit app icons a detailní modulové ilustrace.
+3. napojit SVG ikony do webu a desktop shellů,
+4. vytvořit a napojit jednotný app-shell frame,
+5. vytvořit 2 až 3 textury pro vnitřní prvky,
+6. sjednotit panel/button systém,
+7. teprve potom řešit app icons a detailní modulové ilustrace.
