@@ -1,26 +1,34 @@
-# Changes
+# Změny
+
+## 0.3.0 dílna
+
+- Přepsán hlavní veřejný tón projektu do češtiny a K0rp stylu.
+- Přeložen webový pult, ClickAudit bridge, Fidget a Bloom webové obrazovky.
+- Přeloženy desktop UI texty pro ClickAudit, Fidget a Bloom.
+- Přidána webová routa `/?app=bloom`, aby Bloom nebyl jen slib v chodbě.
+- Zachovány bezpečnostní hranice ClickAuditu: žádné souřadnice, screenshoty, názvy oken ani telemetrie.
 
 ## 0.2.0 draft
 
-- Added global click telemetry inside K0rp_ware windows.
-- Added ClickAudit module.
-- Added Compliance Pebble dopamine fidget module.
-- Added Archive Bloom single-player procedure game.
-- Added module-specific styling and updated README routes.
-- Added experimental StatusLamp Pin mode using Document Picture-in-Picture when supported.
-- Added GitHub Actions workflow for automatic Cloudflare Workers deploys.
-- Added `desktop/click-audit` Tauri scaffold for a local-only portable click counter.
-- Added Dashboard ↔ ClickAudit localhost bridge for live mirrored progress and basic remote commands.
-- Reduced the production dashboard to ClickAudit only; other modules remain parked in the repository.
+- Přidáno globální počítání kliků uvnitř K0rp_ware oken.
+- Přidán modul ClickAudit.
+- Přidán fidget modul Compliance Pebble.
+- Přidána hra Archive Bloom.
+- Přidán module-specific styling a aktualizované README routy.
+- Přidán experimentální StatusLamp Pin mode přes Document Picture-in-Picture, pokud ho prohlížeč podporuje.
+- Přidán GitHub Actions workflow pro automatický Cloudflare Workers deploy.
+- Přidán `desktop/click-audit` Tauri scaffold pro lokální přenosné počítadlo kliků.
+- Přidán Dashboard ↔ ClickAudit localhost bridge pro živé zrcadlení progresu a základní vzdálené příkazy.
+- Produkční pult byl zúžen na ClickAudit; ostatní moduly zůstaly zaparkované v repu.
 
 ## 0.1.1
 
-- Split the main app file into focused components and module files.
-- Added shared helpers in `src/core`.
-- Added a module registry.
-- Updated README with the current structure.
+- Hlavní app soubor rozdělen do cílenějších komponent a modulových souborů.
+- Přidány sdílené helpery v `src/core`.
+- Přidán module registry.
+- Aktualizováno README podle tehdejší struktury.
 
 ## 0.1.0
 
-- Added the first dashboard and StatusLamp prototype.
-- Added Cloudflare deploy configuration.
+- Přidán první pult a prototyp StatusLamp.
+- Přidána Cloudflare deploy konfigurace.
