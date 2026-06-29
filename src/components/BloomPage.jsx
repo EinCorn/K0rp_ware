@@ -89,7 +89,7 @@ function normalizeBoard(wave, board) {
 function loadGame() {
   try {
     const rawState = window.localStorage.getItem(STORAGE_KEY)
-    if (!rawState) throw new Error('No stored Bloom state')
+    if (!rawState) throw new Error('Bloom nemá uložený stav')
 
     const storedState = JSON.parse(rawState)
     const wave = Number.isInteger(storedState.wave) && storedState.wave > 0 ? storedState.wave : 1
@@ -120,7 +120,7 @@ function saveGame({ score, wave, board }) {
       }),
     )
   } catch {
-    // Local persistence is a convenience layer; gameplay should never depend on it.
+    // Lokální uložení je pohodlnostní vrstva; hraní na něm nesmí stát.
   }
 }
 
@@ -194,23 +194,23 @@ function BloomPage() {
 
   return (
     <main className="bloom-page-shell">
-      <a className="bloom-back" href="/">Back</a>
-      <section className={`bloom-panel ${isClearing ? 'is-clearing' : ''}`} aria-label="K0rp Bloom prototype">
+      <a className="bloom-back" href="/">Zpět</a>
+      <section className={`bloom-panel ${isClearing ? 'is-clearing' : ''}`} aria-label="Prototyp K0rp Bloom">
         <header className="bloom-titlebar">
           <span className="bloom-dot" />
           <span className="bloom-dot" />
           <span className="bloom-dot" />
           <strong>Bloom</strong>
         </header>
-        <button className="bloom-reset" type="button" aria-label="Reset Bloom" title="Reset Bloom" onClick={resetGame}>×</button>
-        <button className="bloom-pin" type="button" aria-label="Pin window" title="Pin window">📌</button>
-        <div className="bloom-board" aria-label="Bloom status board">
+        <button className="bloom-reset" type="button" aria-label="Resetovat Bloom" title="Resetovat Bloom" onClick={resetGame}>×</button>
+        <button className="bloom-pin" type="button" aria-label="Připíchnout okno" title="Připíchnout okno">📌</button>
+        <div className="bloom-board" aria-label="Stavový board Bloomu">
           {board.map((stone, index) => (
             <button
               key={stone.id}
               className={`bloom-stone is-${stone.status} ${stone.bloomPhase}`}
               type="button"
-              aria-label={`${stone.status} status stone`}
+              aria-label={`Stavový kámen: ${stone.status}`}
               onClick={() => hitStone(index)}
             />
           ))}
@@ -226,9 +226,9 @@ function BloomPage() {
           </div>
         )}
         <footer className="bloom-scorebar">
-          <span>score</span>
+          <span>skóre</span>
           <strong>{score}</strong>
-          <span>wave {wave}</span>
+          <span>vlna {wave}</span>
         </footer>
       </section>
     </main>
