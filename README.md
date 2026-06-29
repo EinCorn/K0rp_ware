@@ -1,133 +1,136 @@
 # K0rp_ware
 
-Small local-first desk tools for controlled procrastination, ritualized delay, and professionally framed non-output.
+Malé lokální desk nástroje z dílny K0rpu: řízená krokrastinace, ritualizované zdržení a profesionálně orámovaný ne-výstup.
 
-Production URL:
+Produkce:
 
 ```text
 https://k0rp-ware.k0rp.workers.dev
 ```
 
-## Current production scope
+## Aktuální záběr
 
-Production currently exposes stable v0.2 modules:
+Produkční řez v0.2 drží tři moduly: **ClickAudit**, **Fidget** a **Bloom**. Rozpracovaná v0.3 převádí projekt do češtiny a čistí desktop appky na malé frameless widgety.
 
-- **ClickAudit**
-  - desktop companion app keeps an aggregate click count locally
-  - web dashboard mirrors the local status response from `127.0.0.1:47891`
-  - no account
-  - no cloud sync
-  - no telemetry
-  - no coordinates
-  - no screenshots
-  - no window titles
-- **Fidget**
-  - local fidget spinner toy
-  - click/manual modes
-  - desktop pin-on-top control
-  - no telemetry
-  - no meaningful business value
-- **Bloom**
-  - local status-stone puzzle toy
-  - green, yellow, and red indicator stones
-  - slower wave progression
-  - red stones begin appearing from wave 15
-  - desktop pin-on-top control
-  - no telemetry
+### ClickAudit
 
-Other web modules remain in the repository as parked experiments, but they are not shown on the production dashboard.
+- lokální souhrnné počítadlo kliků
+- webový pult zrcadlí stav z `127.0.0.1:47891`
+- bezpečné zdroje: ClickAudit, Fidget, Bloom a `Work?`
+- žádný účet, cloud sync ani telemetrie
+- žádné souřadnice, screenshoty ani názvy oken
 
-## Desktop downloads
+### Fidget
 
-The dashboard shows each stable module with these actions:
+- lokální fidget spinner
+- ruční a klikací režim
+- pin / always-on-top
+- žádná telemetrie
+- žádná měřitelná pracovní hodnota
+
+### Bloom
+
+- lokální puzzle se stavovými kameny
+- zelené, žluté a červené indikátory
+- pomalejší postup vln
+- červené kameny se objevují od vlny 15
+- pin / always-on-top
+- lokální ukládání průběhu
+
+## Desktop balíčky
+
+Pult ukazuje u každého modulu:
 
 ```text
-Open web
-Download app
+Otevřít web
+Stáhnout appku
 ```
 
-The desktop action opens the latest repository release. The dashboard link stays stable because it always targets the latest release.
+Desktop odkaz vede na poslední GitHub Release.
 
-## Create a desktop release
-
-GitHub Actions builds the three desktop apps for macOS and Windows, then attaches them to a release.
-
-Tag-based release:
+## Release
 
 ```bash
+cd ~/Projects/K0rp_ware
 git pull
-git tag k0rp-ware-v0.2
-git push origin k0rp-ware-v0.2
+git tag k0rp-ware-v0.3
+git push origin k0rp-ware-v0.3
 ```
 
-Or run the workflow manually in GitHub Actions:
+Ruční spuštění:
 
 ```text
-K0rp desktop release -> Run workflow -> release_tag: k0rp-ware-v0.2
+Actions -> K0rp desktop release -> Run workflow -> release_tag: k0rp-ware-v0.3
 ```
 
-Expected release assets include macOS app archives plus Windows installer/executable assets for:
-
-```text
-K0rp ClickAudit
-K0rp Fidget
-K0rp Bloom
-```
-
-Recommended future labels:
-
-```text
-k0rp-ware-v0.3
-k0rp-ware-v0.4
-```
-
-## Local web development
+## Lokální web
 
 ```bash
+cd ~/Projects/K0rp_ware
+git pull
 npm install
 npm run dev
 ```
 
-## ClickAudit desktop development
+## Deploy webu
 
 ```bash
+cd ~/Projects/K0rp_ware
+git pull
+npm run build
+npx wrangler deploy
+```
+
+## ClickAudit desktop
+
+```bash
+cd ~/Projects/K0rp_ware
+git pull
 cd desktop/click-audit
 npm install
 npm run dev
 ```
 
-The desktop companion exposes:
+Lokální API:
 
 ```text
 GET  http://127.0.0.1:47891/state
+GET  http://127.0.0.1:47891/health
 POST http://127.0.0.1:47891/always-on-top?enabled=true
 POST http://127.0.0.1:47891/always-on-top?enabled=false
+POST http://127.0.0.1:47891/app-click?source=fidget
+POST http://127.0.0.1:47891/app-click?source=bloom
 ```
 
-## Fidget desktop development
+## Fidget desktop
 
 ```bash
+cd ~/Projects/K0rp_ware
+git pull
 cd desktop/fidget
 npm install
 npm run dev
 ```
 
-## Bloom desktop development
+## Bloom desktop
 
 ```bash
+cd ~/Projects/K0rp_ware
+git pull
 cd desktop/bloom-desktop
 npm install
 npm run dev
 ```
 
-## Build web
-
-```bash
-npm run build
-```
-
-## Production route
+## Routy
 
 ```text
 /
+/?app=click-audit
+/?app=fidget
+/?app=bloom
 ```
+
+## Hranice projektu
+
+K0rp_ware je local-first. Žádné účty, žádný cloud sync, žádná telemetrie. `Work?` znamená jen „klik mimo známé K0rp_ware appky“, ne identifikaci cizí aplikace.
