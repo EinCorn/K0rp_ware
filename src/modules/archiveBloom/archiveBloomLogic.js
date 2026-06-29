@@ -9,7 +9,7 @@ export function createInitialGame() {
     procedureScore: 0,
     turn: 'intent',
     status: 'running',
-    log: ['Procedure opened. Intent may now be filed.'],
+    log: ['Procedura otevřena. Záměr může být založen.'],
   }
 }
 
@@ -73,7 +73,7 @@ export function applyMove(game, index, owner) {
 
   let board = [...game.board]
   board[index] = owner
-  const log = [`${labelOwner(owner)} filed into cell ${index + 1}.`, ...game.log].slice(0, 8)
+  const log = [`${labelOwner(owner)} založen do buňky ${index + 1}.`, ...game.log].slice(0, 8)
   const cluster = findCluster(board, owner)
   let intentScore = game.intentScore
   let procedureScore = game.procedureScore
@@ -82,7 +82,7 @@ export function applyMove(game, index, owner) {
     board = clearCells(board, cluster)
     if (owner === 'intent') intentScore += 1
     if (owner === 'procedure') procedureScore += 1
-    log.unshift(`${labelOwner(owner)} cluster archived.`)
+    log.unshift(`${labelOwner(owner)}: shluk archivován.`)
   }
 
   if (intentScore >= WIN_SCORE || procedureScore >= WIN_SCORE) {
@@ -92,7 +92,7 @@ export function applyMove(game, index, owner) {
       intentScore,
       procedureScore,
       status: intentScore >= WIN_SCORE ? 'intent-won' : 'procedure-won',
-      log: ['Procedure resolved.', ...log].slice(0, 8),
+      log: ['Procedura vyřešena.', ...log].slice(0, 8),
     }
   }
 
@@ -103,7 +103,7 @@ export function applyMove(game, index, owner) {
       intentScore,
       procedureScore,
       turn: owner === 'intent' ? 'procedure' : 'intent',
-      log: ['Filing Collapse completed. Board cleared.', ...log].slice(0, 8),
+      log: ['Spisový kolaps dokončen. Board vyčištěn.', ...log].slice(0, 8),
     }
   }
 
@@ -141,5 +141,5 @@ function findAdjacentMove(board, emptyCells, owner) {
 }
 
 function labelOwner(owner) {
-  return owner === 'intent' ? 'Intent' : 'Procedure'
+  return owner === 'intent' ? 'Záměr' : 'Procedura'
 }
