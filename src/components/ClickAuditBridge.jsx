@@ -34,7 +34,7 @@ function ClickAuditBridge() {
         }
 
         setConnection('disconnected')
-        setError('Waiting for the local ClickAudit companion on 127.0.0.1:47891.')
+        setError('Čekám na lokálního ClickAudit doprovodníka na 127.0.0.1:47891.')
       } finally {
         if (isMounted) {
           timeoutId = window.setTimeout(poll, POLL_MS)
@@ -53,7 +53,7 @@ function ClickAuditBridge() {
 
   const apiResponse = useMemo(() => {
     if (!state) {
-      return '{\n  "status": "waiting-for-local-companion"\n}'
+      return '{\n  "status": "cekani-na-lokalniho-doprovodnika"\n}'
     }
 
     return JSON.stringify(state, null, 2)
@@ -70,7 +70,7 @@ function ClickAuditBridge() {
       setConnection('connected')
     } catch {
       setConnection('disconnected')
-      setError('Pin command failed. Check whether the desktop companion is running locally.')
+      setError('Pin se nepodařilo přepnout. Zkontroluj, jestli desktop doprovodník běží lokálně.')
     } finally {
       setIsCommandPending(false)
     }
@@ -82,34 +82,34 @@ function ClickAuditBridge() {
     ['ClickAudit', sourceClicks.clickAudit ?? 0],
     ['Fidget', sourceClicks.fidget ?? 0],
     ['Bloom', sourceClicks.bloom ?? 0],
-    ['Work?', sourceClicks.workQuestion ?? clicks],
+    ['Práce?', sourceClicks.workQuestion ?? clicks],
   ]
   const isConnected = connection === 'connected'
   const alwaysOnTop = Boolean(state?.alwaysOnTop)
 
   return (
-    <section className="local-bridge-panel minimal" aria-label="ClickAudit local counter">
+    <section className="local-bridge-panel minimal" aria-label="Lokální počítadlo ClickAudit">
       <div className="bridge-counter-row">
         <div>
-          <p className="system-label">API mirror / 127.0.0.1:47891</p>
-          <strong className="bridge-counter">{clicks.toLocaleString('en-US')}</strong>
+          <p className="system-label">API zrcadlo / 127.0.0.1:47891</p>
+          <strong className="bridge-counter">{clicks.toLocaleString('cs-CZ')}</strong>
         </div>
 
         <div className="bridge-side-actions">
           <span className={`bridge-pill ${connection}`}>
-            {isConnected ? 'Connected' : connection === 'probing' ? 'Searching' : 'Disconnected'}
+            {isConnected ? 'Spojeno' : connection === 'probing' ? 'Hledám' : 'Odpojeno'}
           </span>
           <button disabled={!isConnected || isCommandPending} type="button" onClick={togglePin}>
-            {alwaysOnTop ? 'Unpin' : 'Pin'}
+            {alwaysOnTop ? 'Odepnout' : 'Připíchnout'}
           </button>
         </div>
       </div>
 
-      <div className="bridge-source-grid" aria-label="Click source breakdown">
+      <div className="bridge-source-grid" aria-label="Rozpad zdrojů kliků">
         {sourceRows.map(([label, value]) => (
           <div className="bridge-source-card" key={label}>
             <span>{label}</span>
-            <strong>{Number(value).toLocaleString('en-US')}</strong>
+            <strong>{Number(value).toLocaleString('cs-CZ')}</strong>
           </div>
         ))}
       </div>
