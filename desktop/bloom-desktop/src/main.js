@@ -30,9 +30,9 @@ app.innerHTML = `
     <button id="pin" class="corner pin" type="button" aria-label="Připíchnout okno" title="Připíchnout okno">📌</button>
     <button id="reset" class="corner reset" type="button" aria-label="Resetovat Bloom" title="Resetovat Bloom">↺</button>
     <button id="close" class="corner close" type="button" aria-label="Zavřít Bloom" title="Zavřít Bloom">×</button>
-    <div id="board" class="board" aria-label="Stavový board Bloomu"></div>
+    <div id="board" class="board" aria-label="Stavový board Bloomu" style="left: 76px; right: 14px; top: 42px; bottom: 58px; gap: 5px; padding: 8px;"></div>
     <div id="burst" class="clear-burst" aria-hidden="true"></div>
-    <footer class="score"><span>skóre</span><strong id="score">0</strong><span id="wave">vlna 1</span></footer>
+    <footer class="score" style="left: 76px; right: 14px; bottom: 10px; height: 30px;"><span>skóre</span><strong id="score">0</strong><span id="wave">vlna 1</span></footer>
   </section>
 `
 
@@ -133,6 +133,8 @@ function render() {
     const button = document.createElement('button')
     button.type = 'button'
     button.className = `stone ${item.status} ${item.fresh}`
+    button.style.width = '16px'
+    button.style.height = '16px'
     button.setAttribute('aria-label', `Stavový kámen: ${item.status}`)
     button.addEventListener('click', () => play(index))
     els.board.appendChild(button)
