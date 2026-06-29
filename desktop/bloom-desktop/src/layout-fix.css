@@ -1,0 +1,24 @@
+:root {
+  --korp-control-strip: 42px;
+  --korp-window-pad: 12px;
+}
+
+.board {
+  left: calc(var(--korp-control-strip) + var(--korp-window-pad));
+  right: var(--korp-window-pad);
+  top: 40px;
+  bottom: 56px;
+  gap: 6px;
+  padding: 10px;
+}
+
+.stone {
+  width: 18px;
+  height: 18px;
+}
+
+.score {
+  left: calc(var(--korp-control-strip) + var(--korp-window-pad));
+  right: var(--korp-window-pad);
+  height: 30px;
+}
