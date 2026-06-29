@@ -1,0 +1,32 @@
+.shell {
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  background: url('./assets/app-shell.webp') center / 100% 100% no-repeat transparent !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
+
+.shell::after {
+  display: none !important;
+}
+
+.progress-liquid {
+  inset: 24px 18px 54px 42px !important;
+  border-color: rgba(0, 0, 0, 0.58) !important;
+  outline-color: rgba(216, 207, 189, 0.12) !important;
+  background: rgba(0, 0, 0, 0.12) !important;
+}
+
+.digit-deck {
+  left: 42px !important;
+  right: 18px !important;
+  top: 24px !important;
+  bottom: 54px !important;
+}
+
+.drag-region,
+.corner-button,
+.close-button {
+  z-index: 12;
+}
