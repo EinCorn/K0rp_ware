@@ -3,24 +3,14 @@
   top: 0;
   width: 38px;
   height: 38px;
-  background: none;
+  background: transparent;
   border-radius: 0;
   cursor: move;
   overflow: hidden;
 }
 
 .drag-region::before {
-  content: '';
-  position: absolute;
-  left: -2px;
-  top: 22px;
-  width: 45px;
-  height: 3px;
-  border-radius: 999px;
-  background: rgba(241, 233, 216, 0.25);
-  box-shadow: 0 -9px 0 rgba(241, 233, 216, 0.2), 0 -18px 0 rgba(241, 233, 216, 0.14);
-  transform: rotate(-45deg);
-  transform-origin: left center;
+  display: none;
 }
 
 .pin-button {
