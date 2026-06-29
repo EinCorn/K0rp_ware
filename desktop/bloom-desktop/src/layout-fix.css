@@ -128,7 +128,7 @@
   height: 24px !important;
   left: 8px !important;
   top: 43px !important;
-  background-image: url('./assets/icon-pin.svg') !important;
+  background-image: url('./assets/korp-ui-pin.svg') !important;
 }
 
 .reset {
@@ -136,7 +136,7 @@
   height: 24px !important;
   left: 8px !important;
   top: 68px !important;
-  background-image: url('./assets/icon-reset.svg') !important;
+  background-image: url('./assets/korp-ui-reset.svg') !important;
 }
 
 .close {
@@ -144,7 +144,7 @@
   height: 25px !important;
   right: 7px !important;
   top: 7px !important;
-  background-image: url('./assets/icon-close.svg') !important;
+  background-image: url('./assets/korp-ui-close.svg') !important;
 }
 
 .pin[aria-pressed='true'] {
