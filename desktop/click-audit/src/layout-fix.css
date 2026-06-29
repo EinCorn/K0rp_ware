@@ -31,7 +31,23 @@
   max-width: none;
 }
 
-.drag-region,
+.drag-region {
+  left: 5px !important;
+  top: 5px !important;
+  width: 48px !important;
+  height: 34px !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  opacity: 1 !important;
+  cursor: grab;
+  z-index: 12;
+}
+
+.drag-region:active {
+  cursor: grabbing;
+}
+
 .corner-button,
 .close-button {
   z-index: 12;
