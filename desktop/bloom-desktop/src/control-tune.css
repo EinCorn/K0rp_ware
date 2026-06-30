@@ -1,0 +1,16 @@
+.game-shell .pin {
+  left: 14px !important;
+  top: 29px !important;
+}
+
+.game-shell .reset {
+  left: 14px !important;
+  top: 53px !important;
+}
+
+.game-shell .close {
+  width: 15px !important;
+  height: 15px !important;
+  right: 12px !important;
+  top: 8px !important;
+}
