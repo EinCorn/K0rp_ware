@@ -1,11 +1,17 @@
 .shell .pin-button {
+  width: 20px !important;
+  height: 20px !important;
   left: 14px !important;
   top: 29px !important;
+  background-image: url('./assets/korp-ui-pin.png') !important;
 }
 
 .shell .reset-button {
+  width: 20px !important;
+  height: 20px !important;
   left: 14px !important;
   top: 53px !important;
+  background-image: url('./assets/korp-ui-reset.webp') !important;
 }
 
 .shell .close-button {
@@ -13,4 +19,12 @@
   height: 15px !important;
   right: 12px !important;
   top: 7px !important;
+  background-image: url('./assets/korp-ui-close.png') !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.shell .close-button::before,
+.shell .close-button::after {
+  display: none !important;
 }
