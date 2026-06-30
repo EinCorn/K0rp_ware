@@ -19,6 +19,7 @@
   top: 29px !important;
   width: 20px !important;
   height: 20px !important;
+  background-image: url('./assets/korp-ui-pin.png') !important;
   background-size: 100% 100% !important;
   z-index: 20 !important;
 }
@@ -36,31 +37,14 @@
   top: 7px !important;
   width: 15px !important;
   height: 15px !important;
-  background-image: none !important;
-  border: 1px solid rgba(0, 0, 0, 0.88) !important;
-  border-radius: 2px !important;
-  background: linear-gradient(180deg, rgba(255,255,255,.12), rgba(0,0,0,.2)), #8f3b35 !important;
-  box-shadow: inset 0 1px 0 rgba(255,190,180,.22), inset 0 -2px 0 rgba(0,0,0,.24) !important;
+  background-image: url('./assets/korp-ui-close.png') !important;
+  background-size: 100% 100% !important;
+  border: 0 !important;
+  box-shadow: none !important;
   z-index: 20 !important;
 }
 
 .fidget-shell .close-button::before,
 .fidget-shell .close-button::after {
-  content: '';
-  position: absolute;
-  left: 3px;
-  top: 6px;
-  width: 9px;
-  height: 2px;
-  background: #15100e;
-  border-radius: 1px;
-  transform-origin: center;
-}
-
-.fidget-shell .close-button::before {
-  transform: rotate(45deg);
-}
-
-.fidget-shell .close-button::after {
-  transform: rotate(-45deg);
+  display: none !important;
 }
