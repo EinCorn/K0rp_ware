@@ -14,11 +14,17 @@
 .game-shell .pin {
   left: 14px !important;
   top: 29px !important;
+  width: 20px !important;
+  height: 20px !important;
+  background-image: url('./assets/korp-ui-pin.png') !important;
 }
 
 .game-shell .reset {
   left: 14px !important;
   top: 53px !important;
+  width: 20px !important;
+  height: 20px !important;
+  background-image: url('./assets/korp-ui-reset.webp') !important;
 }
 
 .game-shell .close {
@@ -26,4 +32,12 @@
   height: 15px !important;
   right: 12px !important;
   top: 7px !important;
+  background-image: url('./assets/korp-ui-close.png') !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.game-shell .close::before,
+.game-shell .close::after {
+  display: none !important;
 }
