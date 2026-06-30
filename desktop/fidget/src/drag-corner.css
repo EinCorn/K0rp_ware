@@ -16,7 +16,7 @@
 
 .fidget-shell .pin-button {
   left: 14px !important;
-  top: 39px !important;
+  top: 29px !important;
   width: 20px !important;
   height: 20px !important;
   background-size: 100% 100% !important;
@@ -25,7 +25,7 @@
 
 .fidget-shell .mode-button {
   left: 14px !important;
-  top: 63px !important;
+  top: 53px !important;
   width: 20px !important;
   height: 20px !important;
   z-index: 20 !important;
@@ -33,7 +33,7 @@
 
 .fidget-shell .close-button {
   right: 12px !important;
-  top: 6px !important;
+  top: 8px !important;
   width: 15px !important;
   height: 15px !important;
   background-image: none !important;
