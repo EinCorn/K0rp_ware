@@ -11,17 +11,17 @@
   display: none !important;
 }
 
-.pin {
+.game-shell .pin {
   left: 14px !important;
   top: 39px !important;
 }
 
-.reset {
+.game-shell .reset {
   left: 14px !important;
   top: 63px !important;
 }
 
-.close {
+.game-shell .close {
   width: 15px !important;
   height: 15px !important;
   right: 12px !important;
