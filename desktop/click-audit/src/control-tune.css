@@ -1,0 +1,16 @@
+.shell .pin-button {
+  left: 14px !important;
+  top: 29px !important;
+}
+
+.shell .reset-button {
+  left: 14px !important;
+  top: 53px !important;
+}
+
+.shell .close-button {
+  width: 15px !important;
+  height: 15px !important;
+  right: 12px !important;
+  top: 8px !important;
+}
