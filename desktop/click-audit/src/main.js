@@ -25,8 +25,7 @@ const SOURCE_LABELS = {
 let state = loadState()
 let alwaysOnTop = false
 let activeSource = 'clickAudit'
-let displayedClicks = 0
-let renderedDigits = []
+let displayedClicks = state.globalClicks
 
 app.innerHTML = `
   <section class="shell">
@@ -34,8 +33,8 @@ app.innerHTML = `
     <button id="pin" class="corner-button pin-button" type="button" aria-label="Připíchnout okno" title="Připíchnout okno">📌</button>
     <button id="reset" class="corner-button reset-button" type="button" aria-label="Resetovat počítadlo" title="Resetovat počítadlo">↻</button>
     <button id="close" class="close-button" type="button" aria-label="Zavřít ClickAudit" title="Zavřít ClickAudit">×</button>
-    <div class="progress-liquid" aria-hidden="true"><span id="liquid-fill"></span></div>
-    <div id="digits" class="digit-deck" aria-label="Počet kliků">0</div>
+    <div class="progress-liquid" aria-hidden="true"><span id="liquid-fill" class="liquid-fill"></span></div>
+    <div id="digits" class="digit-deck" aria-label="Počet kliků"></div>
     <div id="celebration" class="celebration" aria-hidden="true"></div>
   </section>
 `
@@ -85,51 +84,61 @@ function syncGlobalClicks() {
   state.globalClicks = calculateGlobalClicks(state.sourceClicks)
 }
 
-function digitize(value) {
-  return String(value).padStart(1, '0').split('')
-}
-
 function liquidColor(progress) {
   const index = Math.min(LIQUID_COLORS.length - 1, Math.floor(progress * LIQUID_COLORS.length))
   return LIQUID_COLORS[index]
 }
 
+function getDigitDeckSize(digitCount) {
+  if (digitCount <= 3) return 'standard'
+  if (digitCount <= 6) return 'compact'
+  if (digitCount <= 9) return 'dense'
+  return 'micro'
+}
+
 function renderDigits(value) {
-  const digits = digitize(value)
-  if (digits.length !== renderedDigits.length) {
-    elements.digits.replaceChildren()
-    renderedDigits = digits.map(() => {
-      const tile = document.createElement('span')
-      tile.className = 'digit-tile'
-      tile.innerHTML = '<span class="digit-current">0</span><span class="digit-next">0</span>'
-      elements.digits.appendChild(tile)
-      return tile
-    })
-  }
+  const currentValue = String(value)
+  const currentDigits = currentValue.split('')
+  const previousDigits = String(displayedClicks).padStart(currentDigits.length, ' ').split('')
+  const fragment = document.createDocumentFragment()
 
-  digits.forEach((digit, index) => {
-    const tile = renderedDigits[index]
-    const current = tile.querySelector('.digit-current')
-    const next = tile.querySelector('.digit-next')
+  elements.digits.dataset.digits = String(currentDigits.length)
+  elements.digits.dataset.size = getDigitDeckSize(currentDigits.length)
+  elements.digits.setAttribute('aria-label', `${currentValue} kliků`)
 
-    if (current.textContent === digit) return
+  currentDigits.forEach((digit, index) => {
+    const previousDigit = previousDigits[index]
+    const changed = previousDigit !== digit
+    const oldDigit = previousDigit === ' ' ? digit : previousDigit
+    const card = document.createElement('span')
 
-    next.textContent = digit
-    tile.classList.remove('flip')
-    void tile.offsetWidth
-    tile.classList.add('flip')
-    window.setTimeout(() => {
-      current.textContent = digit
-      tile.classList.remove('flip')
-    }, 420)
+    card.className = changed ? 'digit-card is-changing' : 'digit-card'
+    card.style.animationDelay = `${Math.min(index * 12, 72)}ms`
+    card.innerHTML = `
+      <span class="digit-face digit-top"><span>${digit}</span></span>
+      <span class="digit-face digit-bottom"><span>${digit}</span></span>
+      ${
+        changed
+          ? `<span class="digit-flap digit-flap-top"><span>${oldDigit}</span></span>
+             <span class="digit-flap digit-hold-bottom"><span>${oldDigit}</span></span>
+             <span class="digit-flap digit-flap-bottom"><span>${digit}</span></span>`
+          : ''
+      }
+      <span class="digit-hinge"></span>
+    `
+    fragment.appendChild(card)
   })
+
+  elements.digits.replaceChildren(fragment)
+  displayedClicks = value
 }
 
 function renderProgress() {
   const progress = Math.min(1, state.globalClicks / PROGRESS_TARGET_CLICKS)
   const percent = progress * 100
-  elements.liquidFill.style.setProperty('--level', `${percent}%`)
+  elements.liquidFill.style.setProperty('--liquid-progress', `${percent}%`)
   elements.liquidFill.style.setProperty('--liquid-color', liquidColor(progress))
+  elements.liquidFill.style.setProperty('--liquid-gradient', `linear-gradient(to bottom, ${liquidColor(progress)}, ${liquidColor(progress)})`)
 }
 
 function render() {
@@ -173,7 +182,6 @@ function registerClick(source = activeSource) {
 function reset() {
   state = { globalClicks: 0, sourceClicks: normalizeSources() }
   displayedClicks = 0
-  renderedDigits = []
   saveState()
   render()
 }
