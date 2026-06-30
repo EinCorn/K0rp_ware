@@ -1,22 +1,6 @@
-.fidget-shell .drag-region {
-  left: 6px !important;
-  top: 6px !important;
-  width: 46px !important;
-  height: 24px !important;
-  background: transparent !important;
-  border-radius: 0;
-  cursor: move;
-  overflow: hidden;
-  z-index: 11 !important;
-}
-
-.fidget-shell .drag-region::before {
-  display: none !important;
-}
-
-.fidget-shell .pin-button,
-.fidget-shell .mode-button,
-.fidget-shell .close-button {
+.game-shell .pin,
+.game-shell .reset,
+.game-shell .close {
   position: absolute !important;
   border: 0 !important;
   outline: 0 !important;
@@ -37,47 +21,50 @@
   z-index: 20 !important;
 }
 
-.fidget-shell .pin-button {
-  left: 14px !important;
-  top: 29px !important;
+.game-shell .pin {
   width: 20px !important;
   height: 20px !important;
+  left: 14px !important;
+  top: 29px !important;
   background-image: url('./assets/korp-ui-pin.png') !important;
 }
 
-.fidget-shell .mode-button {
-  left: 14px !important;
-  top: 53px !important;
+.game-shell .reset {
   width: 20px !important;
   height: 20px !important;
+  left: 14px !important;
+  top: 53px !important;
+  background-image: url('./assets/korp-ui-reset.webp') !important;
 }
 
-.fidget-shell .close-button {
-  right: 12px !important;
-  top: 7px !important;
+.game-shell .close {
   width: 15px !important;
   height: 15px !important;
+  right: 12px !important;
+  top: 7px !important;
   background-image: url('./assets/korp-ui-close.png') !important;
 }
 
-.fidget-shell .close-button::before,
-.fidget-shell .close-button::after,
-.fidget-shell .pin-button::before,
-.fidget-shell .pin-button::after {
+.game-shell .close::before,
+.game-shell .close::after,
+.game-shell .pin::before,
+.game-shell .pin::after,
+.game-shell .reset::before,
+.game-shell .reset::after {
   display: none !important;
   content: none !important;
 }
 
-.fidget-shell .pin-button:hover,
-.fidget-shell .mode-button:hover,
-.fidget-shell .close-button:hover {
+.game-shell .pin:hover,
+.game-shell .reset:hover,
+.game-shell .close:hover {
   transform: translateY(-1px);
   filter: brightness(1.08) !important;
 }
 
-.fidget-shell .pin-button:active,
-.fidget-shell .mode-button:active,
-.fidget-shell .close-button:active {
+.game-shell .pin:active,
+.game-shell .reset:active,
+.game-shell .close:active {
   transform: translateY(0);
   filter: brightness(0.96) !important;
 }

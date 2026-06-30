@@ -1,0 +1,29 @@
+.fidget-shell {
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  background: url('./assets/app-shell.webp') center / 100% 100% no-repeat transparent !important;
+  box-shadow: none !important;
+  overflow: hidden;
+}
+
+.fidget-shell::after {
+  display: none !important;
+}
+
+.fidget-stage {
+  left: 42px !important;
+  right: 18px !important;
+  top: 24px !important;
+  bottom: 54px !important;
+  border-color: rgba(0, 0, 0, 0.58) !important;
+  outline-color: rgba(216, 207, 189, 0.12) !important;
+  background: rgba(0, 0, 0, 0.12) !important;
+}
+
+.drag-region,
+.pin-button,
+.mode-button,
+.close-button {
+  z-index: 12;
+}

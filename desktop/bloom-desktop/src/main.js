@@ -3,6 +3,9 @@ import { getCurrentWindow } from '@tauri-apps/api/window'
 import './styles.css'
 import './frameless.css'
 import './drag-corner.css'
+import './visual-test.css'
+import './layout-fix.css'
+import './control-tune.css'
 import './source-report.js'
 
 const appWindow = getCurrentWindow()
@@ -28,9 +31,11 @@ app.innerHTML = `
     <button id="pin" class="corner pin" type="button" aria-label="Připíchnout okno" title="Připíchnout okno">📌</button>
     <button id="reset" class="corner reset" type="button" aria-label="Resetovat Bloom" title="Resetovat Bloom">↺</button>
     <button id="close" class="corner close" type="button" aria-label="Zavřít Bloom" title="Zavřít Bloom">×</button>
-    <div id="board" class="board" aria-label="Stavový board Bloomu"></div>
+    <div class="bloom-stage" aria-hidden="false">
+      <div id="board" class="bloom-board" aria-label="Stavový board Bloomu"></div>
+    </div>
     <div id="burst" class="clear-burst" aria-hidden="true"></div>
-    <footer class="score"><span>skóre</span><strong id="score">0</strong><span id="wave">vlna 1</span></footer>
+    <footer class="bloom-score"><span>skóre</span><strong id="score">0</strong><span id="wave">vlna 1</span></footer>
   </section>
 `
 

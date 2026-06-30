@@ -4,6 +4,7 @@ import './styles.css'
 import './mode.css'
 import './frameless.css'
 import './drag-corner.css'
+import './visual-test.css'
 import './source-report.js'
 
 const appWindow = getCurrentWindow()
