@@ -1,3 +1,26 @@
+.fidget-shell .pin-button,
+.fidget-shell .mode-button,
+.fidget-shell .close-button {
+  position: absolute !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 100% 100% !important;
+  color: transparent !important;
+  text-shadow: none !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  opacity: 1 !important;
+  padding: 0 !important;
+  image-rendering: pixelated;
+  transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
+  z-index: 20 !important;
+}
+
 .fidget-shell .pin-button {
   width: 20px !important;
   height: 20px !important;
@@ -7,6 +30,8 @@
 }
 
 .fidget-shell .mode-button {
+  width: 20px !important;
+  height: 20px !important;
   left: 14px !important;
   top: 53px !important;
 }
@@ -17,11 +42,26 @@
   right: 12px !important;
   top: 7px !important;
   background-image: url('./assets/korp-ui-close.png') !important;
-  border: 0 !important;
-  box-shadow: none !important;
 }
 
 .fidget-shell .close-button::before,
-.fidget-shell .close-button::after {
+.fidget-shell .close-button::after,
+.fidget-shell .pin-button::before,
+.fidget-shell .pin-button::after {
   display: none !important;
+  content: none !important;
+}
+
+.fidget-shell .pin-button:hover,
+.fidget-shell .mode-button:hover,
+.fidget-shell .close-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08) !important;
+}
+
+.fidget-shell .pin-button:active,
+.fidget-shell .mode-button:active,
+.fidget-shell .close-button:active {
+  transform: translateY(0);
+  filter: brightness(0.96) !important;
 }
