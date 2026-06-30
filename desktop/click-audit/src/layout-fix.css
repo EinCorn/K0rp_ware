@@ -76,7 +76,7 @@
 .pin-button {
   width: 20px !important;
   height: 20px !important;
-  left: 12px !important;
+  left: 14px !important;
   top: 35px !important;
   background-image: url('./assets/korp-ui-pin.svg') !important;
 }
@@ -84,16 +84,16 @@
 .reset-button {
   width: 20px !important;
   height: 20px !important;
-  left: 12px !important;
+  left: 14px !important;
   top: 59px !important;
   background-image: url('./assets/korp-ui-reset.svg') !important;
 }
 
 .close-button {
-  width: 18px !important;
-  height: 18px !important;
-  right: 10px !important;
-  top: 8px !important;
+  width: 16px !important;
+  height: 16px !important;
+  right: 9px !important;
+  top: 9px !important;
   background-image: none !important;
   border: 1px solid rgba(0, 0, 0, 0.88) !important;
   border-radius: 2px !important;
@@ -109,10 +109,10 @@
 .close-button::after {
   content: '';
   position: absolute;
-  left: 4px;
-  top: 8px;
+  left: 3px;
+  top: 7px;
   width: 10px;
-  height: 3px;
+  height: 2px;
   background: #15100e;
   border-radius: 1px;
   transform-origin: center;
