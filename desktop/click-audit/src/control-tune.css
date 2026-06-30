@@ -1,3 +1,26 @@
+.shell .pin-button,
+.shell .reset-button,
+.shell .close-button {
+  position: absolute !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 100% 100% !important;
+  color: transparent !important;
+  text-shadow: none !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  opacity: 1 !important;
+  padding: 0 !important;
+  image-rendering: pixelated;
+  transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
+  z-index: 20 !important;
+}
+
 .shell .pin-button {
   width: 20px !important;
   height: 20px !important;
@@ -20,11 +43,28 @@
   right: 12px !important;
   top: 7px !important;
   background-image: url('./assets/korp-ui-close.png') !important;
-  border: 0 !important;
-  box-shadow: none !important;
 }
 
 .shell .close-button::before,
-.shell .close-button::after {
+.shell .close-button::after,
+.shell .pin-button::before,
+.shell .pin-button::after,
+.shell .reset-button::before,
+.shell .reset-button::after {
   display: none !important;
+  content: none !important;
+}
+
+.shell .pin-button:hover,
+.shell .reset-button:hover,
+.shell .close-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08) !important;
+}
+
+.shell .pin-button:active,
+.shell .reset-button:active,
+.shell .close-button:active {
+  transform: translateY(0);
+  filter: brightness(0.96) !important;
 }
