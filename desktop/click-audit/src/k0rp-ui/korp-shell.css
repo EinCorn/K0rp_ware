@@ -1,0 +1,195 @@
+/*
+  K0rp UI Shell v0.1
+  Source of truth for the shared 230x230 desktop app shell.
+
+  Runtime copies live in each desktop app at:
+  desktop/<app>/src/k0rp-ui/korp-shell.css
+
+  Asset paths below are written for the runtime copy location.
+*/
+
+:root {
+  --korp-void: #070706;
+  --korp-panel: #17140f;
+  --korp-panel-2: #252119;
+  --korp-line: rgba(216, 207, 189, 0.18);
+  --korp-line-strong: rgba(216, 207, 189, 0.34);
+  --korp-paper: #d8cfbd;
+  --korp-muted: #8f8574;
+  --korp-rose: #d97b80;
+  --korp-red: #ba5148;
+  --korp-yellow: #c9a33e;
+  --korp-green: #6f9a57;
+  --korp-font-ui: 'SFMono-Regular', 'Roboto Mono', Consolas, 'Liberation Mono', Menlo, monospace;
+}
+
+html,
+body,
+#app,
+.shell,
+.game-shell,
+.fidget-shell,
+.shell *,
+.game-shell *,
+.fidget-shell * {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+}
+
+button,
+.digit-deck,
+.digit-card,
+.fidget-spinner,
+.bloom-board,
+.bloom-board * {
+  -webkit-user-drag: none;
+}
+
+html body #app .shell,
+html body #app .game-shell,
+html body #app .fidget-shell {
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: 0 !important;
+  background: url('../assets/app-shell.webp') center / 100% 100% no-repeat transparent !important;
+  box-shadow: none !important;
+  overflow: hidden !important;
+}
+
+html body #app .shell::after,
+html body #app .game-shell::after,
+html body #app .fidget-shell::after {
+  display: none !important;
+}
+
+html body #app .drag-region,
+html body #app .fidget-shell .drag-region {
+  position: absolute !important;
+  left: 6px !important;
+  top: 6px !important;
+  width: 46px !important;
+  height: 24px !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  border-radius: 0 !important;
+  opacity: 1 !important;
+  cursor: move;
+  overflow: hidden !important;
+  pointer-events: auto;
+  z-index: 11 !important;
+}
+
+html body #app .drag-region::before,
+html body #app .fidget-shell .drag-region::before {
+  display: none !important;
+  content: none !important;
+}
+
+html body #app .shell .pin-button,
+html body #app .shell .reset-button,
+html body #app .shell .close-button,
+html body #app .game-shell .pin,
+html body #app .game-shell .reset,
+html body #app .game-shell .close,
+html body #app .fidget-shell .pin-button,
+html body #app .fidget-shell .close-button {
+  position: absolute !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  background-color: transparent !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 100% 100% !important;
+  color: transparent !important;
+  text-shadow: none !important;
+  font-size: 0 !important;
+  line-height: 0 !important;
+  opacity: 1 !important;
+  padding: 0 !important;
+  image-rendering: pixelated;
+  transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
+  z-index: 20 !important;
+}
+
+html body #app .shell .pin-button,
+html body #app .game-shell .pin,
+html body #app .fidget-shell .pin-button {
+  width: 20px !important;
+  height: 20px !important;
+  left: 14px !important;
+  top: 29px !important;
+  background-image: url('../assets/korp-ui-pin.png') !important;
+}
+
+html body #app .shell .reset-button,
+html body #app .game-shell .reset {
+  width: 20px !important;
+  height: 20px !important;
+  left: 14px !important;
+  top: 53px !important;
+  background-image: url('../assets/korp-ui-reset.webp') !important;
+}
+
+html body #app .shell .close-button,
+html body #app .game-shell .close,
+html body #app .fidget-shell .close-button {
+  width: 15px !important;
+  height: 15px !important;
+  right: 12px !important;
+  top: 7px !important;
+  background-image: url('../assets/korp-ui-close.png') !important;
+}
+
+html body #app .shell .close-button::before,
+html body #app .shell .close-button::after,
+html body #app .shell .pin-button::before,
+html body #app .shell .pin-button::after,
+html body #app .shell .reset-button::before,
+html body #app .shell .reset-button::after,
+html body #app .game-shell .close::before,
+html body #app .game-shell .close::after,
+html body #app .game-shell .pin::before,
+html body #app .game-shell .pin::after,
+html body #app .game-shell .reset::before,
+html body #app .game-shell .reset::after,
+html body #app .fidget-shell .close-button::before,
+html body #app .fidget-shell .close-button::after,
+html body #app .fidget-shell .pin-button::before,
+html body #app .fidget-shell .pin-button::after {
+  display: none !important;
+  content: none !important;
+}
+
+html body #app .shell .pin-button:hover,
+html body #app .shell .reset-button:hover,
+html body #app .shell .close-button:hover,
+html body #app .game-shell .pin:hover,
+html body #app .game-shell .reset:hover,
+html body #app .game-shell .close:hover,
+html body #app .fidget-shell .pin-button:hover,
+html body #app .fidget-shell .close-button:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.08) !important;
+}
+
+html body #app .shell .pin-button:active,
+html body #app .shell .reset-button:active,
+html body #app .shell .close-button:active,
+html body #app .game-shell .pin:active,
+html body #app .game-shell .reset:active,
+html body #app .game-shell .close:active,
+html body #app .fidget-shell .pin-button:active,
+html body #app .fidget-shell .close-button:active {
+  transform: translateY(0);
+  filter: brightness(0.96) !important;
+}
+
+html body #app .shell .pin-button[aria-pressed='true'],
+html body #app .game-shell .pin[aria-pressed='true'],
+html body #app .fidget-shell .pin-button[aria-pressed='true'] {
+  filter: drop-shadow(0 0 5px rgba(217, 123, 128, 0.46)) !important;
+}
