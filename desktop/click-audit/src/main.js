@@ -13,7 +13,6 @@ const app = document.querySelector('#app')
 
 // Vývojové ladění. Produkce se může vrátit blíž k 1_000_000.
 const PROGRESS_TARGET_CLICKS = 2_500
-const STORAGE_KEY = 'k0rp-click-audit-state-v1'
 const LIQUID_COLORS = ['#9d3b36', '#b35f2e', '#b69b2e', '#4f8a4f', '#2f7f7a', '#365b9f', '#5a3a91']
 const SOURCE_LABELS = {
   clickAudit: 'ClickAudit',
@@ -21,11 +20,16 @@ const SOURCE_LABELS = {
   bloom: 'Bloom',
   workQuestion: 'Práce?',
 }
+const EMPTY_SOURCES = {
+  clickAudit: 0,
+  fidget: 0,
+  bloom: 0,
+  workQuestion: 0,
+}
 
-let state = loadState()
-let alwaysOnTop = false
+let snapshot = normalizeSnapshot()
+let displayedClicks = null
 let activeSource = 'clickAudit'
-let displayedClicks = state.globalClicks
 
 app.innerHTML = `
   <section class="shell">
@@ -49,39 +53,29 @@ const elements = {
   celebration: document.querySelector('#celebration'),
 }
 
-function normalizeSources(sourceClicks) {
-  const stored = sourceClicks && typeof sourceClicks === 'object' ? sourceClicks : {}
+function safeNumber(value) {
+  return Number.isFinite(value) && value >= 0 ? value : 0
+}
+
+function normalizeSources(sourceClicks = {}) {
   return {
-    clickAudit: Number.isFinite(stored.clickAudit) ? stored.clickAudit : 0,
-    fidget: Number.isFinite(stored.fidget) ? stored.fidget : 0,
-    bloom: Number.isFinite(stored.bloom) ? stored.bloom : 0,
-    workQuestion: Number.isFinite(stored.workQuestion) ? stored.workQuestion : 0,
+    clickAudit: safeNumber(sourceClicks.clickAudit),
+    fidget: safeNumber(sourceClicks.fidget),
+    bloom: safeNumber(sourceClicks.bloom),
+    workQuestion: safeNumber(sourceClicks.workQuestion),
   }
 }
 
-function calculateGlobalClicks(sourceClicks) {
-  return Object.values(sourceClicks).reduce((sum, value) => sum + value, 0)
-}
-
-function loadState() {
-  try {
-    const rawState = JSON.parse(window.localStorage.getItem(STORAGE_KEY) || '{}')
-    const sourceClicks = normalizeSources(rawState.sourceClicks)
-    const globalClicks = Number.isFinite(rawState.globalClicks)
-      ? Math.max(rawState.globalClicks, calculateGlobalClicks(sourceClicks))
-      : calculateGlobalClicks(sourceClicks)
-    return { globalClicks, sourceClicks }
-  } catch {
-    return { globalClicks: 0, sourceClicks: normalizeSources() }
+function normalizeSnapshot(nextSnapshot = {}) {
+  return {
+    app: nextSnapshot.app || 'click-audit',
+    running: nextSnapshot.running !== false,
+    globalClicks: safeNumber(nextSnapshot.globalClicks),
+    sourceClicks: normalizeSources(nextSnapshot.sourceClicks || EMPTY_SOURCES),
+    startedAtUnixMs: nextSnapshot.startedAtUnixMs || null,
+    alwaysOnTop: Boolean(nextSnapshot.alwaysOnTop),
+    privacyMode: nextSnapshot.privacyMode || 'aggregate-and-local-app-source',
   }
-}
-
-function saveState() {
-  window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-}
-
-function syncGlobalClicks() {
-  state.globalClicks = calculateGlobalClicks(state.sourceClicks)
 }
 
 function liquidColor(progress) {
@@ -99,7 +93,8 @@ function getDigitDeckSize(digitCount) {
 function renderDigits(value) {
   const currentValue = String(value)
   const currentDigits = currentValue.split('')
-  const previousDigits = String(displayedClicks).padStart(currentDigits.length, ' ').split('')
+  const previousValue = displayedClicks === null ? value : displayedClicks
+  const previousDigits = String(previousValue).padStart(currentDigits.length, ' ').split('')
   const fragment = document.createDocumentFragment()
 
   elements.digits.dataset.digits = String(currentDigits.length)
@@ -133,18 +128,27 @@ function renderDigits(value) {
   displayedClicks = value
 }
 
-function renderProgress() {
-  const progress = Math.min(1, state.globalClicks / PROGRESS_TARGET_CLICKS)
+function renderProgress(value) {
+  const progress = Math.min(1, value / PROGRESS_TARGET_CLICKS)
   const percent = progress * 100
+  const color = liquidColor(progress)
   elements.liquidFill.style.setProperty('--liquid-progress', `${percent}%`)
-  elements.liquidFill.style.setProperty('--liquid-color', liquidColor(progress))
-  elements.liquidFill.style.setProperty('--liquid-gradient', `linear-gradient(to bottom, ${liquidColor(progress)}, ${liquidColor(progress)})`)
+  elements.liquidFill.style.setProperty('--liquid-color', color)
+  elements.liquidFill.style.setProperty('--liquid-gradient', `linear-gradient(to bottom, ${color}, ${color})`)
 }
 
-function render() {
-  syncGlobalClicks()
-  renderDigits(state.globalClicks)
-  renderProgress()
+function renderSnapshot(nextSnapshot = snapshot) {
+  const previousClicks = snapshot.globalClicks
+  snapshot = normalizeSnapshot(nextSnapshot)
+  renderDigits(snapshot.globalClicks)
+  renderProgress(snapshot.globalClicks)
+  elements.pin.setAttribute('aria-pressed', snapshot.alwaysOnTop ? 'true' : 'false')
+  elements.pin.setAttribute('aria-label', snapshot.alwaysOnTop ? 'Odepnout okno' : 'Připíchnout okno')
+  elements.pin.setAttribute('title', snapshot.alwaysOnTop ? 'Odepnout okno' : 'Připíchnout okno')
+
+  if (Math.floor(previousClicks / 1000) !== Math.floor(snapshot.globalClicks / 1000)) {
+    celebrate()
+  }
 }
 
 function celebrate() {
@@ -166,37 +170,28 @@ function celebrate() {
   window.setTimeout(() => elements.celebration.replaceChildren(), 1100)
 }
 
-function registerClick(source = activeSource) {
-  const normalizedSource = Object.prototype.hasOwnProperty.call(state.sourceClicks, source) ? source : 'workQuestion'
-  const before = state.globalClicks
-  state.sourceClicks[normalizedSource] += 1
-  syncGlobalClicks()
-  saveState()
-  render()
-
-  if (Math.floor(before / 1000) !== Math.floor(state.globalClicks / 1000)) {
-    celebrate()
-  }
+async function refreshState() {
+  const nextSnapshot = await invoke('get_state')
+  renderSnapshot(nextSnapshot)
+  return snapshot
 }
 
-function reset() {
-  state = { globalClicks: 0, sourceClicks: normalizeSources() }
-  displayedClicks = 0
-  saveState()
-  render()
+async function reset() {
+  displayedClicks = null
+  const nextSnapshot = await invoke('reset_counting')
+  renderSnapshot(nextSnapshot)
 }
 
 async function setAlwaysOnTop(enabled) {
-  alwaysOnTop = await invoke('set_always_on_top', { enabled })
-  elements.pin.setAttribute('aria-pressed', alwaysOnTop ? 'true' : 'false')
-  elements.pin.setAttribute('aria-label', alwaysOnTop ? 'Odepnout okno' : 'Připíchnout okno')
-  elements.pin.setAttribute('title', alwaysOnTop ? 'Odepnout okno' : 'Připíchnout okno')
+  const nextSnapshot = await invoke('set_always_on_top', { enabled })
+  renderSnapshot(nextSnapshot)
 }
 
-function handleGlobalClick(event) {
-  if (event.payload?.inside_app) return
-  activeSource = 'workQuestion'
-  registerClick('workQuestion')
+async function reportAppClick(source = 'click-audit') {
+  activeSource = source
+  const nextSnapshot = await invoke('report_app_click', { source })
+  renderSnapshot(nextSnapshot)
+  return snapshot
 }
 
 function startWindowMove(event) {
@@ -205,32 +200,28 @@ function startWindowMove(event) {
 }
 
 elements.drag.addEventListener('mousedown', startWindowMove)
-elements.pin.addEventListener('click', () => setAlwaysOnTop(!alwaysOnTop))
+elements.pin.addEventListener('click', () => setAlwaysOnTop(!snapshot.alwaysOnTop))
 elements.reset.addEventListener('click', reset)
 elements.close.addEventListener('click', () => appWindow.close())
-window.addEventListener('click', (event) => {
-  if (event.target.closest('button')) return
-  activeSource = 'clickAudit'
-  registerClick('clickAudit')
-})
 
-listen('global-click', handleGlobalClick)
+listen('click-audit:update', (event) => renderSnapshot(event.payload))
+listen('click-audit:notice', (event) => {
+  console.warn('[K0rp ClickAudit]', event.payload)
+})
+window.addEventListener('k0rp-click-audit:snapshot', (event) => renderSnapshot(event.detail))
 
 window.__K0RP_CLICK_AUDIT__ = {
-  appClick(source = 'clickAudit') {
-    activeSource = source
-    registerClick(source)
-  },
+  appClick: reportAppClick,
   getState() {
-    syncGlobalClicks()
     return {
-      ...state,
+      ...snapshot,
       activeSource,
       labels: SOURCE_LABELS,
       target: PROGRESS_TARGET_CLICKS,
     }
   },
+  refresh: refreshState,
   reset,
 }
 
-render()
+refreshState().catch(() => renderSnapshot())
