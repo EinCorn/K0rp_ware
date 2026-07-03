@@ -13,7 +13,18 @@ const app = document.querySelector('#app')
 
 // Vývojové ladění. Produkce se může vrátit blíž k 1_000_000.
 const PROGRESS_TARGET_CLICKS = 2_500
+const CELEBRATE_EVERY_CLICKS = 100
 const LIQUID_COLORS = ['#9d3b36', '#b35f2e', '#b69b2e', '#4f8a4f', '#2f7f7a', '#365b9f', '#5a3a91']
+const LIQUID_SPECTRUM = `linear-gradient(
+  to top,
+  #5a3a91 0%,
+  #365b9f 16%,
+  #2f7f7a 32%,
+  #4f8a4f 48%,
+  #b69b2e 64%,
+  #b35f2e 80%,
+  #9d3b36 100%
+)`
 const SOURCE_LABELS = {
   clickAudit: 'ClickAudit',
   fidget: 'Fidget',
@@ -37,9 +48,11 @@ app.innerHTML = `
     <button id="pin" class="corner-button pin-button" type="button" aria-label="Připíchnout okno" title="Připíchnout okno">📌</button>
     <button id="reset" class="corner-button reset-button" type="button" aria-label="Resetovat počítadlo" title="Resetovat počítadlo">↻</button>
     <button id="close" class="close-button" type="button" aria-label="Zavřít ClickAudit" title="Zavřít ClickAudit">×</button>
-    <div class="progress-liquid" aria-hidden="true"><span id="liquid-fill" class="liquid-fill"></span></div>
+    <div class="progress-liquid" aria-hidden="true">
+      <span id="liquid-fill" class="liquid-fill"><span class="liquid-wave"></span><span class="liquid-wave liquid-wave-b"></span></span>
+    </div>
     <div id="digits" class="digit-deck" aria-label="Počet kliků"></div>
-    <div id="celebration" class="celebration" aria-hidden="true"></div>
+    <div id="celebration" class="confetti-layer" aria-hidden="true"></div>
   </section>
 `
 
@@ -90,6 +103,10 @@ function getDigitDeckSize(digitCount) {
   return 'micro'
 }
 
+function crossedMilestone(previousValue, nextValue, milestoneSize) {
+  return Math.floor(previousValue / milestoneSize) !== Math.floor(nextValue / milestoneSize)
+}
+
 function renderDigits(value) {
   const currentValue = String(value)
   const currentDigits = currentValue.split('')
@@ -134,7 +151,7 @@ function renderProgress(value) {
   const color = liquidColor(progress)
   elements.liquidFill.style.setProperty('--liquid-progress', `${percent}%`)
   elements.liquidFill.style.setProperty('--liquid-color', color)
-  elements.liquidFill.style.setProperty('--liquid-gradient', `linear-gradient(to bottom, ${color}, ${color})`)
+  elements.liquidFill.style.setProperty('--liquid-gradient', LIQUID_SPECTRUM)
 }
 
 function renderSnapshot(nextSnapshot = snapshot) {
@@ -146,28 +163,33 @@ function renderSnapshot(nextSnapshot = snapshot) {
   elements.pin.setAttribute('aria-label', snapshot.alwaysOnTop ? 'Odepnout okno' : 'Připíchnout okno')
   elements.pin.setAttribute('title', snapshot.alwaysOnTop ? 'Odepnout okno' : 'Připíchnout okno')
 
-  if (Math.floor(previousClicks / 1000) !== Math.floor(snapshot.globalClicks / 1000)) {
+  if (crossedMilestone(previousClicks, snapshot.globalClicks, CELEBRATE_EVERY_CLICKS)) {
     celebrate()
   }
 }
 
 function celebrate() {
   elements.celebration.replaceChildren()
+  const burst = document.createElement('div')
   const fragment = document.createDocumentFragment()
 
-  for (let index = 0; index < 24; index += 1) {
-    const star = document.createElement('span')
-    const angle = (Math.PI * 2 * index) / 24
-    const distance = 62 + (index % 5) * 8
-    star.className = 'star'
-    star.style.setProperty('--x', `${Math.cos(angle) * distance}px`)
-    star.style.setProperty('--y', `${Math.sin(angle) * distance}px`)
-    star.style.setProperty('--delay', `${index * 16}ms`)
-    fragment.appendChild(star)
+  burst.className = 'confetti-burst'
+
+  for (let index = 0; index < 28; index += 1) {
+    const particle = document.createElement('span')
+    const angle = (Math.PI * 2 * index) / 28
+    const distance = 54 + (index % 7) * 9
+    particle.className = 'confetti-pixel'
+    particle.style.setProperty('--x', `${Math.cos(angle) * distance}px`)
+    particle.style.setProperty('--y', `${Math.sin(angle) * distance}px`)
+    particle.style.setProperty('--r', `${index * 31}deg`)
+    particle.style.setProperty('--s', `${3 + (index % 4)}px`)
+    fragment.appendChild(particle)
   }
 
-  elements.celebration.appendChild(fragment)
-  window.setTimeout(() => elements.celebration.replaceChildren(), 1100)
+  burst.appendChild(fragment)
+  elements.celebration.appendChild(burst)
+  window.setTimeout(() => elements.celebration.replaceChildren(), 1250)
 }
 
 async function refreshState() {
