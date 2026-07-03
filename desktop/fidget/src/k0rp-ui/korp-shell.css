@@ -37,6 +37,11 @@ body,
   -webkit-touch-callout: none;
 }
 
+body {
+  font-family: var(--korp-font-ui);
+  background: transparent;
+}
+
 button,
 .digit-deck,
 .digit-card,
@@ -75,10 +80,15 @@ html body #app .fidget-shell .drag-region {
   background: transparent !important;
   border-radius: 0 !important;
   opacity: 1 !important;
-  cursor: move;
+  cursor: grab;
   overflow: hidden !important;
   pointer-events: auto;
   z-index: 11 !important;
+}
+
+html body #app .drag-region:active,
+html body #app .fidget-shell .drag-region:active {
+  cursor: grabbing;
 }
 
 html body #app .drag-region::before,
@@ -113,6 +123,16 @@ html body #app .fidget-shell .close-button {
   image-rendering: pixelated;
   transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
   z-index: 20 !important;
+}
+
+html body #app .fidget-shell .mode-button {
+  position: absolute !important;
+  left: 14px !important;
+  top: 53px !important;
+  width: 20px !important;
+  height: 20px !important;
+  z-index: 20 !important;
+  transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
 }
 
 html body #app .shell .pin-button,
@@ -171,6 +191,7 @@ html body #app .game-shell .pin:hover,
 html body #app .game-shell .reset:hover,
 html body #app .game-shell .close:hover,
 html body #app .fidget-shell .pin-button:hover,
+html body #app .fidget-shell .mode-button:hover,
 html body #app .fidget-shell .close-button:hover {
   transform: translateY(-1px);
   filter: brightness(1.08) !important;
@@ -183,6 +204,7 @@ html body #app .game-shell .pin:active,
 html body #app .game-shell .reset:active,
 html body #app .game-shell .close:active,
 html body #app .fidget-shell .pin-button:active,
+html body #app .fidget-shell .mode-button:active,
 html body #app .fidget-shell .close-button:active {
   transform: translateY(0);
   filter: brightness(0.96) !important;
