@@ -1,19 +1,1 @@
 @import './k0rp-ui/korp-shell.css';
-
-.fidget-shell .mode-button {
-  left: 14px !important;
-  top: 53px !important;
-  width: 20px !important;
-  height: 20px !important;
-  z-index: 20 !important;
-}
-
-.fidget-shell .mode-button:hover {
-  transform: translateY(-1px);
-  filter: brightness(1.08) !important;
-}
-
-.fidget-shell .mode-button:active {
-  transform: translateY(0);
-  filter: brightness(0.96) !important;
-}
