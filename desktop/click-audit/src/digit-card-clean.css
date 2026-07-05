@@ -1,0 +1,18 @@
+/* Final cleanup for ClickAudit digit-card assets.
+   Loaded after digit-card-pixel.css so the user-cropped sprite stays visible,
+   but the wrapper frame/glow around each asset is removed. */
+
+#counter.digit-deck .digit-card.digit-card-asset {
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+  -webkit-tap-highlight-color: transparent;
+}
+
+#counter.digit-deck .digit-card.digit-card-asset:focus,
+#counter.digit-deck .digit-card.digit-card-asset:focus-visible {
+  outline: 0 !important;
+  box-shadow: none !important;
+}
