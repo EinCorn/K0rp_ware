@@ -1,6 +1,7 @@
 import { invoke } from '@tauri-apps/api/core'
 import { listen } from '@tauri-apps/api/event'
 import { getCurrentWindow } from '@tauri-apps/api/window'
+import digitSheetUrl from './assets/digits/digit-sheet-q30.jpg?url'
 import './styles.css'
 import './frameless.css'
 import './visual-test.css'
@@ -119,10 +120,22 @@ function renderDigits(currentValue) {
 
   currentDigits.forEach((digit) => {
     const card = document.createElement('span')
+    const numericDigit = Number.parseInt(digit, 10)
+    const sheet = document.createElement('img')
 
     card.className = 'digit-card digit-card-asset'
     card.dataset.digit = digit
+    card.style.setProperty('--digit-col', String(numericDigit % 5))
+    card.style.setProperty('--digit-row', String(Math.floor(numericDigit / 5)))
     card.setAttribute('aria-hidden', 'true')
+
+    sheet.className = 'digit-card-sheet'
+    sheet.src = digitSheetUrl
+    sheet.alt = ''
+    sheet.draggable = false
+    sheet.decoding = 'sync'
+
+    card.appendChild(sheet)
     fragment.appendChild(card)
   })
 
