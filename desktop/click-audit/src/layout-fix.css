@@ -1,41 +1,48 @@
 .progress-liquid {
   inset: auto !important;
-  left: var(--korp-app-window-x) !important;
-  top: var(--korp-app-window-y) !important;
-  width: var(--korp-app-window-size) !important;
-  height: var(--korp-app-window-size) !important;
+  left: var(--korp-content-x) !important;
+  top: var(--korp-content-y) !important;
+  width: var(--korp-content-w) !important;
+  height: var(--korp-content-h) !important;
   border: 0 !important;
   outline: 0 !important;
+  box-shadow: none !important;
   background: transparent !important;
-  border-radius: 5px !important;
+  border-radius: var(--korp-content-radius) !important;
+  overflow: hidden !important;
   z-index: 1 !important;
 }
 
 .digit-deck {
-  position: absolute;
-  left: 48px !important;
-  top: 82px !important;
+  position: absolute !important;
+  left: var(--korp-content-x) !important;
+  top: 86px !important;
   right: auto !important;
   bottom: auto !important;
-  width: 162px !important;
-  height: 76px !important;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  max-width: none;
-  z-index: 3;
+  width: var(--korp-content-w) !important;
+  height: 68px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  max-width: none !important;
+  gap: 4px !important;
+  background: transparent !important;
+  border: 0 !important;
+  outline: 0 !important;
+  box-shadow: none !important;
+  z-index: 3 !important;
 }
 
 .digit-deck[data-size='compact'] {
-  gap: 3px !important;
+  gap: 4px !important;
 }
 
 .digit-deck[data-size='compact'] .digit-card {
-  width: 30px !important;
-  height: 66px !important;
+  width: 29px !important;
+  height: 64px !important;
 }
 
 .digit-deck[data-size='compact'] .digit-face,
 .digit-deck[data-size='compact'] .digit-flap {
-  font-size: 54px !important;
+  font-size: 52px !important;
 }
