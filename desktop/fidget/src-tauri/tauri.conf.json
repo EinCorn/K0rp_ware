@@ -10,6 +10,7 @@
     "frontendDist": "../dist"
   },
   "app": {
+    "macOSPrivateApi": true,
     "windows": [
       {
         "label": "main",
@@ -33,7 +34,7 @@
     "active": true,
     "icon": ["icons/icon.png", "icons/icon.ico"],
     "category": "Utility",
-    "shortDescription": "Lokální fidget spinner",
-    "longDescription": "Lokální fidget spinner pro K0rp_ware. Bez telemetrie. Bez pracovního účelu."
+    "shortDescription": "Lokální fidget widget",
+    "longDescription": "Lokální fidget widget pro K0rp_ware. Bez telemetrie."
   }
 }
