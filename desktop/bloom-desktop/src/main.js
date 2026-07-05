@@ -35,7 +35,7 @@ app.innerHTML = `
       <div id="board" class="bloom-board" aria-label="Stavový board Bloomu"></div>
     </div>
     <div id="burst" class="clear-burst" aria-hidden="true"></div>
-    <footer class="bloom-score"><span>skóre</span><strong id="score">0</strong><span id="wave">vlna 1</span></footer>
+    <footer class="bloom-score"><strong id="score">0</strong><span id="wave">VLNA 1</span></footer>
   </section>
 `
 
@@ -141,7 +141,7 @@ function render() {
     els.board.appendChild(button)
   })
   els.score.textContent = String(state.score)
-  els.wave.textContent = `vlna ${state.wave}`
+  els.wave.textContent = `VLNA ${state.wave}`
   els.shell.classList.toggle('clear', state.locked)
 }
 
@@ -218,4 +218,5 @@ els.drag.addEventListener('mousedown', startWindowMove)
 els.reset.addEventListener('click', reset)
 els.pin.addEventListener('click', () => setPinned(!state.pinned))
 els.close.addEventListener('click', () => appWindow.close())
+
 render()
