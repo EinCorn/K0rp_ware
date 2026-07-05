@@ -2,11 +2,14 @@
    Loaded after digit-card-pixel.css so the user-cropped sprite stays visible,
    but the wrapper frame/glow around each asset is removed.
 
-   Fit rule: ClickAudit is intentionally capped visually at seven digits.
-   7 digits use the dense layout and must stay inside the K0rp app window. */
+   Fit rule: ClickAudit digits belong inside the inner K0rp app area
+   (the same content rectangle used by the liquid), not inside the whole shell/window. */
 
 #counter.digit-deck {
-  max-width: calc(100vw - 96px) !important;
+  width: var(--korp-content-w) !important;
+  max-width: var(--korp-content-w) !important;
+  box-sizing: border-box !important;
+  justify-content: center !important;
 }
 
 #counter.digit-deck .digit-card.digit-card-asset {
@@ -24,14 +27,54 @@
   box-shadow: none !important;
 }
 
-#counter.digit-deck[data-size='dense'] {
-  --digit-card-w: clamp(28px, 7.2vw, 34px);
-  --digit-card-gap: 2px;
+/* 7 digits: hard-fit to the liquid/content viewport. */
+#counter.digit-deck[data-digits='7'] {
+  --digit-card-gap: 1px;
   gap: var(--digit-card-gap) !important;
+  padding-inline: 8px !important;
+}
+
+#counter.digit-deck[data-digits='7'] .digit-card.digit-card-asset {
+  width: min(43px, calc((var(--korp-content-w) - 28px) / 7)) !important;
+  aspect-ratio: 70 / 128 !important;
+  height: auto !important;
+  min-width: 0 !important;
+  flex: 0 0 auto !important;
+}
+
+/* Keep the dense fallback safe too, but let the exact digit-count rules win. */
+#counter.digit-deck[data-size='dense'] {
+  --digit-card-gap: 1px;
+  gap: var(--digit-card-gap) !important;
+  padding-inline: 8px !important;
+}
+
+#counter.digit-deck[data-size='dense'] .digit-card.digit-card-asset {
+  width: min(43px, calc((var(--korp-content-w) - 28px) / 7)) !important;
+  aspect-ratio: 70 / 128 !important;
+  height: auto !important;
+  min-width: 0 !important;
+  flex: 0 0 auto !important;
+}
+
+#counter.digit-deck[data-digits='8'] .digit-card.digit-card-asset {
+  width: min(37px, calc((var(--korp-content-w) - 30px) / 8)) !important;
+}
+
+#counter.digit-deck[data-digits='9'] .digit-card.digit-card-asset {
+  width: min(32px, calc((var(--korp-content-w) - 32px) / 9)) !important;
 }
 
 #counter.digit-deck[data-size='micro'] {
-  --digit-card-w: clamp(16px, 4.8vw, 23px);
   --digit-card-gap: 1px;
   gap: var(--digit-card-gap) !important;
+  padding-inline: 8px !important;
+}
+
+#counter.digit-deck[data-size='micro'] .digit-card.digit-card-asset {
+  width: min(23px, calc((var(--korp-content-w) - 34px) / 10)) !important;
+  aspect-ratio: 70 / 128 !important;
+  height: auto !important;
+  min-width: 0 !important;
+  flex: 0 0 auto !important;
 }
