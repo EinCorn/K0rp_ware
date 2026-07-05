@@ -1,19 +1,41 @@
 .progress-liquid {
-  inset: 24px 18px 54px 42px !important;
-  border-color: rgba(0, 0, 0, 0.58) !important;
-  outline-color: rgba(216, 207, 189, 0.12) !important;
-  background: rgba(0, 0, 0, 0.12) !important;
+  inset: auto !important;
+  left: var(--korp-app-window-x) !important;
+  top: var(--korp-app-window-y) !important;
+  width: var(--korp-app-window-size) !important;
+  height: var(--korp-app-window-size) !important;
+  border: 0 !important;
+  outline: 0 !important;
+  background: transparent !important;
+  border-radius: 5px !important;
+  z-index: 1 !important;
 }
 
 .digit-deck {
   position: absolute;
-  left: 42px !important;
-  right: 18px !important;
-  top: 24px !important;
-  bottom: 54px !important;
+  left: 48px !important;
+  top: 82px !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: 162px !important;
+  height: 76px !important;
   display: flex;
   align-items: center;
   justify-content: center;
-  width: auto;
   max-width: none;
+  z-index: 3;
+}
+
+.digit-deck[data-size='compact'] {
+  gap: 3px !important;
+}
+
+.digit-deck[data-size='compact'] .digit-card {
+  width: 30px !important;
+  height: 66px !important;
+}
+
+.digit-deck[data-size='compact'] .digit-face,
+.digit-deck[data-size='compact'] .digit-flap {
+  font-size: 54px !important;
 }
