@@ -1,6 +1,6 @@
 /*
   K0rp runtime shell overrides v0.1
-  Source of truth for Figma 1:1 runtime placement.
+  Source of truth for 230x230 runtime placement.
 
   Runtime copies live in:
   desktop/<app>/src/k0rp-ui/korp-runtime.css
@@ -10,6 +10,13 @@
   --korp-app-window-x: 38px;
   --korp-app-window-y: 27px;
   --korp-app-window-size: 181px;
+
+  --korp-content-x: 46px;
+  --korp-content-y: 36px;
+  --korp-content-w: 166px;
+  --korp-content-h: 160px;
+  --korp-content-radius: 6px;
+
   --korp-pin-x: 14px;
   --korp-pin-y: 27px;
   --korp-secondary-x: 14px;
@@ -18,6 +25,7 @@
   --korp-close-x: 200px;
   --korp-close-y: 5px;
   --korp-close-size: 19px;
+  background: transparent !important;
 }
 
 html,
