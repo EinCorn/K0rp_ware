@@ -8,6 +8,7 @@ import './visual-test.css'
 import './layout-fix.css'
 import './control-tune.css'
 import './digit-card-pixel.css'
+import './digit-card-clean.css'
 import './source-report.js'
 
 const appWindow = getCurrentWindow()
