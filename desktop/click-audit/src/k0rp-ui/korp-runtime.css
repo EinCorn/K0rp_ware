@@ -52,7 +52,7 @@ html body #app .fidget-shell::before {
   top: var(--korp-app-window-y);
   width: var(--korp-app-window-size);
   height: var(--korp-app-window-size);
-  background: url('../assets/app-window.jpg') center / 100% 100% no-repeat transparent;
+  background: url('../assets/app-window.png') center / 100% 100% no-repeat transparent;
   pointer-events: none;
   z-index: 0;
 }
