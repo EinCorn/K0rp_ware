@@ -1,53 +1,58 @@
 /* ClickAudit app-specific digit card sprite.
-   Static asset mode: user-cropped 0-9 panels loaded as a real repo asset. */
+   Static asset mode: user-cropped 0-9 panels.
+   Kept deliberately high-specificity because legacy flip-card CSS lives in styles.css. */
 
 .digit-deck {
   --digit-card-w: clamp(48px, 16vw, 72px);
   --digit-card-gap: clamp(4px, 1.3vw, 8px);
   --digit-sheet: url('./assets/digits/digit-sheet-q30.jpg');
-  gap: var(--digit-card-gap);
+  gap: var(--digit-card-gap) !important;
   align-items: center;
-  perspective: none;
+  perspective: none !important;
 }
 
-.digit-card {
-  position: relative;
-  display: block;
-  width: var(--digit-card-w);
-  aspect-ratio: 70 / 128;
-  height: auto;
-  flex: 0 0 auto;
-  color: transparent;
-  border: 0;
-  border-radius: 0;
-  background: transparent var(--digit-sheet) no-repeat var(--digit-sprite-x, 0%) var(--digit-sprite-y, 0%) / 500% 200%;
-  box-shadow:
-    0 9px 18px rgba(0, 0, 0, 0.38),
-    0 0 14px rgba(0, 0, 0, 0.18);
-  overflow: hidden;
-  transform: translateZ(0);
+#counter.digit-deck .digit-card.digit-card-asset {
+  position: relative !important;
+  display: block !important;
+  width: var(--digit-card-w) !important;
+  aspect-ratio: 70 / 128 !important;
+  height: auto !important;
+  min-width: 0 !important;
+  flex: 0 0 auto !important;
+  color: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  background-color: transparent !important;
+  background-image: var(--digit-sheet) !important;
+  background-repeat: no-repeat !important;
+  background-size: 500% 200% !important;
+  background-position: var(--digit-sprite-x, 0%) var(--digit-sprite-y, 0%) !important;
+  box-shadow: 0 9px 18px rgba(0, 0, 0, 0.38), 0 0 14px rgba(0, 0, 0, 0.18) !important;
+  overflow: hidden !important;
+  transform: translateZ(0) !important;
+  transform-style: flat !important;
   image-rendering: auto;
 }
 
-.digit-card::before,
-.digit-card::after,
-.digit-face,
-.digit-flap,
-.digit-hinge {
+#counter.digit-deck .digit-card.digit-card-asset::before,
+#counter.digit-deck .digit-card.digit-card-asset::after,
+#counter.digit-deck .digit-card.digit-card-asset .digit-face,
+#counter.digit-deck .digit-card.digit-card-asset .digit-flap,
+#counter.digit-deck .digit-card.digit-card-asset .digit-hinge {
   display: none !important;
   content: none !important;
 }
 
-.digit-card[data-digit='0'] { --digit-sprite-x: 0%; --digit-sprite-y: 0%; }
-.digit-card[data-digit='1'] { --digit-sprite-x: 25%; --digit-sprite-y: 0%; }
-.digit-card[data-digit='2'] { --digit-sprite-x: 50%; --digit-sprite-y: 0%; }
-.digit-card[data-digit='3'] { --digit-sprite-x: 75%; --digit-sprite-y: 0%; }
-.digit-card[data-digit='4'] { --digit-sprite-x: 100%; --digit-sprite-y: 0%; }
-.digit-card[data-digit='5'] { --digit-sprite-x: 0%; --digit-sprite-y: 100%; }
-.digit-card[data-digit='6'] { --digit-sprite-x: 25%; --digit-sprite-y: 100%; }
-.digit-card[data-digit='7'] { --digit-sprite-x: 50%; --digit-sprite-y: 100%; }
-.digit-card[data-digit='8'] { --digit-sprite-x: 75%; --digit-sprite-y: 100%; }
-.digit-card[data-digit='9'] { --digit-sprite-x: 100%; --digit-sprite-y: 100%; }
+#counter.digit-deck .digit-card.digit-card-asset[data-digit='0'] { --digit-sprite-x: 0%; --digit-sprite-y: 0%; }
+#counter.digit-deck .digit-card.digit-card-asset[data-digit='1'] { --digit-sprite-x: 25%; --digit-sprite-y: 0%; }
+#counter.digit-deck .digit-card.digit-card-asset[data-digit='2'] { --digit-sprite-x: 50%; --digit-sprite-y: 0%; }
+#counter.digit-deck .digit-card.digit-card-asset[data-digit='3'] { --digit-sprite-x: 75%; --digit-sprite-y: 0%; }
+#counter.digit-deck .digit-card.digit-card-asset[data-digit='4'] { --digit-sprite-x: 100%; --digit-sprite-y: 0%; }
+#counter.digit-deck .digit-card.digit-card-asset[data-digit='5'] { --digit-sprite-x: 0%; --digit-sprite-y: 100%; }
+#counter.digit-deck .digit-card.digit-card-asset[data-digit='6'] { --digit-sprite-x: 25%; --digit-sprite-y: 100%; }
+#counter.digit-deck .digit-card.digit-card-asset[data-digit='7'] { --digit-sprite-x: 50%; --digit-sprite-y: 100%; }
+#counter.digit-deck .digit-card.digit-card-asset[data-digit='8'] { --digit-sprite-x: 75%; --digit-sprite-y: 100%; }
+#counter.digit-deck .digit-card.digit-card-asset[data-digit='9'] { --digit-sprite-x: 100%; --digit-sprite-y: 100%; }
 
 .digit-deck[data-size='compact'] {
   --digit-card-w: clamp(36px, 12.2vw, 56px);
