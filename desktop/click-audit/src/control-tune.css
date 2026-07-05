@@ -7,3 +7,18 @@ body,
 #app {
   background: transparent !important;
 }
+
+#liquid {
+  height: 167px !important;
+}
+
+#confetti-layer {
+  inset: auto !important;
+  left: var(--korp-content-x) !important;
+  top: var(--korp-content-y) !important;
+  width: var(--korp-content-w) !important;
+  height: var(--korp-content-h) !important;
+  display: grid !important;
+  place-items: center !important;
+  overflow: visible !important;
+}
