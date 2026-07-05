@@ -6,6 +6,7 @@ import './frameless.css'
 import './visual-test.css'
 import './layout-fix.css'
 import './control-tune.css'
+import './digit-card-pixel.css'
 import './source-report.js'
 
 const appWindow = getCurrentWindow()
@@ -29,6 +30,18 @@ const EMPTY_SOURCES = {
   fidget: 0,
   bloom: 0,
   workQuestion: 0,
+}
+const DIGIT_PIXEL_ROWS = {
+  0: ['01110', '10001', '10011', '10101', '11001', '10001', '01110'],
+  1: ['00100', '01100', '00100', '00100', '00100', '00100', '01110'],
+  2: ['01110', '10001', '00001', '00010', '00100', '01000', '11111'],
+  3: ['11110', '00001', '00001', '01110', '00001', '00001', '11110'],
+  4: ['00010', '00110', '01010', '10010', '11111', '00010', '00010'],
+  5: ['11111', '10000', '10000', '11110', '00001', '00001', '11110'],
+  6: ['01110', '10000', '10000', '11110', '10001', '10001', '01110'],
+  7: ['11111', '00001', '00010', '00100', '01000', '01000', '01000'],
+  8: ['01110', '10001', '10001', '01110', '10001', '10001', '01110'],
+  9: ['01110', '10001', '10001', '01111', '00001', '00001', '01110'],
 }
 
 let snapshot = normalizeSnapshot()
@@ -121,18 +134,20 @@ function renderDigits(currentValue, previousValue) {
     const previousDigit = previousDigits[index]
     const changed = previousDigit !== digit
     const oldDigit = previousDigit === ' ' ? digit : previousDigit
+    const currentGlyph = renderDigitGlyph(digit)
+    const oldGlyph = renderDigitGlyph(oldDigit)
     const card = document.createElement('span')
 
     card.className = changed ? 'digit-card is-changing' : 'digit-card'
     card.style.animationDelay = `${Math.min(index * 12, 72)}ms`
     card.innerHTML = `
-      <span class="digit-face digit-top"><span>${digit}</span></span>
-      <span class="digit-face digit-bottom"><span>${digit}</span></span>
+      <span class="digit-face digit-top">${currentGlyph}</span>
+      <span class="digit-face digit-bottom">${currentGlyph}</span>
       ${
         changed
-          ? `<span class="digit-flap digit-flap-top"><span>${oldDigit}</span></span>
-             <span class="digit-flap digit-hold-bottom"><span>${oldDigit}</span></span>
-             <span class="digit-flap digit-flap-bottom"><span>${digit}</span></span>`
+          ? `<span class="digit-flap digit-flap-top">${oldGlyph}</span>
+             <span class="digit-flap digit-hold-bottom">${oldGlyph}</span>
+             <span class="digit-flap digit-flap-bottom">${currentGlyph}</span>`
           : ''
       }
       <span class="digit-hinge"></span>
@@ -141,6 +156,16 @@ function renderDigits(currentValue, previousValue) {
   })
 
   elements.counter.replaceChildren(fragment)
+}
+
+function renderDigitGlyph(digit) {
+  const rows = DIGIT_PIXEL_ROWS[digit] || DIGIT_PIXEL_ROWS[0]
+  const pixels = rows
+    .flatMap((row) => row.split(''))
+    .map((value) => `<i class="digit-pixel${value === '1' ? ' is-on' : ''}" aria-hidden="true"></i>`)
+    .join('')
+
+  return `<span class="digit-glyph digit-glyph-${digit}" aria-hidden="true"><b class="digit-pixel-grid">${pixels}</b></span>`
 }
 
 function getDigitDeckSize(digitCount) {
