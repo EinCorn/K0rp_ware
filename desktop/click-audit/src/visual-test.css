@@ -2,6 +2,7 @@
   border: 0 !important;
   outline: 0 !important;
   background: transparent !important;
+  box-shadow: none !important;
   z-index: 1;
 }
 
@@ -11,7 +12,7 @@
 }
 
 .digit-deck {
-  gap: 3px;
+  gap: 4px;
   z-index: 3;
 }
 
