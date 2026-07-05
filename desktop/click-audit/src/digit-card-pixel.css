@@ -1,0 +1,185 @@
+/* ClickAudit app-specific digit cards.
+   Keeps the existing DOM flip mechanics, but draws the numerals as a 5×7 pixel glyph. */
+
+.digit-deck {
+  --digit-lit: var(--progress-color, #ded3b4);
+  --digit-dark: #0f1110;
+  --digit-panel: #171917;
+  --digit-panel-top: #1b1d1a;
+  --digit-panel-bottom: #121411;
+  --digit-frame: #080909;
+  --digit-frame-hi: rgba(231, 219, 184, 0.12);
+  --digit-frame-lo: rgba(0, 0, 0, 0.82);
+  --digit-grime: rgba(222, 211, 180, 0.08);
+  --digit-hinge: #080909;
+  --digit-hinge-hi: rgba(227, 215, 178, 0.18);
+}
+
+.digit-card {
+  color: var(--digit-lit);
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.07), transparent 12%, transparent 88%, rgba(0, 0, 0, 0.42)),
+    linear-gradient(180deg, #252620 0%, var(--digit-panel) 19%, #11130f 100%);
+  border: 1px solid rgba(0, 0, 0, 0.92);
+  border-radius: 3px;
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.56),
+    inset 0 0 0 2px var(--digit-frame),
+    inset 0 0 0 3px rgba(226, 216, 184, 0.05),
+    inset 0 10px 0 rgba(255, 255, 255, 0.025),
+    inset 0 -18px 24px rgba(0, 0, 0, 0.38);
+  image-rendering: pixelated;
+}
+
+.digit-card::before {
+  background:
+    radial-gradient(circle at 18% 16%, var(--digit-grime) 0 1px, transparent 2px),
+    radial-gradient(circle at 77% 28%, rgba(255, 255, 255, 0.055) 0 1px, transparent 2px),
+    radial-gradient(circle at 34% 69%, rgba(0, 0, 0, 0.34) 0 1px, transparent 2px),
+    radial-gradient(circle at 86% 82%, rgba(222, 211, 180, 0.06) 0 1px, transparent 2px),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(0, 0, 0, 0.24));
+  background-size: 17px 19px, 23px 29px, 31px 27px, 37px 41px, 100% 100%;
+  mix-blend-mode: normal;
+  opacity: 0.85;
+  z-index: 9;
+}
+
+.digit-face,
+.digit-flap {
+  color: var(--digit-lit);
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04), transparent 24%, transparent 74%, rgba(0, 0, 0, 0.24)),
+    var(--digit-panel-top);
+  font: inherit;
+  letter-spacing: normal;
+  text-shadow: none;
+}
+
+.digit-bottom,
+.digit-hold-bottom,
+.digit-flap-bottom {
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.025), transparent 26%, transparent 75%, rgba(0, 0, 0, 0.31)),
+    var(--digit-panel-bottom);
+  border-top: 1px solid rgba(0, 0, 0, 0.86);
+}
+
+.digit-top,
+.digit-flap-top {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.digit-face .digit-glyph,
+.digit-flap .digit-glyph {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 200%;
+  display: grid;
+  place-items: center;
+  text-align: initial;
+  transform: none;
+}
+
+.digit-top .digit-glyph,
+.digit-flap-top .digit-glyph {
+  top: 0;
+}
+
+.digit-bottom .digit-glyph,
+.digit-hold-bottom .digit-glyph,
+.digit-flap-bottom .digit-glyph {
+  bottom: 0;
+}
+
+.digit-pixel-grid {
+  width: 68%;
+  height: 73%;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(7, 1fr);
+  gap: clamp(1px, 0.32vw, 2px);
+  filter:
+    drop-shadow(1px 0 0 rgba(0, 0, 0, 0.72))
+    drop-shadow(0 1px 0 rgba(0, 0, 0, 0.7));
+}
+
+.digit-pixel {
+  display: block;
+  min-width: 0;
+  min-height: 0;
+  opacity: 0;
+  transform: translateZ(0);
+}
+
+.digit-pixel.is-on {
+  opacity: 1;
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255, 255, 255, 0.22), transparent 28%),
+    radial-gradient(circle at 70% 75%, rgba(0, 0, 0, 0.22), transparent 38%),
+    var(--digit-lit);
+  box-shadow:
+    inset 1px 1px 0 rgba(255, 255, 255, 0.16),
+    inset -1px -1px 0 rgba(0, 0, 0, 0.23),
+    0 0 7px color-mix(in srgb, var(--digit-lit) 26%, transparent);
+}
+
+.digit-deck[data-size='compact'] .digit-pixel-grid {
+  width: 69%;
+  height: 72%;
+  gap: 1px;
+}
+
+.digit-deck[data-size='dense'] .digit-pixel-grid {
+  width: 72%;
+  height: 70%;
+  gap: 1px;
+}
+
+.digit-deck[data-size='micro'] .digit-pixel-grid {
+  width: 76%;
+  height: 67%;
+  gap: 0;
+}
+
+.digit-hinge {
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: rgba(0, 0, 0, 0.94);
+  box-shadow:
+    0 -1px 0 rgba(255, 255, 255, 0.08),
+    0 1px 0 rgba(255, 255, 255, 0.035),
+    0 0 7px rgba(0, 0, 0, 0.7);
+  z-index: 10;
+}
+
+.digit-card::after {
+  left: -5px;
+  right: -5px;
+  top: calc(50% - 7px);
+  height: 14px;
+  background:
+    linear-gradient(90deg, var(--digit-hinge) 0 12px, transparent 12px calc(100% - 12px), var(--digit-hinge) calc(100% - 12px) 100%),
+    linear-gradient(90deg, transparent 0 2px, var(--digit-hinge-hi) 2px 4px, transparent 4px calc(100% - 4px), var(--digit-hinge-hi) calc(100% - 4px) calc(100% - 2px), transparent calc(100% - 2px) 100%);
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.78);
+  z-index: 11;
+}
+
+.digit-deck[data-size='dense'] .digit-card::after,
+.digit-deck[data-size='micro'] .digit-card::after {
+  left: -3px;
+  right: -3px;
+  top: calc(50% - 4px);
+  height: 8px;
+  background:
+    linear-gradient(90deg, var(--digit-hinge) 0 7px, transparent 7px calc(100% - 7px), var(--digit-hinge) calc(100% - 7px) 100%),
+    linear-gradient(90deg, transparent 0 1px, var(--digit-hinge-hi) 1px 2px, transparent 2px calc(100% - 2px), var(--digit-hinge-hi) calc(100% - 2px) calc(100% - 1px), transparent calc(100% - 1px) 100%);
+}
+
+.digit-card.is-changing .digit-flap-top,
+.digit-card.is-changing .digit-flap-bottom,
+.digit-card.is-changing .digit-hold-bottom {
+  will-change: transform, opacity, filter;
+}
