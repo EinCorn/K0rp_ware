@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="384" height="256" viewBox="0 0 384 256" shape-rendering="crispEdges">
+  <defs>
+    <linearGradient id="spectrum" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#b63b31" stop-opacity="0.92"/>
+      <stop offset="15%" stop-color="#d46b2e" stop-opacity="0.9"/>
+      <stop offset="31%" stop-color="#d6b640" stop-opacity="0.88"/>
+      <stop offset="48%" stop-color="#3a8d55" stop-opacity="0.86"/>
+      <stop offset="65%" stop-color="#207d8b" stop-opacity="0.86"/>
+      <stop offset="82%" stop-color="#2d518a" stop-opacity="0.86"/>
+      <stop offset="100%" stop-color="#6b3b88" stop-opacity="0.88"/>
+    </linearGradient>
+    <filter id="grime" x="0" y="0" width="1" height="1">
+      <feTurbulence type="fractalNoise" baseFrequency="0.055" numOctaves="2" seed="17" result="noise"/>
+      <feColorMatrix in="noise" type="matrix" values="0 0 0 0 0.18  0 0 0 0 0.15  0 0 0 0 0.1  0 0 0 0.28 0"/>
+      <feBlend mode="multiply" in2="SourceGraphic"/>
+    </filter>
+  </defs>
+
+  <g id="frame-0" transform="translate(0 0)">
+    <path filter="url(#grime)" fill="url(#spectrum)" d="M0 18 L13 10 L28 14 L44 6 L62 12 L78 8 L95 16 L112 9 L128 13 L128 128 L0 128 Z"/>
+    <path fill="#201a16" opacity="0.18" d="M0 112 H128 V128 H0 Z"/>
+    <rect x="18" y="48" width="3" height="3" fill="#f7e6bc" opacity="0.35"/><rect x="22" y="43" width="2" height="2" fill="#f7e6bc" opacity="0.2"/>
+    <rect x="73" y="78" width="2" height="2" fill="#f7e6bc" opacity="0.28"/><rect x="89" y="33" width="2" height="2" fill="#f7e6bc" opacity="0.22"/>
+    <rect x="38" y="116" width="5" height="2" fill="#1c1714" opacity="0.34"/><rect x="99" y="108" width="4" height="2" fill="#1c1714" opacity="0.28"/>
+  </g>
+
+  <g id="frame-1" transform="translate(128 0)">
+    <path filter="url(#grime)" fill="url(#spectrum)" d="M0 14 L15 18 L31 9 L49 13 L64 7 L81 14 L97 10 L113 16 L128 8 L128 128 L0 128 Z"/>
+    <path fill="#201a16" opacity="0.2" d="M0 113 H128 V128 H0 Z"/>
+    <rect x="29" y="41" width="3" height="3" fill="#f7e6bc" opacity="0.32"/><rect x="32" y="35" width="2" height="2" fill="#f7e6bc" opacity="0.22"/>
+    <rect x="70" y="68" width="2" height="2" fill="#f7e6bc" opacity="0.26"/><rect x="112" y="43" width="3" height="3" fill="#f7e6bc" opacity="0.18"/>
+    <rect x="51" y="117" width="4" height="2" fill="#1c1714" opacity="0.36"/><rect x="82" y="109" width="6" height="2" fill="#1c1714" opacity="0.25"/>
+  </g>
+
+  <g id="frame-2" transform="translate(256 0)">
+    <path filter="url(#grime)" fill="url(#spectrum)" d="M0 10 L14 15 L28 9 L47 17 L63 11 L78 18 L96 8 L111 12 L128 7 L128 128 L0 128 Z"/>
+    <path fill="#201a16" opacity="0.18" d="M0 111 H128 V128 H0 Z"/>
+    <rect x="15" y="58" width="2" height="2" fill="#f7e6bc" opacity="0.25"/><rect x="49" y="35" width="3" height="3" fill="#f7e6bc" opacity="0.31"/>
+    <rect x="87" y="74" width="2" height="2" fill="#f7e6bc" opacity="0.23"/><rect x="104" y="27" width="2" height="2" fill="#f7e6bc" opacity="0.2"/>
+    <rect x="25" y="113" width="7" height="2" fill="#1c1714" opacity="0.31"/><rect x="92" y="118" width="4" height="2" fill="#1c1714" opacity="0.32"/>
+  </g>
+
+  <g id="frame-3" transform="translate(0 128)">
+    <path filter="url(#grime)" fill="url(#spectrum)" d="M0 16 L17 8 L34 12 L50 6 L67 14 L83 9 L100 15 L115 7 L128 11 L128 128 L0 128 Z"/>
+    <path fill="#201a16" opacity="0.2" d="M0 112 H128 V128 H0 Z"/>
+    <rect x="21" y="39" width="2" height="2" fill="#f7e6bc" opacity="0.21"/><rect x="35" y="52" width="3" height="3" fill="#f7e6bc" opacity="0.33"/>
+    <rect x="75" y="59" width="2" height="2" fill="#f7e6bc" opacity="0.24"/><rect x="116" y="38" width="2" height="2" fill="#f7e6bc" opacity="0.18"/>
+    <rect x="44" y="110" width="5" height="2" fill="#1c1714" opacity="0.35"/><rect x="105" y="116" width="6" height="2" fill="#1c1714" opacity="0.27"/>
+  </g>
+
+  <g id="frame-4" transform="translate(128 128)">
+    <path filter="url(#grime)" fill="url(#spectrum)" d="M0 9 L16 13 L32 7 L48 14 L65 10 L81 18 L99 12 L114 16 L128 9 L128 128 L0 128 Z"/>
+    <path fill="#201a16" opacity="0.19" d="M0 114 H128 V128 H0 Z"/>
+    <rect x="27" y="45" width="2" height="2" fill="#f7e6bc" opacity="0.2"/><rect x="63" y="33" width="3" height="3" fill="#f7e6bc" opacity="0.3"/>
+    <rect x="91" y="72" width="2" height="2" fill="#f7e6bc" opacity="0.26"/><rect x="110" y="52" width="2" height="2" fill="#f7e6bc" opacity="0.18"/>
+    <rect x="39" y="117" width="6" height="2" fill="#1c1714" opacity="0.35"/><rect x="76" y="111" width="4" height="2" fill="#1c1714" opacity="0.3"/>
+  </g>
+
+  <g id="frame-5" transform="translate(256 128)">
+    <path filter="url(#grime)" fill="url(#spectrum)" d="M0 13 L13 17 L29 11 L45 16 L62 8 L79 12 L95 7 L113 15 L128 10 L128 128 L0 128 Z"/>
+    <path fill="#201a16" opacity="0.21" d="M0 113 H128 V128 H0 Z"/>
+    <rect x="19" y="51" width="3" height="3" fill="#f7e6bc" opacity="0.31"/><rect x="40" y="30" width="2" height="2" fill="#f7e6bc" opacity="0.18"/>
+    <rect x="83" y="66" width="3" height="3" fill="#f7e6bc" opacity="0.25"/><rect x="101" y="40" width="2" height="2" fill="#f7e6bc" opacity="0.2"/>
+    <rect x="30" y="111" width="5" height="2" fill="#1c1714" opacity="0.32"/><rect x="94" y="119" width="7" height="2" fill="#1c1714" opacity="0.26"/>
+  </g>
+</svg>
