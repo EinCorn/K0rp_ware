@@ -7,6 +7,11 @@
 }
 
 .liquid-fill {
+  position: absolute !important;
+  left: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  top: auto !important;
   opacity: 0.48;
   clip-path: polygon(0 12px, 12% 7px, 28% 13px, 45% 6px, 62% 12px, 78% 8px, 100% 11px, 100% 100%, 0 100%);
 }
