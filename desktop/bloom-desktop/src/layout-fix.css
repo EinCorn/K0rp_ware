@@ -44,14 +44,14 @@
 
 .bloom-score {
   position: absolute !important;
-  left: var(--korp-content-x) !important;
+  left: calc(var(--korp-content-x) + 15px) !important;
   right: auto !important;
   top: 176px !important;
   bottom: auto !important;
-  width: var(--korp-content-w) !important;
+  width: 136px !important;
   height: 20px !important;
   display: grid !important;
-  grid-template-columns: 1fr auto 1fr !important;
+  grid-template-columns: 1fr 1fr !important;
   align-items: center !important;
   gap: 8px !important;
   padding: 0 !important;
@@ -72,7 +72,7 @@
   font-size: 15px;
   line-height: 1;
   letter-spacing: 0;
-  text-align: center;
+  text-align: left;
 }
 
 .bloom-score span:last-child {
