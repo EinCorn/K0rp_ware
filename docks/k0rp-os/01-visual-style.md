@@ -2,6 +2,7 @@
 
 Verze: 0.1.3 pracovní návrh  
 Status: interní vizuální směr
+![K0rp_OS concepts](./assets/concepts/)
 
 ## 1. Základní estetika
 
