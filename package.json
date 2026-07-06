@@ -8,7 +8,9 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "sync:korp-ui": "node scripts/sync-k0rp-ui.mjs"
+    "sync:korp-ui": "node scripts/sync-k0rp-ui.mjs",
+    "test:korp-core": "npm --prefix packages/korp-core test",
+    "typecheck:korp-core": "npm --prefix packages/korp-core run typecheck"
   },
   "dependencies": {
     "react": "^19.2.7",
