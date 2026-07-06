@@ -40,6 +40,17 @@ Windows je primary target, protože:
 
 Mac build má existovat a měl by být použitelný, ale nemá určovat finální UX rozhodnutí, pokud se chování Windows a macOS liší.
 
+## 2.1 Windows developer setup
+
+Windows je primární platforma pro desktop dev/build a finální ověření Tauri chování.
+
+Pro Tauri desktop vývoj na Windows je potřeba mít nainstalované:
+
+- Rustup / Cargo pro Rust část Tauri aplikací,
+- Visual Studio Build Tools 2022 s workloadem `Desktop development with C++` pro Windows build toolchain.
+
+Pokud build hlásí, že `link.exe` není nalezen, spusť dev/build z **x64 Native Tools Command Prompt for VS 2022**, nebo oprav instalaci Visual Studio Build Tools tak, aby obsahovala C++ workload a Windows SDK.
+
 ## 3. Cross-platform principle
 
 K0rp_OS je **TypeScript-first / web-native** systém, takže většina logiky má být platform-independent:
