@@ -1,6 +1,6 @@
-# K0rp_OS — Screen Concepts
+# K0rp_OS — Screen Concepts 
 
-Verze: 0.1.3 pracovní návrh
+Verze: 0.1.3 pracovní návrh (very very early návrh a počítám, že kromě celkového feelu se ve finále nic nezachová jak je zde navrženo)
 
 ## 1. Screen: Identity Assignment / Login
 
