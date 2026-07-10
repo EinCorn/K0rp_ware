@@ -44,12 +44,13 @@
 
 .bloom-score {
   position: absolute !important;
-  left: calc(var(--korp-content-x) + 15px) !important;
+  left: var(--korp-content-center-x) !important;
   right: auto !important;
   top: 176px !important;
   bottom: auto !important;
   width: 136px !important;
   height: 20px !important;
+  transform: translateX(-50%) !important;
   display: grid !important;
   grid-template-columns: 1fr 1fr !important;
   align-items: center !important;
