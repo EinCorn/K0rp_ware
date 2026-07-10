@@ -18,7 +18,8 @@ const app = document.querySelector('#app')
 // Vývojové ladění. Produkce se může vrátit blíž k 1_000_000.
 const PROGRESS_TARGET_CLICKS = 2_500
 const COLOR_TARGET_CLICKS = PROGRESS_TARGET_CLICKS
-const CONFETTI_CHANCE = 0.5
+// Keep the existing burst styling, but reserve it for one in ten counted clicks.
+const CONFETTI_CHANCE = 0.1
 const CONFETTI_COLORS = ['#ff4f5e', '#ffb84d', '#f7ff5c', '#64ff8f', '#56d9ff', '#9f7bff', '#ff62d2']
 const DEV_MILLION_TEST_VALUE = 1_000_000
 const {
@@ -268,6 +269,12 @@ elements.pin.addEventListener('click', () => setAlwaysOnTop(!snapshot.alwaysOnTo
 elements.reset.addEventListener('click', reset)
 elements.close.addEventListener('click', () => appWindow.close())
 startLiquidAnimation()
+
+// The native window is created hidden so no default WebView surface can flash
+// around the transparent shell. Show it only after the shell exists in the DOM.
+window.requestAnimationFrame(() => {
+  appWindow.show().catch(() => {})
+})
 
 window.addEventListener('keydown', async (event) => {
   if (event.key.toLowerCase() === 'm') {

@@ -1,6 +1,6 @@
 :root {
   --text-h: #f1e9d8;
-  --bg: #000000;
+  --bg: transparent;
   --border: rgba(255, 255, 255, 0.08);
   --card-bg: #e8e0c8;
   --card-top: #f2ecd8;
@@ -26,7 +26,7 @@ body {
   margin: 0;
   min-width: 200px;
   min-height: 100vh;
-  background: #000;
+  background: transparent;
   overflow: hidden;
 }
 
@@ -40,9 +40,7 @@ button {
   display: grid;
   place-items: center;
   border: 1px solid var(--border);
-  background:
-    radial-gradient(circle at center, rgba(255, 255, 255, 0.045), transparent 42%),
-    #000;
+  background: transparent;
   overflow: hidden;
   isolation: isolate;
 }
