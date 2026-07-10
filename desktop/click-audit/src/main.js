@@ -3,6 +3,7 @@ import { listen } from '@tauri-apps/api/event'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import digitSheetUrl from './assets/digits/digit-sheet-q30.jpg?url'
 import liquidAnimation from './assets/liquid/liquid-water-36f-clean.json'
+import { emitClickAuditClick, getClickAuditKorpState, resetClickAuditKorpState } from './korp-core-bridge'
 import './styles.css'
 import './frameless.css'
 import './visual-test.css'
@@ -244,6 +245,7 @@ async function refreshState() {
 async function reset() {
   displayedClicks = null
   const nextSnapshot = await invoke('reset_counting')
+  resetClickAuditKorpState()
   renderSnapshot(nextSnapshot)
 }
 
@@ -264,10 +266,18 @@ function startWindowMove(event) {
   invoke('begin_window_move').catch(() => {})
 }
 
+function reportKorpClick(event) {
+  if (!(event.target instanceof Element)) return
+  if (event.target.closest('button, [data-tauri-drag-region]')) return
+
+  emitClickAuditClick()
+}
+
 elements.drag.addEventListener('mousedown', startWindowMove)
 elements.pin.addEventListener('click', () => setAlwaysOnTop(!snapshot.alwaysOnTop))
 elements.reset.addEventListener('click', reset)
 elements.close.addEventListener('click', () => appWindow.close())
+app.addEventListener('pointerdown', reportKorpClick)
 startLiquidAnimation()
 
 // The native window is created hidden so no default WebView surface can flash
@@ -296,6 +306,7 @@ window.__K0RP_CLICK_AUDIT__ = {
       activeSource,
       labels: SOURCE_LABELS,
       target: PROGRESS_TARGET_CLICKS,
+      korpState: getClickAuditKorpState(),
     }
   },
   refresh: refreshState,
