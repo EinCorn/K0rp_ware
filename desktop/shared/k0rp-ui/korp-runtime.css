@@ -1,20 +1,34 @@
 /*
-  K0rp runtime shell overrides v0.1
+  K0rp runtime shell overrides v0.1.3
   Source of truth for 230x230 runtime placement.
+
+  Box model:
+  - shell is the outer runtime canvas and owns global controls;
+  - app-window is a child visual surface inside the shell;
+  - content is the inner app viewport used by app-specific layers.
 
   Runtime copies live in:
   desktop/<app>/src/k0rp-ui/korp-runtime.css
 */
 
 :root {
+  --korp-shell-w: 230px;
+  --korp-shell-h: 230px;
+
   --korp-app-window-x: 38px;
   --korp-app-window-y: 27px;
-  --korp-app-window-size: 181px;
+  --korp-app-window-w: 181px;
+  --korp-app-window-h: 181px;
+  --korp-app-window-size: var(--korp-app-window-w);
+  --korp-app-window-center-x: 128.5px;
+  --korp-app-window-center-y: 117.5px;
 
   --korp-content-x: 46px;
   --korp-content-y: 36px;
   --korp-content-w: 166px;
   --korp-content-h: 160px;
+  --korp-content-center-x: 129px;
+  --korp-content-center-y: 116px;
   --korp-content-radius: 6px;
 
   --korp-pin-x: 14px;
@@ -42,10 +56,10 @@ html body #app .shell,
 html body #app .game-shell,
 html body #app .fidget-shell {
   position: relative !important;
-  width: 230px !important;
-  height: 230px !important;
-  min-width: 230px !important;
-  min-height: 230px !important;
+  width: var(--korp-shell-w) !important;
+  height: var(--korp-shell-h) !important;
+  min-width: var(--korp-shell-w) !important;
+  min-height: var(--korp-shell-h) !important;
   background-color: transparent !important;
   box-shadow: none !important;
   isolation: isolate;
@@ -58,8 +72,8 @@ html body #app .fidget-shell::before {
   position: absolute;
   left: var(--korp-app-window-x);
   top: var(--korp-app-window-y);
-  width: var(--korp-app-window-size);
-  height: var(--korp-app-window-size);
+  width: var(--korp-app-window-w);
+  height: var(--korp-app-window-h);
   background: url('../assets/app-window.png') center / 100% 100% no-repeat transparent;
   pointer-events: none;
   z-index: 0;
