@@ -1,9 +1,6 @@
-name: Deploy K0rp_ware
+name: Manual deploy K0rp_ware
 
 on:
-  push:
-    branches:
-      - main
   workflow_dispatch:
 
 jobs:

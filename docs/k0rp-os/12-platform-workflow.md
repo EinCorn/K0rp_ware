@@ -266,6 +266,12 @@ Mac smoke test optional but useful
 
 Mac release může následovat, ale nemá brzdit Windows MVP, pokud není problém ve sdíleném core/UI.
 
+## 8.1 CI a Cloudflare deployment
+
+CI validace a Cloudflare deployment jsou oddělené gates. Běžný push nebo pull request spouští pouze `npm ci`, testy a typecheck pro `korp-core` a `korp-modules` a `npm run build`; nevyžaduje Cloudflare secrets ani nespouští Wrangler.
+
+Cloudflare deploy zůstává dostupný jako ruční GitHub Actions workflow (`workflow_dispatch`) pro pozdější konfiguraci `CLOUDFLARE_ACCOUNT_ID` a `CLOUDFLARE_API_TOKEN`. Úspěšný CI build tak potvrzuje projektovou validaci, ne Cloudflare konfiguraci nebo oprávnění k deployi.
+
 ## 9. Codex guardrail
 
 Codex / AI implementační tasky musí respektovat:
