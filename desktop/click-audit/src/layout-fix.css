@@ -3,7 +3,7 @@
   left: var(--korp-content-x) !important;
   top: var(--korp-content-y) !important;
   width: var(--korp-content-w) !important;
-  height: 166px !important;
+  height: var(--korp-content-h) !important;
   border: 0 !important;
   outline: 0 !important;
   box-shadow: none !important;
@@ -15,12 +15,13 @@
 
 .digit-deck {
   position: absolute !important;
-  left: var(--korp-content-x) !important;
+  left: var(--korp-content-center-x) !important;
   top: 86px !important;
   right: auto !important;
   bottom: auto !important;
   width: var(--korp-content-w) !important;
   height: 68px !important;
+  transform: translateX(-50%) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
