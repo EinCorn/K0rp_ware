@@ -220,7 +220,8 @@
 .os-workspace-head h1,
 .os-section-heading h2,
 .os-inspection-body h2,
-.os-placeholder-mode h2 {
+.os-placeholder-mode h2,
+.os-module-runtime h2 {
   margin: 0;
   color: #292a23;
   font-size: clamp(23px, 2.8vw, 38px);
@@ -322,7 +323,7 @@
 }
 
 .os-module-tile {
-  min-height: 130px;
+  min-height: 144px;
   padding: 10px;
   display: flex;
   flex-direction: column;
@@ -334,12 +335,10 @@
   box-shadow: 2px 3px 0 rgba(72, 70, 56, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.32);
   font: inherit;
   text-align: left;
-  cursor: pointer;
   transition: transform 120ms ease, box-shadow 120ms ease, background 120ms ease;
 }
 
-.os-module-tile:hover,
-.os-module-tile:focus-visible {
+.os-module-tile:hover {
   transform: translate(-1px, -2px);
   box-shadow: 4px 5px 0 rgba(72, 70, 56, 0.27), inset 0 0 0 1px rgba(255, 255, 255, 0.48);
   outline: 2px solid var(--os-amber);
@@ -379,6 +378,40 @@
   border-top: 1px solid rgba(82, 78, 65, 0.28);
 }
 
+.os-tile-actions {
+  display: flex;
+  gap: 5px;
+  margin-top: 7px;
+}
+
+.os-tile-action {
+  flex: 1;
+  min-width: 0;
+  padding: 5px 4px;
+  border: 1px solid #666654;
+  color: #34352d;
+  background: #cbc5aa;
+  font: 8px var(--os-mono);
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+
+.os-tile-launch {
+  border-color: #596849;
+  color: #2f3d28;
+  background: #c7d17f;
+}
+
+.os-tile-action:hover,
+.os-tile-action:focus-visible {
+  background: #e5ddba;
+  outline: 2px solid var(--os-amber);
+  outline-offset: 1px;
+}
+
+.os-tile-launch:hover,
+.os-tile-launch:focus-visible { background: #d9e58a; }
+
 .os-pending-area {
   min-height: 0;
   display: grid;
@@ -402,6 +435,7 @@
 .os-module-tile.is-compact strong { margin-top: 6px; font-size: 14px; }
 .os-module-tile.is-compact .os-tile-copy { display: none; }
 .os-module-tile.is-compact .os-tile-footer { padding-top: 5px; }
+.os-module-tile.is-compact .os-tile-actions { margin-top: 5px; }
 
 .os-inspection-window { overflow: hidden; }
 .os-inspection-body,
@@ -491,6 +525,80 @@
 .os-placeholder-mode p:not(.os-kicker) { max-width: 460px; margin: 0; line-height: 1.5; }
 .os-placeholder-stamp { padding: 8px; border: 1px solid #7d755f; color: #4e493b; background: #c6c09f; font: 9px var(--os-mono); letter-spacing: 0.08em; }
 
+.os-module-runtime {
+  min-height: 0;
+  display: grid;
+  align-content: center;
+  gap: 13px;
+  padding: clamp(18px, 4vw, 46px);
+  overflow: auto;
+  color: #555246;
+}
+
+.os-runtime-title-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: start;
+}
+
+.os-runtime-title-row p { max-width: 480px; margin: 9px 0 0; font-size: 13px; line-height: 1.4; }
+
+.os-runtime-desk {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(180px, 0.5fr);
+  gap: 10px;
+}
+
+.os-runtime-screen {
+  min-height: 150px;
+  display: grid;
+  align-content: center;
+  gap: 10px;
+  padding: 16px;
+  border: 3px double #606154;
+  color: #3f4433;
+  background:
+    repeating-linear-gradient(0deg, rgba(89, 98, 59, 0.09) 0 1px, transparent 1px 5px),
+    #bdc48c;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.26);
+}
+
+.os-runtime-screen span,
+.os-runtime-screen small { font: 9px var(--os-mono); letter-spacing: 0.08em; }
+.os-runtime-screen strong { color: #2f3427; font-size: 18px; line-height: 1.05; }
+
+.os-runtime-readout {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  margin: 0;
+}
+
+.os-runtime-readout > div {
+  padding: 9px;
+  border: 1px solid #8a826b;
+  background: #e0dac0;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+}
+
+.os-runtime-readout dt { color: #625b4b; font: 8px var(--os-mono); letter-spacing: 0.12em; }
+.os-runtime-readout dd { margin: 6px 0 0; color: #33332b; font-size: 11px; line-height: 1.3; }
+
+.os-runtime-close {
+  justify-self: start;
+  padding: 8px 10px;
+  border: 2px solid #55564a;
+  color: #ece6cf;
+  background: #4b4d42;
+  font: 9px var(--os-mono);
+  letter-spacing: 0.1em;
+  cursor: pointer;
+}
+
+.os-runtime-close:hover,
+.os-runtime-close:focus-visible { background: #626650; outline: 2px solid var(--os-amber); outline-offset: 2px; }
+
 .os-taskbar {
   display: flex;
   justify-content: space-between;
@@ -540,6 +648,7 @@
   .os-station-grid { grid-template-columns: minmax(0, 1fr) 190px; gap: 7px; }
   .os-module-grid { grid-template-columns: 1fr; }
   .os-pending-grid { grid-template-columns: 1fr; }
+  .os-runtime-desk { grid-template-columns: 1fr; }
   .os-topbar small,
   .os-machine-readout > span:last-of-type,
   .os-taskbar span:nth-last-child(-n + 2) { display: none; }

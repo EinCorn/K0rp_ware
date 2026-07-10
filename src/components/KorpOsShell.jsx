@@ -29,23 +29,31 @@ const workstationTabs = [
   { id: 'archive', label: 'ARCHIV', detail: 'přijaté složky' },
 ]
 
-function ModuleTile({ module, onOpen, compact = false }) {
+function ModuleTile({ module, onInspect, onLaunch, compact = false }) {
   const isCurrent = module.status === 'current'
 
   return (
-    <button
-      type="button"
+    <article
       className={`os-module-tile ${isCurrent ? 'is-current' : 'is-pending'} ${compact ? 'is-compact' : ''}`}
-      onClick={() => onOpen(module)}
     >
       <span className="os-tile-status">{isCurrent ? 'PROVOZNĚ DOSTUPNÝ' : 'PENDING / NESPUSITELNÉ'}</span>
       <strong>{module.title}</strong>
       <span className="os-tile-copy">{module.shortDescription}</span>
       <span className="os-tile-footer">
         <span>{statusLabels[module.status]}</span>
-        <span>{isCurrent ? 'OTEVŘÍT KARTU' : 'ČÍST SPECIFIKACI'}</span>
+        <span>KARTA: {module.id}</span>
       </span>
-    </button>
+      <div className="os-tile-actions">
+        <button type="button" className="os-tile-action" onClick={() => onInspect(module)}>
+          {isCurrent ? 'ZOBRAZIT KARTU' : 'ČÍST SPECIFIKACI'}
+        </button>
+        {isCurrent && (
+          <button type="button" className="os-tile-action os-tile-launch" onClick={() => onLaunch(module)}>
+            OTEVŘÍT MODUL
+          </button>
+        )}
+      </div>
+    </article>
   )
 }
 
@@ -62,6 +70,34 @@ function WorkspacePlaceholder({ activeView }) {
       </p>
       <div className="os-placeholder-stamp">ZÁZNAM PŘIJAT / ŽÁDNÁ DALŠÍ AKCE NEVYŽADOVÁNA</div>
     </div>
+  )
+}
+
+function ModuleRuntimePlaceholder({ module, onClose }) {
+  return (
+    <section className="os-module-runtime" aria-label={`Runtime placeholder pro ${module.title}`}>
+      <p className="os-kicker">PROVOZNÍ OKNO / RUNTIME ČEKÁ NA PŘIPOJENÍ</p>
+      <div className="os-runtime-title-row">
+        <div>
+          <h2>{module.title}</h2>
+          <p>{module.shortDescription}</p>
+        </div>
+        <span className="os-window-stamp">AKTIVNÍ MODUL</span>
+      </div>
+      <div className="os-runtime-desk">
+        <div className="os-runtime-screen">
+          <span>VÝKONNÁ PLOCHA</span>
+          <strong>Runtime modulu není do K0rp_OS vložen.</strong>
+          <small>Samostatná aplikace zůstává mimo tuto stanici. Evidence modulu je nadále v pořádku.</small>
+        </div>
+        <dl className="os-runtime-readout">
+          <div><dt>RELACE</dt><dd>LOKÁLNÍ / NEPERSISTOVANÁ</dd></div>
+          <div><dt>STAV RUNTIME</dt><dd>ČEKÁ NA PŘIPOJENÍ</dd></div>
+          <div><dt>POVRCHY</dt><dd>{module.supportedSurfaces.join(' / ')}</dd></div>
+        </dl>
+      </div>
+      <button type="button" className="os-runtime-close" onClick={onClose}>ZAVŘÍT MODUL / ZPĚT DO EVIDENCE</button>
+    </section>
   )
 }
 
@@ -130,10 +166,23 @@ function ModuleInspection({ selectedModule, onClose }) {
 function KorpOsShell() {
   const [activeView, setActiveView] = useState('modules')
   const [selectedModule, setSelectedModule] = useState(null)
+  const [activeModule, setActiveModule] = useState(null)
 
-  const openModule = (module) => {
+  const inspectModule = (module) => {
+    setSelectedModule(module)
+  }
+
+  const launchModule = (module) => {
+    if (module.status !== 'current') return
+
     setActiveView('modules')
     setSelectedModule(module)
+    setActiveModule(module)
+  }
+
+  const changeView = (view) => {
+    setActiveView(view)
+    setActiveModule(null)
   }
 
   return (
@@ -168,7 +217,7 @@ function KorpOsShell() {
                   type="button"
                   key={tab.id}
                   className={activeView === tab.id ? 'is-active' : ''}
-                  onClick={() => setActiveView(tab.id)}
+                  onClick={() => changeView(tab.id)}
                 >
                   <i aria-hidden="true" />
                   <span>{tab.label}</span>
@@ -200,11 +249,19 @@ function KorpOsShell() {
             <div className="os-station-grid">
               <section className="os-main-window" aria-label="Aktivní pracovní okno">
                 <div className="os-window-header">
-                  <span className="os-window-title">{activeView === 'modules' ? 'MODULY V EVIDENCI' : `${workstationTabs.find((tab) => tab.id === activeView).label} / SYSTÉMOVÁ SLOŽKA`}</span>
+                  <span className="os-window-title">
+                    {activeModule
+                      ? `${activeModule.title.toUpperCase()} / RUNTIME STANOVIŠTĚ`
+                      : activeView === 'modules'
+                        ? 'MODULY V EVIDENCI'
+                        : `${workstationTabs.find((tab) => tab.id === activeView).label} / SYSTÉMOVÁ SLOŽKA`}
+                  </span>
                   <span className="os-window-dots" aria-hidden="true"><i /><i /><i /></span>
                 </div>
 
-                {activeView === 'modules' ? (
+                {activeModule ? (
+                  <ModuleRuntimePlaceholder module={activeModule} onClose={() => setActiveModule(null)} />
+                ) : activeView === 'modules' ? (
                   <div className="os-module-window-body">
                     <section className="os-current-area" aria-labelledby="current-modules-title">
                       <div className="os-section-heading">
@@ -215,7 +272,9 @@ function KorpOsShell() {
                         <span>{currentModules.length} SCHVÁLENO</span>
                       </div>
                       <div className="os-module-grid">
-                        {currentModules.map((module) => <ModuleTile key={module.id} module={module} onOpen={openModule} />)}
+                        {currentModules.map((module) => (
+                          <ModuleTile key={module.id} module={module} onInspect={inspectModule} onLaunch={launchModule} />
+                        ))}
                       </div>
                     </section>
 
@@ -228,7 +287,9 @@ function KorpOsShell() {
                         <span>{pendingModules.length} PENDING</span>
                       </div>
                       <div className="os-pending-grid">
-                        {pendingModules.map((module) => <ModuleTile key={module.id} module={module} onOpen={openModule} compact />)}
+                        {pendingModules.map((module) => (
+                          <ModuleTile key={module.id} module={module} onInspect={inspectModule} compact />
+                        ))}
                       </div>
                     </section>
                   </div>
@@ -249,6 +310,7 @@ function KorpOsShell() {
         <footer className="os-taskbar">
           <span className="os-taskbar-start">KØRP // START</span>
           <span>EMPLOYEE: LOCAL-000</span>
+          <span className="os-active-module">AKTIVNÍ MODUL: {activeModule ? activeModule.title.toUpperCase() : 'ŽÁDNÝ'}</span>
           <span>MODULY: {currentModules.length} ONLINE / {pendingModules.length} PENDING</span>
           <span>PRIVACY: LOCAL ONLY</span>
         </footer>
