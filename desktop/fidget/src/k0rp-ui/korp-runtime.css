@@ -1,36 +1,53 @@
 /*
-  K0rp runtime shell overrides v0.1.3
+  K0rp runtime shell overrides v0.2.0
   Source of truth for 230x230 runtime placement.
 
   Box model:
   - shell is the outer runtime canvas and owns global controls;
-  - app-window is a child visual surface inside the shell;
-  - content is the inner app viewport used by app-specific layers.
+  - shell pocket reserves the only area occupied by the app-window frame;
+  - app-window is the graphical frame seated exactly in that pocket;
+  - content is the frame's inner viewport used by app-specific layers.
 
   Runtime copies live in:
   desktop/<app>/src/k0rp-ui/korp-runtime.css
 */
 
 :root {
+  /* 1. Outer runtime canvas. */
   --korp-shell-w: 230px;
   --korp-shell-h: 230px;
 
-  --korp-app-window-x: 38px;
-  --korp-app-window-y: 27px;
-  --korp-app-window-w: 181px;
-  --korp-app-window-h: 181px;
-  --korp-app-window-size: var(--korp-app-window-w);
-  --korp-app-window-center-x: 128.5px;
-  --korp-app-window-center-y: 117.5px;
+  /* 2. Shell pocket. App-window artwork must not exceed this box. */
+  --korp-shell-pocket-x: 36px;
+  --korp-shell-pocket-y: 24px;
+  --korp-shell-pocket-w: 181px;
+  --korp-shell-pocket-h: 181px;
 
-  --korp-content-x: 46px;
-  --korp-content-y: 36px;
-  --korp-content-w: 166px;
-  --korp-content-h: 160px;
-  --korp-content-center-x: 129px;
-  --korp-content-center-y: 116px;
+  /* 3. Framed app surface: it occupies the shell pocket exactly. */
+  --korp-app-window-x: var(--korp-shell-pocket-x);
+  --korp-app-window-y: var(--korp-shell-pocket-y);
+  --korp-app-window-w: var(--korp-shell-pocket-w);
+  --korp-app-window-h: var(--korp-shell-pocket-h);
+  --korp-app-window-size: var(--korp-app-window-w);
+  --korp-app-window-center-x: calc(var(--korp-app-window-x) + 90.5px);
+  --korp-app-window-center-y: calc(var(--korp-app-window-y) + 90.5px);
+
+  /* 4. The visible inner edge of app-window.png, measured at runtime scale. */
+  --korp-app-window-frame-inset-left: 7px;
+  --korp-app-window-frame-inset-top: 7px;
+  --korp-app-window-frame-inset-right: 7px;
+  --korp-app-window-frame-inset-bottom: 7px;
+
+  /* 5. App-specific content belongs only inside this derived viewport. */
+  --korp-content-x: calc(var(--korp-app-window-x) + var(--korp-app-window-frame-inset-left));
+  --korp-content-y: calc(var(--korp-app-window-y) + var(--korp-app-window-frame-inset-top));
+  --korp-content-w: calc(var(--korp-app-window-w) - var(--korp-app-window-frame-inset-left) - var(--korp-app-window-frame-inset-right));
+  --korp-content-h: calc(var(--korp-app-window-h) - var(--korp-app-window-frame-inset-top) - var(--korp-app-window-frame-inset-bottom));
+  --korp-content-center-x: var(--korp-app-window-center-x);
+  --korp-content-center-y: var(--korp-app-window-center-y);
   --korp-content-radius: 6px;
 
+  /* Shell-owned control slots. */
   --korp-pin-x: 14px;
   --korp-pin-y: 27px;
   --korp-secondary-x: 14px;
@@ -60,8 +77,10 @@ html body #app .fidget-shell {
   height: var(--korp-shell-h) !important;
   min-width: var(--korp-shell-w) !important;
   min-height: var(--korp-shell-h) !important;
+  box-sizing: border-box;
   background-color: transparent !important;
   box-shadow: none !important;
+  overflow: hidden !important;
   isolation: isolate;
 }
 
@@ -77,6 +96,30 @@ html body #app .fidget-shell::before {
   background: url('../assets/app-window.png') center / 100% 100% no-repeat transparent;
   pointer-events: none;
   z-index: 0;
+}
+
+/*
+  Opt-in contract for app-specific layers that belong inside the app-window.
+  It deliberately owns placement and clipping; app CSS should only own the
+  content rendered inside this viewport.
+*/
+html body #app .korp-app-window-content {
+  position: absolute !important;
+  inset: auto !important;
+  left: var(--korp-content-x) !important;
+  top: var(--korp-content-y) !important;
+  right: auto !important;
+  bottom: auto !important;
+  width: var(--korp-content-w) !important;
+  height: var(--korp-content-h) !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+  border: 0 !important;
+  outline: 0 !important;
+  border-radius: var(--korp-content-radius) !important;
+  background: transparent !important;
+  overflow: hidden !important;
 }
 
 html body #app .drag-region,

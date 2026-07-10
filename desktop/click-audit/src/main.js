@@ -24,12 +24,9 @@ const DEV_MILLION_TEST_VALUE = 1_000_000
 const {
   frameCount: LIQUID_FRAME_COUNT,
   columns: LIQUID_FRAME_COLUMNS,
-  frame: {
-    width: LIQUID_FRAME_WIDTH,
-    height: LIQUID_FRAME_HEIGHT,
-  },
   frameDurationMs: LIQUID_FRAME_DURATION_MS,
 } = liquidAnimation
+const LIQUID_FRAME_POSITION_STEP = 100 / (LIQUID_FRAME_COLUMNS - 1)
 const SOURCE_LABELS = {
   clickAudit: 'ClickAudit',
   fidget: 'Fidget',
@@ -52,7 +49,7 @@ let liquidAnimationId = null
 app.innerHTML = `
   <section class="shell">
     <div id="drag" class="drag-region" data-tauri-drag-region aria-hidden="true"></div>
-    <div id="liquid" class="progress-liquid" aria-hidden="true">
+    <div id="liquid" class="progress-liquid korp-app-window-content" aria-hidden="true">
       <div class="liquid-fill">
         <div class="liquid-sprite" aria-hidden="true"></div>
       </div>
@@ -81,8 +78,8 @@ function renderLiquidFrame(frameIndex) {
   const column = normalizedIndex % LIQUID_FRAME_COLUMNS
   const row = Math.floor(normalizedIndex / LIQUID_FRAME_COLUMNS)
 
-  elements.liquidSprite.style.setProperty('--liquid-frame-x', `${-(column * LIQUID_FRAME_WIDTH)}px`)
-  elements.liquidSprite.style.setProperty('--liquid-frame-y', `${-(row * LIQUID_FRAME_HEIGHT)}px`)
+  elements.liquidSprite.style.setProperty('--liquid-frame-x', `${column * LIQUID_FRAME_POSITION_STEP}%`)
+  elements.liquidSprite.style.setProperty('--liquid-frame-y', `${row * LIQUID_FRAME_POSITION_STEP}%`)
   elements.liquidSprite.dataset.frame = String(normalizedIndex + 1)
   liquidFrameIndex = normalizedIndex
 }

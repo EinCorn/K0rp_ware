@@ -1,22 +1,16 @@
+:root {
+  /* ClickAudit's deck position is local to the shared content viewport. */
+  --clickaudit-counter-offset-y: 50px;
+}
+
 .progress-liquid {
-  inset: auto !important;
-  left: var(--korp-content-x) !important;
-  top: var(--korp-content-y) !important;
-  width: var(--korp-content-w) !important;
-  height: var(--korp-content-h) !important;
-  border: 0 !important;
-  outline: 0 !important;
-  box-shadow: none !important;
-  background: transparent !important;
-  border-radius: var(--korp-content-radius) !important;
-  overflow: hidden !important;
   z-index: 1 !important;
 }
 
 .digit-deck {
   position: absolute !important;
   left: var(--korp-content-center-x) !important;
-  top: 86px !important;
+  top: calc(var(--korp-content-y) + var(--clickaudit-counter-offset-y)) !important;
   right: auto !important;
   bottom: auto !important;
   width: var(--korp-content-w) !important;

@@ -36,14 +36,14 @@
 .progress-liquid .liquid-sprite {
   position: absolute;
   inset: 0 auto auto 0;
-  width: var(--korp-content-w);
+  width: 100%;
   height: var(--korp-content-h);
   z-index: 1;
   background-color: transparent;
   background-image: url('./assets/liquid/liquid-water-36f-clean.png?v=clean-1');
   background-repeat: no-repeat;
-  background-size: 996px 960px;
-  background-position: var(--liquid-frame-x, 0px) var(--liquid-frame-y, 0px);
+  background-size: 600% 600%;
+  background-position: var(--liquid-frame-x, 0%) var(--liquid-frame-y, 0%);
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   pointer-events: none;

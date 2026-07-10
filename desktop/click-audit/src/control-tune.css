@@ -8,10 +8,6 @@ body,
   background: transparent !important;
 }
 
-#liquid {
-  height: var(--korp-content-h) !important;
-}
-
 #confetti-layer {
   inset: auto !important;
   left: var(--korp-content-x) !important;
