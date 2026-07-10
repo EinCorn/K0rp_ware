@@ -208,6 +208,48 @@
 .os-pending-queue { overflow: hidden; }
 .os-pending-queue ul { min-height: 0; overflow: auto; padding-right: 3px; }
 
+.os-approval-form {
+  display: grid;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 8px;
+  border: 2px dashed #79725d;
+  background: #c8c1a6;
+}
+
+.os-approval-form > div > span,
+.os-approval-form > div > strong,
+.os-approval-form > div > small { display: block; }
+.os-approval-form > div > span { color: #746b56; font: 7px var(--os-mono); letter-spacing: 0.08em; }
+.os-approval-form > div > strong { margin-top: 4px; color: #37372f; font-size: 13px; line-height: 1.05; }
+.os-approval-form > div > small { margin-top: 5px; color: #5f5a4b; font-size: 9px; line-height: 1.2; }
+
+.os-approval-state {
+  padding: 5px 6px;
+  border: 1px solid #7b735e;
+  color: #726a56;
+  background: #b9b197;
+  font: 7px/1.35 var(--os-mono);
+  letter-spacing: 0.07em;
+}
+
+.os-approval-form button {
+  padding: 7px 6px;
+  border: 2px solid #596849;
+  color: #2f3d28;
+  background: #c7d17f;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  font: 8px var(--os-mono);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.os-approval-form button:hover,
+.os-approval-form button:focus-visible { background: #d9e58a; outline: 2px solid var(--os-amber); outline-offset: 2px; }
+.os-approval-form.is-available { border-style: solid; background: #d7d78e; }
+.os-approval-form.is-approved { border-style: solid; border-color: #64734f; background: #becb8d; }
+.os-approval-form.is-approved .os-approval-state { border-color: #64734f; color: #3e512f; background: #d9e3a8; }
+
 .os-game-workspace {
   min-width: 0;
   min-height: 0;
