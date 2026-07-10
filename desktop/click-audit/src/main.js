@@ -19,8 +19,12 @@ const PROGRESS_TARGET_CLICKS = 2_500
 const COLOR_TARGET_CLICKS = PROGRESS_TARGET_CLICKS
 const CONFETTI_CHANCE = 0.5
 const CONFETTI_COLORS = ['#ff4f5e', '#ffb84d', '#f7ff5c', '#64ff8f', '#56d9ff', '#9f7bff', '#ff62d2']
-const LIQUID_PALETTE = ['#ff3b30', '#ff9f0a', '#ffd60a', '#34c759', '#00c7be', '#0a84ff', '#bf5af2']
 const DEV_MILLION_TEST_VALUE = 1_000_000
+const LIQUID_FRAME_COUNT = 36
+const LIQUID_FRAME_COLUMNS = 6
+const LIQUID_FRAME_WIDTH = 166
+const LIQUID_FRAME_HEIGHT = 160
+const LIQUID_FRAME_DURATION_MS = 100
 const SOURCE_LABELS = {
   clickAudit: 'ClickAudit',
   fidget: 'Fidget',
@@ -37,14 +41,15 @@ const EMPTY_SOURCES = {
 let snapshot = normalizeSnapshot()
 let displayedClicks = null
 let activeSource = 'clickAudit'
+let liquidFrameIndex = -1
+let liquidAnimationId = null
 
 app.innerHTML = `
   <section class="shell">
     <div id="drag" class="drag-region" data-tauri-drag-region aria-hidden="true"></div>
     <div id="liquid" class="progress-liquid" aria-hidden="true">
       <div class="liquid-fill">
-        <span class="liquid-wave liquid-wave-a"></span>
-        <span class="liquid-wave liquid-wave-b"></span>
+        <div class="liquid-sprite" aria-hidden="true"></div>
       </div>
     </div>
     <button id="pin" class="corner-button pin-button" type="button" aria-label="Připíchnout okno" title="Připíchnout okno">📌</button>
@@ -59,10 +64,46 @@ const elements = {
   drag: document.querySelector('#drag'),
   counter: document.querySelector('#counter'),
   liquid: document.querySelector('#liquid'),
+  liquidSprite: document.querySelector('.liquid-sprite'),
   pin: document.querySelector('#pin'),
   reset: document.querySelector('#reset'),
   close: document.querySelector('#close'),
   confettiLayer: document.querySelector('#confetti-layer'),
+}
+
+function renderLiquidFrame(frameIndex) {
+  const normalizedIndex = frameIndex % LIQUID_FRAME_COUNT
+  const column = normalizedIndex % LIQUID_FRAME_COLUMNS
+  const row = Math.floor(normalizedIndex / LIQUID_FRAME_COLUMNS)
+
+  elements.liquidSprite.style.setProperty('--liquid-frame-x', `${-(column * LIQUID_FRAME_WIDTH)}px`)
+  elements.liquidSprite.style.setProperty('--liquid-frame-y', `${-(row * LIQUID_FRAME_HEIGHT)}px`)
+  elements.liquidSprite.dataset.frame = String(normalizedIndex + 1)
+  liquidFrameIndex = normalizedIndex
+}
+
+function startLiquidAnimation() {
+  if (!elements.liquidSprite || liquidAnimationId !== null) return
+
+  renderLiquidFrame(0)
+
+  if (window.matchMedia?.('(prefers-reduced-motion: reduce)').matches) return
+
+  let startedAt = null
+
+  const tick = (timestamp) => {
+    if (startedAt === null) startedAt = timestamp
+
+    const nextFrame = Math.floor((timestamp - startedAt) / LIQUID_FRAME_DURATION_MS) % LIQUID_FRAME_COUNT
+
+    if (nextFrame !== liquidFrameIndex) {
+      renderLiquidFrame(nextFrame)
+    }
+
+    liquidAnimationId = window.requestAnimationFrame(tick)
+  }
+
+  liquidAnimationId = window.requestAnimationFrame(tick)
 }
 
 function safeNumber(value) {
@@ -99,7 +140,6 @@ function renderSnapshot(nextSnapshot = snapshot) {
   renderDigits(String(snapshot.globalClicks))
   elements.counter.style.setProperty('--progress-color', getCounterColor(snapshot.globalClicks))
   elements.liquid.style.setProperty('--liquid-progress', `${(progress * 100).toFixed(2)}%`)
-  elements.liquid.style.setProperty('--liquid-gradient', getLiquidGradient(progress))
   elements.pin.setAttribute('aria-pressed', snapshot.alwaysOnTop ? 'true' : 'false')
   elements.pin.setAttribute('aria-label', snapshot.alwaysOnTop ? 'Odepnout okno' : 'Připíchnout okno')
   elements.pin.setAttribute('title', snapshot.alwaysOnTop ? 'Odepnout okno' : 'Připíchnout okno')
@@ -161,50 +201,6 @@ function getCounterColor(clicks) {
   const lightness = 94 - progress * 28
 
   return `hsl(${hue.toFixed(2)} ${saturation.toFixed(2)}% ${lightness.toFixed(2)}%)`
-}
-
-function getLiquidGradient(progress) {
-  const safeProgress = Math.max(progress, 0.001)
-  const stops = []
-  const maxIndex = LIQUID_PALETTE.length - 1
-
-  LIQUID_PALETTE.forEach((color, index) => {
-    const colorProgress = index / maxIndex
-
-    if (colorProgress <= progress) {
-      stops.push(`${color} ${((colorProgress / safeProgress) * 100).toFixed(2)}%`)
-    }
-  })
-
-  const bottomColor = getPaletteColorAt(progress)
-  stops.push(`${bottomColor} 100%`)
-
-  return `linear-gradient(to bottom, ${stops.join(', ')})`
-}
-
-function getPaletteColorAt(progress) {
-  const scaledProgress = Math.min(Math.max(progress, 0), 1) * (LIQUID_PALETTE.length - 1)
-  const leftIndex = Math.floor(scaledProgress)
-  const rightIndex = Math.min(leftIndex + 1, LIQUID_PALETTE.length - 1)
-  const amount = scaledProgress - leftIndex
-
-  return mixHexColors(LIQUID_PALETTE[leftIndex], LIQUID_PALETTE[rightIndex], amount)
-}
-
-function mixHexColors(left, right, amount) {
-  const leftRgb = hexToRgb(left)
-  const rightRgb = hexToRgb(right)
-  const mixed = leftRgb.map((channel, index) => Math.round(channel + (rightRgb[index] - channel) * amount))
-
-  return `rgb(${mixed[0]} ${mixed[1]} ${mixed[2]})`
-}
-
-function hexToRgb(hex) {
-  return [
-    Number.parseInt(hex.slice(1, 3), 16),
-    Number.parseInt(hex.slice(3, 5), 16),
-    Number.parseInt(hex.slice(5, 7), 16),
-  ]
 }
 
 function burstConfetti() {
@@ -269,6 +265,7 @@ elements.drag.addEventListener('mousedown', startWindowMove)
 elements.pin.addEventListener('click', () => setAlwaysOnTop(!snapshot.alwaysOnTop))
 elements.reset.addEventListener('click', reset)
 elements.close.addEventListener('click', () => appWindow.close())
+startLiquidAnimation()
 
 window.addEventListener('keydown', async (event) => {
   if (event.key.toLowerCase() === 'm') {

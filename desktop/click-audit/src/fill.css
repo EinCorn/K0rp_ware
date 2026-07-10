@@ -1,1 +1,58 @@
-.progress-liquid{overflow:hidden!important;pointer-events:none}.progress-liquid .liquid-fill{position:absolute!important;left:0!important;right:0!important;bottom:0!important;height:var(--liquid-progress,0%)!important;min-height:0!important;overflow:hidden!important;opacity:1!important;background:transparent!important;clip-path:none!important;image-rendering:pixelated;image-rendering:crisp-edges;transition:height 560ms cubic-bezier(.2,.8,.2,1);box-shadow:inset 0 5px 8px rgba(255,235,185,.025),inset 0 -9px 14px rgba(0,0,0,.1)!important}.progress-liquid .liquid-fill::before{content:''!important;display:block!important;position:absolute!important;left:0!important;right:0!important;top:0!important;height:max(100%,166px)!important;z-index:1!important;background-image:url('./assets/liquid/liquid-spectrum-sprite-1.png?v=png-horizontal-cover-1')!important;background-repeat:no-repeat!important;background-size:600% 100%!important;background-position:0% 0%!important;image-rendering:pixelated;image-rendering:crisp-edges;mix-blend-mode:multiply;filter:saturate(1.35) brightness(1.18) contrast(1.08);animation:liquid-sprite-frames 480ms steps(1,end) infinite,liquid-sprite-drift 1900ms ease-in-out infinite alternate!important;pointer-events:none!important}.progress-liquid .liquid-fill::after{content:''!important;display:block!important;position:absolute!important;inset:0!important;z-index:3!important;background:linear-gradient(to bottom,rgba(255,255,255,.01),rgba(0,0,0,.035)),repeating-linear-gradient(90deg,rgba(255,255,255,.004) 0 1px,transparent 1px 7px)!important;opacity:.12!important;mix-blend-mode:multiply;pointer-events:none!important}.progress-liquid .liquid-wave{display:block!important;position:absolute!important;left:0!important;right:0!important;top:0!important;width:100%!important;height:max(100%,166px)!important;z-index:2!important;opacity:.22!important;background-image:url('./assets/liquid/liquid-spectrum-sprite-1.png?v=png-horizontal-cover-1')!important;background-repeat:no-repeat!important;background-size:600% 100%!important;background-position:20% 0%!important;image-rendering:pixelated;image-rendering:crisp-edges;mix-blend-mode:multiply;filter:saturate(1.45) brightness(1.18) contrast(1.08);animation:liquid-sprite-frames-soft 720ms steps(1,end) infinite,liquid-wave-drift 1400ms ease-in-out infinite alternate!important;pointer-events:none!important}@keyframes liquid-sprite-frames{0%,24.99%{background-position:0% 0%}25%,49.99%{background-position:20% 0%}50%,74.99%{background-position:80% 0%}75%,100%{background-position:100% 0%}}@keyframes liquid-sprite-frames-soft{0%,24.99%{background-position:20% 0%}25%,49.99%{background-position:80% 0%}50%,74.99%{background-position:100% 0%}75%,100%{background-position:0% 0%}}@keyframes liquid-sprite-drift{0%{transform:translate3d(-2px,0,0) scaleX(1.012)}100%{transform:translate3d(2px,1px,0) scaleX(1.018)}}@keyframes liquid-wave-drift{0%{transform:translate3d(3px,1px,0) scaleX(1.018)}100%{transform:translate3d(-4px,-1px,0) scaleX(1.025)}}
+/*
+  ClickAudit liquid animation
+
+  The PNG is a 6×6 runtime sheet with 36 frames. Every cell is exactly the
+  shared K0rp content viewport (166 × 160 px), so Aseprite's 2 px export
+  gutters never enter the runtime asset or its background-position math.
+*/
+.progress-liquid {
+  overflow: hidden !important;
+  pointer-events: none;
+}
+
+.progress-liquid .liquid-fill {
+  position: absolute !important;
+  inset: auto 0 0 !important;
+  height: var(--liquid-progress, 0%) !important;
+  min-height: 0 !important;
+  overflow: hidden !important;
+  opacity: 1 !important;
+  background: transparent !important;
+  clip-path: none !important;
+  box-shadow: none !important;
+  transition: height 560ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.progress-liquid .liquid-fill::before,
+.progress-liquid .liquid-fill::after {
+  content: none !important;
+  display: none !important;
+  animation: none !important;
+}
+
+.progress-liquid .liquid-sprite {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: var(--korp-content-w);
+  height: var(--korp-content-h);
+  z-index: 1;
+  background-image: url('./assets/liquid/liquid-water-36f.png');
+  background-repeat: no-repeat;
+  background-size: 996px 960px;
+  background-position: var(--liquid-frame-x, 0px) var(--liquid-frame-y, 0px);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+  will-change: background-position;
+}
+
+.progress-liquid .liquid-wave {
+  display: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .progress-liquid .liquid-sprite {
+    will-change: auto;
+  }
+}
