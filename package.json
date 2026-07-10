@@ -10,7 +10,9 @@
     "preview": "vite preview",
     "sync:korp-ui": "node scripts/sync-k0rp-ui.mjs",
     "test:korp-core": "npm --prefix packages/korp-core test",
-    "typecheck:korp-core": "npm --prefix packages/korp-core run typecheck"
+    "typecheck:korp-core": "npm --prefix packages/korp-core run typecheck",
+    "test:korp-modules": "npm --prefix packages/korp-modules test",
+    "typecheck:korp-modules": "npm --prefix packages/korp-modules run typecheck"
   },
   "dependencies": {
     "react": "^19.2.7",
