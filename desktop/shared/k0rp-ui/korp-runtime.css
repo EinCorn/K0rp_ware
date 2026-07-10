@@ -19,7 +19,7 @@
 
   /* 2. Shell pocket. App-window artwork must not exceed this box. */
   --korp-shell-pocket-x: 36px;
-  --korp-shell-pocket-y: 24px;
+  --korp-shell-pocket-y: 25px;
   --korp-shell-pocket-w: 181px;
   --korp-shell-pocket-h: 181px;
 
