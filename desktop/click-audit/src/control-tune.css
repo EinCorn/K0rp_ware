@@ -9,7 +9,7 @@ body,
 }
 
 #liquid {
-  height: 164px !important;
+  height: var(--korp-content-h) !important;
 }
 
 #confetti-layer {
