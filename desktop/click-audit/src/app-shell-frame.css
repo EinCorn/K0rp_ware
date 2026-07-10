@@ -2,7 +2,7 @@
   border: 0 !important;
   outline: 0 !important;
   border-radius: 0 !important;
-  background: url('./assets/app-shell.webp') center / 100% 100% no-repeat transparent !important;
+  background: url('./assets/app-shell.png') center / 100% 100% no-repeat transparent !important;
   box-shadow: none !important;
   overflow: hidden;
 }

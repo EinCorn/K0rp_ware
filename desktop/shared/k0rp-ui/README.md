@@ -8,7 +8,7 @@ This folder is the source of truth for the shared 230×230 desktop shell used by
 desktop/shared/k0rp-ui/korp-shell.css
 desktop/shared/k0rp-ui/korp-runtime.css
 desktop/shared/k0rp-ui/assets/app-window.png
-desktop/shared/k0rp-ui/assets/app-shell.webp
+desktop/shared/k0rp-ui/assets/app-shell.png
 desktop/shared/k0rp-ui/assets/korp-ui-close.png
 desktop/shared/k0rp-ui/assets/korp-ui-pin.png
 desktop/shared/k0rp-ui/assets/korp-ui-reset.webp
@@ -23,7 +23,7 @@ desktop/click-audit/src/k0rp-ui/korp-shell.css
 desktop/fidget/src/k0rp-ui/korp-shell.css
 desktop/bloom-desktop/src/k0rp-ui/korp-shell.css
 
-desktop/click-audit/src/assets/app-shell.webp
+desktop/click-audit/src/assets/app-shell.png
 desktop/click-audit/src/assets/korp-ui-close.png
 desktop/click-audit/src/assets/korp-ui-pin.png
 desktop/click-audit/src/assets/korp-ui-reset.webp

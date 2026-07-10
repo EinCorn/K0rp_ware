@@ -12,7 +12,7 @@ function appTargets(path) {
 const files = [
   ['desktop/shared/k0rp-ui/korp-shell.css', appTargets('/src/k0rp-ui/korp-shell.css')],
   ['desktop/shared/k0rp-ui/korp-runtime.css', appTargets('/src/k0rp-ui/korp-runtime.css')],
-  ['desktop/shared/k0rp-ui/assets/app-shell.webp', appTargets('/src/assets/app-shell.webp')],
+  ['desktop/shared/k0rp-ui/assets/app-shell.png', appTargets('/src/assets/app-shell.png')],
   ['desktop/shared/k0rp-ui/assets/app-window.png', appTargets('/src/assets/app-window.png')],
   ['desktop/shared/k0rp-ui/assets/korp-ui-close.png', appTargets('/src/assets/korp-ui-close.png')],
   ['desktop/shared/k0rp-ui/assets/korp-ui-pin.png', appTargets('/src/assets/korp-ui-pin.png')],
