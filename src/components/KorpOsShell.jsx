@@ -28,6 +28,8 @@ const initialActivity = [
   'Bloom čeká na drobné myšlenky ke zpracování.',
 ]
 
+const auditTraceApprovalThreshold = 10
+
 function WindowHeader({ children }) {
   return (
     <div className="os-window-header">
@@ -51,26 +53,60 @@ function KorpOsShell() {
   const [korpState, setKorpState] = useState(() => createInitialState({ settings: { platform: 'web' } }))
   const [activity, setActivity] = useState(initialActivity)
   const [feedbackTick, setFeedbackTick] = useState(0)
+  const [auditTraceApproved, setAuditTraceApproved] = useState(false)
 
   const auditClicks = korpState.stats.eventsByType['clickaudit.click'] ?? 0
+  const auditTraceAvailable = auditClicks >= auditTraceApprovalThreshold
+  const notionalWorkPerAudit = auditTraceApproved ? 0.2 : 0.1
 
   const registerAuditAction = () => {
     const nextClick = auditClicks + 1
     const timestamp = Date.now()
 
-    setKorpState((currentState) => applyKorpEvent(currentState, {
-      id: `k0rp-os-clickaudit-${timestamp}-${nextClick}`,
-      timestamp,
-      sourceModule: 'click-audit',
-      type: 'clickaudit.click',
-      value: 1,
-      tags: ['k0rp-os', 'manual-audit']
-    }))
+    setKorpState((currentState) => {
+      const nextState = applyKorpEvent(currentState, {
+        id: `k0rp-os-clickaudit-${timestamp}-${nextClick}`,
+        timestamp,
+        sourceModule: 'click-audit',
+        type: 'clickaudit.click',
+        value: 1,
+        tags: ['k0rp-os', 'manual-audit']
+      })
+
+      if (!auditTraceApproved) return nextState
+
+      return applyKorpEvent(nextState, {
+        id: `k0rp-os-audit-trace-extension-${timestamp}-${nextClick}`,
+        timestamp,
+        sourceModule: 'system',
+        type: 'system.externalWorkPulse',
+        value: 0.1,
+        tags: ['k0rp-os', 'audit-trace-extension']
+      })
+    })
+    setActivity((currentActivity) => {
+      const nextEntries = [
+        `#${String(nextClick).padStart(3, '0')} ${auditMessages[(nextClick - 1) % auditMessages.length]}`,
+      ]
+
+      if (nextClick === auditTraceApprovalThreshold) {
+        nextEntries.unshift('Žádost o rozšíření auditní stopy může být nyní předložena k autorizaci.')
+      }
+
+      return [...nextEntries, ...currentActivity].slice(0, 4)
+    })
+    setFeedbackTick(nextClick)
+  }
+
+  const approveAuditTrace = () => {
+    if (!auditTraceAvailable || auditTraceApproved) return
+
+    setAuditTraceApproved(true)
     setActivity((currentActivity) => [
-      `#${String(nextClick).padStart(3, '0')} ${auditMessages[(nextClick - 1) % auditMessages.length]}`,
+      'Rozšíření auditní stopy bylo schváleno. Výkaz získal další kolonku.',
+      'Příští kontrola přítomnosti bude vykázána jako +0.2 NWU.',
       ...currentActivity,
     ].slice(0, 4))
-    setFeedbackTick(nextClick)
   }
 
   return (
@@ -110,10 +146,23 @@ function KorpOsShell() {
                 <p className="os-kicker">FORMULÁŘE A OPRÁVNĚNÍ</p>
                 <h2 id="approval-title">Čekající schválení</h2>
               </div>
+              <div className={`os-approval-form ${auditTraceApproved ? 'is-approved' : auditTraceAvailable ? 'is-available' : 'is-locked'}`}>
+                <div>
+                  <span>ŽÁDOST 10-A / AUDITNÍ STOPA</span>
+                  <strong>Rozšíření auditní stopy</strong>
+                  <small>Přidá pomocný výkaz přítomnosti k budoucím kontrolám.</small>
+                </div>
+                {auditTraceApproved ? (
+                  <span className="os-approval-state">SCHVÁLENO / AKTIVNÍ<br />+0.2 NWU NA KONTROLU</span>
+                ) : auditTraceAvailable ? (
+                  <button type="button" onClick={approveAuditTrace}>SCHVÁLIT POMOCNÝ VÝKAZ</button>
+                ) : (
+                  <span className="os-approval-state">ČEKÁ NA {auditTraceApprovalThreshold} KONTROL<br />{auditClicks} / {auditTraceApprovalThreshold} EVIDOVÁNO</span>
+                )}
+              </div>
               <ul>
                 <li><span>Fidget: stabilizační příděl</span><small>VYŽADUJE 12 NWU</small></li>
                 <li><span>Bloom: drobné myšlenky</span><small>REVIZE NEURČENA</small></li>
-                <li><span>Osobní důvod přítomnosti</span><small>NEVYŽADOVÁN</small></li>
               </ul>
             </section>
 
@@ -162,8 +211,8 @@ function KorpOsShell() {
                   </button>
                   <div className="os-audit-readout" aria-live="polite">
                     <div><span>ÚKONY V RELACI</span><strong>{String(auditClicks).padStart(3, '0')}</strong></div>
-                    <div><span>POSLEDNÍ PŘÍRŮSTEK</span><strong key={feedbackTick} className="os-action-feedback">+0.1 NWU</strong></div>
-                    <div><span>STAV ZÁZNAMU</span><strong>ŘÁDNĚ NEURČITÝ</strong></div>
+                    <div><span>{auditTraceApproved ? 'PŘÍRŮSTEK NA ÚKON' : 'POSLEDNÍ PŘÍRŮSTEK'}</span><strong key={feedbackTick} className="os-action-feedback">+{notionalWorkPerAudit.toFixed(1)} NWU</strong></div>
+                    <div><span>STAV ZÁZNAMU</span><strong>{auditTraceApproved ? 'ROZŠÍŘENÝ VÝKAZ' : 'ŘÁDNĚ NEURČITÝ'}</strong></div>
                   </div>
                 </div>
               </section>
