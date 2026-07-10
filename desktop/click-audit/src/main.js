@@ -2,6 +2,7 @@ import { invoke } from '@tauri-apps/api/core'
 import { listen } from '@tauri-apps/api/event'
 import { getCurrentWindow } from '@tauri-apps/api/window'
 import digitSheetUrl from './assets/digits/digit-sheet-q30.jpg?url'
+import liquidAnimation from './assets/liquid/liquid-water-36f-clean.json'
 import './styles.css'
 import './frameless.css'
 import './visual-test.css'
@@ -20,11 +21,15 @@ const COLOR_TARGET_CLICKS = PROGRESS_TARGET_CLICKS
 const CONFETTI_CHANCE = 0.5
 const CONFETTI_COLORS = ['#ff4f5e', '#ffb84d', '#f7ff5c', '#64ff8f', '#56d9ff', '#9f7bff', '#ff62d2']
 const DEV_MILLION_TEST_VALUE = 1_000_000
-const LIQUID_FRAME_COUNT = 36
-const LIQUID_FRAME_COLUMNS = 6
-const LIQUID_FRAME_WIDTH = 166
-const LIQUID_FRAME_HEIGHT = 160
-const LIQUID_FRAME_DURATION_MS = 100
+const {
+  frameCount: LIQUID_FRAME_COUNT,
+  columns: LIQUID_FRAME_COLUMNS,
+  frame: {
+    width: LIQUID_FRAME_WIDTH,
+    height: LIQUID_FRAME_HEIGHT,
+  },
+  frameDurationMs: LIQUID_FRAME_DURATION_MS,
+} = liquidAnimation
 const SOURCE_LABELS = {
   clickAudit: 'ClickAudit',
   fidget: 'Fidget',

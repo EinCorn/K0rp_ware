@@ -1,0 +1,24 @@
+{
+  "format": "k0rp-liquid-sprite-sheet/v1",
+  "image": "liquid-water-36f-clean.png",
+  "sourceImage": "liquid-water-36f.png",
+  "sheet": {
+    "width": 996,
+    "height": 960
+  },
+  "frame": {
+    "width": 166,
+    "height": 160
+  },
+  "columns": 6,
+  "rows": 6,
+  "frameCount": 36,
+  "frameDurationMs": 100,
+  "fps": 10,
+  "loop": "forward",
+  "preprocess": {
+    "removed": "top-edge-connected opaque dark background",
+    "preserved": "dark details not connected to the frame's top edge",
+    "gutter": "none"
+  }
+}

@@ -8,11 +8,14 @@
 .progress-liquid {
   overflow: hidden !important;
   pointer-events: none;
+  isolation: isolate;
 }
 
 .progress-liquid .liquid-fill {
   position: absolute !important;
   inset: auto 0 0 !important;
+  width: 100% !important;
+  max-height: 100% !important;
   height: var(--liquid-progress, 0%) !important;
   min-height: 0 !important;
   overflow: hidden !important;
@@ -32,12 +35,12 @@
 
 .progress-liquid .liquid-sprite {
   position: absolute;
-  left: 0;
-  top: 0;
+  inset: 0 auto auto 0;
   width: var(--korp-content-w);
   height: var(--korp-content-h);
   z-index: 1;
-  background-image: url('./assets/liquid/liquid-water-36f.png');
+  background-color: transparent;
+  background-image: url('./assets/liquid/liquid-water-36f-clean.png?v=clean-1');
   background-repeat: no-repeat;
   background-size: 996px 960px;
   background-position: var(--liquid-frame-x, 0px) var(--liquid-frame-y, 0px);
