@@ -1,0 +1,237 @@
+.os-shell {
+  min-height: 100svh;
+  padding: clamp(16px, 3vw, 42px);
+  background:
+    repeating-linear-gradient(0deg, rgba(255, 255, 255, 0.018) 0 1px, transparent 1px 5px),
+    radial-gradient(circle at 85% 10%, rgba(184, 91, 79, 0.16), transparent 28rem),
+    linear-gradient(145deg, #191815 0%, #0d0d0c 64%, #18140f 100%);
+}
+
+.os-desktop {
+  width: min(1240px, 100%);
+  margin: 0 auto;
+  overflow: hidden;
+  border: 1px solid #615948;
+  background:
+    linear-gradient(90deg, rgba(255, 255, 255, 0.026) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.022) 1px, transparent 1px),
+    #1b1a17;
+  background-size: 26px 26px;
+  box-shadow: 0 30px 100px rgba(0, 0, 0, 0.55), inset 0 0 0 3px rgba(255, 255, 255, 0.025);
+}
+
+.os-topbar,
+.os-taskbar {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+  padding: 13px 18px;
+  border-bottom: 1px solid #514a3d;
+  color: #d8d0bd;
+  background: #171613;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+}
+
+.os-brand,
+.os-system-status {
+  display: flex;
+  gap: 9px;
+  align-items: baseline;
+  text-transform: uppercase;
+}
+
+.os-brand > span {
+  color: #f2ead9;
+  font-size: 21px;
+  font-weight: 800;
+  letter-spacing: -0.1em;
+}
+
+.os-brand strong { color: #c86759; }
+.os-brand small,
+.os-system-status small { color: #938b7b; letter-spacing: 0.05em; }
+
+.os-system-status { align-items: center; }
+
+.os-status-lamp {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #83a867;
+  box-shadow: 0 0 14px #83a867;
+}
+
+.os-workspace-intro,
+.os-module-section,
+.os-placeholder-window { margin: clamp(18px, 3vw, 36px); }
+
+.os-workspace-intro {
+  max-width: 780px;
+  padding: clamp(26px, 5vw, 56px);
+  border: 1px solid #554c3d;
+  background: linear-gradient(135deg, rgba(65, 58, 45, 0.72), rgba(26, 25, 22, 0.86));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.025);
+}
+
+.os-kicker {
+  margin: 0 0 10px;
+  color: #b99b62;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.14em;
+}
+
+.os-workspace-intro h1,
+.os-section-heading h2,
+.os-window-body h2 {
+  margin: 0;
+  color: #f2ead9;
+  font-size: clamp(30px, 5vw, 60px);
+  letter-spacing: -0.04em;
+}
+
+.os-workspace-intro > p:last-child,
+.os-window-description { max-width: 650px; color: #c7beae; }
+
+.os-section-heading,
+.os-window-title-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: end;
+  margin-bottom: 16px;
+}
+
+.os-section-heading h2 { font-size: clamp(24px, 4vw, 38px); }
+.os-section-heading > span,
+.os-window-stamp {
+  color: #a69d8d;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.os-module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 12px;
+}
+
+.os-module-tile {
+  min-height: 200px;
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #5f5748;
+  color: #d4ccbc;
+  background: linear-gradient(160deg, #2c2922, #1b1a17 68%);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 140ms ease, border-color 140ms ease, filter 140ms ease;
+}
+
+.os-module-tile:hover,
+.os-module-tile:focus-visible { transform: translateY(-2px); border-color: #c29a5b; filter: brightness(1.08); }
+.os-module-tile:focus-visible { outline: 2px solid #c29a5b; outline-offset: 3px; }
+
+.os-module-tile.is-current { box-shadow: inset 3px 0 #84a86a; }
+.os-module-tile.is-pending { border-style: dashed; opacity: 0.72; box-shadow: inset 3px 0 #827966; }
+
+.os-tile-status,
+.os-tile-footer {
+  color: #aa9e89;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 0.11em;
+}
+
+.os-module-tile.is-current .os-tile-status { color: #9cc27f; }
+
+.os-module-tile strong {
+  margin-top: 24px;
+  color: #f0e9da;
+  font-size: 23px;
+  line-height: 1.05;
+}
+
+.os-tile-copy { margin-top: 12px; color: #bbb3a4; font-size: 14px; line-height: 1.5; }
+
+.os-tile-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: auto;
+  padding-top: 20px;
+}
+
+.os-placeholder-window { border: 1px solid #625a4c; background: #191815; box-shadow: 0 18px 48px rgba(0, 0, 0, 0.28); }
+
+.os-window-header {
+  min-height: 42px;
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 0 14px;
+  border-bottom: 1px solid #514a3d;
+  color: #aaa18f;
+  background: #24211c;
+  font-family: var(--mono);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+}
+
+.os-window-dots { display: flex; gap: 6px; }
+.os-window-dots i { width: 9px; height: 9px; border-radius: 50%; background: #807866; }
+.os-window-dots i:first-child { background: #b85b4f; }
+.os-window-dots i:nth-child(2) { background: #b8975b; }
+.os-window-dots i:last-child { background: #6f925d; }
+
+.os-window-header button {
+  margin-left: auto;
+  border: 0;
+  color: #e6decd;
+  background: transparent;
+  font: 22px/1 var(--mono);
+  cursor: pointer;
+}
+
+.os-window-body { padding: clamp(22px, 4vw, 42px); }
+.os-window-stamp { padding: 7px 9px; border: 1px solid #5e5749; background: #151411; }
+
+.os-module-details {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 28px 0;
+}
+
+.os-module-details > div { padding: 14px; border: 1px solid #4b463d; background: rgba(255, 255, 255, 0.025); }
+.os-module-details dt { color: #a99e8a; font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; }
+.os-module-details dd { margin: 9px 0 0; color: #e5decf; line-height: 1.45; }
+
+.os-resource-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.os-resource-list code { padding: 3px 5px; color: #c8d9b3; background: #252a20; font-family: var(--mono); font-size: 12px; }
+.os-window-note { color: #a79c88; font-family: var(--mono); font-size: 12px; }
+
+.os-window-empty { min-height: 180px; display: grid; gap: 8px; align-content: center; justify-items: start; padding: clamp(24px, 5vw, 48px); color: #a79d8d; font-family: var(--mono); font-size: 13px; }
+.os-window-empty strong { color: #d8d0bf; letter-spacing: 0.08em; }
+
+.os-taskbar { border-top: 1px solid #514a3d; border-bottom: 0; color: #aaa08e; font-size: 10px; }
+.os-taskbar span:first-child { color: #e0d7c5; }
+
+@media (max-width: 700px) {
+  .os-topbar,
+  .os-taskbar,
+  .os-section-heading,
+  .os-window-title-row { align-items: flex-start; flex-direction: column; }
+
+  .os-brand,
+  .os-system-status { flex-wrap: wrap; }
+  .os-taskbar { gap: 8px; }
+  .os-module-details { grid-template-columns: 1fr; }
+  .os-tile-footer { align-items: flex-start; flex-direction: column; }
+}

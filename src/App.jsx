@@ -1,7 +1,7 @@
 import BloomPage from './components/BloomPage'
 import ClickAuditPage from './components/ClickAuditPage'
-import Dashboard from './components/Dashboard'
 import FidgetPage from './components/FidgetPage'
+import KorpOsShell from './components/KorpOsShell'
 import './App.css'
 
 function App() {
@@ -20,7 +20,7 @@ function App() {
     return <BloomPage />
   }
 
-  return <Dashboard />
+  return <KorpOsShell />
 }
 
 export default App
