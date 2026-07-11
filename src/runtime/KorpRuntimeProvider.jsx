@@ -134,6 +134,10 @@ export function KorpRuntimeProvider({ children }) {
     runtime.unlockedMemoIds.includes(memoId)
   ), [runtime.unlockedMemoIds])
 
+  const isModuleUnlocked = useCallback((moduleId) => (
+    runtime.unlockedModuleIds.includes(moduleId)
+  ), [runtime.unlockedModuleIds])
+
   const value = useMemo(() => ({
     korpState: runtime.korpState,
     stats: runtime.korpState.stats,
@@ -141,6 +145,7 @@ export function KorpRuntimeProvider({ children }) {
     submittedFormIds: runtime.submittedFormIds,
     ownedUpgradeIds: runtime.ownedUpgradeIds,
     unlockedMemoIds: runtime.unlockedMemoIds,
+    unlockedModuleIds: runtime.unlockedModuleIds,
     auditForms,
     dispatchKorpEvent,
     submitAuditForm,
@@ -148,12 +153,14 @@ export function KorpRuntimeProvider({ children }) {
     isFormSubmitted,
     isUpgradeUnlocked,
     isMemoUnlocked,
+    isModuleUnlocked,
     resetRuntime,
   }), [
     dispatchKorpEvent,
     isFormAvailable,
     isFormSubmitted,
     isMemoUnlocked,
+    isModuleUnlocked,
     isUpgradeUnlocked,
     resetRuntime,
     runtime,
