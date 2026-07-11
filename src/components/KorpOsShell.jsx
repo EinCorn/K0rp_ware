@@ -3,18 +3,6 @@ import { applyKorpEvent, createInitialState } from '../../packages/korp-core/src
 import { listModules } from '../../packages/korp-modules/src/index'
 import './KorpOsShell.css'
 
-const modules = listModules()
-const pendingModules = modules.filter((module) => module.status !== 'current')
-
-const resourceDefinitions = [
-  { key: 'notionalWorkUnits', label: 'NOTIONAL WORK UNITS', unit: 'NWU', precision: 1 },
-  { key: 'auditPressure', label: 'AUDIT PRESSURE', unit: 'AP', precision: 0 },
-  { key: 'perceivedProductivity', label: 'PERCEIVED PRODUCTIVITY', unit: 'PP', precision: 1 },
-  { key: 'complianceIntegrity', label: 'COMPLIANCE INTEGRITY', unit: 'CI', precision: 0 },
-  { key: 'stabilization', label: 'STABILIZATION', unit: 'STB', precision: 1 },
-  { key: 'entropy', label: 'ENTROPY', unit: 'ENT', precision: 1 },
-]
-
 const auditMessages = [
   'Auditní stopa byla rozšířena. Účel zůstává předpokládaný.',
   'Přítomnost byla potvrzena bez nutnosti přítomnosti.',
@@ -24,27 +12,30 @@ const auditMessages = [
 
 const initialActivity = [
   'Provozní plocha otevřena. Pracovní den nebyl ověřen.',
-  'Fidget zařazen do stabilizační pohotovosti.',
-  'Bloom čeká na drobné myšlenky ke zpracování.',
+  'Audit 00-A byl připraven k místnímu zpracování.',
+  'Síťové odesílání je pro tuto relaci vypnuto.',
 ]
 
 const auditTraceApprovalThreshold = 10
+const lockedShortcuts = listModules()
+  .filter((module) => module.status !== 'current')
+  .slice(0, 2)
 
-function WindowHeader({ children }) {
+function WindowHeader({ children, variant = 'document' }) {
   return (
-    <div className="os-window-header">
+    <div className={'os-window-header os-window-header-' + variant}>
       <span className="os-window-title">{children}</span>
-      <span className="os-window-dots" aria-hidden="true"><i /><i /><i /></span>
+      <span className="os-window-controls" aria-hidden="true"><i /><i /><i /></span>
     </div>
   )
 }
 
-function ResourceCounter({ definition, value }) {
+function DesktopIcon({ title, type, status, isLocked = false }) {
   return (
-    <div className="os-resource-counter">
-      <span>{definition.label}</span>
-      <strong>{value.toFixed(definition.precision)}</strong>
-      <small>{definition.unit}</small>
+    <div className={'os-desktop-icon' + (isLocked ? ' is-locked' : '')}>
+      <span className={'os-icon-glyph os-icon-' + type} aria-hidden="true" />
+      <span className="os-icon-label">{title}</span>
+      {status && <small>{status}</small>}
     </div>
   )
 }
@@ -58,6 +49,7 @@ function KorpOsShell() {
   const auditClicks = korpState.stats.eventsByType['clickaudit.click'] ?? 0
   const auditTraceAvailable = auditClicks >= auditTraceApprovalThreshold
   const notionalWorkPerAudit = auditTraceApproved ? 0.2 : 0.1
+  const formVisible = auditTraceAvailable || auditTraceApproved
 
   const registerAuditAction = () => {
     const nextClick = auditClicks + 1
@@ -65,7 +57,7 @@ function KorpOsShell() {
 
     setKorpState((currentState) => {
       const nextState = applyKorpEvent(currentState, {
-        id: `k0rp-os-clickaudit-${timestamp}-${nextClick}`,
+        id: 'k0rp-os-clickaudit-' + timestamp + '-' + nextClick,
         timestamp,
         sourceModule: 'click-audit',
         type: 'clickaudit.click',
@@ -76,7 +68,7 @@ function KorpOsShell() {
       if (!auditTraceApproved) return nextState
 
       return applyKorpEvent(nextState, {
-        id: `k0rp-os-audit-trace-extension-${timestamp}-${nextClick}`,
+        id: 'k0rp-os-audit-trace-extension-' + timestamp + '-' + nextClick,
         timestamp,
         sourceModule: 'system',
         type: 'system.externalWorkPulse',
@@ -84,13 +76,14 @@ function KorpOsShell() {
         tags: ['k0rp-os', 'audit-trace-extension']
       })
     })
+
     setActivity((currentActivity) => {
       const nextEntries = [
-        `#${String(nextClick).padStart(3, '0')} ${auditMessages[(nextClick - 1) % auditMessages.length]}`,
+        '#' + String(nextClick).padStart(3, '0') + ' ' + auditMessages[(nextClick - 1) % auditMessages.length],
       ]
 
       if (nextClick === auditTraceApprovalThreshold) {
-        nextEntries.unshift('Žádost o rozšíření auditní stopy může být nyní předložena k autorizaci.')
+        nextEntries.unshift('Formulář 10-A byl doručen do složky Formuláře.')
       }
 
       return [...nextEntries, ...currentActivity].slice(0, 4)
@@ -110,160 +103,99 @@ function KorpOsShell() {
   }
 
   return (
-    <main className="os-shell" aria-label="K0rp_OS pracovní stanice">
+    <main className="os-shell" aria-label="K0rp_OS pracovní plocha">
       <section className="os-desktop">
-        <header className="os-topbar">
+        <header className="os-desktop-readout">
           <div className="os-brand" aria-label="K0rp_OS">
-            <span>KØrp</span>
-            <strong>_OS</strong>
-            <small>K0rp_ware / provozní pracovní stanice</small>
+            <strong>KØrp_OS</strong>
+            <span>BUILD 0.2 / PRACOVNÍ STANICE</span>
           </div>
-          <div className="os-machine-readout">
+          <div className="os-session-readout">
             <span className="os-status-lamp" aria-hidden="true" />
-            <span>SYSTÉM ONLINE</span>
-            <small>SMĚNA 01 / LOKÁLNÍ RELACE</small>
+            <span>RELACE 01</span>
+            <span>EMPLOYEE LOCAL-000</span>
           </div>
         </header>
 
-        <p className="os-announcement">INTERNÍ OZNÁMENÍ: PŘÍTOMNOST MŮŽE BÝT NAHRAZENA ŘÁDNĚ VEDENÝM ZÁZNAMEM.</p>
-
-        <div className="os-game-workbench">
-          <aside className="os-ledger" aria-label="Účet provozních zdrojů">
-            <div className="os-ledger-heading">
-              <span>KØRP / START</span>
-              <strong>ÚČET VÝKONU</strong>
-              <small>HODNOTY JSOU PROZATÍM LOKÁLNĚ PŘESVĚDČIVÉ.</small>
-            </div>
-
-            <section className="os-resource-grid" aria-label="Aktuální zdroje">
-              {resourceDefinitions.map((definition) => (
-                <ResourceCounter key={definition.key} definition={definition} value={korpState.resources[definition.key]} />
-              ))}
-            </section>
-
-            <section className="os-approval-panel" aria-labelledby="approval-title">
-              <div className="os-panel-heading">
-                <p className="os-kicker">FORMULÁŘE A OPRÁVNĚNÍ</p>
-                <h2 id="approval-title">Čekající schválení</h2>
-              </div>
-              <div className={`os-approval-form ${auditTraceApproved ? 'is-approved' : auditTraceAvailable ? 'is-available' : 'is-locked'}`}>
-                <div>
-                  <span>ŽÁDOST 10-A / AUDITNÍ STOPA</span>
-                  <strong>Rozšíření auditní stopy</strong>
-                  <small>Přidá pomocný výkaz přítomnosti k budoucím kontrolám.</small>
-                </div>
-                {auditTraceApproved ? (
-                  <span className="os-approval-state">SCHVÁLENO / AKTIVNÍ<br />+0.2 NWU NA KONTROLU</span>
-                ) : auditTraceAvailable ? (
-                  <button type="button" onClick={approveAuditTrace}>SCHVÁLIT POMOCNÝ VÝKAZ</button>
-                ) : (
-                  <span className="os-approval-state">ČEKÁ NA {auditTraceApprovalThreshold} KONTROL<br />{auditClicks} / {auditTraceApprovalThreshold} EVIDOVÁNO</span>
-                )}
-              </div>
-              <ul>
-                <li><span>Fidget: stabilizační příděl</span><small>VYŽADUJE 12 NWU</small></li>
-                <li><span>Bloom: drobné myšlenky</span><small>REVIZE NEURČENA</small></li>
-              </ul>
-            </section>
-
-            <section className="os-pending-queue" aria-labelledby="pending-title">
-              <div className="os-panel-heading">
-                <p className="os-kicker">PŘEDBĚŽNÁ EVIDENCE</p>
-                <h2 id="pending-title">Fronta modulů</h2>
-              </div>
-              <ul>
-                {pendingModules.map((module) => (
-                  <li key={module.id}>
-                    <span>{module.title}</span>
-                    <small>{module.status === 'candidate' ? 'ČEKÁ NA POSOUZENÍ' : 'NEPLÁNOVANĚ BUDOUCÍ'}</small>
-                  </li>
-                ))}
-              </ul>
-            </section>
+        <div className="os-desktop-space">
+          <aside className="os-desktop-icons" aria-label="Plocha zaměstnance">
+            <DesktopIcon title="Compliance Bin" type="bin" status="SYSTÉMOVÉ" />
+            <DesktopIcon
+              title="Formuláře"
+              type="folder"
+              status={formVisible ? '1 NOVÝ SOUBOR' : 'ČEKÁ NA AUDIT'}
+              isLocked={!formVisible}
+            />
+            {lockedShortcuts.map((module) => (
+              <DesktopIcon key={module.id} title={module.title} type="app" status="NEINSTALOVÁNO" isLocked />
+            ))}
           </aside>
 
-          <section className="os-game-workspace" aria-label="Pracovní plocha produktivity">
-            <header className="os-workspace-head">
-              <div>
-                <p className="os-kicker">CENTRUM PROVOZNÍ PŘÍTOMNOSTI / RELACE AKTIVNÍ</p>
-                <h1>Vykázatelná činnost.</h1>
-              </div>
-              <div className="os-memo-slip">
-                <span>INTERNÍ MEMO 47-B</span>
-                <strong>Každý provedený úkon lze po provedení považovat za potřebný.</strong>
-                <small>SPIS: DAILY PRESENCE / OTEVŘENO</small>
-              </div>
-            </header>
-
-            <div className="os-game-grid">
-              <section className="os-click-audit-panel" aria-labelledby="click-audit-title">
-                <WindowHeader>CLICKAUDIT / KONTROLA PŘÍTOMNOSTI</WindowHeader>
-                <div className="os-click-audit-body">
-                  <div className="os-audit-instruction">
-                    <p className="os-kicker">SCHVÁLENÝ MANUÁLNÍ ÚKON</p>
-                    <h2 id="click-audit-title">Potvrďte, že něco probíhá.</h2>
-                    <p>Jeden záznam stačí k rozšíření auditní stopy. Další záznamy zvyšují její důvěryhodně vypadající objem.</p>
-                  </div>
-                  <button type="button" className="os-audit-action" onClick={registerAuditAction}>
-                    <span>CLICKAUDIT / MANUÁLNÍ POTVRZENÍ</span>
-                    <strong>PROVÉST KONTROLU PŘÍTOMNOSTI</strong>
-                    <small>NEVYŽADUJE PŘEDMĚT KONTROLY</small>
-                  </button>
-                  <div className="os-audit-readout" aria-live="polite">
-                    <div><span>ÚKONY V RELACI</span><strong>{String(auditClicks).padStart(3, '0')}</strong></div>
-                    <div><span>{auditTraceApproved ? 'PŘÍRŮSTEK NA ÚKON' : 'POSLEDNÍ PŘÍRŮSTEK'}</span><strong key={feedbackTick} className="os-action-feedback">+{notionalWorkPerAudit.toFixed(1)} NWU</strong></div>
-                    <div><span>STAV ZÁZNAMU</span><strong>{auditTraceApproved ? 'ROZŠÍŘENÝ VÝKAZ' : 'ŘÁDNĚ NEURČITÝ'}</strong></div>
-                  </div>
+          <section className="os-static-windows" aria-label="Otevřená okna">
+            <article className="os-window os-audit-window" aria-labelledby="audit-title">
+              <WindowHeader variant="audit">AUDIT 00-A / CLICK AUDIT</WindowHeader>
+              <div className="os-audit-body">
+                <div className="os-document-heading">
+                  <p>STARTUP PROCEDURA / MÍSTNÍ KONTROLA</p>
+                  <h1 id="audit-title">Potvrďte, že něco probíhá.</h1>
+                  <span>Jeden úkon vytvoří místní auditní záznam. Žádná data neopouštějí tuto pracovní stanici.</span>
                 </div>
-              </section>
 
-              <div className="os-production-row">
-                <section className="os-production-widget os-fidget-widget" aria-labelledby="fidget-title">
-                  <WindowHeader>FIDGET / STABILIZACE</WindowHeader>
-                  <div className="os-widget-body">
-                    <div className="os-fidget-dial" aria-hidden="true"><i /><i /><i /><i /></div>
-                    <div>
-                      <p className="os-kicker">PASIVNÍ PRODUKČNÍ MODUL</p>
-                      <h2 id="fidget-title">Fidget v pohotovosti</h2>
-                      <p>Stabilizace bude přidělena po připojení samostatného runtime.</p>
-                    </div>
-                  </div>
-                </section>
+                <button type="button" className="os-audit-action" onClick={registerAuditAction}>
+                  <span>CLICKAUDIT / MANUÁLNÍ POTVRZENÍ</span>
+                  <strong>PROVÉST KONTROLU</strong>
+                  <small>NEVYŽADUJE PŘEDMĚT KONTROLY</small>
+                </button>
 
-                <section className="os-production-widget os-bloom-widget" aria-labelledby="bloom-title">
-                  <WindowHeader>BLOOM / KONFORMITA</WindowHeader>
-                  <div className="os-widget-body">
-                    <div className="os-bloom-grid" aria-hidden="true"><i /><i /><i /><i /><i /><i /><i /><i /><i /></div>
-                    <div>
-                      <p className="os-kicker">PASIVNÍ PRODUKČNÍ MODUL</p>
-                      <h2 id="bloom-title">Bloom čeká na podnět</h2>
-                      <p>Compliance Integrity zůstává v opatrně nevyužitém stavu.</p>
-                    </div>
-                  </div>
-                </section>
-
-                <section className="os-activity-log" aria-labelledby="activity-title">
-                  <WindowHeader>PROVOZNÍ ZÁZNAM</WindowHeader>
-                  <div className="os-log-body">
-                    <div className="os-panel-heading">
-                      <p className="os-kicker">POSLEDNÍ DOKLADY ČINNOSTI</p>
-                      <h2 id="activity-title">Denní výpis</h2>
-                    </div>
-                    <ol>
-                      {activity.map((entry, index) => <li key={`${entry}-${index}`}>{entry}</li>)}
-                    </ol>
-                  </div>
-                </section>
+                <div className="os-audit-readout" aria-live="polite">
+                  <div><span>ÚKONY V RELACI</span><strong>{String(auditClicks).padStart(3, '0')}</strong></div>
+                  <div><span>{auditTraceApproved ? 'PŘÍRŮSTEK NA ÚKON' : 'POSLEDNÍ PŘÍRŮSTEK'}</span><strong key={feedbackTick} className="os-action-feedback">+{notionalWorkPerAudit.toFixed(1)} NWU</strong></div>
+                  <div><span>STAV VÝKAZU</span><strong>{auditTraceApproved ? 'ROZŠÍŘENÝ' : 'ŘÁDNĚ NEURČITÝ'}</strong></div>
+                </div>
               </div>
-            </div>
+            </article>
+
+            {formVisible && (
+              <article className="os-window os-form-window" aria-labelledby="approval-title">
+                <WindowHeader>FORMULÁŘE / ŽÁDOST 10-A</WindowHeader>
+                <div className={'os-form-body ' + (auditTraceApproved ? 'is-approved' : 'is-available')}>
+                  <p className="os-document-code">POMOCNÝ VÝKAZ PŘÍTOMNOSTI</p>
+                  <h2 id="approval-title">Rozšíření auditní stopy</h2>
+                  <p>Přidá pomocný výkaz přítomnosti k budoucím kontrolám.</p>
+                  {auditTraceApproved ? (
+                    <span className="os-approval-state">SCHVÁLENO / AKTIVNÍ<br />+0.2 NWU NA KONTROLU</span>
+                  ) : (
+                    <button type="button" onClick={approveAuditTrace}>SCHVÁLIT POMOCNÝ VÝKAZ</button>
+                  )}
+                </div>
+              </article>
+            )}
+
+            <article className="os-window os-log-window" aria-labelledby="activity-title">
+              <WindowHeader>DENNÍ VÝPIS / MÍSTNÍ MEMO</WindowHeader>
+              <div className="os-log-body">
+                <div>
+                  <p className="os-document-code">POSLEDNÍ DOKLADY ČINNOSTI</p>
+                  <h2 id="activity-title">Denní výpis</h2>
+                </div>
+                <ol>
+                  {activity.slice(0, 3).map((entry, index) => <li key={entry + '-' + index}>{entry}</li>)}
+                </ol>
+              </div>
+            </article>
           </section>
+
+          <p className="os-wallpaper-mark" aria-hidden="true">KØRP<br />INTERNAL<br />OPERATIONS</p>
         </div>
 
         <footer className="os-taskbar">
           <span className="os-taskbar-start">KØRP // START</span>
-          <span>EMPLOYEE: LOCAL-000</span>
-          <span>REŽIM: AUDITNÍ PŘÍTOMNOST</span>
-          <span>ÚKONY: {auditClicks} / LOCAL ONLY</span>
+          <span className="os-taskbar-app">AUDIT 00-A</span>
+          <span>NWU {korpState.resources.notionalWorkUnits.toFixed(1)}</span>
+          <span>AP {korpState.resources.auditPressure.toFixed(0)}</span>
+          <span>CI {korpState.resources.complianceIntegrity.toFixed(0)}</span>
+          <span className="os-taskbar-privacy">PRIVACY: LOCAL ONLY</span>
+          <span>10:00 / RELACE 01</span>
         </footer>
       </section>
     </main>
