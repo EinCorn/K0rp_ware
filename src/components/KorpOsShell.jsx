@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
-import { applyKorpEvent, createInitialState } from '../../packages/korp-core/src/index'
 import { listModules } from '../../packages/korp-modules/src/index'
+import { useKorpRuntime } from '../runtime/useKorpRuntime'
 import './KorpOsShell.css'
 
 const auditMessages = [
@@ -150,16 +150,21 @@ function FolderEntry({ title, detail, status, kind, isLocked = false, onOpen }) 
 }
 
 function KorpOsShell() {
-  const [korpState, setKorpState] = useState(() => createInitialState({ settings: { platform: 'web' } }))
+  const {
+    korpState,
+    stats,
+    auditTraceApproved,
+    dispatchKorpEvent,
+    approveAuditTrace: approveAuditTraceInRuntime,
+  } = useKorpRuntime()
   const [activity, setActivity] = useState(initialActivity)
   const [feedbackTick, setFeedbackTick] = useState(0)
-  const [auditTraceApproved, setAuditTraceApproved] = useState(false)
   const [windows, setWindows] = useState(initialWindows)
   const [canvasScale, setCanvasScale] = useState(1)
   const desktopSpaceRef = useRef(null)
   const dragStateRef = useRef(null)
 
-  const auditClicks = korpState.stats.eventsByType['clickaudit.click'] ?? 0
+  const auditClicks = stats.eventsByType['clickaudit.click'] ?? 0
   const auditTraceAvailable = auditClicks >= auditTraceApprovalThreshold
   const notionalWorkPerAudit = auditTraceApproved ? 0.2 : 0.1
   const formVisible = auditTraceAvailable || auditTraceApproved
@@ -285,19 +290,17 @@ function KorpOsShell() {
     const nextClick = auditClicks + 1
     const timestamp = Date.now()
 
-    setKorpState((currentState) => {
-      const nextState = applyKorpEvent(currentState, {
-        id: 'k0rp-os-clickaudit-' + timestamp + '-' + nextClick,
-        timestamp,
-        sourceModule: 'click-audit',
-        type: 'clickaudit.click',
-        value: 1,
-        tags: ['k0rp-os', 'manual-audit']
-      })
+    dispatchKorpEvent({
+      id: 'k0rp-os-clickaudit-' + timestamp + '-' + nextClick,
+      timestamp,
+      sourceModule: 'click-audit',
+      type: 'clickaudit.click',
+      value: 1,
+      tags: ['k0rp-os', 'manual-audit']
+    })
 
-      if (!auditTraceApproved) return nextState
-
-      return applyKorpEvent(nextState, {
+    if (auditTraceApproved) {
+      dispatchKorpEvent({
         id: 'k0rp-os-audit-trace-extension-' + timestamp + '-' + nextClick,
         timestamp,
         sourceModule: 'system',
@@ -305,7 +308,7 @@ function KorpOsShell() {
         value: 0.1,
         tags: ['k0rp-os', 'audit-trace-extension']
       })
-    })
+    }
 
     setActivity((currentActivity) => {
       const nextEntries = [
@@ -324,7 +327,7 @@ function KorpOsShell() {
   const approveAuditTrace = () => {
     if (!auditTraceAvailable || auditTraceApproved) return
 
-    setAuditTraceApproved(true)
+    approveAuditTraceInRuntime()
     setActivity((currentActivity) => [
       'Rozšíření auditní stopy bylo schváleno. Výkaz získal další kolonku.',
       'Příští kontrola přítomnosti bude vykázána jako +0.2 NWU.',
