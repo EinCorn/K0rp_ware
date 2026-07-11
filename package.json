@@ -12,7 +12,8 @@
     "test:korp-core": "npm --prefix packages/korp-core test",
     "typecheck:korp-core": "npm --prefix packages/korp-core run typecheck",
     "test:korp-modules": "npm --prefix packages/korp-modules test",
-    "typecheck:korp-modules": "npm --prefix packages/korp-modules run typecheck"
+    "typecheck:korp-modules": "npm --prefix packages/korp-modules run typecheck",
+    "typecheck:korp-progression": "npm --prefix packages/korp-progression run typecheck"
   },
   "dependencies": {
     "react": "^19.2.7",
@@ -24,8 +25,8 @@
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.0.2",
     "eslint": "^10.5.0",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "eslint-plugin-react-refresh": "^0.5.3",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.4.24",
     "globals": "^17.6.0",
     "vite": "^8.1.0"
   }
