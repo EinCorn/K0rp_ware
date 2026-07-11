@@ -13,7 +13,8 @@
     "typecheck:korp-core": "npm --prefix packages/korp-core run typecheck",
     "test:korp-modules": "npm --prefix packages/korp-modules test",
     "typecheck:korp-modules": "npm --prefix packages/korp-modules run typecheck",
-    "typecheck:korp-progression": "npm --prefix packages/korp-progression run typecheck"
+    "typecheck:korp-progression": "npm --prefix packages/korp-progression run typecheck",
+    "validate:korp-progression": "npm --prefix packages/korp-progression run validate"
   },
   "dependencies": {
     "react": "^19.2.7",
