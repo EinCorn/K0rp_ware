@@ -3,6 +3,7 @@ import {
   isAuditFormComplete,
   updateMultiCheckValue,
 } from '../runtime/auditFormDraft'
+import './AuditFormDocument.css'
 
 function CheckboxField({ field, value, onChange }) {
   return (
