@@ -1,6 +1,6 @@
 # K0rp_OS — Event Model
 
-Verze: 0.1.3 pracovní návrh
+Verze: 0.2.0 pracovní návrh
 
 ## 1. Účel
 
@@ -10,16 +10,7 @@ Klik, prasklá bublina, vyčištěný flek, zapadnutý tvar nebo odražené logo
 
 ## 2. Princip
 
-Každý modul emituje eventy. `korp-core` eventy zpracuje a převede je na:
-
-- resources,
-- stats,
-- progress,
-- unlocks,
-- achievements,
-- failures,
-- internal memos,
-- stav systému.
+Každý modul emituje eventy. `korp-core` eventy zpracuje a převede je na resources, stats, progress, unlocks, achievements, failures, internal memos a stav systému.
 
 UI akce nikdy nemá sama přímo měnit globální progress. Vždy přes event.
 
@@ -55,229 +46,125 @@ export type KorpState = {
 
 ## 5. Resources
 
-Globální resources:
+Globální resources zahrnují NWU, Audit Pressure, Stabilization, Compliance Integrity, Entropy, Perceived Productivity, System Order a Approval Units. Další module-local, lifetime a hidden resources jsou definované v `packages/korp-progression/data/shards/resources.json`.
 
-```ts
-export type KorpResources = {
-  notionalWorkUnits: number;
-  auditPressure: number;
-  stabilization: number;
-  complianceIntegrity: number;
-  entropy: number;
-  perceivedProductivity: number;
-  systemOrder: number;
-  idleFaith: number;
-  reliefUnits: number;
-  approvalUnits: number;
-  cleanliness: number;
-  alignment: number;
-  attentionResidue: number;
-  proceduralCalm: number;
-  momentum: number;
-  transferredResponsibility: number;
-};
-```
-
-Poznámka: ne všechny resources musí být viditelné hned. Některé mohou být hidden / unlocked later.
+Ne všechny resources musí být viditelné hned. Viditelnost je progression reward.
 
 ## 6. Current v0.3 module events
 
 ### ClickAudit
 
-```ts
-"clickaudit.click"
-"clickaudit.milestoneReached"
-"clickaudit.sourceUpdated"
-"clickaudit.reset"
+```text
+clickaudit.click
+clickaudit.milestoneReached
+clickaudit.sourceUpdated
+clickaudit.reset
+clickaudit.batchCompleted
 ```
-
-Produces:
-
-- auditPressure,
-- notionalWorkUnits,
-- perceivedProductivity.
 
 ### Fidget
 
-```ts
-"fidget.spinStarted"
-"fidget.spinTick"
-"fidget.spinStopped"
-"fidget.modeChanged"
-"fidget.speedThresholdReached"
+```text
+fidget.spinStarted
+fidget.spinTick
+fidget.spinStopped
+fidget.modeChanged
+fidget.speedThresholdReached
+fidget.sessionSettled
 ```
-
-Produces:
-
-- stabilization,
-- entropy reduction,
-- perceivedControl.
 
 ### Bloom
 
-```ts
-"bloom.tileClicked"
-"bloom.matchCleared"
-"bloom.waveAdvanced"
-"bloom.redStoneSpawned"
-"bloom.boardReset"
+```text
+bloom.tileClicked
+bloom.matchCleared
+bloom.waveAdvanced
+bloom.redStoneSpawned
+bloom.boardReset
 ```
-
-Produces:
-
-- complianceIntegrity,
-- systemOrder,
-- bloomIntegrity.
 
 ## 7. Candidate module events
 
 ### Corner Watch
 
-```ts
-"corner.logoBounce"
-"corner.nearMiss"
-"corner.cornerHit"
-"corner.speedChanged"
-"corner.sessionCompleted"
+```text
+corner.logoBounce
+corner.nearMiss
+corner.cornerHit
+corner.speedChanged
+corner.sessionCompleted
 ```
-
-Produces:
-
-- idleFaith,
-- patienceUnits,
-- perceivedProductivity.
-
-Core joke: čekání je forma účasti.
 
 ### Bublinková Fólie
 
-```ts
-"bubble.popped"
-"bubble.defectivePressed"
-"bubble.rareBubblePopped"
-"bubble.sheetCompleted"
-"bubble.sheetReplaced"
+```text
+bubble.popped
+bubble.defectivePressed
+bubble.rareBubblePopped
+bubble.sheetCompleted
+bubble.sheetReplaced
 ```
-
-Produces:
-
-- reliefUnits,
-- pressureReleased,
-- stabilization,
-- entropy reduction.
-
-Core joke: fake wellness product měřený jako výkon.
 
 ### Button Compliance
 
-```ts
-"button.pressed"
-"button.sequenceCompleted"
-"button.confirmationConfirmed"
-"button.falsePositive"
-"button.panelReset"
+```text
+button.pressed
+button.sequenceCompleted
+button.confirmationConfirmed
+button.falsePositive
+button.panelReset
 ```
-
-Produces:
-
-- approvalUnits,
-- auditPressure,
-- kryptoManagementScore.
-
-Core joke: potvrzení potvrzení potvrzuje připravenost potvrdit.
 
 ### Surface Compliance
 
-```ts
-"surface.wipeStroke"
-"surface.dirtRemoved"
-"surface.patchCleaned"
-"surface.surfaceCompleted"
-"surface.residueDetected"
+```text
+surface.wipeStroke
+surface.dirtRemoved
+surface.patchCleaned
+surface.surfaceCompleted
+surface.residueDetected
 ```
-
-Produces:
-
-- cleanliness,
-- complianceIntegrity,
-- systemOrder.
-
-Core joke: povrch je čistý, příčina zůstává.
 
 ### Shape Compliance
 
-```ts
-"shape.dragStarted"
-"shape.rotated"
-"shape.snapped"
-"shape.setCompleted"
-"shape.misalignmentDetected"
+```text
+shape.dragStarted
+shape.rotated
+shape.snapped
+shape.setCompleted
+shape.misalignmentDetected
 ```
-
-Produces:
-
-- alignment,
-- closure,
-- systemOrder.
-
-Core joke: tvar zapadl, význam nebyl vyžadován.
 
 ### Attention Runner
 
-```ts
-"runner.started"
-"runner.jump"
-"runner.obstacleAvoided"
-"runner.comboReached"
-"runner.runEnded"
+```text
+runner.started
+runner.jump
+runner.obstacleAvoided
+runner.comboReached
+runner.runEnded
 ```
-
-Produces:
-
-- attentionResidue,
-- dopamineDrift,
-- notionalWorkUnits.
-
-Core joke: pozornost se udržuje tím, že se rozdělí na nepoužitelné části.
 
 ### Zenová Zahrádka
 
-```ts
-"zen.rakeStroke"
-"zen.patternCompleted"
-"zen.stoneMoved"
-"zen.sandReset"
-"zen.harmonyThresholdReached"
+```text
+zen.rakeStroke
+zen.patternCompleted
+zen.stoneMoved
+zen.sandReset
+zen.harmonyThresholdReached
 ```
-
-Produces:
-
-- proceduralCalm,
-- sandAlignment,
-- entropy reduction,
-- systemOrder.
-
-Core joke: klid byl aplikován na povrch, vnitřní stav zůstává v šetření.
 
 ### Newtonova Kolíbka
 
-```ts
-"cradle.pull"
-"cradle.release"
-"cradle.impact"
-"cradle.cycleCompleted"
-"cradle.motionEnded"
-"cradle.responsibilityTransferred"
+```text
+cradle.pull
+cradle.release
+cradle.impact
+cradle.cycleCompleted
+cradle.motionEnded
+cradle.responsibilityTransferred
 ```
-
-Produces:
-
-- momentum,
-- transferredResponsibility,
-- idleFaith,
-- perceivedProductivity.
-
-Core joke: hybnost byla předána, odpovědnost nikoli. Nebo možná právě ano.
 
 ## 8. Resource mapping — draft
 
@@ -296,53 +183,7 @@ Newtonova Kolíbka   → Momentum, Transferred Responsibility
 Work Blob           → Notional Work Units
 ```
 
-## 9. Example reducer rules
-
-```ts
-if (event.type === "clickaudit.click") {
-  state.resources.auditPressure += 1;
-  state.resources.notionalWorkUnits += 0.1;
-}
-
-if (event.type === "bubble.popped") {
-  state.resources.reliefUnits += 1;
-  state.resources.entropy = Math.max(0, state.resources.entropy - 0.05);
-}
-
-if (event.type === "corner.cornerHit") {
-  state.resources.idleFaith += 50;
-  unlockMemo("corner-incident-001");
-}
-
-if (event.type === "cradle.responsibilityTransferred") {
-  state.resources.transferredResponsibility += 1;
-  state.resources.perceivedProductivity += 0.5;
-}
-```
-
-## 10. Unlock rules
-
-Unlocky se mají vázat na resources a cross-module chování.
-
-Příklady:
-
-```text
-200 Audit Pressure → unlock Button Compliance
-10 Idle Faith → unlock Corner Watch memo
-100 Relief Units → unlock red Relaxation Sheet skin
-5 completed Surface Compliance sessions → unlock Cleaning Incident memo
-500 Momentum → unlock Newton Cradle desk object for K0rp_OS desktop
-```
-
-Cross-module unlock:
-
-```text
-100 ClickAudit clicks + 1 completed Bubble Sheet → unlock memo „Wellbeing Audit“
-10 Corner near misses + 1 Newton motion ended → unlock achievement „Almost Meaningful“
-5 Zen patterns + 5 Bloom waves → unlock department „Care & Alignment“
-```
-
-## 11. Event privacy
+## 9. Event privacy
 
 Eventy nesmí obsahovat citlivý obsah.
 
@@ -356,19 +197,85 @@ Povolené:
 }
 ```
 
-Zakázané:
+Zakázané jsou app names, URL, window titles, text, screenshots nebo raw klávesy.
 
-```json
-{
-  "type": "system.externalAppUsed",
-  "meta": {
-    "appName": "...",
-    "url": "...",
-    "windowTitle": "..."
-  }
-}
-```
-
-## 12. Důležité pravidlo
+## 10. Důležité pravidlo
 
 > Event je pracovní záznam absurdity. Nesmí se z něj stát pracovní záznam člověka.
+
+## 11. Event persistence levels
+
+### Transient
+
+Pouze UI/session:
+
+- pointer movement;
+- animační frame;
+- fyzikální tick;
+- průběžná rotace spinneru;
+- každý pixel wipe tahu.
+
+### Gameplay
+
+Agregovaná herní událost:
+
+- `surface.patchCleaned`;
+- `bubble.batchPopped`;
+- `fidget.rotationCompleted`;
+- `clickaudit.batchCompleted`.
+
+### Milestone
+
+Persistovaný event pro unlocky, mema a surface mutations:
+
+- `audit.formSubmitted`;
+- `fidget.sessionSettled`;
+- `bloom.waveAdvanced`;
+- `bubble.sheetCompleted`;
+- `system.shiftClosed`;
+- `system.auditCycleClosed`.
+
+## 12. První audit a globální ClickAudit stopa
+
+Každá úmyslná interakce uvnitř auditního formuláře vytváří právě jeden `clickaudit.click` s profilem `audit-form`.
+
+Stejná zásada platí napříč moduly: semantický stisk nebo volba může vytvořit nepřímý auditovaný klik, ale systém nesmí počítat render ticks ani pasivní animaci.
+
+```text
+audit checkbox changed
+→ clickaudit.click(profile: audit-form)
+→ audit local field state updated
+
+bloom tile selected
+→ bloom.tileClicked
+→ clickaudit.click(profile: indirect-module)
+```
+
+## 13. Doporučené nové progression eventy
+
+```text
+audit.formSubmitted
+clickaudit.batchCompleted
+fidget.sessionSettled
+system.memoAcknowledged
+system.shiftClosed
+system.auditCycleClosed
+system.identityAssigned
+```
+
+Přidávají se postupně spolu s konkrétní implementací a testy; dokument sám nemění současný reducer.
+
+## 14. Resource metadata
+
+Progression package deklaruje kind, visibility, min/max, spendability, reset scope a offline behavior. Globální taskbar nemá ukazovat všechny resources.
+
+## 15. Surface mutation flow
+
+```text
+milestone event
+→ progression unlock
+→ surface mutation
+→ nový shortcut / folder / file / taskbar widget / setting / screensaver
+```
+
+Surface mutation nemění ekonomiku. Je to reprezentace jejího výsledku na fiktivní pracovní ploše.
