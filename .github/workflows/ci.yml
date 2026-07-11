@@ -35,6 +35,10 @@ jobs:
         working-directory: packages/korp-modules
         run: npm install --no-package-lock
 
+      - name: Install korp-progression typecheck dependencies
+        working-directory: packages/korp-progression
+        run: npm install --no-package-lock
+
       - name: Test korp-core
         run: npm run test:korp-core
 
@@ -46,6 +50,9 @@ jobs:
 
       - name: Typecheck korp-modules
         run: npm run typecheck:korp-modules
+
+      - name: Typecheck korp-progression
+        run: npm run typecheck:korp-progression
 
       - name: Build app
         run: npm run build
