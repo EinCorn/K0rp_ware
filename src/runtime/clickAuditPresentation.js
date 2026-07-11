@@ -9,6 +9,19 @@ export function getClickAuditDigits(value) {
   return String(normalizeClickCount(value)).split('').map((digit) => Number.parseInt(digit, 10))
 }
 
+export function getClickAuditDigitSpritePosition(value) {
+  const digit = Number.parseInt(value, 10)
+  const normalizedDigit = Number.isInteger(digit) && digit >= 0 && digit <= 9 ? digit : 0
+  const column = normalizedDigit % 5
+  const row = Math.floor(normalizedDigit / 5)
+
+  return {
+    column,
+    row,
+    backgroundPosition: `${column * 25}% ${row * 100}%`,
+  }
+}
+
 export function getClickAuditDeckSize(digitCount) {
   if (digitCount <= 3) return 'standard'
   if (digitCount <= 6) return 'compact'

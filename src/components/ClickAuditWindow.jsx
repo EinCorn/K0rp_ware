@@ -6,7 +6,7 @@ import pinControlUrl from '../../desktop/click-audit/src/assets/korp-ui-pin.png?
 import resetControlUrl from '../../desktop/click-audit/src/assets/korp-ui-reset.webp?url'
 import './ClickAuditWindow.css'
 
-function AssetButton({ className, label, assetUrl, onClick, disabled = false, pressed }) {
+function AssetButton({ className, label, assetUrl, onClick, disabled = false, pressed, ...rest }) {
   return (
     <button
       type="button"
@@ -17,6 +17,7 @@ function AssetButton({ className, label, assetUrl, onClick, disabled = false, pr
       onPointerDown={(event) => event.stopPropagation()}
       onClick={onClick}
       style={{ backgroundImage: `url(${assetUrl})` }}
+      {...rest}
     />
   )
 }
@@ -36,12 +37,14 @@ export function ClickAuditEmbeddedWindow({
         className="clickaudit-window-drag-region"
         aria-label="Přesunout okno ClickAudit"
         onPointerDown={onDragStart}
+        data-window-drag-region="true"
       />
       <AssetButton
         className="clickaudit-window-control clickaudit-window-control-close"
         label="Minimalizovat ClickAudit"
         assetUrl={closeControlUrl}
         onClick={onMinimize}
+        data-window-control="true"
       />
       <div className="clickaudit-window-content">{children}</div>
     </div>

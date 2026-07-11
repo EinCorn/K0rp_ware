@@ -4,6 +4,7 @@ import {
   CLICK_AUDIT_PROGRESS_TARGET,
   getClickAuditDeckSize,
   getClickAuditDigits,
+  getClickAuditDigitSpritePosition,
   getClickAuditProgress,
   getClickAuditProgressColor,
   normalizeClickCount,
@@ -22,6 +23,29 @@ test('ClickAudit uses the canonical digit asset grid inputs', () => {
   assert.equal(getClickAuditDeckSize(4), 'compact')
   assert.equal(getClickAuditDeckSize(7), 'dense')
   assert.equal(getClickAuditDeckSize(10), 'micro')
+})
+
+test('ClickAudit digit sprite mapping uses the canonical five by two sheet', () => {
+  assert.deepEqual(getClickAuditDigitSpritePosition(0), {
+    column: 0,
+    row: 0,
+    backgroundPosition: '0% 0%',
+  })
+  assert.deepEqual(getClickAuditDigitSpritePosition(4), {
+    column: 4,
+    row: 0,
+    backgroundPosition: '100% 0%',
+  })
+  assert.deepEqual(getClickAuditDigitSpritePosition(5), {
+    column: 0,
+    row: 1,
+    backgroundPosition: '0% 100%',
+  })
+  assert.deepEqual(getClickAuditDigitSpritePosition(9), {
+    column: 4,
+    row: 1,
+    backgroundPosition: '100% 100%',
+  })
 })
 
 test('ClickAudit liquid progress clamps to the standalone target', () => {

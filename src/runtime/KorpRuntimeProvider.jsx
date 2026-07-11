@@ -17,6 +17,7 @@ import {
   loadRuntimeFromStorage,
   saveRuntimeToStorage,
 } from './runtimePersistence'
+import { createKorpOsClickEvent } from './osClickTracking'
 
 const auditForms = KORP_PROGRESSION_DATABASE.auditForms
 const progressionDataVersion = KORP_PROGRESSION_DATABASE.meta.version
@@ -94,6 +95,7 @@ function runtimeReducer(runtime, action) {
 export function KorpRuntimeProvider({ children }) {
   const [runtime, dispatch] = useReducer(runtimeReducer, undefined, createRuntimeState)
   const skipNextPersistenceRef = useRef(false)
+  const osClickSequenceRef = useRef(0)
 
   useEffect(() => {
     if (skipNextPersistenceRef.current) {
@@ -107,6 +109,16 @@ export function KorpRuntimeProvider({ children }) {
   const dispatchKorpEvent = useCallback((event) => {
     dispatch({ type: 'dispatchKorpEvent', event })
   }, [])
+
+  const recordOsClick = useCallback(({ profile, tags } = {}) => {
+    const knownClickCount = runtime.korpState.stats.eventsByType['clickaudit.click'] ?? 0
+    const sequence = Math.max(osClickSequenceRef.current, knownClickCount) + 1
+    osClickSequenceRef.current = sequence
+    dispatch({
+      type: 'dispatchKorpEvent',
+      event: createKorpOsClickEvent({ profile, tags, sequence }),
+    })
+  }, [runtime.korpState.stats.eventsByType])
 
   const submitAuditForm = useCallback((formId) => {
     dispatch({ type: 'submitAuditForm', formId, timestamp: Date.now() })
@@ -148,6 +160,7 @@ export function KorpRuntimeProvider({ children }) {
     unlockedModuleIds: runtime.unlockedModuleIds,
     auditForms,
     dispatchKorpEvent,
+    recordOsClick,
     submitAuditForm,
     isFormAvailable,
     isFormSubmitted,
@@ -157,6 +170,7 @@ export function KorpRuntimeProvider({ children }) {
     resetRuntime,
   }), [
     dispatchKorpEvent,
+    recordOsClick,
     isFormAvailable,
     isFormSubmitted,
     isMemoUnlocked,

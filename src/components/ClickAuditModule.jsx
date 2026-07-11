@@ -1,17 +1,28 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import digitSheetUrl from '../../desktop/click-audit/src/assets/digits/digit-sheet-q30.jpg?url'
 import liquidSheetUrl from '../../desktop/click-audit/src/assets/liquid/liquid-water-36f-clean.png?url'
 import liquidAnimation from '../../desktop/click-audit/src/assets/liquid/liquid-water-36f-clean.json'
+import { CLICK_AUDIT_DIGIT_SHEET_BYTES } from '../../desktop/click-audit/src/digit-sheet-bytes'
 import {
   CLICK_AUDIT_PROGRESS_TARGET,
   getClickAuditDeckSize,
   getClickAuditDigits,
+  getClickAuditDigitSpritePosition,
   getClickAuditProgress,
-  getClickAuditProgressColor,
 } from '../runtime/clickAuditPresentation'
 import './ClickAuditModule.css'
 
 const CONFETTI_COLORS = ['#ff4f5e', '#ffb84d', '#f7ff5c', '#64ff8f', '#56d9ff', '#9f7bff', '#ff62d2']
+
+// The standalone app deliberately uses this byte source because the on-disk JPEG
+// is not consistently decoded by every WebView/Vite path. Reuse that canonical
+// image data instead of introducing a second digit approximation.
+const digitSheetDataUrl = (() => {
+  let binary = ''
+  CLICK_AUDIT_DIGIT_SHEET_BYTES.forEach((byte) => {
+    binary += String.fromCharCode(byte)
+  })
+  return `data:image/jpeg;base64,${btoa(binary)}`
+})()
 
 function createConfettiBurst(id) {
   return {
@@ -33,8 +44,7 @@ function createConfettiBurst(id) {
 }
 
 function DigitCard({ digit }) {
-  const column = digit % 5
-  const row = Math.floor(digit / 5)
+  const sprite = getClickAuditDigitSpritePosition(digit)
 
   return (
     <span
@@ -42,8 +52,8 @@ function DigitCard({ digit }) {
       data-digit={digit}
       aria-hidden="true"
       style={{
-        backgroundImage: `url("${digitSheetUrl}")`,
-        backgroundPosition: `${column * 25}% ${row * 100}%`,
+        backgroundImage: `url("${digitSheetDataUrl}")`,
+        backgroundPosition: sprite.backgroundPosition,
       }}
     />
   )
@@ -61,7 +71,6 @@ export default function ClickAuditModule({
   const digits = useMemo(() => getClickAuditDigits(clickCount), [clickCount])
   const deckSize = getClickAuditDeckSize(digits.length)
   const progress = getClickAuditProgress(clickCount, progressTarget)
-  const progressColor = getClickAuditProgressColor(clickCount, progressTarget)
   const frameColumn = liquidFrame % liquidAnimation.columns
   const frameRow = Math.floor(liquidFrame / liquidAnimation.columns)
   const framePositionStep = 100 / (liquidAnimation.columns - 1)
@@ -105,18 +114,16 @@ export default function ClickAuditModule({
   return (
     <section
       className="clickaudit-module"
-      aria-label="ClickAudit modul"
-      style={{
-        '--clickaudit-progress': `${(progress * 100).toFixed(2)}%`,
-        '--clickaudit-progress-color': progressColor,
-      }}
+      aria-label="ClickAudit module"
+      style={{ '--clickaudit-progress': `${(progress * 100).toFixed(2)}%` }}
     >
       <button
         type="button"
         className="clickaudit-record-surface"
-        aria-label="Zaznamenat auditovaný klik"
+        aria-label="Record audited click"
         onClick={recordClick}
         disabled={!interactive}
+        data-clickaudit-manual="true"
       >
         <span className="clickaudit-liquid" aria-hidden="true">
           <span className="clickaudit-liquid-fill">
@@ -135,22 +142,14 @@ export default function ClickAuditModule({
           className="clickaudit-digit-deck"
           data-size={deckSize}
           data-digits={digits.length}
-          aria-label={`${clickCount} evidovaných kliků`}
+          aria-label={`${clickCount} audited clicks`}
           role="img"
         >
           {digits.map((digit, index) => (
             <DigitCard key={`${index}-${digit}`} digit={digit} />
           ))}
         </span>
-
-        <span className="clickaudit-surface-copy" aria-hidden="true">
-          CLICK TO AUDIT
-        </span>
       </button>
-
-      <span className="clickaudit-progress-readout" aria-live="polite">
-        {String(Math.round(progress * 100)).padStart(3, '0')}% AUDITNÍ KAPACITY
-      </span>
 
       {burst && (
         <span className="clickaudit-confetti-layer" aria-hidden="true">

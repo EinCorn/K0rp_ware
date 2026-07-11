@@ -8,7 +8,7 @@ test('one ClickAudit intention produces exactly one audited click', () => {
   assert.equal(events.length, 1)
   assert.equal(events[0].type, 'clickaudit.click')
   assert.equal(events[0].sourceModule, 'click-audit')
-  assert.equal(events[0].meta.profile, 'clickaudit-window')
+  assert.equal(events[0].meta.profile, 'clickaudit-module')
 })
 
 test('the approved trace upgrade adds only its canonical NWU pulse', () => {

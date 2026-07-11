@@ -7,13 +7,11 @@
 
 .clickaudit-module {
   --clickaudit-progress: 0%;
-  --clickaudit-progress-color: #f1e9d8;
   position: relative;
   width: 100%;
   height: 100%;
   overflow: hidden;
-  color: #efe9d5;
-  background: #090908;
+  background: transparent;
   isolation: isolate;
 }
 
@@ -22,146 +20,98 @@
   inset: 0;
   width: 100%;
   height: 100%;
-  display: grid;
-  place-items: center;
   padding: 0;
   overflow: hidden;
   border: 0;
   outline: 0;
   color: inherit;
-  background:
-    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.055), transparent 40%),
-    #0b0b0a;
+  background: transparent;
   cursor: pointer;
   font: inherit;
   -webkit-tap-highlight-color: transparent;
 }
 
 .clickaudit-record-surface:focus-visible {
-  outline: 2px solid #c9a33e;
-  outline-offset: -5px;
+  outline: 1px solid rgba(222, 226, 181, 0.7);
+  outline-offset: -4px;
 }
 
-.clickaudit-record-surface:disabled {
-  cursor: default;
-}
+.clickaudit-record-surface:disabled { cursor: default; }
 
 .clickaudit-liquid {
   position: absolute;
   inset: 0;
   overflow: hidden;
   pointer-events: none;
+  isolation: isolate;
   z-index: 1;
 }
 
 .clickaudit-liquid-fill {
   position: absolute;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: auto 0 0;
+  width: 100%;
+  max-height: 100%;
   height: var(--clickaudit-progress);
   min-height: 0;
   overflow: hidden;
-  background: var(--clickaudit-progress-color);
-  box-shadow:
-    inset 0 12px 22px rgba(255, 255, 255, 0.12),
-    inset 0 -26px 38px rgba(0, 0, 0, 0.3),
-    0 -8px 20px rgba(0, 0, 0, 0.24);
-  opacity: 0.78;
-  transition: height 560ms cubic-bezier(0.2, 0.8, 0.2, 1), background 560ms ease;
+  background: transparent;
+  box-shadow: none;
+  clip-path: none;
+  opacity: 1;
+  transition: height 560ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .clickaudit-liquid-sprite {
   position: absolute;
-  inset: 0;
-  min-height: 160px;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
   background-repeat: no-repeat;
   background-size: 600% 600%;
   background-position: var(--clickaudit-liquid-frame-x) var(--clickaudit-liquid-frame-y);
   image-rendering: pixelated;
-  mix-blend-mode: multiply;
-  opacity: 0.96;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+  will-change: background-position;
 }
 
 .clickaudit-digit-deck {
-  position: relative;
+  position: absolute;
   z-index: 3;
-  max-width: calc(100% - 26px);
+  top: 50px;
+  left: 0;
+  width: 100%;
+  height: 68px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 7px;
-  perspective: 900px;
-  filter: drop-shadow(0 12px 12px rgba(0, 0, 0, 0.46));
+  justify-content: center;
+  gap: 4px;
+  overflow: visible;
   pointer-events: none;
 }
 
 .clickaudit-digit-card {
-  position: relative;
-  flex: 0 0 auto;
-  width: 70px;
-  height: 128px;
   display: block;
+  flex: 0 0 auto;
+  width: 48px;
+  aspect-ratio: 70 / 128;
   overflow: hidden;
   border: 0;
-  outline: 0;
   background-color: transparent;
   background-repeat: no-repeat;
   background-size: 500% 200%;
-  image-rendering: pixelated;
-  transform: translateZ(0);
+  box-shadow: none;
+  image-rendering: auto;
 }
 
-.clickaudit-digit-deck[data-size='compact'] {
-  gap: 4px;
-}
-
-.clickaudit-digit-deck[data-size='compact'] .clickaudit-digit-card {
-  width: 48px;
-  height: 88px;
-}
-
-.clickaudit-digit-deck[data-size='dense'] {
-  gap: 2px;
-}
-
-.clickaudit-digit-deck[data-size='dense'] .clickaudit-digit-card {
-  width: 32px;
-  height: 58px;
-}
-
-.clickaudit-digit-deck[data-size='micro'] {
-  gap: 1px;
-}
-
-.clickaudit-digit-deck[data-size='micro'] .clickaudit-digit-card {
-  width: 25px;
-  height: 46px;
-}
-
-.clickaudit-surface-copy,
-.clickaudit-progress-readout {
-  position: absolute;
-  z-index: 4;
-  font-family: var(--korp-font-mono, monospace);
-  font-size: 7px;
-  line-height: 1;
-  letter-spacing: 0.13em;
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.82);
-  pointer-events: none;
-}
-
-.clickaudit-surface-copy {
-  left: 14px;
-  bottom: 12px;
-  color: rgba(238, 233, 214, 0.58);
-}
-
-.clickaudit-progress-readout {
-  right: 13px;
-  bottom: 12px;
-  color: rgba(238, 233, 214, 0.78);
-}
+.clickaudit-digit-deck[data-size='compact'] { gap: 3px; }
+.clickaudit-digit-deck[data-size='compact'] .clickaudit-digit-card { width: 31px; }
+.clickaudit-digit-deck[data-size='dense'] { gap: 1px; }
+.clickaudit-digit-deck[data-size='dense'] .clickaudit-digit-card { width: 23px; }
+.clickaudit-digit-deck[data-size='micro'] { gap: 1px; }
+.clickaudit-digit-deck[data-size='micro'] .clickaudit-digit-card { width: 15px; }
 
 .clickaudit-confetti-layer {
   position: absolute;
@@ -182,28 +132,15 @@
 }
 
 @keyframes clickaudit-confetti-burst {
-  0% {
-    opacity: 1;
-    transform: translate(0, 0) rotate(0deg) scale(0.5);
-  }
-  72% {
-    opacity: 1;
-  }
+  0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(0.5); }
+  72% { opacity: 1; }
   100% {
     opacity: 0;
-    transform:
-      translate(var(--clickaudit-confetti-x), var(--clickaudit-confetti-y))
-      rotate(var(--clickaudit-confetti-r))
-      scale(1);
+    transform: translate(var(--clickaudit-confetti-x), var(--clickaudit-confetti-y)) rotate(var(--clickaudit-confetti-r)) scale(1);
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .clickaudit-liquid-fill {
-    transition: none;
-  }
-
-  .clickaudit-confetti-layer {
-    display: none;
-  }
+  .clickaudit-liquid-fill { transition: none; }
+  .clickaudit-confetti-layer { display: none; }
 }

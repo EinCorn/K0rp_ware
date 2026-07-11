@@ -1,7 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
 import { listModules } from '../../packages/korp-modules/src/index'
 import { createAuditFormValues, isAuditFormComplete } from '../runtime/auditFormDraft'
+import { classifyKorpOsClickTarget } from '../runtime/osClickTracking'
 import { useKorpRuntime } from '../runtime/useKorpRuntime'
+import {
+  bringWindowStateToFront,
+  minimizeWindowState,
+  restoreWindowState,
+} from '../runtime/windowManager'
 import AuditFormDocument from './AuditFormDocument'
 import ClickAuditRuntimeModule from './ClickAuditRuntimeModule'
 import { ClickAuditEmbeddedWindow } from './ClickAuditWindow'
@@ -103,6 +109,7 @@ function WindowHeader({ window, variant = 'document', onMinimize, onPointerDown 
     <header
       className={'os-window-header os-window-header-' + variant}
       onPointerDown={onPointerDown}
+      data-window-drag-region="true"
     >
       <span className="os-window-title">{window.title}</span>
       <button
@@ -111,6 +118,7 @@ function WindowHeader({ window, variant = 'document', onMinimize, onPointerDown 
         aria-label={'Minimalizovat okno ' + window.taskbarTitle}
         onPointerDown={(event) => event.stopPropagation()}
         onClick={() => onMinimize(window.id)}
+        data-window-control="true"
       >
         —
       </button>
@@ -171,7 +179,7 @@ function KorpOsShell() {
     korpState,
     stats,
     auditForms,
-    dispatchKorpEvent,
+    recordOsClick,
     submitAuditForm,
     isFormAvailable,
     isFormSubmitted,
@@ -259,42 +267,15 @@ function KorpOsShell() {
   }, [auditTraceAvailable, auditTraceForm])
 
   const bringWindowToFront = (id) => {
-    setWindows((currentWindows) => {
-      const windowState = currentWindows[id]
-      if (!windowState || !windowState.isOpen) return currentWindows
-
-      const highestZIndex = Math.max(...Object.values(currentWindows)
-        .filter((currentWindow) => currentWindow.isOpen)
-        .map((currentWindow) => currentWindow.zIndex))
-
-      return {
-        ...currentWindows,
-        [id]: { ...windowState, zIndex: highestZIndex + 1 },
-      }
-    })
+    setWindows((currentWindows) => bringWindowStateToFront(currentWindows, id))
   }
 
   const minimizeWindow = (id) => {
-    setWindows((currentWindows) => ({
-      ...currentWindows,
-      [id]: { ...currentWindows[id], isMinimized: true },
-    }))
+    setWindows((currentWindows) => minimizeWindowState(currentWindows, id))
   }
 
   const openWindow = (id) => {
-    setWindows((currentWindows) => {
-      const windowState = currentWindows[id]
-      if (!windowState) return currentWindows
-
-      const highestZIndex = Math.max(...Object.values(currentWindows)
-        .filter((currentWindow) => currentWindow.isOpen)
-        .map((currentWindow) => currentWindow.zIndex))
-
-      return {
-        ...currentWindows,
-        [id]: { ...windowState, isOpen: true, isMinimized: false, zIndex: highestZIndex + 1 },
-      }
-    })
+    setWindows((currentWindows) => restoreWindowState(currentWindows, id))
   }
 
   const startWindowDrag = (id, event) => {
@@ -351,22 +332,17 @@ function KorpOsShell() {
   })
 
   const dispatchAuditInteraction = (form, field, action) => {
-    const timestamp = Date.now()
-
-    dispatchKorpEvent({
-      id: 'k0rp-os-audit-field-' + timestamp + '-' + form.id + '-' + (field?.id ?? action),
-      timestamp,
-      sourceModule: 'click-audit',
-      type: 'clickaudit.click',
-      value: 1,
-      tags: ['k0rp-os', 'audit-form', form.id, field?.id ?? action],
-      meta: {
-        profile: form.interactionClickProfile,
-        formId: form.id,
-        fieldId: field?.id ?? null,
-        action,
-      },
+    recordOsClick({
+      profile: 'audit-form',
+      tags: [form.id, field?.id, action],
     })
+  }
+
+  const handleKorpOsClickCapture = (event) => {
+    const classification = classifyKorpOsClickTarget(event.target)
+    if (!classification) return
+
+    recordOsClick(classification)
   }
 
   const handleAuditEntryFieldChange = (field, value) => {
@@ -409,6 +385,7 @@ function KorpOsShell() {
   const submitAuditTrace = () => {
     if (!auditTraceAvailable || auditTraceSubmitted || !auditTraceForm) return
 
+    recordOsClick({ profile: 'audit-form', tags: [auditTraceForm.id, 'submit'] })
     submitAuditForm(auditTraceForm.id)
     setActivity((currentActivity) => [
       'Rozšíření auditní stopy bylo schváleno. Výkaz získal další kolonku.',
@@ -418,7 +395,12 @@ function KorpOsShell() {
   }
 
   return (
-    <main className="os-shell" aria-label="K0rp_OS pracovní plocha" style={{ '--os-scale': canvasScale }}>
+    <main
+      className="os-shell"
+      aria-label="K0rp_OS pracovní plocha"
+      style={{ '--os-scale': canvasScale }}
+      onClickCapture={handleKorpOsClickCapture}
+    >
       <section className="os-desktop">
         <header className="os-desktop-readout">
           <div className="os-brand" aria-label="K0rp_OS">
@@ -529,7 +511,7 @@ function KorpOsShell() {
                   {auditTraceSubmitted ? (
                     <span className="os-approval-state">SCHVÁLENO / AKTIVNÍ<br />+0.2 NWU NA KONTROLU</span>
                   ) : (
-                    <button type="button" onClick={submitAuditTrace}>
+                    <button type="button" onClick={submitAuditTrace} data-clickaudit-manual="true">
                       {auditTraceForm?.fields.find((field) => field.type === 'buttonConfirm')?.label}
                     </button>
                   )}

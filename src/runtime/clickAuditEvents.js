@@ -2,7 +2,7 @@ export function createClickAuditInteractionEvents({
   timestamp,
   sequence,
   bonusUnlocked = false,
-  profile = 'clickaudit-window',
+  profile = 'clickaudit-module',
 }) {
   const safeTimestamp = Number.isFinite(timestamp) ? timestamp : Date.now()
   const safeSequence = Number.isInteger(sequence) && sequence > 0 ? sequence : 1
