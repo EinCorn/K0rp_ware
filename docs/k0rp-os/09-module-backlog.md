@@ -1,6 +1,6 @@
 # K0rp_OS — Module Backlog
 
-Verze: 0.1.3 pracovní návrh
+Verze: 0.2.0 pracovní návrh
 
 ## 1. Účel
 
@@ -29,31 +29,20 @@ Jaké resources produkuje?
 Kde může běžet?
 Jaký je privacy profile?
 Jak se škáluje v incremental systému?
+Jak se projeví na canonical desktopu?
+Jaký má sensory a closure contract?
 ```
 
 ## 3. Categories
 
 ```text
 AUDIT / CONFIRMATION
-- měření, klikání, potvrzování, souhlas bez obsahu
-
 STABILIZATION
-- uklidnění, fidget, stress release, taktilní loop
-
 CARE / CLEANING
-- péče o povrch, růst, čistota, compliance zahrádka
-
 ALIGNMENT
-- zarovnání, zapadnutí, closure, mechanický souhlas
-
 IDLE / SCREENSAVER
-- čekání, pozorování, hypnotická nicota
-
 ATTENTION SPLIT
-- druhá pozornostní vrstva, dopaminový doprovod
-
 DESK OBJECT
-- manažerské těžítko, wellness artefakt, fyzika bez výstupu
 ```
 
 ## 4. Current v0.3 modules
@@ -63,489 +52,102 @@ DESK OBJECT
 Status: workshop/playable  
 Category: AUDIT / CONFIRMATION
 
-Core fantasy:
+Core fantasy: klik je důkaz přítomnosti.
 
-> Klik je důkaz přítomnosti.
-
-Main action:
-
-- klikání,
-- sledování counteru,
-- milestone progress,
-- zdroje kliků.
-
-Produces:
-
-- Audit Pressure,
-- Notional Work Units,
-- Perceived Productivity.
-
-Events:
-
-- `clickaudit.click`,
-- `clickaudit.milestoneReached`,
-- `clickaudit.sourceUpdated`.
-
-Risk:
-
-- může se stát jen counterem, pokud nebude mít dost ceremonial reward a in-universe consequence.
+Produces Audit Pressure, NWU a Perceived Productivity. Riziko: bez ceremonial reward a in-universe consequences se zredukuje na counter.
 
 ### Fidget
 
 Status: workshop/playable  
 Category: STABILIZATION
 
-Core fantasy:
+Core fantasy: pozornost lze stabilizovat tím, že ji odvedeme.
 
-> Pozornost lze stabilizovat tím, že ji odvedeme.
-
-Main action:
-
-- roztočit spinner,
-- přepínat režim,
-- sledovat rychlost.
-
-Produces:
-
-- Stabilization,
-- Entropy Reduction,
-- Perceived Control.
-
-Events:
-
-- `fidget.spinStarted`,
-- `fidget.spinTick`,
-- `fidget.spinStopped`,
-- `fidget.modeChanged`.
-
-Risk:
-
-- nepřebarvit na cirkus; má zůstat hmatový a hypnotický.
+Produces Stabilization, Entropy Reduction a Perceived Control. Musí zůstat hmatový a hypnotický, ne cirkusový.
 
 ### Bloom
 
 Status: workshop/playable  
 Category: CARE / CLEANING
 
-Core fantasy:
+Core fantasy: compliance zahrádka, kde kameny vypadají jako myšlenky a myšlenky jako úkoly.
 
-> Drobná compliance zahrádka, kde kameny vypadají jako myšlenky a myšlenky jako úkoly.
-
-Main action:
-
-- klikat / čistit board,
-- clearovat stones,
-- postupovat vlnami.
-
-Produces:
-
-- Compliance Integrity,
-- System Order,
-- Bloom Integrity.
-
-Events:
-
-- `bloom.tileClicked`,
-- `bloom.matchCleared`,
-- `bloom.waveAdvanced`,
-- `bloom.redStoneSpawned`.
-
-Risk:
-
-- držet rozdíl mezi cute puzzle a znepokojivou compliance zahrádkou.
+Produces Compliance Integrity, System Order a Bloom Integrity. Musí držet rozdíl mezi cute puzzle a znepokojivou péčí.
 
 ## 5. Candidate v0.4 — First Expansion
 
 ### Corner Watch
 
-Status: spec  
-Category: IDLE / SCREENSAVER  
-Suggested priority: high
+Category: IDLE / SCREENSAVER.
 
-Core fantasy:
-
-> Čekání na roh jako náboženský akt kancelářského screensaveru.
-
-Main action:
-
-- sledovat odrážející se logo,
-- čekat na corner hit,
-- upravovat rychlost / úhel jen minimálně.
-
-Produces:
-
-- Idle Faith,
-- Patience Units,
-- Perceived Productivity.
-
-Events:
-
-- `corner.logoBounce`,
-- `corner.nearMiss`,
-- `corner.cornerHit`,
-- `corner.sessionCompleted`.
-
-Scaling:
-
-- více log,
-- vzácné corner streaky,
-- falešné predikce,
-- skins,
-- screensaver mode.
-
-In-universe copy:
-
-> „Roh bude dosažen. Časový rámec nebyl schválen.“
-
-Risk:
-
-- moc jednoduché, ale to je zároveň síla. Nepřekomplikovat.
+- sledovat odrážející se logo;
+- near miss / corner hit / session completed;
+- Idle Faith a Patience Units;
+- primárně se instaluje jako screensaver;
+- corner hit není povinný pro hlavní progression;
+- nepřekomplikovat.
 
 ### Bublinková Fólie
 
-Status: spec  
-Category: STABILIZATION  
-Suggested priority: high
+Category: STABILIZATION.
 
-Core fantasy:
-
-> Fake wellness produkt: malý arch fólie prodaný jako korporátní relaxační systém.
-
-Main action:
-
-- praskat bubliny,
-- dokončit arch,
-- objevovat rare/vadné bubliny,
-- vyměnit arch.
-
-Produces:
-
-- Relief Units,
-- Pressure Released,
-- Stabilization.
-
-Events:
-
-- `bubble.popped`,
-- `bubble.defectivePressed`,
-- `bubble.rareBubblePopped`,
-- `bubble.sheetCompleted`.
-
-Scaling:
-
-- větší archy,
-- červená premium fólie,
-- automatický audit praskání,
-- různé zvuky,
-- různé materiály.
-
-In-universe copy:
-
-> „Relaxační fólie nenahrazuje odpočinek. Odpočinek nebyl schválen.“
-
-Note:
-
-- Inspirováno archetypem absurdně obrandovaného relaxačního produktu. Neopisovat konkrétní vtip z existujícího díla.
-
-Risk:
-
-- potřebuje satisfying pop feeling. Bez zvuku/animace bude slabší.
+- pop / drag / sheet completion;
+- Relief Units a Pressure Released;
+- defective/rare/reinforced materials;
+- post-prestige nový-system reward;
+- bez dobrého audio/visual feedbacku bude slabá.
 
 ### Button Compliance
 
-Status: spec  
-Category: AUDIT / CONFIRMATION  
-Suggested priority: high
+Category: AUDIT / CONFIRMATION.
 
-Core fantasy:
+- fyzický panel, kontrolky a sekvence;
+- Approval Units;
+- potvrzování potvrzení;
+- false-positive a exception routing;
+- nemá být reflex-game peklo.
 
-> Uživatel potvrzuje, že potvrzuje, že je přítomen potvrzovacímu workflow.
-
-Main action:
-
-- mačkat tlačítka,
-- plnit sekvence,
-- potvrzovat potvrzení,
-- sledovat kontrolky.
-
-Produces:
-
-- Approval Units,
-- Audit Pressure,
-- Krypto-management Score.
-
-Events:
-
-- `button.pressed`,
-- `button.sequenceCompleted`,
-- `button.confirmationConfirmed`,
-- `button.panelReset`.
-
-Scaling:
-
-- více panelů,
-- časované sekvence,
-- absurdní souhlasové texty,
-- falešné emergency tlačítko,
-- tlačítka, která nic nedělají, ale vypadají urgentně.
-
-In-universe copy:
-
-> „Stisknutím potvrzujete, že jste připraven potvrdit další stisk.“
-
-Risk:
-
-- nemá být reflex game peklo. Spíš tactile/ritual panel.
-
-## 6. Candidate v0.5 — Desk Object / ASMR
+## 6. Candidate v0.5 — Desk Object / ASMR-adjacent
 
 ### Newtonova Kolíbka
 
-Status: spec  
-Category: DESK OBJECT / IDLE / STABILIZATION  
-Suggested priority: medium-high
-
-Core fantasy:
-
-> Manažerská fyzika bez výstupu. Hybnost se předává, problém také.
-
-Main action:
-
-- zatáhnout kuličku,
-- pustit,
-- sledovat cykly,
-- čekat na uklidnění.
-
-Produces:
-
-- Momentum,
-- Transferred Responsibility,
-- Idle Faith,
-- Perceived Productivity.
-
-Events:
-
-- `cradle.pull`,
-- `cradle.release`,
-- `cradle.impact`,
-- `cradle.cycleCompleted`,
-- `cradle.motionEnded`,
-- `cradle.responsibilityTransferred`.
-
-Scaling:
-
-- více materiálů,
-- delší kolíbka,
-- černé KØrp kuličky,
-- desk-object unlock,
-- impact counter,
-- responsibility chain.
-
-In-universe copy:
-
-> „Každý náraz posouvá problém na další jednotku.“
-
-Technical note:
-
-- Fake physics preferred. Reálná fyzika není nutná a může být horší než kontrolovaná animace.
-
-Risk:
-
-- musí působit satisfying. Špatná animace zabije nápad.
+- fake/controlled physics;
+- Momentum a Transferred Responsibility;
+- přirozený motion-ended closure;
+- material variants;
+- špatná animace zabije nápad.
 
 ### Zenová Zahrádka
 
-Status: spec  
-Category: CARE / ALIGNMENT / STABILIZATION / DESK OBJECT  
-Suggested priority: medium
-
-Core fantasy:
-
-> Manažerská zenová zahrádka jako ritualizovaný surface order.
-
-Main action:
-
-- hrabat písek,
-- kreslit čáry,
-- přesouvat kameny,
-- dokončovat patterny.
-
-Produces:
-
-- Procedural Calm,
-- Sand Alignment,
-- Entropy Reduction,
-- System Order.
-
-Events:
-
-- `zen.rakeStroke`,
-- `zen.patternCompleted`,
-- `zen.stoneMoved`,
-- `zen.sandReset`,
-- `zen.harmonyThresholdReached`.
-
-Scaling:
-
-- nové hrábě,
-- různé pískové textury,
-- kameny s čísly,
-- manažerské certifikáty,
-- pattern templates.
-
-In-universe copy:
-
-> „Hrabejte, dokud proces nepřestane klást otázky.“
-
-Risk:
-
-- potřebuje dobrý tactile feel. Pokud bude jen kreslící canvas bez šťávy, bude slabá.
+- rake strokes, písek, kameny a patterny;
+- Procedural Calm a Sand Alignment;
+- free mode i procedural mode;
+- nesmí být jen mrtvý drawing canvas.
 
 ## 7. Candidate v0.6 — Care / Cleaning / Alignment
 
 ### Surface Compliance
 
-Status: spec  
-Category: CARE / CLEANING  
-Suggested priority: medium-high
-
-Core fantasy:
-
-> Čistit špínu, která se stejně vrátí, a tvářit se, že tím řešíme příčinu.
-
-Main action:
-
-- tahat myší / hadrem,
-- odkrývat čistý povrch,
-- dokončit surface,
-- najít residue / štítek / memo.
-
-Produces:
-
-- Cleanliness,
-- Compliance Integrity,
-- System Order.
-
-Events:
-
-- `surface.wipeStroke`,
-- `surface.dirtRemoved`,
-- `surface.patchCleaned`,
-- `surface.surfaceCompleted`,
-- `surface.residueDetected`.
-
-Scaling:
-
-- více povrchů,
-- různé nečistoty,
-- bonusové skryté poznámky,
-- daily cleaning tasks,
-- audit po vyčištění.
-
-In-universe copy:
-
-> „Nečistota byla odstraněna. Příčina zůstává v řešení.“
-
-Risk:
-
-- technicky víc práce kvůli maskám/texturám. Velmi silný modul, ale nedělat uspěchaně.
+- wipe masks a material profiles;
+- Cleanliness, Compliance Integrity a System Order;
+- hidden residue/files;
+- technicky náročnější, nedělat uspěchaně.
 
 ### Shape Compliance
 
-Status: spec  
-Category: ALIGNMENT  
-Suggested priority: medium
-
-Core fantasy:
-
-> Uspokojivé zapadnutí tvaru jako mechanická náhrada smyslu.
-
-Main action:
-
-- drag,
-- rotate,
-- snap,
-- complete set.
-
-Produces:
-
-- Alignment,
-- Closure,
-- System Order.
-
-Events:
-
-- `shape.dragStarted`,
-- `shape.rotated`,
-- `shape.snapped`,
-- `shape.setCompleted`,
-- `shape.misalignmentDetected`.
-
-Scaling:
-
-- více tvarů,
-- různé materiály,
-- kabely/porty,
-- šanony/mezery,
-- ozubená kola/mechanismy,
-- procedurální patterny.
-
-In-universe copy:
-
-> „Tvar zapadl. Význam nebyl vyžadován.“
-
-Risk:
-
-- potřebuje přesné interakce. Špatné snapování bude otravné místo satisfying.
+- drag / rotate / snap;
+- Alignment a Closure;
+- přesná tolerance a keyboard alternative;
+- špatné snapování bude otravné místo satisfying.
 
 ## 8. Candidate v0.7 — Attention Corruption
 
 ### Attention Runner
 
-Status: spec  
-Category: ATTENTION SPLIT  
-Suggested priority: later
-
-Core fantasy:
-
-> Udržet pozornost tím, že ji rozbijeme na dvě části, z nichž ani jedna není úplně práce.
-
-Main action:
-
-- běh v nekonečné chodbě,
-- jump / dodge,
-- sběr ticketů/post-itů,
-- běh vedle memo nebo jiné činnosti.
-
-Produces:
-
-- Attention Residue,
-- Dopamine Drift,
-- Notional Work Units.
-
-Events:
-
-- `runner.started`,
-- `runner.jump`,
-- `runner.obstacleAvoided`,
-- `runner.comboReached`,
-- `runner.runEnded`.
-
-Scaling:
-
-- různé chodby,
-- různé překážky,
-- low-input mode,
-- split-screen mode,
-- companion mode while reading internal memo.
-
-In-universe copy:
-
-> „Sub-task běží. Main task nebyl identifikován.“
-
-Risk:
-
-- může se stát příliš gamey a odvést K0rp_OS od UI simulátoru. Až později.
+- low-input companion strip;
+- Attention Residue a satirický Dopamine Drift;
+- až po první closure smyčce;
+- nesmí změnit K0rp_OS v běžný arcade launcher.
 
 ## 9. Resource map
 
@@ -564,7 +166,7 @@ Attention Runner    → Attention Residue, Dopamine Drift
 Work Blob           → Notional Work Units
 ```
 
-## 10. Suggested release grouping
+## 10. Release grouping
 
 ```text
 v0.3 current:
@@ -572,22 +174,20 @@ v0.3 current:
 - Fidget
 - Bloom
 
-v0.4 first expansion:
-- Corner Watch
-- Bublinková Fólie
+first-cycle integration:
 - Button Compliance
+- Corner Watch
+- post-prestige Bublinková Fólie
 
-v0.5 desk object / ASMR:
+later:
 - Newtonova Kolíbka
 - Zenová Zahrádka
-
-v0.6 care / cleaning / fitting:
 - Surface Compliance
 - Shape Compliance
-
-v0.7 attention corruption:
 - Attention Runner
 ```
+
+Technické pořadí se řídí engine value v `07-roadmap.md`, ne pouze původním číslováním release group.
 
 ## 11. Naming bank
 
@@ -609,3 +209,50 @@ Relaxační Fólie pro Procesní Úlevu
 ## 12. Důležité pravidlo backlogu
 
 > Nový modul je povolený jen tehdy, když umí být zároveň hračka, proces, resource producer a in-universe absurdita.
+
+## 13. Module unlock manifestation
+
+Každý modul musí deklarovat:
+
+```text
+desktop artifact
+folder/category
+installation notification
+taskbar widget, pokud existuje
+settings/screensaver integration, pokud existuje
+standalone bridge policy
+web fallback surface
+```
+
+Příklady:
+
+- ClickAudit → desktop shortcut po `00-A`;
+- Fidget → shortcut + Wellbeing folder;
+- Bloom → shortcut + Care & Alignment;
+- Corner Watch → primárně screensaver + Settings page;
+- Button Compliance → shortcut + Čekající potvrzení;
+- Bubble Wrap → post-prestige instalovaný shortcut.
+
+## 14. Standalone zachování modulu
+
+Standalone verze není marketingový preview.
+
+- zachovává hlavní tactile/procrastination loop;
+- funguje bez campaign save;
+- může mít module-local progress;
+- při připojení posílá jen aggregate K0rp events;
+- nesmí vyžadovat overlay ani account;
+- nesmí měnit význam eventů oproti OS window verzi.
+
+## 15. Sensory contract
+
+Každý nový modul musí doplnit:
+
+- material profile;
+- micro/meso/ceremonial feedback;
+- density limit;
+- reduce-motion variantu;
+- audio-off behavior;
+- přirozený closure point.
+
+Bez toho může být modul funkčně správný a přesto senzoricky mrtvý.
