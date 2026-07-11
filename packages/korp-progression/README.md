@@ -38,12 +38,23 @@ Toto je návrhová databáze a první balance pass, ne hotová ekonomika po play
 - `src/progression.database.ts` — sestavení databáze ze shardů;
 - `src/progression.types.ts` — typy;
 - `src/progression.validation.ts` — základní runtime validace referencí;
+- `scripts/validate-database.mjs` — kontrola duplicit a neznámých resource/event/form/upgrade/memo ID;
 - `data/progression.database.json` — index strojových dat;
 - `data/shards/*.json` — kompletní databáze po logických částech;
 - `data/surface-progression.json` — desktop artifacts a mutations;
 - `data/first-cycle.balance.csv` — časová balance první smyčky;
 - `data/upgrade-catalog.csv` — rychlý katalog upgrades;
 - `data/memo-catalog.csv` — rychlý katalog mem.
+
+## Ověření
+
+```bash
+npm --prefix packages/korp-progression install --no-package-lock
+npm run typecheck:korp-progression
+npm run validate:korp-progression
+```
+
+Stejné kontroly jsou součástí hlavního GitHub Actions workflow před root buildem.
 
 ## v0.1.1 — desktop surface addendum
 
