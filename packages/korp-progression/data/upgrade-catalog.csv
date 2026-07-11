@@ -1,0 +1,38 @@
+id,title,department,tier,balance_role,reset_scope,costs,copy
+sys.counter-calibration,Kalibrace mechanického počítadla,system,0,early-required,never,8 notionalWorkUnits,Počítadlo nyní rozlišuje mezi nulou a administrativně významnou nulou.
+sys.audit-batch-standardization,Standardizace auditních dávek,audit,1,early-required,auditCycle,12 notionalWorkUnits,Každých 25 evidovaných interakcí může být nyní seskupeno do jedné přesvědčivější události.
+sys.resource-ledger,Pomocný účet výkonu,system,1,optional,never,18 notionalWorkUnits,"Systém zpřístupní hodnotu, kterou počítal ještě před schválením její existence."
+sys.shift-summary,Denní výpis bez pevného dne,system,2,recommended,never,30 notionalWorkUnits,"Relaci lze ukončit způsobem, který působí jako dokončená práce."
+sys.departmental-routing,Mezioddělové směrování výsledků,system,3,mid-required,auditCycle,45 notionalWorkUnits,"Výsledky lze předávat mezi odděleními bez potvrzení, že si rozumějí."
+sys.cycle-closure-authority,Oprávnění uzavřít auditní cyklus,system,4,prestige-required,auditCycle,20 approvalUnits,"Systém je oprávněn uzavřít proces, který tímto oprávněním vznikl."
+click.secondary-evidence-column,Sekundární evidenční kolonka,audit,1,recommended,auditCycle,28 notionalWorkUnits,Stejná dávka interakcí je nyní vykázána ve dvou navzájem se podporujících sloupcích.
+click.source-attribution,Panel původu interakcí,audit,2,recommended,never,40 notionalWorkUnits,"Klik může být konečně přiřazen oddělení, které ho pravděpodobně nezamýšlelo."
+click.auxiliary-relay,Pomocné relé přítomnosti,audit,3,optional,auditCycle,70 notionalWorkUnits,Pomocná služba dokládá přítomnost každých třicet sekund. Přítomnost zůstává volitelná.
+click.saturation-waiver,Výjimka z nasycení evidence,audit,4,late-optional,auditCycle,95 notionalWorkUnits,Nadměrné množství evidence bude nadále považováno za mírně užitečné.
+fidget.access-permit,Povolení rotační stabilizace,stabilization,1,early-required,never,24 notionalWorkUnits,Stabilizační objekt byl přidělen. Příčina přidělení zůstává aktivní.
+fidget.bearing-lubrication,Mazání schváleného ložiska,stabilization,1,recommended,auditCycle,18 notionalWorkUnits,Pohyb se prodloužil. Důvod k pohybu nikoli.
+fidget.settle-certification,Certifikace přirozeného doběhu,stabilization,2,mid-required,never,36 notionalWorkUnits,"Oddělení potvrzuje, že zastavení může být vykázáno jako výsledek pohybu."
+fidget.meeting-survival,Meeting Survival Protocol,stabilization,3,optional,auditCycle,62 notionalWorkUnits,Stabilizace může pokračovat na pozadí jiného úkonu. Schůzka zůstává mimo rozsah.
+fidget.residual-motion,Zachycení reziduálního pohybu,stabilization,4,late-optional,auditCycle,85 notionalWorkUnits,Doba po zastavení byla administrativně překlasifikována na pokračující hybnost.
+bloom.access-permit,Přístup do compliance zahrádky,care,1,early-required,never,48 notionalWorkUnits,"Drobným stavům byl přidělen povrch, na kterém mohou růst do problému."
+bloom.green-handling,Green Handling SOP,care,1,recommended,auditCycle,20 notionalWorkUnits,Zelené stavy jsou nyní považovány za bezpečné až do jejich přezkoumání.
+bloom.yellow-escalation,Yellow Escalation Matrix,care,2,recommended,auditCycle,38 notionalWorkUnits,"Žluté stavy mohou být eskalovány do pořádku, pokud jsou odstraněny dostatečně formálně."
+bloom.red-exception,Red Stone Exception Process,care,3,mid-recommended,auditCycle,65 notionalWorkUnits,Červený kámen není chyba. Je to požadavek na další schválení.
+bloom.garden-assistant,Pomocná péče bez přítomnosti péče,care,4,late-optional,auditCycle,100 notionalWorkUnits,Pomocná služba odstraní běžný zelený stav. Výjimky zůstávají na člověku.
+bloom.wave-certification,Certifikace osmivlnného růstu,care,4,prestige-required,never,45 notionalWorkUnits,"Růst byl opakován dostatečně často, aby mohl být považován za standard."
+corner.access-waiver,Výjimka pro rohové očekávání,idle,2,optional,never,55 notionalWorkUnits,Čekání bylo uznáno jako pasivní výkon s neurčitým termínem dodání.
+corner.near-miss-classification,Klasifikace téměř dosaženého rohu,idle,2,optional,auditCycle,15 notionalWorkUnits,Téměř je nyní vedeno ve dvou sloupcích a působí výrazněji.
+corner.prediction-beta,Predikce dopadu BETA,idle,3,optional,auditCycle,45 notionalWorkUnits,Systém umí odhadnout roh s přesností dostatečnou pro prezentaci.
+corner.unattended-observation,Waiver nepřítomného pozorovatele,idle,4,late-optional,auditCycle,90 notionalWorkUnits,Zásah rohu bude zaznamenán i bez přímého dohledu. Pozornost nebyla podmínkou události.
+corner.observer-certification,Certifikace pasivního pozorovatele,idle,4,optional-certification,never,30 notionalWorkUnits,Dvacet minut čekání bylo přeměněno na kvalifikaci.
+button.access-permit,Routing opakovaného souhlasu,confirmation,3,mid-required,never,75 notionalWorkUnits,"Potvrzovací panel byl zapojen do obvodu, který už obsahoval potvrzení."
+button.repeat-consent-template,Šablona opakovaného souhlasu,confirmation,3,recommended,auditCycle,20 notionalWorkUnits,Jedna fáze souhlasu byla odstraněna po vyplnění žádosti o její odstranění.
+button.dual-confirmation,Standard dvojího potvrzení,confirmation,3,recommended,auditCycle,35 notionalWorkUnits + 8 approvalUnits,Dvě potvrzení se navzájem potvrzují a společně působí téměř jako rozhodnutí.
+button.false-positive-review,Review správně provedené chyby,confirmation,4,optional,auditCycle,12 approvalUnits,Chybný výsledek správného úkonu je nyní uznán jako auditní materiál.
+button.delegated-signature,Delegované podpisové razítko,confirmation,4,late-optional,auditCycle,60 notionalWorkUnits + 22 approvalUnits,Každý třetí běžný souhlas převezme razítko. Výjimky zůstávají lidské.
+button.sequence-certification,Certifikace opakovaného souhlasu,confirmation,4,prestige-required,never,10 approvalUnits,"Souhlas byl opakován dostatečně často, aby mohl být považován za schopnost."
+click.audit-certification,Certifikace přítomnostního auditu,audit,3,prestige-required,never,35 notionalWorkUnits,Přítomnost byla prokázána opakováním důkazu přítomnosti.
+cross.wellbeing-audit,Wellbeing Audit,cross,3,recommended,auditCycle,50 notionalWorkUnits,Nízká entropie byla překlasifikována na auditní výhodu.
+cross.stabilized-confirmation,Stabilizovaný souhlas,cross,4,recommended,auditCycle,40 notionalWorkUnits + 5 approvalUnits,První potvrzení po přirozeném doběhu působí o polovinu přesvědčivěji.
+cross.audit-garden-reciprocity,Audit–Garden Reciprocity,cross,4,optional,auditCycle,60 notionalWorkUnits,Každých 25 vedlejších kliků může být použito k administrativnímu odstranění jednoho zeleného stavu.
+cross.passive-presence,Pasivní přítomnost s dohledem,cross,4,optional,auditCycle,70 notionalWorkUnits,"Čekání lze vykázat jako přítomnost, pokud je dostatečně přesně nepozorováno."
