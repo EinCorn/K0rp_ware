@@ -17,6 +17,8 @@ const initialActivity = [
 ]
 
 const auditTraceApprovalThreshold = 10
+const osCanvasWidth = 1520
+const osCanvasHeight = 855
 const lockedShortcuts = listModules()
   .filter((module) => module.status !== 'current')
   .slice(0, 2)
@@ -38,7 +40,7 @@ const initialWindows = {
     id: 'form-10-a',
     title: 'FORMULÁŘE / ŽÁDOST 10-A',
     taskbarTitle: 'ŽÁDOST 10-A',
-    x: 760,
+    x: 1072,
     y: 96,
     zIndex: 3,
     isMinimized: false,
@@ -48,8 +50,8 @@ const initialWindows = {
     id: 'daily-report',
     title: 'DENNÍ VÝPIS / MÍSTNÍ MEMO',
     taskbarTitle: 'DENNÍ VÝPIS',
-    x: 760,
-    y: 430,
+    x: 1082,
+    y: 569,
     zIndex: 1,
     isMinimized: false,
     isOpen: true,
@@ -58,7 +60,7 @@ const initialWindows = {
     id: 'forms-folder',
     title: 'FORMULÁŘE / SLOŽKA',
     taskbarTitle: 'FORMULÁŘE',
-    x: 700,
+    x: 1024,
     y: 118,
     zIndex: 0,
     isMinimized: false,
@@ -68,8 +70,8 @@ const initialWindows = {
     id: 'inbox-folder',
     title: 'DORUČENÉ / SLOŽKA',
     taskbarTitle: 'DORUČENÉ',
-    x: 730,
-    y: 240,
+    x: 1102,
+    y: 471,
     zIndex: 0,
     isMinimized: false,
     isOpen: false,
@@ -153,6 +155,7 @@ function KorpOsShell() {
   const [feedbackTick, setFeedbackTick] = useState(0)
   const [auditTraceApproved, setAuditTraceApproved] = useState(false)
   const [windows, setWindows] = useState(initialWindows)
+  const [canvasScale, setCanvasScale] = useState(1)
   const desktopSpaceRef = useRef(null)
   const dragStateRef = useRef(null)
 
@@ -175,44 +178,14 @@ function KorpOsShell() {
   ), null)
 
   useEffect(() => {
-    const desktopSpace = desktopSpaceRef.current
-    if (!desktopSpace) return
+    const updateCanvasScale = () => {
+      setCanvasScale(Math.min(1, window.innerWidth / osCanvasWidth, window.innerHeight / osCanvasHeight))
+    }
 
-    const rect = desktopSpace.getBoundingClientRect()
-    const isCompact = rect.width < 720
-    const auditWidth = Math.min(630, rect.width * 0.51)
-    const formWidth = Math.min(310, rect.width * 0.29)
-    const memoWidth = Math.min(392, rect.width * 0.34)
-    const folderWidth = Math.min(360, rect.width * 0.31)
+    updateCanvasScale()
+    window.addEventListener('resize', updateCanvasScale)
 
-    setWindows((currentWindows) => ({
-      ...currentWindows,
-      'audit-00-a': {
-        ...currentWindows['audit-00-a'],
-        x: isCompact ? 85 : Math.min(160, Math.max(118, rect.width - auditWidth - 20)),
-        y: isCompact ? 14 : 48,
-      },
-      'form-10-a': {
-        ...currentWindows['form-10-a'],
-        x: isCompact ? 85 : Math.max(142, rect.width - formWidth - Math.min(130, rect.width * 0.1)),
-        y: isCompact ? 271 : 96,
-      },
-      'daily-report': {
-        ...currentWindows['daily-report'],
-        x: isCompact ? 85 : Math.max(120, rect.width - memoWidth - 40),
-        y: isCompact ? Math.max(448, rect.height - 131) : Math.max(300, rect.height - 207),
-      },
-      'forms-folder': {
-        ...currentWindows['forms-folder'],
-        x: isCompact ? 85 : Math.max(120, rect.width - folderWidth - 130),
-        y: isCompact ? 271 : 122,
-      },
-      'inbox-folder': {
-        ...currentWindows['inbox-folder'],
-        x: isCompact ? 85 : Math.max(120, rect.width - folderWidth - 52),
-        y: isCompact ? Math.max(448, rect.height - 131) : Math.max(242, rect.height - 305),
-      },
-    }))
+    return () => window.removeEventListener('resize', updateCanvasScale)
   }, [])
 
   const bringWindowToFront = (id) => {
@@ -262,11 +235,12 @@ function KorpOsShell() {
     if (!desktopSpace || !window) return
 
     const desktopRect = desktopSpace.getBoundingClientRect()
+    const scale = canvasScale || 1
     dragStateRef.current = {
       id,
       pointerId: event.pointerId,
-      offsetX: event.clientX - desktopRect.left - window.x,
-      offsetY: event.clientY - desktopRect.top - window.y,
+      offsetX: (event.clientX - desktopRect.left) / scale - window.x,
+      offsetY: (event.clientY - desktopRect.top) / scale - window.y,
     }
 
     event.currentTarget.setPointerCapture(event.pointerId)
@@ -283,10 +257,11 @@ function KorpOsShell() {
 
     const desktopRect = desktopSpace.getBoundingClientRect()
     const windowRect = windowElement.getBoundingClientRect()
-    const maximumX = Math.max(0, desktopRect.width - windowRect.width)
-    const maximumY = Math.max(0, desktopRect.height - windowRect.height)
-    const nextX = Math.min(maximumX, Math.max(0, event.clientX - desktopRect.left - dragState.offsetX))
-    const nextY = Math.min(maximumY, Math.max(0, event.clientY - desktopRect.top - dragState.offsetY))
+    const scale = canvasScale || 1
+    const maximumX = Math.max(0, desktopRect.width / scale - windowRect.width / scale)
+    const maximumY = Math.max(0, desktopRect.height / scale - windowRect.height / scale)
+    const nextX = Math.min(maximumX, Math.max(0, (event.clientX - desktopRect.left) / scale - dragState.offsetX))
+    const nextY = Math.min(maximumY, Math.max(0, (event.clientY - desktopRect.top) / scale - dragState.offsetY))
 
     setWindows((currentWindows) => ({
       ...currentWindows,
@@ -358,7 +333,7 @@ function KorpOsShell() {
   }
 
   return (
-    <main className="os-shell" aria-label="K0rp_OS pracovní plocha">
+    <main className="os-shell" aria-label="K0rp_OS pracovní plocha" style={{ '--os-scale': canvasScale }}>
       <section className="os-desktop">
         <header className="os-desktop-readout">
           <div className="os-brand" aria-label="K0rp_OS">
@@ -417,13 +392,13 @@ function KorpOsShell() {
               <div className="os-audit-body">
                 <div className="os-document-heading">
                   <p>STARTUP PROCEDURA / MÍSTNÍ KONTROLA</p>
-                  <h1 id="audit-title">Potvrďte, že něco probíhá.</h1>
+                  <h1 id="audit-title">Potvrďte, že<br />něco probíhá.</h1>
                   <span>Jeden úkon vytvoří místní auditní záznam. Žádná data neopouštějí tuto pracovní stanici.</span>
                 </div>
 
                 <button type="button" className="os-audit-action" onClick={registerAuditAction}>
                   <span>CLICKAUDIT / MANUÁLNÍ POTVRZENÍ</span>
-                  <strong>PROVÉST KONTROLU</strong>
+                  <strong>PROVÉST<br />KONTROLU</strong>
                   <small>NEVYŽADUJE PŘEDMĚT KONTROLY</small>
                 </button>
 
@@ -592,7 +567,7 @@ function KorpOsShell() {
           <span className="os-taskbar-resource os-taskbar-resource-ap">AP {korpState.resources.auditPressure.toFixed(0)}</span>
           <span className="os-taskbar-resource os-taskbar-resource-ci">CI {korpState.resources.complianceIntegrity.toFixed(0)}</span>
           <span className="os-taskbar-privacy">PRIVACY: LOCAL ONLY</span>
-          <span>10:00 / RELACE 01</span>
+          <span className="os-taskbar-clock">10:00 / RELACE 01</span>
         </footer>
       </section>
     </main>
