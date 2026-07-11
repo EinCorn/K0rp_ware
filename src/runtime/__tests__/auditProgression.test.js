@@ -26,7 +26,7 @@ test('Audit 00-A is available at start', () => {
   assert.equal(isAuditFormAvailable(audit00, withClickAuditEvents(0)), true)
 })
 
-test('submitting Audit 00-A records its canonical memo', () => {
+test('submitting Audit 00-A records its canonical memo and ClickAudit unlock', () => {
   const submission = submitAuditForm({
     form: audit00,
     korpState: withClickAuditEvents(0),
@@ -36,6 +36,7 @@ test('submitting Audit 00-A records its canonical memo', () => {
   assert.equal(submission.didSubmit, true)
   assert.deepEqual(submission.progressionState.submittedFormIds, ['audit-00-a'])
   assert.deepEqual(submission.progressionState.unlockedMemoIds, ['memo.audit-00-a-complete'])
+  assert.deepEqual(submission.progressionState.unlockedModuleIds, ['click-audit'])
 })
 
 test('Audit 10-A remains locked below 25 ClickAudit clicks', () => {
@@ -58,6 +59,7 @@ test('submitting Audit 10-A records its canonical unlocks once', () => {
   assert.deepEqual(firstSubmission.progressionState.submittedFormIds, ['audit-10-a'])
   assert.deepEqual(firstSubmission.progressionState.ownedUpgradeIds, ['sys.audit-batch-standardization'])
   assert.deepEqual(firstSubmission.progressionState.unlockedMemoIds, ['memo.audit-trace-available'])
+  assert.deepEqual(firstSubmission.progressionState.unlockedModuleIds, [])
 
   const repeatedSubmission = submitAuditForm({
     form: audit10,
@@ -95,4 +97,5 @@ test('unsupported requirements and effects fail safely', () => {
   assert.equal(unsupportedEffect.didSubmit, true)
   assert.deepEqual(unsupportedEffect.progressionState.ownedUpgradeIds, [])
   assert.deepEqual(unsupportedEffect.progressionState.unlockedMemoIds, [])
+  assert.deepEqual(unsupportedEffect.progressionState.unlockedModuleIds, [])
 })
