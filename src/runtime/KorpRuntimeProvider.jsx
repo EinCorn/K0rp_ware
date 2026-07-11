@@ -1,17 +1,37 @@
-import { useCallback, useMemo, useReducer } from 'react'
-import { applyKorpEvent, createInitialState } from '../../packages/korp-core/src/index'
+import { useCallback, useEffect, useMemo, useReducer, useRef } from 'react'
+import {
+  applyKorpEvent,
+  createInitialState,
+  KORP_CORE_STATE_VERSION,
+} from '../../packages/korp-core/src/index'
 import { KORP_PROGRESSION_DATABASE } from '../../packages/korp-progression/src/progression.database'
 import {
   createInitialAuditProgressionState,
   getAuditForm,
   isAuditFormAvailable,
-  submitAuditForm,
+  submitAuditForm as resolveAuditFormSubmission,
 } from './auditProgression'
 import { KorpRuntimeContext } from './KorpRuntimeContext'
+import {
+  clearRuntimeStorage,
+  loadRuntimeFromStorage,
+  saveRuntimeToStorage,
+} from './runtimePersistence'
 
 const auditForms = KORP_PROGRESSION_DATABASE.auditForms
+const progressionDataVersion = KORP_PROGRESSION_DATABASE.meta.version
 
-const createRuntimeState = () => {
+const getRuntimeStorage = () => {
+  if (typeof window === 'undefined') return null
+
+  try {
+    return window.localStorage
+  } catch {
+    return null
+  }
+}
+
+const createFreshRuntimeState = () => {
   const korpState = createInitialState({ settings: { platform: 'web' } })
 
   return {
@@ -20,6 +40,12 @@ const createRuntimeState = () => {
     ...createInitialAuditProgressionState(),
   }
 }
+
+const createRuntimeState = () => loadRuntimeFromStorage(getRuntimeStorage(), {
+  progressionDataVersion,
+  coreStateVersion: KORP_CORE_STATE_VERSION,
+  createFallback: createFreshRuntimeState,
+})
 
 function runtimeReducer(runtime, action) {
   switch (action.type) {
@@ -34,7 +60,7 @@ function runtimeReducer(runtime, action) {
     }
     case 'submitAuditForm': {
       const form = getAuditForm(auditForms, action.formId)
-      const progression = submitAuditForm({
+      const progression = resolveAuditFormSubmission({
         form,
         korpState: runtime.korpState,
         progressionState: runtime,
@@ -59,7 +85,7 @@ function runtimeReducer(runtime, action) {
       }
     }
     case 'resetRuntime':
-      return createRuntimeState()
+      return createFreshRuntimeState()
     default:
       return runtime
   }
@@ -67,6 +93,16 @@ function runtimeReducer(runtime, action) {
 
 export function KorpRuntimeProvider({ children }) {
   const [runtime, dispatch] = useReducer(runtimeReducer, undefined, createRuntimeState)
+  const skipNextPersistenceRef = useRef(false)
+
+  useEffect(() => {
+    if (skipNextPersistenceRef.current) {
+      skipNextPersistenceRef.current = false
+      return
+    }
+
+    saveRuntimeToStorage(getRuntimeStorage(), runtime, progressionDataVersion)
+  }, [runtime])
 
   const dispatchKorpEvent = useCallback((event) => {
     dispatch({ type: 'dispatchKorpEvent', event })
@@ -77,6 +113,8 @@ export function KorpRuntimeProvider({ children }) {
   }, [])
 
   const resetRuntime = useCallback(() => {
+    skipNextPersistenceRef.current = true
+    clearRuntimeStorage(getRuntimeStorage())
     dispatch({ type: 'resetRuntime' })
   }, [])
 
