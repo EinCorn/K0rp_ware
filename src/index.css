@@ -15,22 +15,6 @@
 }
 
 @font-face {
-  font-family: "Pixel Operator 8";
-  src: url("./assets/fonts/pixel-operator/PixelOperator8.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Pixel Operator 8";
-  src: url("./assets/fonts/pixel-operator/PixelOperator8-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
   font-family: "Pixel Operator Mono";
   src: url("./assets/fonts/pixel-operator/PixelOperatorMono.ttf") format("truetype");
   font-weight: 400;
@@ -41,22 +25,6 @@
 @font-face {
   font-family: "Pixel Operator Mono";
   src: url("./assets/fonts/pixel-operator/PixelOperatorMono-Bold.ttf") format("truetype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Pixel Operator Mono 8";
-  src: url("./assets/fonts/pixel-operator/PixelOperatorMono8.ttf") format("truetype");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Pixel Operator Mono 8";
-  src: url("./assets/fonts/pixel-operator/PixelOperatorMono8-Bold.ttf") format("truetype");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -77,8 +45,8 @@
   --accent: #b8975b;
   --shadow: 0 22px 80px rgba(0, 0, 0, 0.34);
 
-  --korp-font-ui: "Pixel Operator 8", "Pixel Operator", monospace;
-  --korp-font-mono: "Pixel Operator Mono 8", "Pixel Operator Mono", "Pixel Operator 8", monospace;
+  --korp-font-ui: "Pixel Operator", monospace;
+  --korp-font-mono: "Pixel Operator Mono", "Pixel Operator", monospace;
   --sans: var(--korp-font-ui);
   --mono: var(--korp-font-mono);
 
