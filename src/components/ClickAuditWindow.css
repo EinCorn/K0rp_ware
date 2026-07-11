@@ -1,0 +1,172 @@
+.clickaudit-window-frame,
+.clickaudit-standalone-shell,
+.clickaudit-window-frame * ,
+.clickaudit-standalone-shell * {
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.clickaudit-window-frame,
+.clickaudit-standalone-shell {
+  position: relative;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  overflow: hidden;
+}
+
+.clickaudit-window-frame-embedded,
+.clickaudit-window-frame-standalone {
+  width: 362px;
+  height: 362px;
+}
+
+.clickaudit-window-frame-embedded {
+  filter: drop-shadow(7px 9px 0 rgba(16, 18, 14, 0.42));
+}
+
+.clickaudit-window-content {
+  position: absolute;
+  inset: 14px;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #090908;
+}
+
+.clickaudit-window-drag-region {
+  position: absolute;
+  z-index: 20;
+  left: 14px;
+  top: 7px;
+  width: calc(100% - 58px);
+  height: 22px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+
+.clickaudit-window-drag-region:active {
+  cursor: grabbing;
+}
+
+.clickaudit-window-control,
+.clickaudit-shell-control {
+  position: absolute;
+  z-index: 30;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  color: transparent;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  cursor: pointer;
+  transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
+}
+
+.clickaudit-window-control:hover:not(:disabled),
+.clickaudit-window-control:focus-visible:not(:disabled),
+.clickaudit-shell-control:hover:not(:disabled),
+.clickaudit-shell-control:focus-visible:not(:disabled) {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.clickaudit-window-control:active:not(:disabled),
+.clickaudit-shell-control:active:not(:disabled) {
+  transform: translateY(0);
+  filter: brightness(0.96);
+}
+
+.clickaudit-window-control:disabled,
+.clickaudit-shell-control:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+  filter: grayscale(0.65);
+}
+
+.clickaudit-window-control-close {
+  right: 8px;
+  top: 7px;
+  width: 30px;
+  height: 30px;
+}
+
+.clickaudit-standalone-shell {
+  width: 460px;
+  height: 460px;
+}
+
+.clickaudit-standalone-drag-region {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  width: 92px;
+  height: 48px;
+}
+
+.clickaudit-window-frame-standalone {
+  position: absolute;
+  left: 72px;
+  top: 48px;
+}
+
+.clickaudit-shell-control-pin,
+.clickaudit-shell-control-reset {
+  left: 28px;
+  width: 41px;
+  height: 41px;
+}
+
+.clickaudit-shell-control-pin {
+  top: 54px;
+}
+
+.clickaudit-shell-control-reset {
+  top: 94px;
+}
+
+.clickaudit-shell-control-close {
+  left: 400px;
+  top: 10px;
+  width: 38px;
+  height: 38px;
+}
+
+.clickaudit-shell-control-pin[aria-pressed='true'] {
+  filter: drop-shadow(0 0 8px rgba(217, 123, 128, 0.62));
+}
+
+.os-clickaudit-asset-window {
+  position: absolute;
+  width: 362px;
+  height: 362px;
+  overflow: visible;
+  background: transparent;
+  pointer-events: auto;
+}
+
+.clickaudit-preview-page {
+  width: 100vw;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(202, 216, 119, 0.12), transparent 32rem),
+    #1c1e19;
+}
+
+.clickaudit-preview-page.is-window-only {
+  background:
+    linear-gradient(135deg, rgba(77, 83, 64, 0.48), rgba(25, 27, 23, 0.86)),
+    #272921;
+}
