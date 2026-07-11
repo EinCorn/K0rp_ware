@@ -115,7 +115,7 @@ export default function AuditFormDocument({
   form,
   values,
   submitted,
-  headingId,
+  headingId = 'audit-title',
   onFieldChange,
   onSubmit,
 }) {
