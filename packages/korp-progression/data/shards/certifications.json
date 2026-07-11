@@ -1,0 +1,66 @@
+[
+  {
+    "id": "cert.click-audit",
+    "moduleId": "click-audit",
+    "title": "Certifikace přítomnostního auditu",
+    "requirements": {
+      "kind": "all",
+      "requirements": [
+        {"kind":"eventCountAtLeast","eventType":"clickaudit.click","count":150},
+        {"kind":"eventCountAtLeast","eventType":"clickaudit.batchCompleted","count":4},
+        {"kind":"upgradeOwned","upgradeId":"click.audit-certification"}
+      ]
+    }
+  },
+  {
+    "id": "cert.fidget",
+    "moduleId": "fidget",
+    "title": "Certifikace přirozeného doběhu",
+    "requirements": {
+      "kind": "all",
+      "requirements": [
+        {"kind":"eventCountAtLeast","eventType":"fidget.sessionSettled","count":5},
+        {"kind":"lifetimeResourceAtLeast","resourceId":"stabilization","amount":40},
+        {"kind":"upgradeOwned","upgradeId":"fidget.settle-certification"}
+      ]
+    }
+  },
+  {
+    "id": "cert.bloom",
+    "moduleId": "bloom",
+    "title": "Certifikace osmivlnného růstu",
+    "requirements": {
+      "kind": "all",
+      "requirements": [
+        {"kind":"eventCountAtLeast","eventType":"bloom.waveAdvanced","count":8},
+        {"kind":"resourceAtLeast","resourceId":"complianceIntegrity","amount":30},
+        {"kind":"upgradeOwned","upgradeId":"bloom.wave-certification"}
+      ]
+    }
+  },
+  {
+    "id": "cert.button-compliance",
+    "moduleId": "button-compliance",
+    "title": "Certifikace opakovaného souhlasu",
+    "requirements": {
+      "kind": "all",
+      "requirements": [
+        {"kind":"eventCountAtLeast","eventType":"button.sequenceCompleted","count":3},
+        {"kind":"lifetimeResourceAtLeast","resourceId":"approvalUnits","amount":20},
+        {"kind":"upgradeOwned","upgradeId":"button.sequence-certification"}
+      ]
+    }
+  },
+  {
+    "id": "cert.corner-watch",
+    "moduleId": "corner-watch",
+    "title": "Certifikace pasivního pozorovatele",
+    "requirements": {
+      "kind": "all",
+      "requirements": [
+        {"kind":"eventCountAtLeast","eventType":"corner.sessionCompleted","count":2},
+        {"kind":"upgradeOwned","upgradeId":"corner.observer-certification"}
+      ]
+    }
+  }
+]
