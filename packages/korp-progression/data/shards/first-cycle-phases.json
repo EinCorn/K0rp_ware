@@ -1,0 +1,89 @@
+[
+  {
+    "id": "phase-00-intake",
+    "title": "Vstupní audit",
+    "minuteRange": [0,12],
+    "primarySurface": "audit-00-a",
+    "expectedActions": {"auditFieldInteractions":[12,18],"auditFormsSubmitted":1,"directClickAuditClicks":0},
+    "expectedCumulative": {"lifetimeNwuGenerated":10,"auditPressure":18,"stabilization":0,"complianceIntegrity":0,"approvalUnitsLifetime":0,"memosAcknowledged":1},
+    "unlocks": ["click-audit","sys.counter-calibration"],
+    "designGoal": "Hráč poprvé kliká proto, že vyplňuje práci připomínající audit. ClickAudit vzniká jako vedlejší důsledek formuláře."
+  },
+  {
+    "id": "phase-01-evidence",
+    "title": "Rozšíření auditní stopy",
+    "minuteRange": [12,35],
+    "primarySurface": "click-audit",
+    "expectedActions": {"directClickAuditClicks":[35,55],"auditBatchesCompleted":1,"auditFormsSubmitted":2},
+    "expectedCumulative": {"lifetimeNwuGenerated":42,"auditPressure":55,"clickAuditClicks":55,"memosAcknowledged":2},
+    "expectedPurchases": ["sys.counter-calibration","sys.audit-batch-standardization"],
+    "unlocks": ["audit-16-c","fidget.access-permit"],
+    "designGoal": "Hráč pochopí okamžitou odezvu, dávky a první formulář, který změní pravidlo systému."
+  },
+  {
+    "id": "phase-02-stabilization",
+    "title": "Stabilizace rozptýlením",
+    "minuteRange": [35,65],
+    "primarySurface": "fidget",
+    "expectedActions": {"fidgetSessionsSettled":3,"indirectAuditedClicks":[8,16],"auditFormsSubmitted":3},
+    "expectedCumulative": {"lifetimeNwuGenerated":88,"stabilizationLifetime":24,"stabilizationCurrent":20,"entropy":22,"clickAuditClicks":75,"memosAcknowledged":3},
+    "expectedPurchases": ["fidget.access-permit","fidget.bearing-lubrication"],
+    "unlocks": ["audit-23-b","bloom.access-permit"],
+    "designGoal": "První skutečně odlišná hmatová činnost a první důkaz, že modul nemusí být jen další tlačítko."
+  },
+  {
+    "id": "phase-03-growth",
+    "title": "Compliance zahrádka",
+    "minuteRange": [65,110],
+    "primarySurface": "bloom",
+    "expectedActions": {"bloomWavesAdvanced":3,"bloomMatchesCleared":[15,24],"indirectAuditedClicks":[25,45]},
+    "expectedCumulative": {"lifetimeNwuGenerated":160,"complianceIntegrity":24,"systemOrder":14,"bloomWaves":3,"clickAuditClicks":115,"memosAcknowledged":4},
+    "expectedPurchases": ["bloom.access-permit","bloom.green-handling"],
+    "unlocks": ["audit-27-r","corner.access-waiver","click.source-attribution"],
+    "designGoal": "Čísla získají prostorový ekvivalent a hráč poprvé čistí/generuje stav, který není přímo auditní."
+  },
+  {
+    "id": "phase-04-observation",
+    "title": "Pasivní přítomnost a směrování",
+    "minuteRange": [110,145],
+    "primarySurface": "corner-watch",
+    "expectedActions": {"cornerSessionsCompleted":[1,2],"cornerNearMisses":[5,20],"cornerHitsRequired":0,"distinctModulesUsed":4},
+    "expectedCumulative": {"lifetimeNwuGenerated":225,"systemOrder":20,"idleFaith":5,"clickAuditClicks":135,"memosAcknowledged":5},
+    "expectedPurchases": ["corner.access-waiver"],
+    "unlocks": ["audit-31-f","button.access-permit","sys.departmental-routing"],
+    "designGoal": "Idle modul nabízí návrat a anticipaci, ale rohový zásah není brána hlavního progresu."
+  },
+  {
+    "id": "phase-05-consent",
+    "title": "Opakovaný souhlas",
+    "minuteRange": [145,195],
+    "primarySurface": "button-compliance",
+    "expectedActions": {"buttonSequencesCompleted":2,"buttonPresses":[18,28],"buttonFalsePositives":[0,2],"fidgetSessionsSettled":4,"bloomWavesAdvanced":5},
+    "expectedCumulative": {"lifetimeNwuGenerated":310,"approvalUnitsLifetime":18,"auditPressure":70,"systemOrder":27,"clickAuditClicks":175,"memosAcknowledged":6},
+    "expectedPurchases": ["button.access-permit","sys.departmental-routing"],
+    "unlocks": ["cross.wellbeing-audit","cross.stabilized-confirmation"],
+    "designGoal": "Pozdní modul převádí výběr/upgrady do fyzického rituálu a otevírá druhou měnu."
+  },
+  {
+    "id": "phase-06-certification",
+    "title": "Mezioddělová certifikace",
+    "minuteRange": [195,250],
+    "primarySurface": "multi-module",
+    "expectedActions": {"clickAuditClicks":[210,280],"auditBatchesCompleted":5,"fidgetSessionsSettled":5,"bloomWavesAdvanced":8,"buttonSequencesCompleted":3,"certifiedDepartments":[3,4]},
+    "expectedCumulative": {"lifetimeNwuGenerated":430,"approvalUnitsLifetime":28,"complianceIntegrity":35,"systemOrder":35,"memosAcknowledged":8},
+    "expectedPurchases": ["click.audit-certification","fidget.settle-certification","bloom.wave-certification","button.sequence-certification"],
+    "unlocks": ["audit-42-z","sys.cycle-closure-authority"],
+    "designGoal": "Hráč střídá moduly, používá krátká synergická okna a připravuje se na první reset."
+  },
+  {
+    "id": "phase-07-closure",
+    "title": "Uzavření auditního cyklu",
+    "minuteRange": [250,275],
+    "primarySurface": "audit-42-z",
+    "expectedActions": {"auditFormsSubmitted":4,"buttonSequencesCompleted":3,"certifiedDepartments":[3,5],"prestigeActions":1},
+    "expectedCumulative": {"lifetimeNwuGenerated":450,"approvalUnitsLifetime":35,"auditFindingsGranted":[4,6]},
+    "expectedPurchases": ["sys.cycle-closure-authority"],
+    "unlocks": ["bubble-wrap","prestige-directives"],
+    "designGoal": "První prestige je formulář, closure point a systémový unlock. Po resetu se stará cesta zrychlí a objeví se nový hmatový modul."
+  }
+]
