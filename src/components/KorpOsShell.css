@@ -1,4 +1,9 @@
 .os-shell {
+  --os-canvas-width: 1520px;
+  --os-canvas-height: 855px;
+  --os-canvas-half-width: -760px;
+  --os-canvas-half-height: -427.5px;
+  --os-scale: 1;
   --os-ink: #252720;
   --os-paper: #d8d2b9;
   --os-paper-deep: #aaa38b;
@@ -8,18 +13,48 @@
   --os-green: #718c5e;
   --os-ui: var(--korp-font-ui);
   --os-mono: var(--korp-font-mono);
-  height: 100svh;
+  width: 100vw;
+  height: 100vh;
+  position: relative;
   overflow: hidden;
-  padding: clamp(8px, 1.4vw, 20px);
+  padding: 0;
+  cursor: default;
   background:
     radial-gradient(ellipse at 54% -12%, rgba(210, 222, 132, 0.16), transparent 42rem),
     linear-gradient(135deg, #383933, #24251f 42%, #151613);
 }
 
+.os-shell,
+.os-shell * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.os-shell .os-selectable,
+.os-shell input,
+.os-shell textarea,
+.os-shell [contenteditable='true'] {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+.os-shell h1,
+.os-shell h2,
+.os-shell p {
+  font-family: inherit;
+}
+
+.os-shell p {
+  line-height: normal;
+}
+
 .os-desktop {
-  width: min(1520px, 100%);
-  height: 100%;
-  margin: 0 auto;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--os-canvas-width);
+  height: var(--os-canvas-height);
+  margin: var(--os-canvas-half-height) 0 0 var(--os-canvas-half-width);
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
@@ -29,6 +64,9 @@
   background: #535646;
   box-shadow: 0 28px 86px rgba(0, 0, 0, 0.56), inset 0 0 0 2px rgba(255, 255, 255, 0.24);
   font-family: var(--os-ui);
+  transform: scale(var(--os-scale));
+  transform-origin: center;
+  will-change: transform;
 }
 
 .os-desktop-readout {
@@ -82,10 +120,8 @@
   overflow: hidden;
   isolation: isolate;
   background:
-    radial-gradient(circle at 73% 17%, rgba(212, 221, 139, 0.13), transparent 17rem),
-    linear-gradient(125deg, rgba(255, 255, 255, 0.035) 0 1px, transparent 1px 10px),
-    linear-gradient(35deg, rgba(0, 0, 0, 0.06) 0 1px, transparent 1px 8px),
-    linear-gradient(135deg, #62664f, #40443a 56%, #2b2e28);
+    linear-gradient(135deg, rgba(31, 37, 29, 0.22), rgba(26, 31, 24, 0.46)),
+    url('../assets/k0rp_wallpaper_1600x900.png') center / cover no-repeat;
 }
 
 .os-desktop-space::before {
@@ -102,7 +138,7 @@
 
 .os-desktop-icons {
   position: absolute;
-  z-index: 2;
+  z-index: 1;
   top: 16px;
   left: 16px;
   width: 94px;
@@ -111,6 +147,7 @@
 }
 
 .os-desktop-icon {
+  width: 94px;
   display: grid;
   justify-items: center;
   gap: 4px;
@@ -202,15 +239,35 @@
 
 .os-desktop-icon.is-locked { opacity: 0.56; filter: saturate(0.45); }
 .os-desktop-icon.is-locked .os-icon-glyph { background-color: #8e907d; }
-.os-icon-label { font-size: 10px; line-height: 1; }
-.os-desktop-icon small { color: #cbd0b6; font: 7px var(--os-mono); letter-spacing: 0.06em; }
+.os-icon-label {
+  display: -webkit-box;
+  width: 94px;
+  height: 22px;
+  overflow: hidden;
+  color: inherit;
+  font-size: 10px;
+  line-height: 11px;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.os-desktop-icon small {
+  width: 94px;
+  overflow: hidden;
+  color: #cbd0b6;
+  font: 7px/9px var(--os-mono);
+  letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .os-window-layer {
   position: absolute;
   inset: 0;
   min-width: 0;
   min-height: 0;
-  z-index: 1;
+  z-index: 2;
+  pointer-events: none;
 }
 
 .os-window {
@@ -222,6 +279,7 @@
   border: 3px solid #35372f;
   background: var(--os-paper);
   box-shadow: 6px 7px 0 rgba(24, 27, 22, 0.42), inset 0 0 0 2px rgba(255, 255, 255, 0.3);
+  pointer-events: auto;
 }
 
 .os-window-header {
@@ -235,17 +293,27 @@
   background: #3e4038;
   font-family: var(--os-mono);
   font-size: 8px;
+  line-height: 1;
   letter-spacing: 0.1em;
   cursor: grab;
   touch-action: none;
   user-select: none;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .os-window-header-audit { background: #4c5538; }
 .os-window-header:active { cursor: grabbing; }
-.os-window-title { margin-right: auto; }
+.os-window-title {
+  min-width: 0;
+  margin-right: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .os-window-minimize {
+  flex: 0 0 auto;
   width: 18px;
   height: 16px;
   display: grid;
@@ -269,17 +337,18 @@
 }
 
 .os-audit-window {
-  width: min(630px, 51vw);
-  height: min(378px, calc(100% - 56px));
+  width: 630px;
+  height: 378px;
 }
 
 .os-audit-body {
   min-height: 0;
   display: grid;
-  grid-template-columns: minmax(150px, 0.75fr) minmax(175px, 1fr) minmax(122px, 0.56fr);
-  gap: clamp(8px, 1.4vw, 15px);
+  grid-template-columns: 176px 250px 110px;
+  gap: 15px;
   align-items: center;
-  padding: clamp(10px, 1.5vw, 17px);
+  padding: 17px;
+  overflow: hidden;
   background:
     linear-gradient(90deg, transparent 0 65%, rgba(82, 77, 60, 0.1) 65% 65.2%, transparent 65.2%),
     #d8d1b8;
@@ -289,7 +358,7 @@
 .os-document-code {
   margin: 0 0 6px;
   color: #685e3d;
-  font: 8px var(--os-mono);
+  font: 8px/9px var(--os-mono);
   letter-spacing: 0.1em;
 }
 
@@ -298,8 +367,8 @@
 .os-log-body h2 {
   margin: 0;
   color: #292a23;
-  font-size: clamp(16px, 1.8vw, 25px);
-  line-height: 0.98;
+  font-size: 25px;
+  line-height: 24px;
   letter-spacing: -0.04em;
 }
 
@@ -308,7 +377,7 @@
   margin-top: 11px;
   color: #5b574a;
   font-size: 11px;
-  line-height: 1.35;
+  line-height: 14px;
 }
 
 .os-audit-action {
@@ -344,8 +413,12 @@
 }
 
 .os-audit-action span,
-.os-audit-action small { font: 8px var(--os-mono); letter-spacing: 0.09em; }
-.os-audit-action strong { font-size: clamp(18px, 2vw, 29px); line-height: 0.95; letter-spacing: -0.04em; }
+.os-audit-action small {
+  font: 8px/9px var(--os-mono);
+  letter-spacing: 0.09em;
+  white-space: nowrap;
+}
+.os-audit-action strong { font-size: 29px; line-height: 27px; letter-spacing: -0.04em; }
 
 .os-audit-readout { display: grid; gap: 7px; margin: 0; }
 .os-audit-readout > div {
@@ -359,7 +432,15 @@
 }
 
 .os-audit-readout span { color: #625b4b; font: 7px var(--os-mono); letter-spacing: 0.09em; }
-.os-audit-readout strong { color: #33332b; font-size: 13px; line-height: 1; }
+.os-audit-readout strong {
+  overflow: hidden;
+  color: #33332b;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .os-action-feedback { color: #4e633c !important; animation: os-audit-confirmation 420ms steps(3, end); }
 
 @keyframes os-audit-confirmation {
@@ -369,7 +450,7 @@
 }
 
 .os-form-window {
-  width: min(310px, 29vw);
+  width: 310px;
   height: 250px;
 }
 
@@ -383,8 +464,8 @@
     #eee4bd;
 }
 
-.os-form-body h2 { font-size: 20px; }
-.os-form-body > p:not(.os-document-code) { margin: 0; color: #5a5548; font-size: 11px; line-height: 1.35; }
+.os-form-body h2 { font-size: 20px; line-height: 20px; }
+.os-form-body > p:not(.os-document-code) { margin: 0; color: #5a5548; font-size: 11px; line-height: 14px; }
 .os-form-body button {
   padding: 8px 7px;
   border: 2px solid #596849;
@@ -409,13 +490,13 @@
 }
 
 .os-log-window {
-  width: min(392px, 34vw);
+  width: 392px;
   height: 192px;
   transform: rotate(-0.45deg);
 }
 
 .os-folder-window {
-  width: min(360px, 31vw);
+  width: 360px;
   height: 268px;
 }
 
@@ -442,7 +523,7 @@
   margin: 9px 1px 6px;
   color: #2d2e27;
   font-size: 20px;
-  line-height: 1;
+  line-height: 20px;
   letter-spacing: -0.04em;
 }
 
@@ -484,16 +565,26 @@ button.os-folder-entry:focus-visible {
 
 .os-folder-entry.is-locked { color: #77705d; filter: saturate(0.55); }
 .os-folder-entry-copy { min-width: 0; display: grid; gap: 3px; }
-.os-folder-entry-copy strong { font-size: 12px; line-height: 1; }
+.os-folder-entry-copy strong {
+  overflow: hidden;
+  font-size: 12px;
+  line-height: 12px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .os-folder-entry-copy small,
 .os-folder-entry-status {
+  overflow: hidden;
   color: #746b56;
   font: 7px/1.15 var(--os-mono);
   letter-spacing: 0.06em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .os-folder-entry-status {
   justify-self: end;
+  width: 95px;
   max-width: 95px;
   color: #586443;
   text-align: right;
@@ -536,7 +627,7 @@ button.os-folder-entry:focus-visible {
     #e9dfb8;
 }
 
-.os-log-body h2 { font-size: 18px; }
+.os-log-body h2 { font-size: 18px; line-height: 18px; }
 .os-log-body ol {
   display: grid;
   gap: 2px;
@@ -549,10 +640,13 @@ button.os-folder-entry:focus-visible {
 .os-log-body li {
   min-height: 20px;
   padding: 4px 0 4px 10px;
+  overflow: hidden;
   border-top: 1px dashed #8a826b;
   color: #4d4a3e;
   font-size: 9px;
-  line-height: 1.2;
+  line-height: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .os-log-body li::before {
@@ -564,16 +658,7 @@ button.os-folder-entry:focus-visible {
 }
 
 .os-wallpaper-mark {
-  position: absolute;
-  right: clamp(365px, 35vw, 520px);
-  bottom: 35px;
-  margin: 0;
-  color: rgba(235, 238, 205, 0.09);
-  font: clamp(24px, 4vw, 62px)/0.83 var(--os-mono);
-  letter-spacing: -0.1em;
-  text-align: right;
-  transform: rotate(-7deg);
-  user-select: none;
+  display: none;
 }
 
 .os-taskbar {
@@ -589,6 +674,7 @@ button.os-folder-entry:focus-visible {
   box-shadow: inset 0 2px rgba(255, 255, 255, 0.08);
   font-family: var(--os-mono);
   font-size: 8px;
+  line-height: 9px;
   letter-spacing: 0.07em;
   white-space: nowrap;
 }
@@ -598,15 +684,21 @@ button.os-folder-entry:focus-visible {
 .os-taskbar-privacy {
   padding: 4px 6px;
   border: 1px solid #161714;
+  white-space: nowrap;
 }
 
 .os-taskbar-start { color: #2e3328; background: var(--os-fluoro); font-weight: 700; }
 .os-taskbar-window {
+  min-width: 0;
+  max-width: 150px;
+  overflow: hidden;
   color: #e6e6d1;
   background: #55574b;
   font: inherit;
   letter-spacing: inherit;
   cursor: pointer;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .os-taskbar-window:hover,
@@ -619,59 +711,26 @@ button.os-folder-entry:focus-visible {
 
 .os-taskbar-window.is-active { border-color: #c9d47b; box-shadow: inset 0 0 0 1px #7f8956; }
 .os-taskbar-window.is-minimized { color: #b5b7a2; background: #41433c; border-style: dashed; }
-.os-taskbar-privacy { margin-left: auto; color: #cbd980; background: #3c4632; }
-
-@media (max-width: 1000px) {
-  .os-audit-window { width: min(570px, 61vw); }
-  .os-audit-body { grid-template-columns: minmax(120px, 0.68fr) minmax(150px, 1fr) minmax(112px, 0.53fr); gap: 8px; padding: 10px; }
-  .os-document-heading > span { font-size: 10px; }
-  .os-form-window { width: min(286px, 30vw); }
-  .os-log-window { width: 330px; }
-  .os-folder-window { width: min(340px, 32vw); }
-  .os-wallpaper-mark { right: 310px; }
-  .os-taskbar-resource-ci { display: none; }
+.os-taskbar-resource,
+.os-taskbar-privacy,
+.os-taskbar-clock {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-@media (max-width: 720px) {
-  .os-shell { padding: 0; }
-  .os-desktop { border-width: 2px; }
-  .os-brand span,
-  .os-session-readout span:nth-child(3),
-  .os-document-heading,
-  .os-wallpaper-mark,
-  .os-taskbar span:nth-of-type(3),
-  .os-taskbar span:nth-of-type(4) { display: none; }
-  .os-desktop-icons { top: 10px; left: 8px; width: 72px; gap: 10px; }
-  .os-icon-glyph { transform: scale(0.78); }
-  .os-desktop-icon { gap: 1px; }
-  .os-desktop-icon small { display: none; }
-  .os-desktop-icon { font-size: 8px; }
-  .os-audit-window { width: calc(100% - 98px); height: 245px; }
-  .os-audit-body { grid-template-columns: minmax(146px, 1fr) minmax(115px, 0.48fr); }
-  .os-audit-action { min-height: 115px; padding: 9px; }
-  .os-audit-action strong { font-size: 18px; }
-  .os-audit-readout > div { min-height: 34px; padding: 6px; }
-  .os-audit-readout strong { font-size: 11px; }
-  .os-form-window { width: calc(100% - 98px); height: 165px; }
-  .os-form-body { gap: 5px; padding: 8px; }
-  .os-form-body h2 { font-size: 16px; }
-  .os-form-body > p:not(.os-document-code) { font-size: 9px; }
-  .os-log-window { width: calc(100% - 97px); height: 122px; }
-  .os-folder-window { width: calc(100% - 98px); height: 186px; }
-  .os-folder-body { padding: 6px; }
-  .os-folder-path { padding: 4px; font-size: 6px; }
-  .os-folder-body h2 { margin: 6px 1px 4px; font-size: 15px; }
-  .os-folder-entry { min-height: 34px; grid-template-columns: 23px minmax(0, 1fr) 68px; gap: 5px; padding: 3px; }
-  .os-file-glyph { width: 20px; height: 23px; font-size: 7px; }
-  .os-folder-entry-copy strong { font-size: 10px; }
-  .os-folder-entry-copy small,
-  .os-folder-entry-status { font-size: 6px; }
-  .os-log-body { gap: 4px; padding: 7px; }
-  .os-log-body h2 { font-size: 14px; }
-  .os-log-body li { min-height: 15px; padding-top: 2px; padding-bottom: 2px; font-size: 8px; }
-  .os-taskbar { gap: 6px; }
-  .os-taskbar-window { max-width: 84px; overflow: hidden; text-overflow: ellipsis; }
-  .os-taskbar-resource-ap,
-  .os-taskbar-resource-ci { display: none; }
-  .os-taskbar-privacy { margin-left: 0; }
+.os-taskbar-resource {
+  max-width: 78px;
+  font-variant-numeric: tabular-nums;
 }
+
+.os-taskbar-privacy {
+  max-width: 150px;
+  margin-left: auto;
+  color: #cbd980;
+  background: #3c4632;
+}
+
+.os-taskbar-clock { max-width: 120px; }
