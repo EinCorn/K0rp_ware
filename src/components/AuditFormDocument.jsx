@@ -19,7 +19,7 @@ function CheckboxField({ field, value, onChange }) {
   )
 }
 
-function RadioField({ field, value, onChange }) {
+function RadioField({ field, value, onChange, formId }) {
   return (
     <fieldset className="os-audit-choice-group">
       <legend>{field.label}</legend>
@@ -27,7 +27,7 @@ function RadioField({ field, value, onChange }) {
         <label key={option}>
           <input
             type="radio"
-            name={field.id}
+            name={formId + '-' + field.id}
             value={option}
             checked={value === option}
             onChange={() => onChange(field, option)}
@@ -64,7 +64,7 @@ function MultiCheckField({ field, value, onChange }) {
   )
 }
 
-function ScaleField({ field, value, onChange }) {
+function ScaleField({ field, value, onChange, formId }) {
   const labels = Array.isArray(field.labels) ? field.labels : []
 
   return (
@@ -77,7 +77,7 @@ function ScaleField({ field, value, onChange }) {
           <label key={label}>
             <input
               type="radio"
-              name={field.id}
+              name={formId + '-' + field.id}
               value={optionValue}
               checked={value === optionValue}
               onChange={() => onChange(field, optionValue)}
@@ -115,6 +115,7 @@ export default function AuditFormDocument({
   form,
   values,
   submitted,
+  headingId,
   onFieldChange,
   onSubmit,
 }) {
@@ -135,7 +136,7 @@ export default function AuditFormDocument({
       <div className="os-audit-document is-submitted">
         <div className="os-audit-document-heading">
           <p>FORMULÁŘ {form.code} / UZAVŘENÝ ZÁZNAM</p>
-          <h1>{form.title}</h1>
+          <h1 id={headingId}>{form.title}</h1>
         </div>
         <div className="os-audit-completion-stamp">
           <span>✓</span>
@@ -159,7 +160,7 @@ export default function AuditFormDocument({
     >
       <div className="os-audit-document-heading">
         <p>STARTUP PROCEDURA / FORMULÁŘ {form.code}</p>
-        <h1>{form.title}</h1>
+        <h1 id={headingId}>{form.title}</h1>
         <span>Vyplňte všechna povinná pole. Rozsah auditu byl omezen na minimum, které lze stále nazvat auditem.</span>
       </div>
 
@@ -167,6 +168,7 @@ export default function AuditFormDocument({
         {fields.map((field) => (
           <AuditFieldControl
             key={field.id}
+            formId={form.id}
             field={field}
             value={values?.[field.id]}
             onChange={onFieldChange}
