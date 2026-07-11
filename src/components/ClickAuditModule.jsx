@@ -33,23 +33,19 @@ function createConfettiBurst(id) {
 }
 
 function DigitCard({ digit }) {
+  const column = digit % 5
+  const row = Math.floor(digit / 5)
+
   return (
     <span
       className="clickaudit-digit-card"
       data-digit={digit}
       aria-hidden="true"
-    >
-      <img
-        src={digitSheetUrl}
-        alt=""
-        draggable="false"
-        decoding="sync"
-        style={{
-          '--clickaudit-digit-column': digit % 5,
-          '--clickaudit-digit-row': Math.floor(digit / 5),
-        }}
-      />
-    </span>
+      style={{
+        backgroundImage: `url("${digitSheetUrl}")`,
+        backgroundPosition: `${column * 25}% ${row * 100}%`,
+      }}
+    />
   )
 }
 
@@ -127,7 +123,7 @@ export default function ClickAuditModule({
             <span
               className="clickaudit-liquid-sprite"
               style={{
-                backgroundImage: `url(${liquidSheetUrl})`,
+                backgroundImage: `url("${liquidSheetUrl}")`,
                 '--clickaudit-liquid-frame-x': `${frameColumn * framePositionStep}%`,
                 '--clickaudit-liquid-frame-y': `${frameRow * framePositionStep}%`,
               }}
