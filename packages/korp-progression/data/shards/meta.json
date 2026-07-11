@@ -1,0 +1,8 @@
+{
+  "id": "k0rp-progression-db",
+  "version": "0.1.0-draft",
+  "canonicalLocale": "cs-CZ",
+  "targetFirstPrestigeMinutes": 270,
+  "compatibleRepo": "EinCorn/K0rp_ware",
+  "designStatement": "První interakcí je vyplnění auditu. Každá úmyslná interakce formuláře zároveň generuje ClickAudit stopu."
+}
