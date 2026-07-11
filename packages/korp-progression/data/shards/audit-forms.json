@@ -1,16 +1,10 @@
 [
   {
-    "id":"audit-00-a","code":"00-A","title":"Vstupní audit přítomnosti a pracovního povrchu","availableAtStart":true,"estimatedMinutes":8,"interactionClickProfile":"audit-form","submitEvent":"audit.formSubmitted",
+    "id":"audit-00-a","code":"00-A","title":"Vstupní audit přítomnosti","availableAtStart":true,"estimatedMinutes":1,"interactionClickProfile":"audit-form","submitEvent":"audit.formSubmitted",
     "completionEffects":[{"kind":"revealResource","resourceId":"notionalWorkUnits"},{"kind":"revealResource","resourceId":"auditPressure"},{"kind":"unlockModule","moduleId":"click-audit"},{"kind":"unlockMemo","memoId":"memo.audit-00-a-complete"}],
     "fields":[
-      {"id":"presence","type":"radio","label":"Přítomnost obsluhy","required":true,"options":["Přítomen","Přítomnost byla řádně předpokládána","Nelze odlišit od pracovního místa"]},
-      {"id":"workstation","type":"radio","label":"Stav pracovní stanice","required":true,"options":["Připravena","Připravena k přípravě","Provozní stav byl ponechán v původním stavu"]},
-      {"id":"surface","type":"multiCheck","label":"Viditelné vlastnosti pracovního povrchu","required":true,"minimumSelections":2,"options":["Rovný","Evidovatelný","Bez zjevného úniku kapaliny","Přibližně horizontální"]},
-      {"id":"purpose","type":"radio","label":"Znalost účelu dnešní relace","required":true,"options":["Znám","Předpokládám","Účel není podmínkou účasti"]},
-      {"id":"stabilizationNeed","type":"scale","label":"Odhadovaná potřeba stabilizační pomůcky","required":true,"minimum":0,"maximum":4,"labels":["Není třeba","Formálně nízká","Běžná","Zvýšená","Předmětná"]},
-      {"id":"privacyAcknowledgement","type":"checkbox","label":"Rozumím, že K0rp_OS v tomto režimu eviduje pouze interakce uvnitř K0rp modulů.","required":true,"plainLanguage":true},
-      {"id":"selfConfirmation","type":"checkbox","label":"Potvrzuji, že odpovědi byly poskytnuty osobou, jejíž přítomnost byla právě posouzena.","required":true},
-      {"id":"finalConfirmation","type":"buttonConfirm","label":"PŘIJMOUT PŘÍTOMNOST","required":true}
+      {"id":"presence","type":"checkbox","label":"Jsem v práci?","required":true},
+      {"id":"submit","type":"buttonConfirm","label":"POTVRDIT PŘÍTOMNOST","required":true}
     ]
   },
   {
