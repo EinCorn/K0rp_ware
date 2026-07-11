@@ -1,0 +1,146 @@
+.clickaudit-module,
+.clickaudit-module * {
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.clickaudit-module {
+  --clickaudit-progress: 0%;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+  isolation: isolate;
+}
+
+.clickaudit-record-surface {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  outline: 0;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+  font: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.clickaudit-record-surface:focus-visible {
+  outline: 1px solid rgba(222, 226, 181, 0.7);
+  outline-offset: -4px;
+}
+
+.clickaudit-record-surface:disabled { cursor: default; }
+
+.clickaudit-liquid {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  isolation: isolate;
+  z-index: 1;
+}
+
+.clickaudit-liquid-fill {
+  position: absolute;
+  inset: auto 0 0;
+  width: 100%;
+  max-height: 100%;
+  height: var(--clickaudit-progress);
+  min-height: 0;
+  overflow: hidden;
+  background: transparent;
+  box-shadow: none;
+  clip-path: none;
+  opacity: 1;
+  transition: height 560ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.clickaudit-liquid-sprite {
+  position: absolute;
+  inset: 0 auto auto 0;
+  width: 100%;
+  height: 100%;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: 600% 600%;
+  background-position: var(--clickaudit-liquid-frame-x) var(--clickaudit-liquid-frame-y);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+  will-change: background-position;
+}
+
+.clickaudit-digit-deck {
+  position: absolute;
+  z-index: 3;
+  top: 50px;
+  left: 0;
+  width: 100%;
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.clickaudit-digit-card {
+  display: block;
+  flex: 0 0 auto;
+  width: 48px;
+  aspect-ratio: 70 / 128;
+  overflow: hidden;
+  border: 0;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: 500% 200%;
+  box-shadow: none;
+  image-rendering: auto;
+}
+
+.clickaudit-digit-deck[data-size='compact'] { gap: 3px; }
+.clickaudit-digit-deck[data-size='compact'] .clickaudit-digit-card { width: 31px; }
+.clickaudit-digit-deck[data-size='dense'] { gap: 1px; }
+.clickaudit-digit-deck[data-size='dense'] .clickaudit-digit-card { width: 23px; }
+.clickaudit-digit-deck[data-size='micro'] { gap: 1px; }
+.clickaudit-digit-deck[data-size='micro'] .clickaudit-digit-card { width: 15px; }
+
+.clickaudit-confetti-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.clickaudit-confetti-pixel {
+  position: absolute;
+  width: var(--clickaudit-confetti-size);
+  height: var(--clickaudit-confetti-size);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.28);
+  animation: clickaudit-confetti-burst 1.3s cubic-bezier(0.16, 0.84, 0.28, 1) forwards;
+}
+
+@keyframes clickaudit-confetti-burst {
+  0% { opacity: 1; transform: translate(0, 0) rotate(0deg) scale(0.5); }
+  72% { opacity: 1; }
+  100% {
+    opacity: 0;
+    transform: translate(var(--clickaudit-confetti-x), var(--clickaudit-confetti-y)) rotate(var(--clickaudit-confetti-r)) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clickaudit-liquid-fill { transition: none; }
+  .clickaudit-confetti-layer { display: none; }
+}
