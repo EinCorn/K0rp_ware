@@ -54,5 +54,8 @@ jobs:
       - name: Typecheck korp-progression
         run: npm run typecheck:korp-progression
 
+      - name: Validate korp-progression data
+        run: npm run validate:korp-progression
+
       - name: Build app
         run: npm run build
