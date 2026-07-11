@@ -1,0 +1,93 @@
+[
+  {
+    "id": "directive.prefilled-header",
+    "title": "Předvyplněná hlavička",
+    "cost": 1,
+    "effects": [
+      {"kind":"setFlag","flag":"auditForms.headerPrefilled","value":true}
+    ],
+    "copy": "Identifikační část formulářů je předvyplněna. Klíčové potvrzení přítomnosti zůstává ruční."
+  },
+  {
+    "id": "directive.retained-calibration",
+    "title": "Retence kalibrace",
+    "cost": 1,
+    "effects": [
+      {"kind":"retainUpgrade","upgradeId":"sys.counter-calibration"}
+    ],
+    "copy": "Počítadlo si pamatuje, jak vypadá administrativně významná nula."
+  },
+  {
+    "id": "directive.soft-landing",
+    "title": "Měkké zahájení relace",
+    "cost": 1,
+    "effects": [
+      {"kind":"setInitialResource","resourceId":"entropy","amount":10}
+    ],
+    "copy": "Nový cyklus začíná s nižší výchozí entropií. Nejedná se o záruku."
+  },
+  {
+    "id": "directive.preapproved-fidget",
+    "title": "Předběžně schválená stabilizace",
+    "cost": 2,
+    "effects": [
+      {"kind":"reduceCost","targetId":"fidget.access-permit","percent":50},
+      {"kind":"reduceRequirement","targetId":"audit-16-c","requirement":"auditPressure","percent":30}
+    ],
+    "copy": "Rotační vybavení je v dalším cyklu dostupné dřív, protože problém byl již jednou řádně zaznamenán."
+  },
+  {
+    "id": "directive.garden-archive",
+    "title": "Archiv zeleného zacházení",
+    "cost": 2,
+    "effects": [
+      {"kind":"retainUpgrade","upgradeId":"bloom.green-handling"}
+    ],
+    "copy": "Green Handling SOP přežije uzavření cyklu ve složce, kterou nikdo neotevřel."
+  },
+  {
+    "id": "directive.sourced-evidence",
+    "title": "Preferovaná vedlejší evidence",
+    "cost": 2,
+    "effects": [
+      {"kind":"profileYieldMultiplier","profile":"indirect-module","resourceId":"notionalWorkUnits","multiplier":1.25}
+    ],
+    "copy": "Kliky vzniklé mimo ClickAudit mají vyšší výkazní hodnotu. Účel stále není sledován."
+  },
+  {
+    "id": "directive.delegated-routine",
+    "title": "Delegovaná první dávka",
+    "cost": 3,
+    "effects": [
+      {"kind":"setFlag","flag":"clickaudit.firstBatchSize","value":15}
+    ],
+    "copy": "První auditní dávka cyklu je uznána po patnácti interakcích. Zbytek doplní zkušenost."
+  },
+  {
+    "id": "directive.cross-department-mandate",
+    "title": "Mandát mezioddělové spolupráce",
+    "cost": 3,
+    "effects": [
+      {"kind":"crossCooldownMultiplier","multiplier":0.8}
+    ],
+    "copy": "Mezioddělové efekty lze spouštět častěji, aniž by oddělení byla častěji konzultována."
+  },
+  {
+    "id": "directive.corner-observer",
+    "title": "Stálý rohový pozorovatel",
+    "cost": 3,
+    "effects": [
+      {"kind":"unlockModuleAtCycleStart","moduleId":"corner-watch"}
+    ],
+    "copy": "Rohové očekávání je dostupné od začátku dalšího cyklu."
+  },
+  {
+    "id": "directive.procedural-memory",
+    "title": "Procedurální paměť",
+    "cost": 4,
+    "effects": [
+      {"kind":"retainChosenUpgrade","allowedResetScope":"auditCycle","count":1}
+    ],
+    "copy": "Jedna dočasná procedura může být přenesena do dalšího cyklu bez vysvětlení, proč byla původně dočasná."
+  }
+]
