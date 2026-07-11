@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "sync:korp-ui": "node scripts/sync-k0rp-ui.mjs",
+    "test:runtime": "node --test src/runtime/__tests__/auditProgression.test.js",
     "test:korp-core": "npm --prefix packages/korp-core test",
     "typecheck:korp-core": "npm --prefix packages/korp-core run typecheck",
     "test:korp-modules": "npm --prefix packages/korp-modules test",
