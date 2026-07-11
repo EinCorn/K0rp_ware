@@ -1,0 +1,219 @@
+.clickaudit-module,
+.clickaudit-module * {
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.clickaudit-module {
+  --clickaudit-progress: 0%;
+  --clickaudit-progress-color: #f1e9d8;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  color: #efe9d5;
+  background: #090908;
+  isolation: isolate;
+}
+
+.clickaudit-record-surface {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  outline: 0;
+  color: inherit;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.055), transparent 40%),
+    #0b0b0a;
+  cursor: pointer;
+  font: inherit;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.clickaudit-record-surface:focus-visible {
+  outline: 2px solid #c9a33e;
+  outline-offset: -5px;
+}
+
+.clickaudit-record-surface:disabled {
+  cursor: default;
+}
+
+.clickaudit-liquid {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.clickaudit-liquid-fill {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: var(--clickaudit-progress);
+  min-height: 0;
+  overflow: hidden;
+  background: var(--clickaudit-progress-color);
+  box-shadow:
+    inset 0 12px 22px rgba(255, 255, 255, 0.12),
+    inset 0 -26px 38px rgba(0, 0, 0, 0.3),
+    0 -8px 20px rgba(0, 0, 0, 0.24);
+  opacity: 0.78;
+  transition: height 560ms cubic-bezier(0.2, 0.8, 0.2, 1), background 560ms ease;
+}
+
+.clickaudit-liquid-sprite {
+  position: absolute;
+  inset: 0;
+  min-height: 160px;
+  background-repeat: no-repeat;
+  background-size: 600% 600%;
+  background-position: var(--clickaudit-liquid-frame-x) var(--clickaudit-liquid-frame-y);
+  image-rendering: pixelated;
+  mix-blend-mode: multiply;
+  opacity: 0.96;
+}
+
+.clickaudit-digit-deck {
+  position: relative;
+  z-index: 3;
+  max-width: calc(100% - 26px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  perspective: 900px;
+  filter: drop-shadow(0 12px 12px rgba(0, 0, 0, 0.46));
+  pointer-events: none;
+}
+
+.clickaudit-digit-card {
+  position: relative;
+  flex: 0 0 auto;
+  width: 70px;
+  height: 128px;
+  display: block;
+  overflow: hidden;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  image-rendering: pixelated;
+  transform: translateZ(0);
+}
+
+.clickaudit-digit-card img {
+  position: absolute;
+  left: calc(var(--clickaudit-digit-column) * -100%);
+  top: calc(var(--clickaudit-digit-row) * -100%);
+  width: 500%;
+  height: 200%;
+  max-width: none;
+  display: block;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.clickaudit-digit-deck[data-size='compact'] {
+  gap: 4px;
+}
+
+.clickaudit-digit-deck[data-size='compact'] .clickaudit-digit-card {
+  width: 48px;
+  height: 88px;
+}
+
+.clickaudit-digit-deck[data-size='dense'] {
+  gap: 2px;
+}
+
+.clickaudit-digit-deck[data-size='dense'] .clickaudit-digit-card {
+  width: 32px;
+  height: 58px;
+}
+
+.clickaudit-digit-deck[data-size='micro'] {
+  gap: 1px;
+}
+
+.clickaudit-digit-deck[data-size='micro'] .clickaudit-digit-card {
+  width: 25px;
+  height: 46px;
+}
+
+.clickaudit-surface-copy,
+.clickaudit-progress-readout {
+  position: absolute;
+  z-index: 4;
+  font-family: var(--korp-font-mono, monospace);
+  font-size: 7px;
+  line-height: 1;
+  letter-spacing: 0.13em;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.82);
+  pointer-events: none;
+}
+
+.clickaudit-surface-copy {
+  left: 14px;
+  bottom: 12px;
+  color: rgba(238, 233, 214, 0.58);
+}
+
+.clickaudit-progress-readout {
+  right: 13px;
+  bottom: 12px;
+  color: rgba(238, 233, 214, 0.78);
+}
+
+.clickaudit-confetti-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.clickaudit-confetti-pixel {
+  position: absolute;
+  width: var(--clickaudit-confetti-size);
+  height: var(--clickaudit-confetti-size);
+  box-shadow: 1px 1px 0 rgba(0, 0, 0, 0.28);
+  animation: clickaudit-confetti-burst 1.3s cubic-bezier(0.16, 0.84, 0.28, 1) forwards;
+}
+
+@keyframes clickaudit-confetti-burst {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) rotate(0deg) scale(0.5);
+  }
+  72% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform:
+      translate(var(--clickaudit-confetti-x), var(--clickaudit-confetti-y))
+      rotate(var(--clickaudit-confetti-r))
+      scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .clickaudit-liquid-fill {
+    transition: none;
+  }
+
+  .clickaudit-confetti-layer {
+    display: none;
+  }
+}
