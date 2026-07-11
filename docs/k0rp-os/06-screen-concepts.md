@@ -1,416 +1,220 @@
-# K0rp_OS — Screen Concepts 
+# K0rp_OS — Screen Concepts
 
-Verze: 0.1.3 pracovní návrh (very very early návrh a počítám, že kromě celkového feelu se ve finále nic nezachová jak je zde navrženo)
+Verze: 0.2.0 pracovní návrh
 
 ## 1. Screen: Identity Assignment / Login
 
-### Účel
-
 První kontakt s K0rp_OS. Ne klasický login, ale přiřazení identity.
 
-### Kompozice
-
-- černý/šedý panel,
-- logo KØrp_OS,
-- employee id generovaný náhodně,
-- hláška: „IDENTITA PŘIŘAZENA. OSOBA VOLITELNÁ.“,
-- tlačítko: `PŘIJMOUT PŘÍTOMNOST`,
-- drobný checkbox: `Nepřipomínat mi, že jsem souhlasil.`
-
-### In-universe texty
-
-- „Vítejte v prostředí, které bylo vytvořeno pro vaše pohodlí. Pohodlí nebylo konzultováno.“
-- „Vaše jméno není nutné. Vaše účast ano.“
+- logo KØrp_OS;
+- employee id generovaný lokálně;
+- hláška `IDENTITA PŘIŘAZENA. OSOBA VOLITELNÁ.`;
+- tlačítko `PŘIJMOUT PŘÍTOMNOST`;
+- normální privacy vysvětlení.
 
 ## 2. Screen: K0rp_OS Desktop
 
-### Účel
+Hlavní plocha hry. Canonical full-game surface není launcher plný modulů.
 
-Hlavní plocha hry.
+Při prvním spuštění je téměř prázdná:
 
-### Kompozice
+- tmavý wallpaper;
+- taskbar;
+- Employee ID;
+- clock;
+- privacy indicator;
+- Compliance Bin;
+- otevřený dokument `AUDIT 00-A`.
 
-- tmavý wallpaper s jemným KØrp logem,
-- levý sloupec ikon:
-  - ClickAudit,
-  - Fidget,
-  - Bloom,
-  - Corner Watch,
-  - Memo,
-  - KPI,
-  - Settings,
-  - Archive,
-  - Recycle / Compliance Bin,
-- spodní taskbar:
-  - Start,
-  - Employee ID,
-  - Notional Work Units,
-  - Entropy,
-  - čas,
-  - privacy mode,
-- občasný post-it na ploše.
+Po odeslání auditu se objeví ClickAudit shortcut, Doručené a NWU widget.
 
-### Pocit
+## 3. Module Launcher / Control Desk
 
-Windows 95/industrial terminal/korporátní kiosk, ale s těžší pixelartovou patinou.
+Launcher/katalog může zůstat webovým portálem, debug surface nebo pozdější administrativní obrazovkou. V canonical desktop campaign není první obrazovkou a nesmí předem vystavit celý seznam zamčených modulů.
 
-## 3. Screen: Module Launcher / Control Desk
+## 4. ClickAudit Window
 
-### Účel
+- velký flip counter;
+- liquid progress uvnitř digit cards;
+- milestone message;
+- zdroj kliků podle modulu;
+- ceremonial feedback pro batch/milestone;
+- pin/reset controls.
 
-Současný dashboard rozšířený do hlavního řídicího pultu.
+## 5. Fidget Window
 
-### Kompozice
+- spinner;
+- barevná aura pohybu;
+- režimy KLIK / RUČNÍ;
+- rychlostní bar;
+- spin-up, resonance a natural settle;
+- pin control.
 
-- horní logo panel,
-- systém online,
-- verze dashboardu,
-- malý hallway/elevator náhled,
-- karty modulů,
-- locked module cards,
-- pravý panel s připomínkou,
-- spodní help/status.
+## 6. Bloom Window
 
-### Rozšíření
+- 5×5 board;
+- green/yellow/red stones;
+- score a vlna;
+- material-specific feedback;
+- burst při clearu;
+- red state není pouze hlasitější varianta.
 
-Přidat:
+## 7. Corner Watch
 
-- odemčené/neodemčené moduly,
-- fake department tabs,
-- interní announcement strip,
-- tlačítko `OTEVŘÍT V KØRP_OS`,
-- tlačítko `SPUSTIT POUZE MODUL`,
-- sekci `DESK OBJECTS`,
-- sekci `WELLBEING / STABILIZATION`, která vůbec není podezřelá.
+Primárně idle/screensaver modul.
 
-## 4. Screen: ClickAudit Window
+- odrážející se KØrp logo;
+- near-miss cue;
+- corner hit ceremony;
+- `ROHOVÉ POKUSY`;
+- spouštění přes Settings / Screen Saver;
+- hit se archivuje i při nepřítomném pohledu.
 
-### Účel
+## 8. Bublinková Fólie
 
-Audit klikání.
+Post-prestige nový interaction system.
 
-### Kompozice
+- grid bublinek;
+- full / pressed / popped / defective / rare;
+- press-and-drag;
+- Relief Units;
+- sheet completion;
+- sample variance a density limit.
 
-- velký flip counter,
-- liquid progress uvnitř digit cards,
-- milestone message,
-- hvězdičky / ceremonial reward,
-- zdroj kliků:
-  - ClickAudit,
-  - Fidget,
-  - Bloom,
-  - Work?,
-- levé controls pin/reset,
-- footer status.
+## 9. Button Compliance
 
-### Věty
+- panel fyzických tlačítek a kontrolek;
+- sequence closure;
+- Approval Units;
+- pending confirmations;
+- false-positive bez trestající reflexní sirény.
 
-- „Klik je potvrzením přítomnosti.“
-- „Další milník je na dosah. Smysl nebyl požadován.“
-- „Výborně. Systém zaznamenal drobný důvod pokračovat.“
+## 10. Surface Compliance
 
-## 5. Screen: Fidget Window
+- špinavý panel / sklo / formulář;
+- wipe mask;
+- percentage cleaned;
+- material-specific sound;
+- skryté štítky, dokumenty nebo residue.
 
-### Účel
+## 11. Shape Compliance
 
-Stabilizace rozptýlením.
+- drag / rotate / snap;
+- closure meter;
+- přesná snap tolerance;
+- keyboard alternativa;
+- color-independent states.
 
-### Kompozice
+## 12. Attention Runner
 
-- velký spinner,
-- barevná aura pohybu,
-- režimy KLIK / RUČNÍ,
-- rychlostní bar,
-- levé pin tlačítko,
-- dolní instrukční panel.
+- malý companion strip;
+- low-input endless runner;
+- nesmí převzít hlavní ekonomiku ani změnit K0rp_OS v běžný arcade launcher.
 
-### Věty
+## 13. Zenová Zahrádka
 
-- „Roztoč a nech se unést.“
-- „Stabilizace probíhá. Nepleťte si ji s řešením.“
-- „Schůzka přežita částečně.“
+- písečný box;
+- rake strokes;
+- movable stones;
+- Procedural Calm;
+- free mode i procedural mode.
 
-## 6. Screen: Bloom Window
+## 14. Newtonova Kolíbka
 
-### Účel
+- controlled/fake physics;
+- pull/release;
+- cycle and impact counter;
+- Momentum;
+- Transferred Responsibility;
+- přirozený konec pohybu.
 
-Puzzle / compliance garden.
+## 15. Internal Memo
 
-### Kompozice
+Memo je v canonical desktopu především soubor v `Doručené`, ne odměnový popup.
 
-- 5×5 board,
-- green/yellow/red stones,
-- score vlevo,
-- vlna vpravo,
-- drobná květina nebo stone icon v headeru,
-- burst při clearu.
+Modal použít jen pro identity assignment, certifikaci, prestige a podobně systémově významné události.
 
-### Věty
+## 16. Knowledge Base
 
-- „Sběr drobných myšlenek.“
-- „Nechte je růst.“
-- „Červené kameny nejsou chyba. Jsou výsledek.“
+- vyhledávání;
+- kategorie podle oddělení/modulů;
+- 50s comics instruktážní vizuály;
+- help i in-universe obsah;
+- žádný explicitní lore dump.
 
-## 7. Screen: Corner Watch
+## 17. KPI / Notional Work Board
 
-### Účel
+Odemknutelná analytická obrazovka, ne výchozí cockpit.
 
-Idle / screensaver modul. Uživatel sleduje odrážející se KØrp logo a čeká na roh.
+- viditelné pouze odhalené resources;
+- current vs lifetime hodnoty;
+- next procedural unlock;
+- derived metrics se odhalují memem.
 
-### Kompozice
+## 18. Overlay Bar
 
-- tmavé okno,
-- malé KØrp logo,
-- jemná CRT/scanline textura,
-- counter `ROHOVÉ POKUSY`,
-- hláška při near miss,
-- slavnostní mikro-event při corner hit.
+Pozdější Windows-first companion surface.
 
-### Věty
+- always-on-top;
+- privacy mode stále viditelný;
+- quick launch;
+- K0rp-only aggregate events;
+- žádné app names, URL, text, screenshots ani keylogging.
 
-- „Roh bude dosažen. Časový rámec nebyl schválen.“
-- „Čekání je forma účasti.“
-- „Téměř významné.“
+## 19. First boot — almost empty employee desktop
 
-## 8. Screen: Bublinková Fólie
+Viditelné:
 
-### Účel
+- wallpaper;
+- taskbar;
+- Employee ID;
+- clock;
+- privacy indicator;
+- Compliance Bin;
+- `AUDIT 00-A`.
 
-Taktilní relaxační modul. Praskání bublinek jako certified stress dissipation.
+Neviditelné:
 
-### Kompozice
+- launcher plný modulů;
+- celý KPI board;
+- locked module catalog;
+- všechny resource counters.
 
-- arch fólie v app-window,
-- grid bublinek,
-- každá bublina má stav: full / pressed / popped / defective / rare,
-- progress sheetu,
-- `RELIEF UNITS`,
-- tlačítko `VYMĚNIT ARCH`.
+## 20. Desktop artifact progression
 
-### Věty
+1. ClickAudit + Doručené.
+2. Formuláře + pending 10-A.
+3. Fidget + Wellbeing.
+4. Bloom + Care & Alignment.
+5. Corner Watch v Settings jako screensaver.
+6. Button Compliance + Čekající potvrzení.
+7. Certifikace + Knowledge Base + Archiv.
+8. 42-Z → archivace, reboot, nový wallpaper/build, Bubble Wrap.
 
-- „Relaxační fólie nenahrazuje odpočinek. Odpočinek nebyl schválen.“
-- „Každá prasklá bublina je malý krok k vnitřnímu souladu procesu.“
-- „Tento benefit byl započítán.“
+Každý objekt je stopou konkrétního procesu. Náhodný clutter není náhrada progression.
 
-## 9. Screen: Button Compliance
+## 21. Window behavior
 
-### Účel
+Module windows:
 
-Mačkání tlačítek jako potvrzovací rituál.
+- open/close;
+- minimize;
+- taskbar state;
+- bring to front;
+- drag;
+- remembered position;
+- optional pin.
 
-### Kompozice
+Document windows obsluhují audity, mema, reporty a certifikace. Folder windows zobrazují Doručené, Formuláře, Wellbeing, Care & Alignment, Čekající potvrzení, Certifikace a Archiv.
 
-- panel s velkými a malými tlačítky,
-- kontrolky,
-- sekvence,
-- status `CONFIRMATION READY`,
-- meter `APPROVAL UNITS`,
-- občasné tlačítko `POTVRDIT POTVRZENÍ`.
+## 22. Prestige presentation
 
-### Věty
+`UZAVŘENÍ AUDITNÍHO CYKLU` je viditelná systémová operace:
 
-- „Stisknutím potvrzujete, že jste připraven potvrdit další stisk.“
-- „Panel byl optimalizován pro maximální pocit účasti.“
-- „Souhlas zaznamenán. Obsah souhlasu nebyl připojen.“
-
-## 10. Screen: Surface Compliance
-
-### Účel
-
-ASMR čištění plochy / procedural care.
-
-### Kompozice
-
-- špinavý panel, monitor, sklo výtahu nebo formulář,
-- cursor jako hadr / kartáč,
-- maska čistoty,
-- percentage cleaned,
-- pod povrchem se občas objeví štítek, poznámka, starý task.
-
-### Věty
-
-- „Viditelný povrch je známkou vnitřní připravenosti systému.“
-- „Nečistota byla odstraněna. Příčina zůstává v řešení.“
-- „Clean stav dosažen. Audit může začít.“
-
-## 11. Screen: Shape Compliance
-
-### Účel
-
-Satisfying fit / alignment modul.
-
-### Kompozice
-
-- tvary a odpovídající otvory,
-- rotace / drag,
-- snap animation,
-- closure meter,
-- sada drobných mechanických objektů: šanon, kabel, ozubené kolo, razítko, válec.
-
-### Věty
-
-- „Tvar zapadl. Význam nebyl vyžadován.“
-- „Nesoulad byl odstraněn mechanickým souhlasem.“
-- „Alignment completed. Please do not interpret.“
-
-## 12. Screen: Attention Runner
-
-### Účel
-
-Druhá pozornostní vrstva. Endless runner jako doprovodný kanál pro rozbitou pozornost.
-
-### Kompozice
-
-- horizontální strip / malé okno,
-- běžící zaměstnanec / vozík / clipboard,
-- nekonečná chodba,
-- překážky: meeting, kabel, cone, ticket, post-it swarm,
-- score `ATTENTION RESIDUE`.
-
-### Věty
-
-- „Tento modul pomáhá zaměstnanci udržet pozornost tím, že ji rozdělí na menší nepoužitelné části.“
-- „Sub-task běží. Main task nebyl identifikován.“
-
-## 13. Screen: Zenová Zahrádka
-
-### Účel
-
-Manažerská desk-object ASMR pičovina, procedurálně povýšená na wellness workflow.
-
-### Kompozice
-
-- malý písečný box,
-- hrábě jako cursor,
-- kameny,
-- pattern meter,
-- `PROCEDURAL CALM`,
-- reset písku.
-
-### Věty
-
-- „Klid byl aplikován na povrch. Vnitřní stav systému zůstává v šetření.“
-- „Hrabejte, dokud proces nepřestane klást otázky.“
-- „Tento písek byl certifikován pro manažerské uvolnění.“
-
-## 14. Screen: Newtonova Kolíbka
-
-### Účel
-
-Idle desk object / hypnotická fyzika bez výstupu.
-
-### Kompozice
-
-- 5 kovových kuliček,
-- pull/release interakce,
-- cycle counter,
-- `MOMENTUM`,
-- `TRANSFERRED RESPONSIBILITY`,
-- drobný log impactů.
-
-### Věty
-
-- „Hybnost byla předána. Odpovědnost nikoli.“
-- „Každý náraz posouvá problém na další jednotku.“
-- „Systém zůstává v pohybu. Výstup nebyl detekován.“
-
-## 15. Screen: Internal Memo
-
-### Účel
-
-Textová odměna / lore-ish komunikace bez explicitního lore dumpu.
-
-### Kompozice
-
-- staré memo okno,
-- subject line,
-- oddělení,
-- datum,
-- krátký absurdní text,
-- tlačítka `PŘIJATO`, `ODLOŽIT`, `PŘEČÍST ZNOVU, ALE MÉNĚ`.
-
-### Ukázka
-
-**OD:** Dept. of Meaningless Optimization  
-**PŘEDMĚT:** Nový cíl č. 47-B
-
-Vážení zaměstnanci,  
-S potěšením oznamujeme, že nový cíl týdne je: „Udržujte metriky, které neexistují, v zelené zóně.“
-
-Děkujeme za vaši neúnavnou službu ničemu.
-
-## 16. Screen: Knowledge Base
-
-### Účel
-
-Help screen / pseudo dokumentace.
-
-### Kompozice
-
-- vyhledávací pole,
-- kategorie:
-  - Klikání,
-  - Stabilizace,
-  - Růst,
-  - Desk Objects,
-  - Nejasné přítomnosti,
-  - Bezpečnostní komfort,
-- article cards,
-- 50s comics instruktážní obrázky.
-
-### Články
-
-- „Jak správně kliknout bez osobního zapojení“
-- „Fidget jako preventivní schůzková bariéra“
-- „Co dělat, když Bloom začne připomínat odpovědnost“
-- „Proč se nic neděje, a proč je to v pořádku“
-- „Rohový dopad: časté otázky“
-- „Jak poznat, že tlačítko nepotřebuje důvod“
-
-## 17. Screen: KPI / Notional Work Board
-
-### Účel
-
-Progression panel.
-
-### Kompozice
-
-- velké resource meter boxy:
-  - Notional Work Units,
-  - Audit Pressure,
-  - Stabilization,
-  - Compliance Integrity,
-  - Entropy,
-  - Idle Faith,
-  - Procedural Calm,
-  - Transferred Responsibility,
-- trend lines,
-- rank title,
-- next unlock.
-
-### Věty
-
-- „Výkon nebyl prokázán. Pocit výkonu je stabilní.“
-- „Metriky byly aktualizovány. Realita nebyla kontaktována.“
-
-## 18. Screen: Overlay Bar
-
-### Účel
-
-K0rp nad skutečnou prací.
-
-### Kompozice
-
-- malá always-on-top lišta,
-- KØrp_OS logo,
-- privacy mode,
-- current resource,
-- quick launch mini modules,
-- status text.
-
-### Věty
-
-- „Privacy Work Blob aktivní.“
-- „Aktivita agregována. Kontext ignorován.“
-- „Otevřít KØrp.“
+- cycle files se archivují;
+- pending formuláře se odstraní;
+- permanentní dokumenty zůstanou;
+- plocha se uklidí;
+- změní se wallpaper a build;
+- OS krátce rebootuje;
+- objeví se Bublinková Fólie.
