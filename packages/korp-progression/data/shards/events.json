@@ -1,0 +1,34 @@
+[
+  {
+    "id": "clickaudit.click",
+    "moduleId": "click-audit",
+    "persistence": "gameplay",
+    "description": "Jeden auditovatelný úmyslný vstup. Zdrojový profil určuje výnos.",
+    "profiles": {
+      "audit-form": {"notionalWorkUnits":0.15,"auditPressure":1.0,"entropy":0.03},
+      "direct-audit": {"notionalWorkUnits":0.08,"auditPressure":1.0,"entropy":0.04},
+      "indirect-module": {"notionalWorkUnits":0.03,"auditPressure":0.35,"entropy":0.01},
+      "accessibility-key": {"notionalWorkUnits":0.08,"auditPressure":1.0,"entropy":0.04}
+    },
+    "notes": "Počítat jen úmyslné activations, ne pointermove, animační tick nebo fyzikální frame."
+  },
+  {"id":"clickaudit.batchCompleted","moduleId":"click-audit","persistence":"milestone","effects":{"notionalWorkUnits":6,"perceivedProductivity":1.5},"description":"Dokončení dávky 25 auditovaných interakcí."},
+  {"id":"audit.formSubmitted","moduleId":"system","persistence":"milestone","effects":{"notionalWorkUnits":8,"auditPressure":5,"kryptoManagementScore":1},"description":"Řádně podaný auditní formulář."},
+  {"id":"system.shiftClosed","moduleId":"system","persistence":"milestone","effects":{"notionalWorkUnits":4,"systemOrder":1},"description":"Dobrovolné uzavření relace. Nikdy nesmí trestat za pozdní návrat."},
+  {"id":"fidget.spinStarted","moduleId":"fidget","persistence":"gameplay","effects":{},"description":"Začátek jednoho řízeného spin cyklu."},
+  {"id":"fidget.speedThresholdReached","moduleId":"fidget","persistence":"gameplay","effects":{"stabilization":1.5,"perceivedControl":0.5},"description":"První dosažení stabilní rychlosti v daném cyklu."},
+  {"id":"fidget.sessionSettled","moduleId":"fidget","persistence":"milestone","effects":{"stabilization":6,"entropy":-6,"notionalWorkUnits":1.5,"perceivedControl":2},"description":"Celý cyklus spin → stabilní pohyb → přirozené zastavení."},
+  {"id":"bloom.tileClicked","moduleId":"bloom","persistence":"gameplay","secondaryEvents":[{"type":"clickaudit.click","profile":"indirect-module"}],"effects":{},"description":"Úmyslný klik na kámen. Současně vytváří auditní stopu."},
+  {"id":"bloom.matchCleared","moduleId":"bloom","persistence":"gameplay","effects":{"complianceIntegrity":1.5,"systemOrder":0.8,"bloomIntegrity":4,"entropy":-0.2,"notionalWorkUnits":0.4},"description":"Vyčištěná skupina kamenů."},
+  {"id":"bloom.waveAdvanced","moduleId":"bloom","persistence":"milestone","effects":{"notionalWorkUnits":8,"complianceIntegrity":4,"systemOrder":3,"bloomIntegrity":10},"description":"Dokončení celé vlny."},
+  {"id":"bloom.redStoneSpawned","moduleId":"bloom","persistence":"gameplay","effects":{"entropy":0.8,"kryptoManagementScore":0.2},"description":"Vznik červeného přetíženého stavu."},
+  {"id":"corner.nearMiss","moduleId":"corner-watch","persistence":"gameplay","effects":{"patienceUnits":0.2,"idleFaith":0.05},"description":"Administrativně uznané téměř."},
+  {"id":"corner.cornerHit","moduleId":"corner-watch","persistence":"milestone","effects":{"idleFaith":15,"notionalWorkUnits":8,"perceivedProductivity":3},"description":"Skutečný zásah rohu. Nesmí být povinný pro hlavní progres."},
+  {"id":"corner.sessionCompleted","moduleId":"corner-watch","persistence":"milestone","effects":{"idleFaith":5,"notionalWorkUnits":6,"systemOrder":1},"description":"Deset minut řádně evidovaného pozorování, i bez zásahu rohu."},
+  {"id":"button.pressed","moduleId":"button-compliance","persistence":"gameplay","secondaryEvents":[{"type":"clickaudit.click","profile":"indirect-module"}],"effects":{"approvalUnits":0.25,"kryptoManagementScore":0.05},"description":"Jeden fyzický stisk potvrzovacího panelu."},
+  {"id":"button.sequenceCompleted","moduleId":"button-compliance","persistence":"milestone","effects":{"approvalUnits":5,"notionalWorkUnits":4,"systemOrder":1.5},"description":"Dokončená sekvence souhlasu."},
+  {"id":"button.confirmationConfirmed","moduleId":"button-compliance","persistence":"milestone","effects":{"approvalUnits":2,"notionalWorkUnits":1,"kryptoManagementScore":1},"description":"Potvrzení bylo potvrzeno."},
+  {"id":"button.falsePositive","moduleId":"button-compliance","persistence":"milestone","effects":{"entropy":1.5,"kryptoManagementScore":1},"description":"Panel vyhodnotil správný stisk jako procesně podezřelý."},
+  {"id":"system.memoAcknowledged","moduleId":"system","persistence":"milestone","effects":{"perceivedProductivity":0.25},"description":"Memo bylo přijato. Přečtení není technicky dokazatelné."},
+  {"id":"system.auditCycleClosed","moduleId":"system","persistence":"milestone","effects":{},"description":"Prestige událost prvního stupně."}
+]
