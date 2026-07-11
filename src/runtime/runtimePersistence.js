@@ -7,6 +7,7 @@ const persistedRuntimeKeys = [
   'submittedFormIds',
   'ownedUpgradeIds',
   'unlockedMemoIds',
+  'unlockedModuleIds',
 ]
 
 const isPlainObject = (value) => (
@@ -67,6 +68,7 @@ export function hydrateRuntimeSave(candidate, {
     submittedFormIds,
     ownedUpgradeIds,
     unlockedMemoIds,
+    unlockedModuleIds,
   } = migrated.runtime
 
   if (!isPlainObject(korpState) || korpState.version !== coreStateVersion) return fallback()
@@ -78,6 +80,7 @@ export function hydrateRuntimeSave(candidate, {
     submittedFormIds: uniqueStringIds(submittedFormIds),
     ownedUpgradeIds: uniqueStringIds(ownedUpgradeIds),
     unlockedMemoIds: uniqueStringIds(unlockedMemoIds),
+    unlockedModuleIds: uniqueStringIds(unlockedModuleIds),
   }
 }
 
@@ -87,7 +90,6 @@ export function loadRuntimeFromStorage(storage, options) {
   try {
     const serialized = storage.getItem(RUNTIME_SAVE_KEY)
     if (!serialized) return options.createFallback()
-
     return hydrateRuntimeSave(JSON.parse(serialized), options)
   } catch {
     return options.createFallback()
