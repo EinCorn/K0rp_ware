@@ -1,0 +1,28 @@
+{
+  "id": "k0rp-progression-db",
+  "version": "0.1.0-draft",
+  "format": "sharded-json",
+  "canonicalLocale": "cs-CZ",
+  "shards": {
+    "meta": "meta.json",
+    "balance": "balance.json",
+    "resources": "resources.json",
+    "events": "events.json",
+    "auditForms": "audit-forms.json",
+    "upgrades": [
+      "upgrades-audit.json",
+      "upgrades-care.json",
+      "upgrades-confirmation.json",
+      "upgrades-cross.json",
+      "upgrades-idle.json",
+      "upgrades-stabilization.json",
+      "upgrades-system.json"
+    ],
+    "certifications": "certifications.json",
+    "crossModuleInteractions": "cross-module-interactions.json",
+    "memos": "memos.json",
+    "prestige": "prestige.json",
+    "prestigeDirectives": "prestige-directives.json",
+    "firstCyclePhases": "first-cycle-phases.json"
+  }
+}
