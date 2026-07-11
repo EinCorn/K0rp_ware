@@ -1,282 +1,247 @@
 # K0rp_OS — Roadmap
 
-Verze: 0.1.3 pracovní návrh
+Verze: 0.2.0 pracovní návrh
+
+## 0. Status dokumentu
+
+Roadmap zachovává původní produktovou osu, ale upravuje implementační pořadí podle:
+
+- incremental/idle design research,
+- první progression databáze,
+- audit-first onboarding flow,
+- canonical fake-desktop fantasy,
+- požadavku na standalone/web/overlay surfaces,
+- současného stavu repa.
+
+Současné appky ClickAudit, Fidget a Bloom se tímto dokumentem nerefundují ani nemění jejich lokální gameplay. Integrace probíhá přes bridge a společný runtime.
 
 ## Fáze 0 — Current consolidation
 
 Cíl: Nezbourat, co už funguje.
 
-Tasks:
+- dokončit app-specific polish;
+- nevracet se k velkému shared-shell refactoru;
+- zachovat standalone ClickAudit, Fidget a Bloom;
+- main je source of truth;
+- Windows je primary desktop target.
+
+## Fáze 1 — Docs, source index a progression RFC
 
-- zkontrolovat `main`,
-- dokončit Fázi 3 app-specific polish,
-- ClickAudit: liquid, digits, star/confetti polish,
-- Bloom: score/vlna, stones, burst,
-- Fidget: jen opatrný polish,
-- neřešit znovu shared shell, pokud není nutné.
+Cíl: Pojmenovat systém před dalším runtime vývojem.
 
-Výstup:
+Výstupy:
 
-- tři moduly vypadají jako součást jednoho systému.
+- docs `00–19`;
+- progression/economy;
+- sensory feedback;
+- unlocks/memos/system mutations;
+- playtest checklist;
+- first-cycle balance;
+- desktop surface progression;
+- research/source index;
+- strojově čitelný `packages/korp-progression`.
 
-## Fáze 1 — Docs / RFC v0.1.1
+## Fáze 2 — Existing core and registry baseline
 
-Cíl: Pojmenovat produkt před velkým vývojem.
+Status: základ existuje.
 
-Tasks:
+- `packages/korp-core`;
+- `packages/korp-modules`;
+- typed events/resources;
+- manifest registry;
+- ClickAudit bridge;
+- testy.
+
+Další práce musí být inkrementální, ne kompletní přepis.
+
+## Fáze 3 — Progression package integration
 
-- product vision,
-- visual style,
-- product modes,
-- architecture,
-- event model,
-- privacy model,
-- screen concepts,
-- roadmap,
-- codex tasks,
-- module backlog,
-- language/copy guide.
+Cíl: Přidat datový source of truth bez změny současných appek.
 
-Výstup:
+- typecheck `packages/korp-progression`;
+- validace referencí;
+- resource metadata;
+- forms, upgrades, memos, certifications, prestige constants;
+- surface mutation constants;
+- žádné UI změny v tomto kroku.
 
-- jasné zadání pro sebe/Foxy/Codex,
-- první modular-first definice,
-- čeština jako canonical product language,
-- backlog nových modulů.
+## Fáze 4 — Shared runtime and local persistence
 
-## Fáze 2 — korp-core MVP
+Cíl: Jeden global KorpState pro K0rp_OS.
 
-Cíl: Oddělit herní logiku od UI.
+- `KorpRuntimeProvider`;
+- lifetime stats;
+- local save/load;
+- save migrations;
+- unlock/memo/surface queues;
+- import/export JSON;
+- standalone moduly si smějí ponechat local session state.
 
-Tasks:
+## Fáze 5 — Canonical desktop vertical slice
 
-- vytvořit `packages/korp-core`,
-- definovat typy eventů,
-- definovat initial state,
-- napsat reducer,
-- napsat resources,
-- napsat unlock model,
-- přidat Vitest testy.
+Cíl: Definovat celou hru v malém.
 
-Výstup:
+```text
+Identity Assignment
+→ prázdná plocha
+→ Audit 00-A jako dokument
+→ audit field clicks
+→ ClickAudit shortcut
+→ první memo v Doručených
+→ ClickAudit jako interní okno
+```
 
-- lokální herní jádro bez UI.
+Požadavky:
 
-## Fáze 3 — korp-modules registry
+- fake desktop od prvního hratelného buildu;
+- taskbar;
+- basic window manager;
+- folders/files;
+- žádný launcher plný všech modulů;
+- privacy status viditelný.
 
-Cíl: Udělat z modulů first-class citizens.
+## Fáze 6 — First audit loop
 
-Tasks:
+Cíl: Prvních 20–35 minut.
 
-- vytvořit `packages/korp-modules`,
-- definovat `KorpModuleManifest`,
-- přidat manifesty pro ClickAudit, Fidget, Bloom,
-- přidat spec manifesty pro candidate modules,
-- validovat category/maturity/surfaces,
-- vytvořit registry export.
+- `clickaudit.batchCompleted`;
+- formulář 10-A;
+- první procedure upgrade;
+- anti-spam click yield;
+- Forms folder;
+- první system mutation;
+- první shift closure bez prestige.
 
-Výstup:
+## Fáze 7 — Current modules connected
 
-- nové appky lze přidávat manifestem, ne hardcoded seznamem.
+Cíl: Připojit současnou trojici beze změny jejich lokální identity.
 
-## Fáze 4 — Napojení současných modulů
+- Fidget events + `fidget.sessionSettled`;
+- Bloom events + `bloom.waveAdvanced`;
+- shortcuts instalované progressionem;
+- cross-module modifiers;
+- společný save;
+- standalone bridge policy.
 
-Cíl: ClickAudit, Fidget a Bloom generují společné eventy.
+## Fáze 8 — First-cycle content and prestige
 
-Tasks:
+Cíl: 4–5 hodin do prvního `UZAVŘENÍ AUDITNÍHO CYKLU`.
 
-- ClickAudit emit `clickaudit.click`,
-- Fidget emit `fidget.spinTick`,
-- Bloom emit `bloom.matchCleared`,
-- společný progress panel ve webu,
-- lokální state,
-- žádná cloud telemetrie.
+- Button Compliance jako první nový administrativní modul;
+- Corner Watch jako screensaver/idle surface;
+- certifikace;
+- 6–8 mem;
+- formulář 42-Z;
+- Audit Findings;
+- archive/reboot/build mutation;
+- post-prestige Bublinková Fólie.
 
-Výstup:
+Bubble Wrap je hlavní nový-system reward prvního prestige, ne jen násobitel.
 
-- první pocit propojeného systému.
+## Fáze 9 — Sensory foundation
 
-## Fáze 5 — First Expansion v0.4
+Cíl: Společná kvalita tactile feedbacku.
 
-Cíl: Přidat první jednoduché škálovatelné moduly.
+- audio buses;
+- material profiles;
+- sample variation;
+- density management;
+- micro/meso/ceremonial reward levels;
+- reduce motion;
+- sensory intensity;
+- quiet mode;
+- input accessibility.
 
-Priorita:
+Tato fáze musí být hotová před finalizací Bubble Wrap, Newtonovy kolíbky a Surface Compliance.
 
-1. **Corner Watch**
-2. **Bublinková Fólie**
-3. **Button Compliance**
+## Fáze 10 — First expansion v0.4
 
-Proč:
+Pořadí podle engine value:
 
-- Corner Watch je jednoduchý, ikonický idle modul.
-- Bublinková Fólie je okamžitě pochopitelná taktilní fidgetovina.
-- Button Compliance rozšiřuje korporátní confirmation/audit vrstvu.
+1. Button Compliance — testuje approvals, forms a exceptions.
+2. Corner Watch — testuje screensaver, idle/offline reporting.
+3. Bublinková Fólie — testuje sensory system a post-prestige new-system reward.
 
-Tasks:
+## Fáze 11 — Desk Object / ASMR v0.5
 
-- přidat manifesty,
-- přidat základní UI prototypes,
-- emitovat eventy,
-- napojit resources,
-- přidat 3–5 interních hlášek.
+- Newtonova Kolíbka;
+- Zenová Zahrádka;
+- desk-object shelf;
+- free mode i procedural mode;
+- přirozené closure events.
 
-Výstup:
+## Fáze 12 — Care / Cleaning / Alignment v0.6
 
-- K0rp_OS už není jen původní trojice.
+- Surface Compliance;
+- Shape Compliance;
+- wipe masks;
+- drag/rotate/snap;
+- material-specific feedback;
+- hidden surface files/memos.
 
-## Fáze 6 — K0rp_OS Desktop Shell
+## Fáze 13 — Attention Corruption v0.7
 
-Cíl: Hlavní falešná pracovní plocha.
+- Attention Runner;
+- companion strip;
+- low-input mode;
+- nesmí převzít hlavní ekonomiku ani změnit K0rp_OS v běžnou arcade kolekci.
 
-Tasks:
+## Fáze 14 — Standalone hardening
 
-- vytvořit app shell,
-- fake desktop,
-- taskbar,
-- ikony modulů,
-- launchable internal windows,
-- shared progress,
-- internal memo window,
-- local save/load.
+Cíl: Moduly opravdu vytrhnutelné z OS.
 
-Výstup:
+- stejné module implementation;
+- detached windows;
+- unlinked local mode;
+- linked aggregate bridge;
+- portable settings;
+- Windows release validation.
 
-- první hratelný K0rp_OS MVP.
+## Fáze 15 — Web fallback
 
-## Fáze 7 — Progression loop
+- browser fake desktop;
+- stejné progression IDs;
+- local browser save;
+- module cards/download portal jako sekundární vstup;
+- jasně popsané native limitations.
 
-Cíl: Udělat z toho hru.
+## Fáze 16 — Overlay MVP
 
-Tasks:
+- Windows-first always-on-top bar;
+- K0rp-only mode;
+- Privacy Work Blob;
+- quick launch;
+- žádné raw app names, URL, text, screenshots ani keylogging;
+- platform-specific bridge mimo `korp-core`.
 
-- ranky,
-- resource thresholds,
-- unlocky,
-- memo odměny,
-- fake departments,
-- daily absurdity,
-- achievements/failures,
-- cross-module unlocky.
+## Fáze 17 — Account / sync
 
-Výstup:
+Až po stabilním local-first systému.
 
-- uživatel má důvod pokračovat, i když důvod je podezřelý.
+- voluntary account;
+- progress/settings/cosmetics;
+- export/delete;
+- žádný raw activity sync.
 
-## Fáze 8 — Desk Object / ASMR Expansion v0.5
+## Fáze 18 — Content expansion
 
-Cíl: Rozšířit uklidňovací a manažerské desk-object moduly.
+- memo bank;
+- knowledge base;
+- hallway screens;
+- training materials;
+- fake incidents;
+- procedural announcements;
+- nové moduly přes core/progression/surface contracts.
 
-Moduly:
+## Gate pravidla
 
-- **Newtonova Kolíbka**,
-- **Zenová Zahrádka**.
+Každá fáze musí splnit alespoň jedno:
 
-Tasks:
+- posílí core/runtime;
+- přidá data přes progression package;
+- přidá surface mutation;
+- integruje jeden modul bez změny ostatních;
+- prokazatelně zlepší sensory/accessibility;
+- projde playtest gate.
 
-- fake physics / animation pro Newtonovu kolíbku,
-- canvas/sprite interakce pro písek,
-- resources `momentum`, `transferredResponsibility`, `proceduralCalm`,
-- desk-object category v launcheru,
-- sample memos.
-
-Výstup:
-
-- K0rp_OS začne mít svůj „manažerský stůl“.
-
-## Fáze 9 — Care / Cleaning / Alignment v0.6
-
-Cíl: Přidat tactile ASMR moduly s vyšší interakční kvalitou.
-
-Moduly:
-
-- **Surface Compliance**,
-- **Shape Compliance**.
-
-Tasks:
-
-- wipe/clean mask systém,
-- drag/snap/rotate tvarů,
-- satisfying effects,
-- sound hooks,
-- progression resources.
-
-Výstup:
-
-- K0rp_OS má silnější calming/ADHD wing.
-
-## Fáze 10 — Attention Corruption v0.7
-
-Cíl: Přidat modul, který simuluje druhou pozornostní vrstvu.
-
-Modul:
-
-- **Attention Runner**.
-
-Tasks:
-
-- jednoduchý endless runner,
-- low cognitive load controls,
-- napojení na `attentionResidue`,
-- možnost běhu vedle memo / knowledge base.
-
-Výstup:
-
-- K0rp_OS umí být sám sobě doprovodným Subway Surferem, ale samozřejmě compliance-friendly.
-
-## Fáze 11 — Overlay MVP
-
-Cíl: K0rp nad skutečnou prací.
-
-Tasks:
-
-- malá always-on-top lišta,
-- privacy mode indicator,
-- K0rp-only mode,
-- Privacy Work Blob mode,
-- otevřít hlavní K0rp_OS,
-- žádný raw tracking.
-
-Výstup:
-
-- čtvrtá zeď praská, ale bezpečně.
-
-## Fáze 12 — Account / Sync
-
-Cíl: Volitelná synchronizace.
-
-Tasks:
-
-- account model,
-- Cloudflare Worker API,
-- progress sync,
-- settings sync,
-- cosmetics/unlocks,
-- export/import.
-
-Výstup:
-
-- uživatel může přenášet K0rp identitu mezi zařízeními.
-
-## Fáze 13 — Content expansion
-
-Cíl: Větší svět bez vysvětlování světa.
-
-Tasks:
-
-- nové moduly,
-- knowledge base,
-- interní memo bank,
-- hallway screens,
-- audio snippets,
-- department pages,
-- training screens,
-- fake incidents,
-- procedural announcements.
-
-Výstup:
-
-- K0rp_OS začne působit jako produkt z místa, které existuje příliš přesvědčivě.
-
-## Důležité pravidlo roadmapy
-
-> Každá fáze musí buď posílit core, nebo přidat modul přes core. Pokud jen přidává další izolovanou hračku, je to scope creep v reflexní vestě.
+> Pokud jen přidává další izolovanou hračku, je to scope creep v reflexní vestě.
