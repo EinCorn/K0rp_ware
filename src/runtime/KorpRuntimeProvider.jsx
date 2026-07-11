@@ -1,6 +1,15 @@
 import { useCallback, useMemo, useReducer } from 'react'
 import { applyKorpEvent, createInitialState } from '../../packages/korp-core/src/index'
+import { KORP_PROGRESSION_DATABASE } from '../../packages/korp-progression/src/progression.database'
+import {
+  createInitialAuditProgressionState,
+  getAuditForm,
+  isAuditFormAvailable,
+  submitAuditForm,
+} from './auditProgression'
 import { KorpRuntimeContext } from './KorpRuntimeContext'
+
+const auditForms = KORP_PROGRESSION_DATABASE.auditForms
 
 const createRuntimeState = () => {
   const korpState = createInitialState({ settings: { platform: 'web' } })
@@ -8,7 +17,7 @@ const createRuntimeState = () => {
   return {
     korpState,
     lifetimeStats: korpState.stats,
-    auditTraceApproved: false,
+    ...createInitialAuditProgressionState(),
   }
 }
 
@@ -23,10 +32,32 @@ function runtimeReducer(runtime, action) {
         lifetimeStats: korpState.stats,
       }
     }
-    case 'approveAuditTrace':
-      return runtime.auditTraceApproved
-        ? runtime
-        : { ...runtime, auditTraceApproved: true }
+    case 'submitAuditForm': {
+      const form = getAuditForm(auditForms, action.formId)
+      const progression = submitAuditForm({
+        form,
+        korpState: runtime.korpState,
+        progressionState: runtime,
+      })
+
+      if (!progression.didSubmit) return runtime
+
+      const korpState = applyKorpEvent(runtime.korpState, {
+        id: 'k0rp-os-audit-form-submitted-' + form.id + '-' + action.timestamp,
+        timestamp: action.timestamp,
+        sourceModule: 'system',
+        type: form.submitEvent,
+        tags: ['k0rp-os', 'audit-form', form.id],
+        meta: { formId: form.id },
+      })
+
+      return {
+        ...runtime,
+        ...progression.progressionState,
+        korpState,
+        lifetimeStats: korpState.stats,
+      }
+    }
     case 'resetRuntime':
       return createRuntimeState()
     default:
@@ -41,23 +72,55 @@ export function KorpRuntimeProvider({ children }) {
     dispatch({ type: 'dispatchKorpEvent', event })
   }, [])
 
-  const approveAuditTrace = useCallback(() => {
-    dispatch({ type: 'approveAuditTrace' })
+  const submitAuditForm = useCallback((formId) => {
+    dispatch({ type: 'submitAuditForm', formId, timestamp: Date.now() })
   }, [])
 
   const resetRuntime = useCallback(() => {
     dispatch({ type: 'resetRuntime' })
   }, [])
 
+  const isFormAvailable = useCallback((formId) => (
+    isAuditFormAvailable(getAuditForm(auditForms, formId), runtime.korpState)
+  ), [runtime.korpState])
+
+  const isFormSubmitted = useCallback((formId) => (
+    runtime.submittedFormIds.includes(formId)
+  ), [runtime.submittedFormIds])
+
+  const isUpgradeUnlocked = useCallback((upgradeId) => (
+    runtime.ownedUpgradeIds.includes(upgradeId)
+  ), [runtime.ownedUpgradeIds])
+
+  const isMemoUnlocked = useCallback((memoId) => (
+    runtime.unlockedMemoIds.includes(memoId)
+  ), [runtime.unlockedMemoIds])
+
   const value = useMemo(() => ({
     korpState: runtime.korpState,
     stats: runtime.korpState.stats,
     lifetimeStats: runtime.lifetimeStats,
-    auditTraceApproved: runtime.auditTraceApproved,
+    submittedFormIds: runtime.submittedFormIds,
+    ownedUpgradeIds: runtime.ownedUpgradeIds,
+    unlockedMemoIds: runtime.unlockedMemoIds,
+    auditForms,
     dispatchKorpEvent,
-    approveAuditTrace,
+    submitAuditForm,
+    isFormAvailable,
+    isFormSubmitted,
+    isUpgradeUnlocked,
+    isMemoUnlocked,
     resetRuntime,
-  }), [approveAuditTrace, dispatchKorpEvent, resetRuntime, runtime])
+  }), [
+    dispatchKorpEvent,
+    isFormAvailable,
+    isFormSubmitted,
+    isMemoUnlocked,
+    isUpgradeUnlocked,
+    resetRuntime,
+    runtime,
+    submitAuditForm,
+  ])
 
   return (
     <KorpRuntimeContext.Provider value={value}>

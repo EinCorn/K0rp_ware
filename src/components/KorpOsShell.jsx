@@ -10,36 +10,35 @@ const auditMessages = [
   'Produktivita byla zaznamenána ve vhodně neurčité podobě.',
 ]
 
-const initialActivity = [
+const initialActivity = (auditEntryForm) => [
   'Provozní plocha otevřena. Pracovní den nebyl ověřen.',
-  'Audit 00-A byl připraven k místnímu zpracování.',
+  'Audit ' + (auditEntryForm?.code ?? '?') + ' byl připraven k místnímu zpracování.',
   'Síťové odesílání je pro tuto relaci vypnuto.',
 ]
 
-const auditTraceApprovalThreshold = 10
 const osCanvasWidth = 1520
 const osCanvasHeight = 855
 const lockedShortcuts = listModules()
   .filter((module) => module.status !== 'current')
   .slice(0, 2)
 
-const managedWindowIds = ['audit-00-a', 'form-10-a', 'daily-report', 'forms-folder', 'inbox-folder']
+const managedWindowIds = ['audit-entry', 'audit-trace', 'daily-report', 'forms-folder', 'inbox-folder']
 
 const initialWindows = {
-  'audit-00-a': {
-    id: 'audit-00-a',
-    title: 'AUDIT 00-A / CLICK AUDIT',
-    taskbarTitle: 'AUDIT 00-A',
+  'audit-entry': {
+    id: 'audit-entry',
+    title: null,
+    taskbarTitle: null,
     x: 160,
     y: 48,
     zIndex: 2,
     isMinimized: false,
     isOpen: true,
   },
-  'form-10-a': {
-    id: 'form-10-a',
-    title: 'FORMULÁŘE / ŽÁDOST 10-A',
-    taskbarTitle: 'ŽÁDOST 10-A',
+  'audit-trace': {
+    id: 'audit-trace',
+    title: null,
+    taskbarTitle: null,
     x: 1072,
     y: 96,
     zIndex: 3,
@@ -153,27 +152,54 @@ function KorpOsShell() {
   const {
     korpState,
     stats,
-    auditTraceApproved,
+    auditForms,
     dispatchKorpEvent,
-    approveAuditTrace: approveAuditTraceInRuntime,
+    submitAuditForm,
+    isFormAvailable,
+    isFormSubmitted,
+    isUpgradeUnlocked,
   } = useKorpRuntime()
-  const [activity, setActivity] = useState(initialActivity)
+  const auditEntryForm = auditForms.find((form) => form.availableAtStart === true)
+  const auditTraceForm = auditForms.find((form) => form.requirements?.kind === 'eventCountAtLeast')
+  const auditTraceRequirement = auditTraceForm?.requirements
+  const auditTraceUpgradeId = auditTraceForm?.completionEffects
+    .find((effect) => effect.kind === 'unlockUpgrade')?.upgradeId
+  const auditEntrySubmitted = auditEntryForm ? isFormSubmitted(auditEntryForm.id) : false
+  const auditTraceAvailable = auditTraceForm ? isFormAvailable(auditTraceForm.id) : false
+  const auditTraceSubmitted = auditTraceForm ? isFormSubmitted(auditTraceForm.id) : false
+  const auditTraceUpgradeUnlocked = auditTraceUpgradeId
+    ? isUpgradeUnlocked(auditTraceUpgradeId)
+    : false
+  const [activity, setActivity] = useState(() => initialActivity(auditEntryForm))
   const [feedbackTick, setFeedbackTick] = useState(0)
   const [windows, setWindows] = useState(initialWindows)
   const [canvasScale, setCanvasScale] = useState(1)
   const desktopSpaceRef = useRef(null)
   const dragStateRef = useRef(null)
+  const auditTraceAvailabilityRef = useRef(auditTraceAvailable)
 
   const auditClicks = stats.eventsByType['clickaudit.click'] ?? 0
-  const auditTraceAvailable = auditClicks >= auditTraceApprovalThreshold
-  const notionalWorkPerAudit = auditTraceApproved ? 0.2 : 0.1
-  const formVisible = auditTraceAvailable || auditTraceApproved
-  const auditTraceFileStatus = auditTraceApproved
+  const notionalWorkPerAudit = auditTraceUpgradeUnlocked ? 0.2 : 0.1
+  const formVisible = auditTraceAvailable || auditTraceSubmitted
+  const auditTraceFileStatus = auditTraceSubmitted
     ? 'SCHVÁLENO / AKTIVNÍ'
     : formVisible
       ? 'PŘIPRAVENO KE SCHVÁLENÍ'
-      : 'ČEKÁ NA 10 KONTROL'
-  const isWindowAvailable = (id) => id !== 'form-10-a' || formVisible
+      : 'ČEKÁ NA ' + (auditTraceRequirement?.count ?? '?') + ' KONTROL'
+  const presentationWindows = {
+    ...windows,
+    'audit-entry': {
+      ...windows['audit-entry'],
+      title: 'AUDIT ' + (auditEntryForm?.code ?? '?') + ' / CLICK AUDIT',
+      taskbarTitle: 'AUDIT ' + (auditEntryForm?.code ?? '?'),
+    },
+    'audit-trace': {
+      ...windows['audit-trace'],
+      title: 'FORMULÁŘE / ŽÁDOST ' + (auditTraceForm?.code ?? '?'),
+      taskbarTitle: 'ŽÁDOST ' + (auditTraceForm?.code ?? '?'),
+    },
+  }
+  const isWindowAvailable = (id) => id !== 'audit-trace' || formVisible
   const visibleWindowIds = managedWindowIds.filter((id) => (
     isWindowAvailable(id) && windows[id].isOpen && !windows[id].isMinimized
   ))
@@ -192,6 +218,17 @@ function KorpOsShell() {
 
     return () => window.removeEventListener('resize', updateCanvasScale)
   }, [])
+
+  useEffect(() => {
+    if (auditTraceAvailable && !auditTraceAvailabilityRef.current) {
+      setActivity((currentActivity) => [
+        'Formulář ' + auditTraceForm.code + ' byl doručen do složky Formuláře.',
+        ...currentActivity,
+      ].slice(0, 4))
+    }
+
+    auditTraceAvailabilityRef.current = auditTraceAvailable
+  }, [auditTraceAvailable, auditTraceForm])
 
   const bringWindowToFront = (id) => {
     setWindows((currentWindows) => {
@@ -299,7 +336,11 @@ function KorpOsShell() {
       tags: ['k0rp-os', 'manual-audit']
     })
 
-    if (auditTraceApproved) {
+    if (!auditEntrySubmitted && auditEntryForm) {
+      submitAuditForm(auditEntryForm.id)
+    }
+
+    if (auditTraceUpgradeUnlocked) {
       dispatchKorpEvent({
         id: 'k0rp-os-audit-trace-extension-' + timestamp + '-' + nextClick,
         timestamp,
@@ -315,19 +356,15 @@ function KorpOsShell() {
         '#' + String(nextClick).padStart(3, '0') + ' ' + auditMessages[(nextClick - 1) % auditMessages.length],
       ]
 
-      if (nextClick === auditTraceApprovalThreshold) {
-        nextEntries.unshift('Formulář 10-A byl doručen do složky Formuláře.')
-      }
-
       return [...nextEntries, ...currentActivity].slice(0, 4)
     })
     setFeedbackTick(nextClick)
   }
 
-  const approveAuditTrace = () => {
-    if (!auditTraceAvailable || auditTraceApproved) return
+  const submitAuditTrace = () => {
+    if (!auditTraceAvailable || auditTraceSubmitted || !auditTraceForm) return
 
-    approveAuditTraceInRuntime()
+    submitAuditForm(auditTraceForm.id)
     setActivity((currentActivity) => [
       'Rozšíření auditní stopy bylo schváleno. Výkaz získal další kolonku.',
       'Příští kontrola přítomnosti bude vykázána jako +0.2 NWU.',
@@ -378,19 +415,19 @@ function KorpOsShell() {
             onPointerUp={endWindowDrag}
             onPointerCancel={endWindowDrag}
           >
-            {visibleWindowIds.includes('audit-00-a') && (
+            {visibleWindowIds.includes('audit-entry') && (
               <article
                 className="os-window os-audit-window"
-                style={windowStyle(windows['audit-00-a'])}
-                data-window-id="audit-00-a"
+                style={windowStyle(windows['audit-entry'])}
+                data-window-id="audit-entry"
                 aria-labelledby="audit-title"
-                onPointerDown={() => bringWindowToFront('audit-00-a')}
+                onPointerDown={() => bringWindowToFront('audit-entry')}
               >
               <WindowHeader
-                window={windows['audit-00-a']}
+                window={presentationWindows['audit-entry']}
                 variant="audit"
                 onMinimize={minimizeWindow}
-                onPointerDown={(event) => startWindowDrag('audit-00-a', event)}
+                onPointerDown={(event) => startWindowDrag('audit-entry', event)}
               />
               <div className="os-audit-body">
                 <div className="os-document-heading">
@@ -407,34 +444,36 @@ function KorpOsShell() {
 
                 <div className="os-audit-readout" aria-live="polite">
                   <div><span>ÚKONY V RELACI</span><strong>{String(auditClicks).padStart(3, '0')}</strong></div>
-                  <div><span>{auditTraceApproved ? 'PŘÍRŮSTEK NA ÚKON' : 'POSLEDNÍ PŘÍRŮSTEK'}</span><strong key={feedbackTick} className="os-action-feedback">+{notionalWorkPerAudit.toFixed(1)} NWU</strong></div>
-                  <div><span>STAV VÝKAZU</span><strong>{auditTraceApproved ? 'ROZŠÍŘENÝ' : 'ŘÁDNĚ NEURČITÝ'}</strong></div>
+                  <div><span>{auditTraceUpgradeUnlocked ? 'PŘÍRŮSTEK NA ÚKON' : 'POSLEDNÍ PŘÍRŮSTEK'}</span><strong key={feedbackTick} className="os-action-feedback">+{notionalWorkPerAudit.toFixed(1)} NWU</strong></div>
+                  <div><span>STAV VÝKAZU</span><strong>{auditTraceUpgradeUnlocked ? 'ROZŠÍŘENÝ' : 'ŘÁDNĚ NEURČITÝ'}</strong></div>
                 </div>
               </div>
               </article>
             )}
 
-            {visibleWindowIds.includes('form-10-a') && (
+            {visibleWindowIds.includes('audit-trace') && (
               <article
                 className="os-window os-form-window"
-                style={windowStyle(windows['form-10-a'])}
-                data-window-id="form-10-a"
+                style={windowStyle(windows['audit-trace'])}
+                data-window-id="audit-trace"
                 aria-labelledby="approval-title"
-                onPointerDown={() => bringWindowToFront('form-10-a')}
+                onPointerDown={() => bringWindowToFront('audit-trace')}
               >
                 <WindowHeader
-                  window={windows['form-10-a']}
+                  window={presentationWindows['audit-trace']}
                   onMinimize={minimizeWindow}
-                  onPointerDown={(event) => startWindowDrag('form-10-a', event)}
+                  onPointerDown={(event) => startWindowDrag('audit-trace', event)}
                 />
-                <div className={'os-form-body ' + (auditTraceApproved ? 'is-approved' : 'is-available')}>
+                <div className={'os-form-body ' + (auditTraceSubmitted ? 'is-approved' : 'is-available')}>
                   <p className="os-document-code">POMOCNÝ VÝKAZ PŘÍTOMNOSTI</p>
-                  <h2 id="approval-title">Rozšíření auditní stopy</h2>
+                  <h2 id="approval-title">{auditTraceForm?.title}</h2>
                   <p>Přidá pomocný výkaz přítomnosti k budoucím kontrolám.</p>
-                  {auditTraceApproved ? (
+                  {auditTraceSubmitted ? (
                     <span className="os-approval-state">SCHVÁLENO / AKTIVNÍ<br />+0.2 NWU NA KONTROLU</span>
                   ) : (
-                    <button type="button" onClick={approveAuditTrace}>SCHVÁLIT POMOCNÝ VÝKAZ</button>
+                    <button type="button" onClick={submitAuditTrace}>
+                      {auditTraceForm?.fields.find((field) => field.type === 'buttonConfirm')?.label}
+                    </button>
                   )}
                 </div>
               </article>
@@ -483,22 +522,22 @@ function KorpOsShell() {
                   <h2 id="forms-folder-title">Formuláře</h2>
                   <ul className="os-folder-list">
                     <FolderEntry
-                      title="Žádost 10-A"
-                      detail="Rozšíření auditní stopy"
+                      title={'Žádost ' + (auditTraceForm?.code ?? '?')}
+                      detail={auditTraceForm?.title}
                       status={auditTraceFileStatus}
                       kind="form"
                       isLocked={!formVisible}
-                      onOpen={() => openWindow('form-10-a')}
+                      onOpen={() => openWindow('audit-trace')}
                     />
                     <FolderEntry
-                      title="Audit 00-A"
+                      title={'Audit ' + (auditEntryForm?.code ?? '?')}
                       detail="Kontrola přítomnosti"
                       status="OTEVŘÍT DOKUMENT"
                       kind="document"
-                      onOpen={() => openWindow('audit-00-a')}
+                      onOpen={() => openWindow('audit-entry')}
                     />
                     <FolderEntry
-                      title="Záznam 10-A"
+                      title={'Záznam ' + (auditTraceForm?.code ?? '?')}
                       detail="Archivace čeká na podpis"
                       status="ZAMČENO"
                       kind="archive"
@@ -552,7 +591,7 @@ function KorpOsShell() {
         <footer className="os-taskbar">
           <span className="os-taskbar-start">KØRP // START</span>
           {taskbarWindowIds.map((id) => {
-            const window = windows[id]
+            const window = presentationWindows[id]
             return (
               <button
                 key={id}
