@@ -1,6 +1,6 @@
 # K0rp_OS — Product Vision
 
-Verze: 0.1.3 pracovní návrh  
+Verze: 0.2.0 pracovní návrh
 Status: interní dokument / RFC  
 Projekt: K0rp_ware → K0rp_OS
 
@@ -206,7 +206,6 @@ MVP K0rp_OS je funkční, když:
 
 > K0rp_OS má být modular-first engine, ne sbírka izolovaných blbostí v hezkém rámečku.
 
-
 ## Platform stance
 
 K0rp_OS je web-native a TypeScript-first, ale primární desktop platforma je Windows.
@@ -214,3 +213,68 @@ K0rp_OS je web-native a TypeScript-first, ale primární desktop platforma je Wi
 Mac se používá jako pohodlné sekundární vývojové/design/test prostředí. Je důležitý pro domácí workflow, grafiku, docs a cross-platform sanity check. Finální desktop UX a overlay behavior ale musí být ověřené na Windows.
 
 Tohle je součást produktové reality: K0rp_OS má být robustní systém, který jde rozvíjet z gauče i od stolu, aniž by jeden režim lhal, že je tím druhým.
+
+## 14. Canonical runtime: plocha zaměstnance
+
+K0rp_OS desktop je canonical full-game surface. Hra se při prvním spuštění netváří jako katalog modulů ani jako dashboard s odemčenými kartami. Po přiřazení identity hráč vstoupí na téměř prázdnou fiktivní pracovní plochu zaměstnance K0rpu.
+
+Výchozí stav:
+
+- tmavý K0rp wallpaper,
+- spodní taskbar,
+- Employee ID,
+- systémový čas,
+- čitelný privacy status,
+- Compliance Bin,
+- automaticky otevřený dokument `AUDIT 00-A`.
+
+První herní interakcí je vyplnění auditu. Každá úmyslná změna pole současně vytváří auditovatelný `clickaudit.click`. Po odeslání formuláře se teprve objeví shortcut ClickAuditu, složka Doručené a první vykázané metriky.
+
+Důležité:
+
+> Nový modul se nemá pouze přepnout z `locked` na `available`. Má být autorizován, nainstalován a fyzicky se projevit v operačním systému.
+
+## 15. Progrese plochy
+
+Dlouhodobý progress se projevuje také materiálně:
+
+- novými shortcuts,
+- složkami,
+- soubory,
+- pending formuláři,
+- certifikáty,
+- taskbar widgets,
+- položkami v Settings,
+- screensavery,
+- změnami wallpaperu,
+- build number,
+- archivací po uzavření auditního cyklu.
+
+Mema jsou soubory v Doručených. Certifikace jsou dokumenty. Corner Watch se primárně odemyká jako spořič obrazovky. Prestige se projevuje jako archivace, úklid pracovní plochy, reboot a instalace nového systému.
+
+## 16. Oddělení herní a produktové osy
+
+Herní progression:
+
+```text
+Audit 00-A
+→ ClickAudit
+→ Fidget
+→ Bloom
+→ Corner Watch
+→ Button Compliance
+→ Uzavření auditního cyklu
+→ Bublinková Fólie
+```
+
+Produktové surfaces:
+
+```text
+K0rp_OS desktop
+↔ web fallback
+↔ standalone moduly
+→ později K0rp Overlay
+→ volitelně account/sync
+```
+
+Overlay ani standalone build nejsou hráčské prestige rewards. Jsou to technické/product modes sdílející stejné core, manifests a event semantics.
