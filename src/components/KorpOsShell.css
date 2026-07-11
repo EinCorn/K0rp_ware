@@ -6,8 +6,8 @@
   --os-red: #a54e47;
   --os-amber: #c59b5a;
   --os-green: #718c5e;
-  --os-ui: "Pixel Operator", "Pixel Operator Mono", monospace;
-  --os-mono: "Pixel Operator Mono", "Pixel Operator", monospace;
+  --os-ui: var(--korp-font-ui);
+  --os-mono: var(--korp-font-mono);
   height: 100svh;
   overflow: hidden;
   padding: clamp(8px, 1.4vw, 20px);
