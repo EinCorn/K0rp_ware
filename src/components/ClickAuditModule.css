@@ -105,21 +105,11 @@
   overflow: hidden;
   border: 0;
   outline: 0;
-  background: transparent;
+  background-color: transparent;
+  background-repeat: no-repeat;
+  background-size: 500% 200%;
   image-rendering: pixelated;
   transform: translateZ(0);
-}
-
-.clickaudit-digit-card img {
-  position: absolute;
-  left: calc(var(--clickaudit-digit-column) * -100%);
-  top: calc(var(--clickaudit-digit-row) * -100%);
-  width: 500%;
-  height: 200%;
-  max-width: none;
-  display: block;
-  image-rendering: pixelated;
-  pointer-events: none;
 }
 
 .clickaudit-digit-deck[data-size='compact'] {
