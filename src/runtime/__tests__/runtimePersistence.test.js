@@ -10,7 +10,7 @@ import {
   saveRuntimeToStorage,
 } from '../runtimePersistence.js'
 
-const progressionDataVersion = '0.1.0-draft'
+const progressionDataVersion = '0.1.1-draft'
 const coreStateVersion = '0.1.0'
 
 const createFreshRuntime = () => ({
@@ -23,6 +23,7 @@ const createFreshRuntime = () => ({
   submittedFormIds: [],
   ownedUpgradeIds: [],
   unlockedMemoIds: [],
+  unlockedModuleIds: [],
 })
 
 const createProgressedRuntime = () => ({
@@ -43,6 +44,7 @@ const createProgressedRuntime = () => ({
   submittedFormIds: ['audit-00-a', 'audit-10-a'],
   ownedUpgradeIds: ['sys.audit-batch-standardization'],
   unlockedMemoIds: ['memo.audit-00-a-complete', 'memo.audit-trace-available'],
+  unlockedModuleIds: ['click-audit'],
 })
 
 function createMemoryStorage() {
@@ -81,6 +83,7 @@ test('save envelope records schema and progression versions without definitions'
     'ownedUpgradeIds',
     'submittedFormIds',
     'unlockedMemoIds',
+    'unlockedModuleIds',
   ])
   assert.equal('auditForms' in save.runtime, false)
   assert.equal('windows' in save.runtime, false)
@@ -109,12 +112,14 @@ test('loaded progression ids are sanitized and kept unique', () => {
   save.runtime.submittedFormIds = ['audit-00-a', 'audit-00-a', null]
   save.runtime.ownedUpgradeIds = ['sys.audit-batch-standardization', 42]
   save.runtime.unlockedMemoIds = ['memo.audit-trace-available', 'memo.audit-trace-available']
+  save.runtime.unlockedModuleIds = ['click-audit', 'click-audit', false]
 
   const runtime = hydrateRuntimeSave(save, loadOptions())
 
   assert.deepEqual(runtime.submittedFormIds, ['audit-00-a'])
   assert.deepEqual(runtime.ownedUpgradeIds, ['sys.audit-batch-standardization'])
   assert.deepEqual(runtime.unlockedMemoIds, ['memo.audit-trace-available'])
+  assert.deepEqual(runtime.unlockedModuleIds, ['click-audit'])
 })
 
 test('clear removes the persisted runtime save', () => {

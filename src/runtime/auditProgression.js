@@ -4,6 +4,7 @@ export const createInitialAuditProgressionState = () => ({
   submittedFormIds: [],
   ownedUpgradeIds: [],
   unlockedMemoIds: [],
+  unlockedModuleIds: [],
 })
 
 export const getAuditForm = (auditForms, formId) => (
@@ -40,6 +41,13 @@ export function applyAuditCompletionEffects(progressionState, completionEffects)
       return {
         ...nextState,
         unlockedMemoIds: appendUnique(nextState.unlockedMemoIds, effect.memoId),
+      }
+    }
+
+    if (effect.kind === 'unlockModule' && typeof effect.moduleId === 'string') {
+      return {
+        ...nextState,
+        unlockedModuleIds: appendUnique(nextState.unlockedModuleIds, effect.moduleId),
       }
     }
 

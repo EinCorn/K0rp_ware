@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react'
 import { listModules } from '../../packages/korp-modules/src/index'
+import { createAuditFormValues, isAuditFormComplete } from '../runtime/auditFormDraft'
 import { useKorpRuntime } from '../runtime/useKorpRuntime'
+import AuditFormDocument from './AuditFormDocument'
 import './KorpOsShell.css'
 
 const auditMessages = [
@@ -22,18 +24,35 @@ const lockedShortcuts = listModules()
   .filter((module) => module.status !== 'current')
   .slice(0, 2)
 
-const managedWindowIds = ['audit-entry', 'audit-trace', 'daily-report', 'forms-folder', 'inbox-folder']
+const managedWindowIds = [
+  'audit-entry',
+  'click-audit',
+  'audit-trace',
+  'daily-report',
+  'forms-folder',
+  'inbox-folder',
+]
 
 const initialWindows = {
   'audit-entry': {
     id: 'audit-entry',
     title: null,
     taskbarTitle: null,
-    x: 160,
-    y: 48,
-    zIndex: 2,
+    x: 184,
+    y: 58,
+    zIndex: 3,
     isMinimized: false,
     isOpen: true,
+  },
+  'click-audit': {
+    id: 'click-audit',
+    title: 'CLICKAUDIT / MÍSTNÍ MODUL',
+    taskbarTitle: 'CLICKAUDIT',
+    x: 262,
+    y: 260,
+    zIndex: 2,
+    isMinimized: false,
+    isOpen: false,
   },
   'audit-trace': {
     id: 'audit-trace',
@@ -98,7 +117,8 @@ function WindowHeader({ window, variant = 'document', onMinimize, onPointerDown 
 }
 
 function DesktopIcon({ title, type, status, isLocked = false, onOpen }) {
-  const className = 'os-desktop-icon' + (isLocked ? ' is-locked' : '') + (onOpen ? ' is-clickable' : '')
+  const canOpen = Boolean(onOpen) && !isLocked
+  const className = 'os-desktop-icon' + (isLocked ? ' is-locked' : '') + (canOpen ? ' is-clickable' : '')
   const iconContent = (
     <>
       <span className={'os-icon-glyph os-icon-' + type} aria-hidden="true" />
@@ -107,19 +127,15 @@ function DesktopIcon({ title, type, status, isLocked = false, onOpen }) {
     </>
   )
 
-  if (onOpen) {
+  if (canOpen) {
     return (
-      <button type="button" className={className} onClick={onOpen} aria-label={'Otevřít složku ' + title}>
+      <button type="button" className={className} onClick={onOpen} aria-label={'Otevřít ' + title}>
         {iconContent}
       </button>
     )
   }
 
-  return (
-    <div className={className}>
-      {iconContent}
-    </div>
-  )
+  return <div className={className}>{iconContent}</div>
 }
 
 function FolderEntry({ title, detail, status, kind, isLocked = false, onOpen }) {
@@ -159,6 +175,7 @@ function KorpOsShell() {
     isFormSubmitted,
     isUpgradeUnlocked,
   } = useKorpRuntime()
+
   const auditEntryForm = auditForms.find((form) => form.availableAtStart === true)
   const auditTraceForm = auditForms.find((form) => form.requirements?.kind === 'eventCountAtLeast')
   const auditTraceRequirement = auditTraceForm?.requirements
@@ -170,8 +187,16 @@ function KorpOsShell() {
   const auditTraceUpgradeUnlocked = auditTraceUpgradeId
     ? isUpgradeUnlocked(auditTraceUpgradeId)
     : false
+  const clickAuditUnlocked = Boolean(
+    auditEntrySubmitted
+    && auditEntryForm?.completionEffects.some(
+      (effect) => effect.kind === 'unlockModule' && effect.moduleId === 'click-audit',
+    ),
+  )
+
   const [activity, setActivity] = useState(() => initialActivity(auditEntryForm))
   const [feedbackTick, setFeedbackTick] = useState(0)
+  const [auditEntryValues, setAuditEntryValues] = useState(() => createAuditFormValues(auditEntryForm))
   const [windows, setWindows] = useState(initialWindows)
   const [canvasScale, setCanvasScale] = useState(1)
   const desktopSpaceRef = useRef(null)
@@ -181,6 +206,7 @@ function KorpOsShell() {
   const auditClicks = stats.eventsByType['clickaudit.click'] ?? 0
   const notionalWorkPerAudit = auditTraceUpgradeUnlocked ? 0.2 : 0.1
   const formVisible = auditTraceAvailable || auditTraceSubmitted
+  const formsFolderAvailable = auditEntrySubmitted || formVisible
   const auditTraceFileStatus = auditTraceSubmitted
     ? 'SCHVÁLENO / AKTIVNÍ'
     : formVisible
@@ -190,7 +216,7 @@ function KorpOsShell() {
     ...windows,
     'audit-entry': {
       ...windows['audit-entry'],
-      title: 'AUDIT ' + (auditEntryForm?.code ?? '?') + ' / CLICK AUDIT',
+      title: 'FORMULÁŘ ' + (auditEntryForm?.code ?? '?') + ' / VSTUPNÍ AUDIT',
       taskbarTitle: 'AUDIT ' + (auditEntryForm?.code ?? '?'),
     },
     'audit-trace': {
@@ -199,7 +225,12 @@ function KorpOsShell() {
       taskbarTitle: 'ŽÁDOST ' + (auditTraceForm?.code ?? '?'),
     },
   }
-  const isWindowAvailable = (id) => id !== 'audit-trace' || formVisible
+  const isWindowAvailable = (id) => {
+    if (id === 'click-audit') return clickAuditUnlocked
+    if (id === 'audit-trace') return formVisible
+    if (id === 'forms-folder') return formsFolderAvailable
+    return true
+  }
   const visibleWindowIds = managedWindowIds.filter((id) => (
     isWindowAvailable(id) && windows[id].isOpen && !windows[id].isMinimized
   ))
@@ -232,8 +263,8 @@ function KorpOsShell() {
 
   const bringWindowToFront = (id) => {
     setWindows((currentWindows) => {
-      const window = currentWindows[id]
-      if (!window || !window.isOpen) return currentWindows
+      const windowState = currentWindows[id]
+      if (!windowState || !windowState.isOpen) return currentWindows
 
       const highestZIndex = Math.max(...Object.values(currentWindows)
         .filter((currentWindow) => currentWindow.isOpen)
@@ -241,7 +272,7 @@ function KorpOsShell() {
 
       return {
         ...currentWindows,
-        [id]: { ...window, zIndex: highestZIndex + 1 },
+        [id]: { ...windowState, zIndex: highestZIndex + 1 },
       }
     })
   }
@@ -255,8 +286,8 @@ function KorpOsShell() {
 
   const openWindow = (id) => {
     setWindows((currentWindows) => {
-      const window = currentWindows[id]
-      if (!window) return currentWindows
+      const windowState = currentWindows[id]
+      if (!windowState) return currentWindows
 
       const highestZIndex = Math.max(...Object.values(currentWindows)
         .filter((currentWindow) => currentWindow.isOpen)
@@ -264,7 +295,7 @@ function KorpOsShell() {
 
       return {
         ...currentWindows,
-        [id]: { ...window, isOpen: true, isMinimized: false, zIndex: highestZIndex + 1 },
+        [id]: { ...windowState, isOpen: true, isMinimized: false, zIndex: highestZIndex + 1 },
       }
     })
   }
@@ -273,16 +304,16 @@ function KorpOsShell() {
     if (event.button !== 0) return
 
     const desktopSpace = desktopSpaceRef.current
-    const window = windows[id]
-    if (!desktopSpace || !window) return
+    const windowState = windows[id]
+    if (!desktopSpace || !windowState) return
 
     const desktopRect = desktopSpace.getBoundingClientRect()
     const scale = canvasScale || 1
     dragStateRef.current = {
       id,
       pointerId: event.pointerId,
-      offsetX: (event.clientX - desktopRect.left) / scale - window.x,
-      offsetY: (event.clientY - desktopRect.top) / scale - window.y,
+      offsetX: (event.clientX - desktopRect.left) / scale - windowState.x,
+      offsetY: (event.clientY - desktopRect.top) / scale - windowState.y,
     }
 
     event.currentTarget.setPointerCapture(event.pointerId)
@@ -313,17 +344,68 @@ function KorpOsShell() {
 
   const endWindowDrag = (event) => {
     if (dragStateRef.current?.pointerId !== event.pointerId) return
-
     dragStateRef.current = null
   }
 
-  const windowStyle = (window) => ({
-    left: window.x,
-    top: window.y,
-    zIndex: window.zIndex,
+  const windowStyle = (windowState) => ({
+    left: windowState.x,
+    top: windowState.y,
+    zIndex: windowState.zIndex,
   })
 
-  const registerAuditAction = () => {
+  const dispatchAuditInteraction = (form, field, action) => {
+    const timestamp = Date.now()
+    const nextClick = (stats.eventsByType['clickaudit.click'] ?? 0) + 1
+
+    dispatchKorpEvent({
+      id: 'k0rp-os-audit-field-' + timestamp + '-' + form.id + '-' + (field?.id ?? action),
+      timestamp,
+      sourceModule: 'click-audit',
+      type: 'clickaudit.click',
+      value: 1,
+      tags: ['k0rp-os', 'audit-form', form.id, field?.id ?? action],
+      meta: {
+        profile: form.interactionClickProfile,
+        formId: form.id,
+        fieldId: field?.id ?? null,
+        action,
+      },
+    })
+
+    return nextClick
+  }
+
+  const handleAuditEntryFieldChange = (field, value) => {
+    if (!auditEntryForm || auditEntrySubmitted) return
+
+    setAuditEntryValues((currentValues) => ({
+      ...currentValues,
+      [field.id]: value,
+    }))
+    dispatchAuditInteraction(auditEntryForm, field, 'field-change')
+    setActivity((currentActivity) => [
+      'Pole „' + field.label + '“ bylo změněno a řádně zaznamenáno.',
+      ...currentActivity,
+    ].slice(0, 4))
+  }
+
+  const handleAuditEntrySubmit = (submitField) => {
+    if (
+      !auditEntryForm
+      || auditEntrySubmitted
+      || !isAuditFormComplete(auditEntryForm, auditEntryValues)
+    ) return
+
+    dispatchAuditInteraction(auditEntryForm, submitField, 'submit')
+    submitAuditForm(auditEntryForm.id)
+    setActivity((currentActivity) => [
+      'Audit ' + auditEntryForm.code + ' byl splněn. Přítomnost byla přijata.',
+      'Modul ClickAudit byl zpřístupněn jako samostatná aplikace.',
+      ...currentActivity,
+    ].slice(0, 4))
+  }
+
+  const registerClickAuditAction = () => {
     const nextClick = auditClicks + 1
     const timestamp = Date.now()
 
@@ -333,12 +415,9 @@ function KorpOsShell() {
       sourceModule: 'click-audit',
       type: 'clickaudit.click',
       value: 1,
-      tags: ['k0rp-os', 'manual-audit']
+      tags: ['k0rp-os', 'clickaudit-module', 'manual-confirmation'],
+      meta: { profile: 'clickaudit-window' },
     })
-
-    if (!auditEntrySubmitted && auditEntryForm) {
-      submitAuditForm(auditEntryForm.id)
-    }
 
     if (auditTraceUpgradeUnlocked) {
       dispatchKorpEvent({
@@ -347,17 +426,14 @@ function KorpOsShell() {
         sourceModule: 'system',
         type: 'system.externalWorkPulse',
         value: 0.1,
-        tags: ['k0rp-os', 'audit-trace-extension']
+        tags: ['k0rp-os', 'audit-trace-extension'],
       })
     }
 
-    setActivity((currentActivity) => {
-      const nextEntries = [
-        '#' + String(nextClick).padStart(3, '0') + ' ' + auditMessages[(nextClick - 1) % auditMessages.length],
-      ]
-
-      return [...nextEntries, ...currentActivity].slice(0, 4)
-    })
+    setActivity((currentActivity) => [
+      '#' + String(nextClick).padStart(3, '0') + ' ' + auditMessages[(nextClick - 1) % auditMessages.length],
+      ...currentActivity,
+    ].slice(0, 4))
     setFeedbackTick(nextClick)
   }
 
@@ -399,10 +475,18 @@ function KorpOsShell() {
             <DesktopIcon
               title="Formuláře"
               type="folder"
-              status={formVisible ? '1 NOVÝ SOUBOR' : 'ČEKÁ NA AUDIT'}
-              isLocked={!formVisible}
+              status={formVisible ? '1 NOVÝ SOUBOR' : auditEntrySubmitted ? '1 SPLNĚNÝ AUDIT' : 'ČEKÁ NA AUDIT'}
+              isLocked={!formsFolderAvailable}
               onOpen={() => openWindow('forms-folder')}
             />
+            {clickAuditUnlocked && (
+              <DesktopIcon
+                title="ClickAudit"
+                type="app"
+                status={auditClicks + ' EVIDOVANÝCH KLIKŮ'}
+                onOpen={() => openWindow('click-audit')}
+              />
+            )}
             {lockedShortcuts.map((module) => (
               <DesktopIcon key={module.id} title={module.title} type="app" status="NEINSTALOVÁNO" isLocked />
             ))}
@@ -417,37 +501,61 @@ function KorpOsShell() {
           >
             {visibleWindowIds.includes('audit-entry') && (
               <article
-                className="os-window os-audit-window"
+                className="os-window os-audit-document-window"
                 style={windowStyle(windows['audit-entry'])}
                 data-window-id="audit-entry"
                 aria-labelledby="audit-title"
                 onPointerDown={() => bringWindowToFront('audit-entry')}
               >
-              <WindowHeader
-                window={presentationWindows['audit-entry']}
-                variant="audit"
-                onMinimize={minimizeWindow}
-                onPointerDown={(event) => startWindowDrag('audit-entry', event)}
-              />
-              <div className="os-audit-body">
-                <div className="os-document-heading">
-                  <p>STARTUP PROCEDURA / MÍSTNÍ KONTROLA</p>
-                  <h1 id="audit-title">Potvrďte, že<br />něco probíhá.</h1>
-                  <span>Jeden úkon vytvoří místní auditní záznam. Žádná data neopouštějí tuto pracovní stanici.</span>
-                </div>
+                <WindowHeader
+                  window={presentationWindows['audit-entry']}
+                  variant="audit"
+                  onMinimize={minimizeWindow}
+                  onPointerDown={(event) => startWindowDrag('audit-entry', event)}
+                />
+                <AuditFormDocument
+                  form={auditEntryForm}
+                  values={auditEntryValues}
+                  submitted={auditEntrySubmitted}
+                  onFieldChange={handleAuditEntryFieldChange}
+                  onSubmit={handleAuditEntrySubmit}
+                />
+              </article>
+            )}
 
-                <button type="button" className="os-audit-action" onClick={registerAuditAction}>
-                  <span>CLICKAUDIT / MANUÁLNÍ POTVRZENÍ</span>
-                  <strong>PROVÉST<br />KONTROLU</strong>
-                  <small>NEVYŽADUJE PŘEDMĚT KONTROLY</small>
-                </button>
+            {visibleWindowIds.includes('click-audit') && (
+              <article
+                className="os-window os-audit-window"
+                style={windowStyle(windows['click-audit'])}
+                data-window-id="click-audit"
+                aria-labelledby="clickaudit-title"
+                onPointerDown={() => bringWindowToFront('click-audit')}
+              >
+                <WindowHeader
+                  window={windows['click-audit']}
+                  variant="audit"
+                  onMinimize={minimizeWindow}
+                  onPointerDown={(event) => startWindowDrag('click-audit', event)}
+                />
+                <div className="os-audit-body">
+                  <div className="os-document-heading">
+                    <p>MODUL / MÍSTNÍ INTERAKČNÍ EVIDENCE</p>
+                    <h1 id="clickaudit-title">ClickAudit</h1>
+                    <span>Samostatný modul eviduje auditované kliky v K0rp_OS. První dva byly získány vyplněním vstupního auditu.</span>
+                  </div>
 
-                <div className="os-audit-readout" aria-live="polite">
-                  <div><span>ÚKONY V RELACI</span><strong>{String(auditClicks).padStart(3, '0')}</strong></div>
-                  <div><span>{auditTraceUpgradeUnlocked ? 'PŘÍRŮSTEK NA ÚKON' : 'POSLEDNÍ PŘÍRŮSTEK'}</span><strong key={feedbackTick} className="os-action-feedback">+{notionalWorkPerAudit.toFixed(1)} NWU</strong></div>
-                  <div><span>STAV VÝKAZU</span><strong>{auditTraceUpgradeUnlocked ? 'ROZŠÍŘENÝ' : 'ŘÁDNĚ NEURČITÝ'}</strong></div>
+                  <button type="button" className="os-audit-action" onClick={registerClickAuditAction}>
+                    <span>CLICKAUDIT / MANUÁLNÍ POTVRZENÍ</span>
+                    <strong>PROVÉST<br />KONTROLU</strong>
+                    <small>NEVYŽADUJE PŘEDMĚT KONTROLY</small>
+                  </button>
+
+                  <div className="os-audit-readout" aria-live="polite">
+                    <div><span>ÚKONY V RELACI</span><strong>{String(auditClicks).padStart(3, '0')}</strong></div>
+                    <div><span>{auditTraceUpgradeUnlocked ? 'PŘÍRŮSTEK NA ÚKON' : 'POSLEDNÍ PŘÍRŮSTEK'}</span><strong key={feedbackTick} className="os-action-feedback">+{notionalWorkPerAudit.toFixed(1)} NWU</strong></div>
+                    <div><span>STAV VÝKAZU</span><strong>{auditTraceUpgradeUnlocked ? 'ROZŠÍŘENÝ' : 'ŘÁDNĚ NEURČITÝ'}</strong></div>
+                  </div>
                 </div>
-              </div>
               </article>
             )}
 
@@ -487,20 +595,20 @@ function KorpOsShell() {
                 aria-labelledby="activity-title"
                 onPointerDown={() => bringWindowToFront('daily-report')}
               >
-              <WindowHeader
-                window={windows['daily-report']}
-                onMinimize={minimizeWindow}
-                onPointerDown={(event) => startWindowDrag('daily-report', event)}
-              />
-              <div className="os-log-body">
-                <div>
-                  <p className="os-document-code">POSLEDNÍ DOKLADY ČINNOSTI</p>
-                  <h2 id="activity-title">Denní výpis</h2>
+                <WindowHeader
+                  window={windows['daily-report']}
+                  onMinimize={minimizeWindow}
+                  onPointerDown={(event) => startWindowDrag('daily-report', event)}
+                />
+                <div className="os-log-body">
+                  <div>
+                    <p className="os-document-code">POSLEDNÍ DOKLADY ČINNOSTI</p>
+                    <h2 id="activity-title">Denní výpis</h2>
+                  </div>
+                  <ol>
+                    {activity.slice(0, 3).map((entry, index) => <li key={entry + '-' + index}>{entry}</li>)}
+                  </ol>
                 </div>
-                <ol>
-                  {activity.slice(0, 3).map((entry, index) => <li key={entry + '-' + index}>{entry}</li>)}
-                </ol>
-              </div>
               </article>
             )}
 
@@ -531,8 +639,8 @@ function KorpOsShell() {
                     />
                     <FolderEntry
                       title={'Audit ' + (auditEntryForm?.code ?? '?')}
-                      detail="Kontrola přítomnosti"
-                      status="OTEVŘÍT DOKUMENT"
+                      detail={auditEntryForm?.title ?? 'Kontrola přítomnosti'}
+                      status={auditEntrySubmitted ? 'SPLNĚNO / OTEVŘÍT' : 'OTEVŘÍT DOKUMENT'}
                       kind="document"
                       onOpen={() => openWindow('audit-entry')}
                     />
@@ -575,9 +683,9 @@ function KorpOsShell() {
                     <FolderEntry
                       title="Startup audit"
                       detail="Automaticky založený záznam"
-                      status="ČEKÁ NA ARCHIV"
+                      status={auditEntrySubmitted ? 'PŘIJAT / LOKÁLNĚ' : 'ČEKÁ NA SPLNĚNÍ'}
                       kind="archive"
-                      isLocked
+                      isLocked={!auditEntrySubmitted}
                     />
                   </ul>
                 </div>
@@ -591,17 +699,17 @@ function KorpOsShell() {
         <footer className="os-taskbar">
           <span className="os-taskbar-start">KØRP // START</span>
           {taskbarWindowIds.map((id) => {
-            const window = presentationWindows[id]
+            const windowState = presentationWindows[id]
             return (
               <button
                 key={id}
                 type="button"
-                className={'os-taskbar-window' + (window.isMinimized ? ' is-minimized' : '') + (id === activeWindowId ? ' is-active' : '')}
+                className={'os-taskbar-window' + (windowState.isMinimized ? ' is-minimized' : '') + (id === activeWindowId ? ' is-active' : '')}
                 aria-pressed={id === activeWindowId}
-                aria-label={(window.isMinimized ? 'Obnovit okno ' : 'Přenést dopředu okno ') + window.taskbarTitle}
+                aria-label={(windowState.isMinimized ? 'Obnovit okno ' : 'Přenést dopředu okno ') + windowState.taskbarTitle}
                 onClick={() => openWindow(id)}
               >
-                {window.taskbarTitle}
+                {windowState.taskbarTitle}
               </button>
             )
           })}
