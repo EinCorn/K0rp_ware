@@ -1,0 +1,58 @@
+{
+  "version": "0.1.0-draft",
+  "firstPrestige": {
+    "targetMinutes": 270,
+    "acceptableRangeMinutes": [240, 310],
+    "targetLifetimeNwu": 420,
+    "targetDirectClickCount": [90, 150],
+    "targetAllAuditedClicks": [210, 300],
+    "targetActiveInteractionMinutes": [150, 210],
+    "targetIdleObservationMinutes": [20, 45],
+    "notes": [
+      "Tempo je navržené pro smíšené hraní, ne čtyři hodiny nepřetržitého spamování.",
+      "Aktivní hráč může být rychlejší přes synergie; klidný hráč přes Corner Watch a pasivní procedury.",
+      "Rohový zásah, rare event ani offline check-in není nikdy povinný."
+    ]
+  },
+  "resourceRules": {
+    "auditPressureBands": [
+      {"minimum":0,"maximum":39.99,"id":"normal","effects":[]},
+      {"minimum":40,"maximum":69.99,"id":"elevated","effects":[{"kind":"eventYieldMultiplier","eventType":"clickaudit.batchCompleted","multiplier":1.05}]},
+      {"minimum":70,"maximum":89.99,"id":"excessive","effects":[{"kind":"eventYieldMultiplier","eventType":"clickaudit.batchCompleted","multiplier":1.1},{"kind":"resourceGainMultiplier","resourceId":"entropy","multiplier":1.25}]},
+      {"minimum":90,"maximum":100,"id":"saturated","effects":[{"kind":"profileYieldMultiplier","profile":"direct-audit","resourceId":"notionalWorkUnits","multiplier":0.5},{"kind":"unlockMemo","memoId":"memo.manual-evidence-saturation"}]}
+    ],
+    "stabilizationDecayPerActiveMinute": 0.25,
+    "auditPressureDecayPerMinuteWithoutAuditedInput": 0.5,
+    "entropyPassiveChangePerActiveMinute": 0.08,
+    "offlineDecayEnabled": false,
+    "offlinePenaltyEnabled": false
+  },
+  "derivedMetrics": {
+    "perceivedProductivity": {
+      "formula": "clamp(0, 100, 12 + min(40, rollingNwuPerMinute * 5) + systemOrder * 0.25 + stabilization * 0.15 - entropy * 0.10)",
+      "displayPrecision": 0,
+      "spendable": false
+    },
+    "perceivedControl": {
+      "formula": "clamp(0, 100, stabilization * 0.55 + approvalUnits * 0.6 - entropy * 0.2)",
+      "displayPrecision": 0,
+      "spendable": false
+    }
+  },
+  "clickAudit": {
+    "batchSize": 25,
+    "baseBatchRewardNwu": 6,
+    "manualEvidenceSaturation": [
+      {"from":1,"to":100,"multiplier":1.0},
+      {"from":101,"to":300,"multiplier":0.4},
+      {"from":301,"to":null,"multiplier":0.1}
+    ]
+  },
+  "shiftClosure": {
+    "minimumMinutes": 10,
+    "cooldownMinutes": 5,
+    "rewards": {"notionalWorkUnits":4,"systemOrder":1},
+    "noStreak": true,
+    "noMissedDayPenalty": true
+  }
+}
