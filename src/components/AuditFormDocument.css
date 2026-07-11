@@ -1,0 +1,227 @@
+.os-audit-document-window {
+  width: 470px;
+  height: 310px;
+}
+
+.os-audit-document {
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: 14px;
+  padding: 16px;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 25px, rgba(91, 84, 66, 0.12) 25px 26px),
+    #e8dfbd;
+}
+
+.os-audit-document-heading {
+  min-width: 0;
+}
+
+.os-audit-document-heading p {
+  margin: 0 0 6px;
+  color: #685e3d;
+  font: 8px/9px var(--os-mono);
+  letter-spacing: 0.1em;
+}
+
+.os-audit-document-heading h1 {
+  margin: 0;
+  color: #292a23;
+  font-size: 23px;
+  line-height: 23px;
+  letter-spacing: -0.04em;
+}
+
+.os-audit-document-heading > span {
+  display: block;
+  margin-top: 8px;
+  color: #5b574a;
+  font-size: 10px;
+  line-height: 13px;
+}
+
+.os-audit-fields {
+  min-height: 0;
+  display: grid;
+  align-content: center;
+  gap: 10px;
+  overflow: auto;
+}
+
+.os-audit-checkbox {
+  min-height: 72px;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 13px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 2px solid #66634f;
+  color: #31342a;
+  background: rgba(216, 210, 185, 0.92);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.25);
+  cursor: pointer;
+}
+
+.os-audit-checkbox input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.os-audit-checkbox-box {
+  width: 24px;
+  height: 24px;
+  position: relative;
+  display: block;
+  border: 3px solid #404238;
+  background: #f1e9c8;
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, 0.42);
+}
+
+.os-audit-checkbox input:checked + .os-audit-checkbox-box {
+  background: #cbd77c;
+}
+
+.os-audit-checkbox input:checked + .os-audit-checkbox-box::after {
+  content: '✓';
+  position: absolute;
+  inset: -7px 0 0 3px;
+  color: #344028;
+  font: 28px/1 var(--os-ui);
+}
+
+.os-audit-checkbox:focus-within {
+  outline: 2px solid var(--os-amber);
+  outline-offset: 2px;
+}
+
+.os-audit-checkbox strong {
+  font-size: 24px;
+  line-height: 24px;
+  letter-spacing: -0.04em;
+}
+
+.os-audit-choice-group {
+  display: grid;
+  gap: 5px;
+  margin: 0;
+  padding: 9px;
+  border: 1px solid #7f765e;
+}
+
+.os-audit-choice-group legend {
+  padding: 0 4px;
+  color: #4f4b3d;
+  font: 8px var(--os-mono);
+  letter-spacing: 0.08em;
+}
+
+.os-audit-choice-group label {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  color: #3f3d33;
+  font-size: 10px;
+  line-height: 12px;
+}
+
+.os-audit-scale-group {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.os-audit-scale-group legend {
+  grid-column: 1 / -1;
+}
+
+.os-audit-submit-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding-top: 10px;
+  border-top: 1px dashed #8b8066;
+}
+
+.os-audit-form-status {
+  min-width: 0;
+  overflow: hidden;
+  color: #6c634f;
+  font: 7px var(--os-mono);
+  letter-spacing: 0.08em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.os-audit-submit {
+  min-width: 165px;
+  padding: 9px 12px;
+  border: 2px solid #596849;
+  color: #2f3d28;
+  background: #c7d17f;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
+  font: 8px var(--os-mono);
+  letter-spacing: 0.08em;
+  cursor: pointer;
+}
+
+.os-audit-submit:hover:not(:disabled),
+.os-audit-submit:focus-visible:not(:disabled) {
+  background: #d9e58a;
+  outline: 2px solid var(--os-amber);
+  outline-offset: 2px;
+}
+
+.os-audit-submit:disabled {
+  color: #777160;
+  background: #aaa48e;
+  cursor: not-allowed;
+  filter: saturate(0.35);
+}
+
+.os-audit-document.is-submitted {
+  grid-template-rows: auto auto minmax(0, 1fr);
+  align-content: start;
+}
+
+.os-audit-completion-stamp {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 1px 10px;
+  align-items: center;
+  padding: 11px;
+  border: 3px double #586746;
+  color: #405230;
+  background: rgba(201, 213, 125, 0.48);
+  transform: rotate(-0.6deg);
+}
+
+.os-audit-completion-stamp > span {
+  grid-row: 1 / 3;
+  font-size: 34px;
+  line-height: 1;
+}
+
+.os-audit-completion-stamp strong {
+  font-size: 18px;
+  line-height: 18px;
+}
+
+.os-audit-completion-stamp small {
+  font: 7px var(--os-mono);
+  letter-spacing: 0.08em;
+}
+
+.os-audit-document-note {
+  margin: 0;
+  color: #5b574a;
+  font-size: 10px;
+  line-height: 14px;
+}
+
+.os-audit-document-error,
+.os-audit-unsupported-field {
+  color: #7b403d;
+  font: 9px/1.4 var(--os-mono);
+}
