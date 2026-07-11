@@ -3,6 +3,8 @@ import { listModules } from '../../packages/korp-modules/src/index'
 import { createAuditFormValues, isAuditFormComplete } from '../runtime/auditFormDraft'
 import { useKorpRuntime } from '../runtime/useKorpRuntime'
 import AuditFormDocument from './AuditFormDocument'
+import ClickAuditRuntimeModule from './ClickAuditRuntimeModule'
+import { ClickAuditEmbeddedWindow } from './ClickAuditWindow'
 import './KorpOsShell.css'
 
 const auditMessages = [
@@ -48,8 +50,8 @@ const initialWindows = {
     id: 'click-audit',
     title: 'CLICKAUDIT / MÍSTNÍ MODUL',
     taskbarTitle: 'CLICKAUDIT',
-    x: 262,
-    y: 260,
+    x: 250,
+    y: 250,
     zIndex: 2,
     isMinimized: false,
     isOpen: false,
@@ -174,6 +176,7 @@ function KorpOsShell() {
     isFormAvailable,
     isFormSubmitted,
     isUpgradeUnlocked,
+    isModuleUnlocked,
   } = useKorpRuntime()
 
   const auditEntryForm = auditForms.find((form) => form.availableAtStart === true)
@@ -187,15 +190,9 @@ function KorpOsShell() {
   const auditTraceUpgradeUnlocked = auditTraceUpgradeId
     ? isUpgradeUnlocked(auditTraceUpgradeId)
     : false
-  const clickAuditUnlocked = Boolean(
-    auditEntrySubmitted
-    && auditEntryForm?.completionEffects.some(
-      (effect) => effect.kind === 'unlockModule' && effect.moduleId === 'click-audit',
-    ),
-  )
+  const clickAuditUnlocked = isModuleUnlocked('click-audit')
 
   const [activity, setActivity] = useState(() => initialActivity(auditEntryForm))
-  const [feedbackTick, setFeedbackTick] = useState(0)
   const [auditEntryValues, setAuditEntryValues] = useState(() => createAuditFormValues(auditEntryForm))
   const [windows, setWindows] = useState(initialWindows)
   const [canvasScale, setCanvasScale] = useState(1)
@@ -204,7 +201,6 @@ function KorpOsShell() {
   const auditTraceAvailabilityRef = useRef(auditTraceAvailable)
 
   const auditClicks = stats.eventsByType['clickaudit.click'] ?? 0
-  const notionalWorkPerAudit = auditTraceUpgradeUnlocked ? 0.2 : 0.1
   const formVisible = auditTraceAvailable || auditTraceSubmitted
   const formsFolderAvailable = auditEntrySubmitted || formVisible
   const auditTraceFileStatus = auditTraceSubmitted
@@ -225,12 +221,14 @@ function KorpOsShell() {
       taskbarTitle: 'ŽÁDOST ' + (auditTraceForm?.code ?? '?'),
     },
   }
+
   const isWindowAvailable = (id) => {
     if (id === 'click-audit') return clickAuditUnlocked
     if (id === 'audit-trace') return formVisible
     if (id === 'forms-folder') return formsFolderAvailable
     return true
   }
+
   const visibleWindowIds = managedWindowIds.filter((id) => (
     isWindowAvailable(id) && windows[id].isOpen && !windows[id].isMinimized
   ))
@@ -246,7 +244,6 @@ function KorpOsShell() {
 
     updateCanvasScale()
     window.addEventListener('resize', updateCanvasScale)
-
     return () => window.removeEventListener('resize', updateCanvasScale)
   }, [])
 
@@ -355,7 +352,6 @@ function KorpOsShell() {
 
   const dispatchAuditInteraction = (form, field, action) => {
     const timestamp = Date.now()
-    const nextClick = (stats.eventsByType['clickaudit.click'] ?? 0) + 1
 
     dispatchKorpEvent({
       id: 'k0rp-os-audit-field-' + timestamp + '-' + form.id + '-' + (field?.id ?? action),
@@ -371,8 +367,6 @@ function KorpOsShell() {
         action,
       },
     })
-
-    return nextClick
   }
 
   const handleAuditEntryFieldChange = (field, value) => {
@@ -405,36 +399,11 @@ function KorpOsShell() {
     ].slice(0, 4))
   }
 
-  const registerClickAuditAction = () => {
-    const nextClick = auditClicks + 1
-    const timestamp = Date.now()
-
-    dispatchKorpEvent({
-      id: 'k0rp-os-clickaudit-' + timestamp + '-' + nextClick,
-      timestamp,
-      sourceModule: 'click-audit',
-      type: 'clickaudit.click',
-      value: 1,
-      tags: ['k0rp-os', 'clickaudit-module', 'manual-confirmation'],
-      meta: { profile: 'clickaudit-window' },
-    })
-
-    if (auditTraceUpgradeUnlocked) {
-      dispatchKorpEvent({
-        id: 'k0rp-os-audit-trace-extension-' + timestamp + '-' + nextClick,
-        timestamp,
-        sourceModule: 'system',
-        type: 'system.externalWorkPulse',
-        value: 0.1,
-        tags: ['k0rp-os', 'audit-trace-extension'],
-      })
-    }
-
+  const handleClickAuditRecorded = ({ count }) => {
     setActivity((currentActivity) => [
-      '#' + String(nextClick).padStart(3, '0') + ' ' + auditMessages[(nextClick - 1) % auditMessages.length],
+      '#' + String(count).padStart(3, '0') + ' ' + auditMessages[(count - 1) % auditMessages.length],
       ...currentActivity,
     ].slice(0, 4))
-    setFeedbackTick(nextClick)
   }
 
   const submitAuditTrace = () => {
@@ -525,37 +494,18 @@ function KorpOsShell() {
 
             {visibleWindowIds.includes('click-audit') && (
               <article
-                className="os-window os-audit-window"
+                className="os-clickaudit-asset-window"
                 style={windowStyle(windows['click-audit'])}
                 data-window-id="click-audit"
-                aria-labelledby="clickaudit-title"
+                aria-label="ClickAudit"
                 onPointerDown={() => bringWindowToFront('click-audit')}
               >
-                <WindowHeader
-                  window={windows['click-audit']}
-                  variant="audit"
-                  onMinimize={minimizeWindow}
-                  onPointerDown={(event) => startWindowDrag('click-audit', event)}
-                />
-                <div className="os-audit-body">
-                  <div className="os-document-heading">
-                    <p>MODUL / MÍSTNÍ INTERAKČNÍ EVIDENCE</p>
-                    <h1 id="clickaudit-title">ClickAudit</h1>
-                    <span>Samostatný modul eviduje auditované kliky v K0rp_OS. První dva byly získány vyplněním vstupního auditu.</span>
-                  </div>
-
-                  <button type="button" className="os-audit-action" onClick={registerClickAuditAction}>
-                    <span>CLICKAUDIT / MANUÁLNÍ POTVRZENÍ</span>
-                    <strong>PROVÉST<br />KONTROLU</strong>
-                    <small>NEVYŽADUJE PŘEDMĚT KONTROLY</small>
-                  </button>
-
-                  <div className="os-audit-readout" aria-live="polite">
-                    <div><span>ÚKONY V RELACI</span><strong>{String(auditClicks).padStart(3, '0')}</strong></div>
-                    <div><span>{auditTraceUpgradeUnlocked ? 'PŘÍRŮSTEK NA ÚKON' : 'POSLEDNÍ PŘÍRŮSTEK'}</span><strong key={feedbackTick} className="os-action-feedback">+{notionalWorkPerAudit.toFixed(1)} NWU</strong></div>
-                    <div><span>STAV VÝKAZU</span><strong>{auditTraceUpgradeUnlocked ? 'ROZŠÍŘENÝ' : 'ŘÁDNĚ NEURČITÝ'}</strong></div>
-                  </div>
-                </div>
+                <ClickAuditEmbeddedWindow
+                  onDragStart={(event) => startWindowDrag('click-audit', event)}
+                  onMinimize={() => minimizeWindow('click-audit')}
+                >
+                  <ClickAuditRuntimeModule onRecorded={handleClickAuditRecorded} />
+                </ClickAuditEmbeddedWindow>
               </article>
             )}
 
