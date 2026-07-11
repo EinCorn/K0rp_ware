@@ -1,0 +1,76 @@
+[
+  {
+    "id":"audit-00-a","code":"00-A","title":"Vstupní audit přítomnosti a pracovního povrchu","availableAtStart":true,"estimatedMinutes":8,"interactionClickProfile":"audit-form","submitEvent":"audit.formSubmitted",
+    "completionEffects":[{"kind":"revealResource","resourceId":"notionalWorkUnits"},{"kind":"revealResource","resourceId":"auditPressure"},{"kind":"unlockModule","moduleId":"click-audit"},{"kind":"unlockMemo","memoId":"memo.audit-00-a-complete"}],
+    "fields":[
+      {"id":"presence","type":"radio","label":"Přítomnost obsluhy","required":true,"options":["Přítomen","Přítomnost byla řádně předpokládána","Nelze odlišit od pracovního místa"]},
+      {"id":"workstation","type":"radio","label":"Stav pracovní stanice","required":true,"options":["Připravena","Připravena k přípravě","Provozní stav byl ponechán v původním stavu"]},
+      {"id":"surface","type":"multiCheck","label":"Viditelné vlastnosti pracovního povrchu","required":true,"minimumSelections":2,"options":["Rovný","Evidovatelný","Bez zjevného úniku kapaliny","Přibližně horizontální"]},
+      {"id":"purpose","type":"radio","label":"Znalost účelu dnešní relace","required":true,"options":["Znám","Předpokládám","Účel není podmínkou účasti"]},
+      {"id":"stabilizationNeed","type":"scale","label":"Odhadovaná potřeba stabilizační pomůcky","required":true,"minimum":0,"maximum":4,"labels":["Není třeba","Formálně nízká","Běžná","Zvýšená","Předmětná"]},
+      {"id":"privacyAcknowledgement","type":"checkbox","label":"Rozumím, že K0rp_OS v tomto režimu eviduje pouze interakce uvnitř K0rp modulů.","required":true,"plainLanguage":true},
+      {"id":"selfConfirmation","type":"checkbox","label":"Potvrzuji, že odpovědi byly poskytnuty osobou, jejíž přítomnost byla právě posouzena.","required":true},
+      {"id":"finalConfirmation","type":"buttonConfirm","label":"PŘIJMOUT PŘÍTOMNOST","required":true}
+    ]
+  },
+  {
+    "id":"audit-10-a","code":"10-A","title":"Žádost o rozšíření auditní stopy","estimatedMinutes":3,"interactionClickProfile":"audit-form","requirements":{"kind":"eventCountAtLeast","eventType":"clickaudit.click","count":25},"submitEvent":"audit.formSubmitted",
+    "completionEffects":[{"kind":"unlockUpgrade","upgradeId":"sys.audit-batch-standardization"},{"kind":"unlockMemo","memoId":"memo.audit-trace-available"}],
+    "fields":[
+      {"id":"evidenceSufficiency","type":"radio","label":"Dosavadní objem evidence","required":true,"options":["Nedostatečný","Dostatečný pro zjištění nedostatečnosti","Nelze ověřit bez další evidence"]},
+      {"id":"newColumn","type":"checkbox","label":"Požaduji zavedení pomocné kolonky bez změny původní kolonky.","required":true},
+      {"id":"impact","type":"radio","label":"Očekávaný dopad","required":true,"options":["Více záznamu","Přesvědčivější záznam","Záznam s vyšší administrativní hustotou"]},
+      {"id":"submit","type":"buttonConfirm","label":"PŘEDLOŽIT K AUTORIZACI","required":true}
+    ]
+  },
+  {
+    "id":"audit-16-c","code":"16-C","title":"Requisition stabilizačního vybavení","estimatedMinutes":3,"interactionClickProfile":"audit-form","requirements":{"kind":"all","requirements":[{"kind":"resourceAtLeast","resourceId":"notionalWorkUnits","amount":24},{"kind":"resourceAtLeast","resourceId":"auditPressure","amount":35}]},"submitEvent":"audit.formSubmitted",
+    "completionEffects":[{"kind":"unlockUpgrade","upgradeId":"fidget.access-permit"},{"kind":"unlockMemo","memoId":"memo.fidget-requisition"}],
+    "fields":[
+      {"id":"symptom","type":"multiCheck","label":"Pozorované provozní projevy","required":true,"minimumSelections":1,"options":["Klikání bez objektu","Pohyb ruky mimo schválený účel","Příliš stabilní pohled","Schůzková expozice"]},
+      {"id":"equipment","type":"radio","label":"Požadované vybavení","required":true,"options":["Rotační stabilizátor","Rotační stabilizátor s jiným názvem","Bez vybavení, ale se záznamem žádosti"]},
+      {"id":"accept","type":"checkbox","label":"Beru na vědomí, že stabilizace není řešení.","required":true},
+      {"id":"submit","type":"buttonConfirm","label":"PŘEDAT ODDĚLENÍ STABILIZACE","required":true}
+    ]
+  },
+  {
+    "id":"audit-23-b","code":"23-B","title":"Přístup do compliance zahrádky","estimatedMinutes":4,"interactionClickProfile":"audit-form","requirements":{"kind":"all","requirements":[{"kind":"eventCountAtLeast","eventType":"fidget.sessionSettled","count":2},{"kind":"lifetimeResourceAtLeast","resourceId":"stabilization","amount":18}]},"submitEvent":"audit.formSubmitted",
+    "completionEffects":[{"kind":"unlockUpgrade","upgradeId":"bloom.access-permit"},{"kind":"unlockMemo","memoId":"memo.bloom-access"}],
+    "fields":[
+      {"id":"growthConsent","type":"checkbox","label":"Souhlasím s růstem drobných stavů do měřitelné podoby.","required":true},
+      {"id":"colorReadiness","type":"multiCheck","label":"Barvy, které jsem připraven procesně přijmout","required":true,"minimumSelections":2,"options":["Zelená","Žlutá","Červená v případě, že nebude označena jako chyba"]},
+      {"id":"careLevel","type":"scale","label":"Odhad péče, kterou lze poskytnout bez osobního zapojení","required":true,"minimum":0,"maximum":3,"labels":["Nulová","Symbolická","Procedurální","Znepokojivě důsledná"]},
+      {"id":"submit","type":"buttonConfirm","label":"OTEVŘÍT ZÁHON","required":true}
+    ]
+  },
+  {
+    "id":"audit-27-r","code":"27-R","title":"Výjimka pro pasivní rohové pozorování","estimatedMinutes":2,"interactionClickProfile":"audit-form","optional":true,"requirements":{"kind":"all","requirements":[{"kind":"eventCountAtLeast","eventType":"bloom.waveAdvanced","count":3},{"kind":"resourceAtLeast","resourceId":"systemOrder","amount":12}]},"submitEvent":"audit.formSubmitted",
+    "completionEffects":[{"kind":"unlockUpgrade","upgradeId":"corner.access-waiver"},{"kind":"unlockMemo","memoId":"memo.corner-waiver"}],
+    "fields":[
+      {"id":"observationPurpose","type":"radio","label":"Účel pozorování","required":true,"options":["Čekání","Ověření čekání","Čekání na výsledek čekání"]},
+      {"id":"absence","type":"checkbox","label":"Souhlasím, aby byl zásah rohu uznán i během nepřítomnosti pohledu.","required":true},
+      {"id":"submit","type":"buttonConfirm","label":"SCHVÁLIT ČEKÁNÍ","required":true}
+    ]
+  },
+  {
+    "id":"audit-31-f","code":"31-F","title":"Routing opakovaného souhlasu","estimatedMinutes":4,"interactionClickProfile":"audit-form","requirements":{"kind":"all","requirements":[{"kind":"resourceAtLeast","resourceId":"auditPressure","amount":60},{"kind":"eventCountAtLeast","eventType":"bloom.waveAdvanced","count":4},{"kind":"memoAcknowledged","memoId":"memo.audit-trace-approved"}]},"submitEvent":"audit.formSubmitted",
+    "completionEffects":[{"kind":"unlockUpgrade","upgradeId":"button.access-permit"},{"kind":"unlockMemo","memoId":"memo.button-access"}],
+    "fields":[
+      {"id":"consentState","type":"radio","label":"Aktuální stav souhlasu","required":true,"options":["Připraven k potvrzení","Potvrzen jako připravený","Čeká na možnost být potvrzen"]},
+      {"id":"sequence","type":"multiCheck","label":"Povolené formy potvrzení","required":true,"minimumSelections":2,"options":["Stisk","Druhý stisk","Kontrolka","Následné vysvětlení stisku"]},
+      {"id":"falsePositive","type":"checkbox","label":"Přijímám možnost, že správný stisk bude vyhodnocen jako podezřelý.","required":true},
+      {"id":"submit","type":"buttonConfirm","label":"POTVRDIT PŘIPRAVENOST POTVRZOVAT","required":true}
+    ]
+  },
+  {
+    "id":"audit-42-z","code":"42-Z","title":"Uzavření auditního cyklu","estimatedMinutes":8,"interactionClickProfile":"audit-form","requirements":{"kind":"all","requirements":[{"kind":"lifetimeResourceAtLeast","resourceId":"notionalWorkUnits","amount":420},{"kind":"eventCountAtLeast","eventType":"audit.formSubmitted","count":3},{"kind":"eventCountAtLeast","eventType":"clickaudit.batchCompleted","count":5},{"kind":"eventCountAtLeast","eventType":"fidget.sessionSettled","count":5},{"kind":"eventCountAtLeast","eventType":"bloom.waveAdvanced","count":8},{"kind":"eventCountAtLeast","eventType":"button.sequenceCompleted","count":3},{"kind":"statAtLeast","statId":"memosAcknowledged","amount":6},{"kind":"atLeastN","count":3,"requirements":[{"kind":"moduleCertified","moduleId":"click-audit"},{"kind":"moduleCertified","moduleId":"fidget"},{"kind":"moduleCertified","moduleId":"bloom"},{"kind":"moduleCertified","moduleId":"button-compliance"},{"kind":"moduleCertified","moduleId":"corner-watch"}]}]},"submitEvent":"system.auditCycleClosed",
+    "completionEffects":[{"kind":"grantPrestige","prestigeId":"audit-cycle-closure"},{"kind":"unlockModule","moduleId":"bubble-wrap"},{"kind":"unlockMemo","memoId":"memo.cycle-closed"}],
+    "fields":[
+      {"id":"results","type":"radio","label":"Výsledek cyklu","required":true,"options":["Výsledky existují","Výsledky byly přiměřeně odvozeny","Existence výsledků nebyla překážkou uzavření"]},
+      {"id":"departments","type":"multiCheck","label":"Oddělení zahrnutá do uzavření","required":true,"minimumSelections":3,"options":["Audit","Stabilizace","Care & Growth","Opakovaný souhlas","Rohové očekávání"]},
+      {"id":"retention","type":"radio","label":"Nakládání s dosavadním postupem","required":true,"options":["Archivovat","Přesunout do archivu","Zachovat v podobě, která nebude překážet novému cyklu"]},
+      {"id":"ack","type":"checkbox","label":"Beru na vědomí, že uzavřením cyklu vzniká potřeba dalšího cyklu.","required":true},
+      {"id":"submit","type":"buttonConfirm","label":"UZAVŘÍT A ZNOVU OTEVŘÍT","required":true}
+    ]
+  }
+]
