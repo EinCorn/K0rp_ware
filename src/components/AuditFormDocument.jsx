@@ -133,7 +133,7 @@ export default function AuditFormDocument({
 
   if (submitted) {
     return (
-      <div className="os-audit-document is-submitted" data-clickaudit-manual="true">
+      <div className="os-audit-document is-submitted" data-clickaudit-profile="completed-audit-body">
         <div className="os-audit-document-heading">
           <p>FORMULÁŘ {form.code} / UZAVŘENÝ ZÁZNAM</p>
           <h1 id={headingId}>{form.title}</h1>
@@ -153,7 +153,7 @@ export default function AuditFormDocument({
   return (
     <form
       className="os-audit-document"
-      data-clickaudit-manual="true"
+      data-clickaudit-profile="active-audit-field"
       onSubmit={(event) => {
         event.preventDefault()
         if (complete) onSubmit(submitField)

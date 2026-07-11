@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import liquidSheetUrl from '../../desktop/click-audit/src/assets/liquid/liquid-water-36f-clean.png?url'
 import liquidAnimation from '../../desktop/click-audit/src/assets/liquid/liquid-water-36f-clean.json'
 import { CLICK_AUDIT_DIGIT_SHEET_BYTES } from '../../desktop/click-audit/src/digit-sheet-bytes'
@@ -68,6 +68,7 @@ export default function ClickAuditModule({
   const [liquidFrame, setLiquidFrame] = useState(0)
   const [burst, setBurst] = useState(null)
   const burstTimeoutRef = useRef(null)
+  const observedClickCountRef = useRef(clickCount)
   const digits = useMemo(() => getClickAuditDigits(clickCount), [clickCount])
   const deckSize = getClickAuditDeckSize(digits.length)
   const progress = getClickAuditProgress(clickCount, progressTarget)
@@ -99,22 +100,33 @@ export default function ClickAuditModule({
     if (burstTimeoutRef.current !== null) window.clearTimeout(burstTimeoutRef.current)
   }, [])
 
-  const recordClick = () => {
-    if (!interactive || typeof onRecord !== 'function') return
-
-    const nextCount = onRecord()
+  const triggerBurst = useCallback((nextCount) => {
     if (!Number.isInteger(nextCount) || nextCount <= 0 || nextCount % 10 !== 0) return
 
     const nextBurst = createConfettiBurst(`${Date.now()}-${nextCount}`)
     setBurst(nextBurst)
     if (burstTimeoutRef.current !== null) window.clearTimeout(burstTimeoutRef.current)
     burstTimeoutRef.current = window.setTimeout(() => setBurst(null), 1_350)
+  }, [])
+
+  useEffect(() => {
+    const previousClickCount = observedClickCountRef.current
+    observedClickCountRef.current = clickCount
+
+    if (interactive && clickCount > previousClickCount) triggerBurst(clickCount)
+  }, [clickCount, interactive, triggerBurst])
+
+  const recordClick = () => {
+    if (!interactive || typeof onRecord !== 'function') return
+
+    onRecord()
   }
 
   return (
     <section
       className="clickaudit-module"
       aria-label="ClickAudit module"
+      data-clickaudit-profile="clickaudit-module"
       style={{ '--clickaudit-progress': `${(progress * 100).toFixed(2)}%` }}
     >
       <button
@@ -123,7 +135,6 @@ export default function ClickAuditModule({
         aria-label="Record audited click"
         onClick={recordClick}
         disabled={!interactive}
-        data-clickaudit-manual="true"
       >
         <span className="clickaudit-liquid" aria-hidden="true">
           <span className="clickaudit-liquid-fill">

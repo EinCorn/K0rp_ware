@@ -13,13 +13,6 @@ import ClickAuditRuntimeModule from './ClickAuditRuntimeModule'
 import { ClickAuditEmbeddedWindow } from './ClickAuditWindow'
 import './KorpOsShell.css'
 
-const auditMessages = [
-  'Auditní stopa byla rozšířena. Účel zůstává předpokládaný.',
-  'Přítomnost byla potvrzena bez nutnosti přítomnosti.',
-  'Kontrolní úkon přijat. Nevyžadoval kontrolovaný objekt.',
-  'Produktivita byla zaznamenána ve vhodně neurčité podobě.',
-]
-
 const initialActivity = (auditEntryForm) => [
   'Provozní plocha otevřena. Pracovní den nebyl ověřen.',
   'Audit ' + (auditEntryForm?.code ?? '?') + ' byl připraven k místnímu zpracování.',
@@ -110,6 +103,7 @@ function WindowHeader({ window, variant = 'document', onMinimize, onPointerDown 
       className={'os-window-header os-window-header-' + variant}
       onPointerDown={onPointerDown}
       data-window-drag-region="true"
+      data-clickaudit-profile="window-drag-handle"
     >
       <span className="os-window-title">{window.title}</span>
       <button
@@ -119,6 +113,7 @@ function WindowHeader({ window, variant = 'document', onMinimize, onPointerDown 
         onPointerDown={(event) => event.stopPropagation()}
         onClick={() => onMinimize(window.id)}
         data-window-control="true"
+        data-clickaudit-profile="window-control"
       >
         —
       </button>
@@ -139,13 +134,19 @@ function DesktopIcon({ title, type, status, isLocked = false, onOpen }) {
 
   if (canOpen) {
     return (
-      <button type="button" className={className} onClick={onOpen} aria-label={'Otevřít ' + title}>
+      <button
+        type="button"
+        className={className}
+        onClick={onOpen}
+        aria-label={'Otevřít ' + title}
+        data-clickaudit-profile="desktop-icon"
+      >
         {iconContent}
       </button>
     )
   }
 
-  return <div className={className}>{iconContent}</div>
+  return <div className={className} data-clickaudit-profile="desktop-icon">{iconContent}</div>
 }
 
 function FolderEntry({ title, detail, status, kind, isLocked = false, onOpen }) {
@@ -164,11 +165,16 @@ function FolderEntry({ title, detail, status, kind, isLocked = false, onOpen }) 
   return (
     <li>
       {onOpen && !isLocked ? (
-        <button type="button" className={entryClassName} onClick={onOpen}>
+        <button
+          type="button"
+          className={entryClassName}
+          onClick={onOpen}
+          data-clickaudit-profile="folder-entry"
+        >
           {entryContent}
         </button>
       ) : (
-        <div className={entryClassName}>{entryContent}</div>
+        <div className={entryClassName} data-clickaudit-profile="folder-entry">{entryContent}</div>
       )}
     </li>
   )
@@ -185,6 +191,7 @@ function KorpOsShell() {
     isFormSubmitted,
     isUpgradeUnlocked,
     isModuleUnlocked,
+    lastClickAuditActivity,
   } = useKorpRuntime()
 
   const auditEntryForm = auditForms.find((form) => form.availableAtStart === true)
@@ -207,6 +214,8 @@ function KorpOsShell() {
   const desktopSpaceRef = useRef(null)
   const dragStateRef = useRef(null)
   const auditTraceAvailabilityRef = useRef(auditTraceAvailable)
+  const activityEventIdRef = useRef(null)
+  const recordedPointerEventsRef = useRef(new WeakSet())
 
   const auditClicks = stats.eventsByType['clickaudit.click'] ?? 0
   const formVisible = auditTraceAvailable || auditTraceSubmitted
@@ -265,6 +274,16 @@ function KorpOsShell() {
 
     auditTraceAvailabilityRef.current = auditTraceAvailable
   }, [auditTraceAvailable, auditTraceForm])
+
+  useEffect(() => {
+    if (!lastClickAuditActivity || activityEventIdRef.current === lastClickAuditActivity.id) return
+
+    activityEventIdRef.current = lastClickAuditActivity.id
+    setActivity((currentActivity) => [
+      lastClickAuditActivity.entry,
+      ...currentActivity,
+    ].slice(0, 4))
+  }, [lastClickAuditActivity])
 
   const bringWindowToFront = (id) => {
     setWindows((currentWindows) => bringWindowStateToFront(currentWindows, id))
@@ -331,14 +350,11 @@ function KorpOsShell() {
     zIndex: windowState.zIndex,
   })
 
-  const dispatchAuditInteraction = (form, field, action) => {
-    recordOsClick({
-      profile: 'audit-form',
-      tags: [form.id, field?.id, action],
-    })
-  }
+  const handleKorpOsPointerDownCapture = (event) => {
+    const nativeEvent = event.nativeEvent
+    if (nativeEvent && recordedPointerEventsRef.current.has(nativeEvent)) return
+    if (nativeEvent) recordedPointerEventsRef.current.add(nativeEvent)
 
-  const handleKorpOsClickCapture = (event) => {
     const classification = classifyKorpOsClickTarget(event.target)
     if (!classification) return
 
@@ -352,11 +368,6 @@ function KorpOsShell() {
       ...currentValues,
       [field.id]: value,
     }))
-    dispatchAuditInteraction(auditEntryForm, field, 'field-change')
-    setActivity((currentActivity) => [
-      'Pole „' + field.label + '“ bylo změněno a řádně zaznamenáno.',
-      ...currentActivity,
-    ].slice(0, 4))
   }
 
   const handleAuditEntrySubmit = (submitField) => {
@@ -366,7 +377,6 @@ function KorpOsShell() {
       || !isAuditFormComplete(auditEntryForm, auditEntryValues)
     ) return
 
-    dispatchAuditInteraction(auditEntryForm, submitField, 'submit')
     submitAuditForm(auditEntryForm.id)
     setActivity((currentActivity) => [
       'Audit ' + auditEntryForm.code + ' byl splněn. Přítomnost byla přijata.',
@@ -375,17 +385,9 @@ function KorpOsShell() {
     ].slice(0, 4))
   }
 
-  const handleClickAuditRecorded = ({ count }) => {
-    setActivity((currentActivity) => [
-      '#' + String(count).padStart(3, '0') + ' ' + auditMessages[(count - 1) % auditMessages.length],
-      ...currentActivity,
-    ].slice(0, 4))
-  }
-
   const submitAuditTrace = () => {
     if (!auditTraceAvailable || auditTraceSubmitted || !auditTraceForm) return
 
-    recordOsClick({ profile: 'audit-form', tags: [auditTraceForm.id, 'submit'] })
     submitAuditForm(auditTraceForm.id)
     setActivity((currentActivity) => [
       'Rozšíření auditní stopy bylo schváleno. Výkaz získal další kolonku.',
@@ -399,7 +401,7 @@ function KorpOsShell() {
       className="os-shell"
       aria-label="K0rp_OS pracovní plocha"
       style={{ '--os-scale': canvasScale }}
-      onClickCapture={handleKorpOsClickCapture}
+      onPointerDownCapture={handleKorpOsPointerDownCapture}
     >
       <section className="os-desktop">
         <header className="os-desktop-readout">
@@ -486,7 +488,7 @@ function KorpOsShell() {
                   onDragStart={(event) => startWindowDrag('click-audit', event)}
                   onMinimize={() => minimizeWindow('click-audit')}
                 >
-                  <ClickAuditRuntimeModule onRecorded={handleClickAuditRecorded} />
+                  <ClickAuditRuntimeModule centralizedTracking />
                 </ClickAuditEmbeddedWindow>
               </article>
             )}
@@ -504,14 +506,17 @@ function KorpOsShell() {
                   onMinimize={minimizeWindow}
                   onPointerDown={(event) => startWindowDrag('audit-trace', event)}
                 />
-                <div className={'os-form-body ' + (auditTraceSubmitted ? 'is-approved' : 'is-available')}>
+                <div
+                  className={'os-form-body ' + (auditTraceSubmitted ? 'is-approved' : 'is-available')}
+                  data-clickaudit-profile={auditTraceSubmitted ? 'completed-audit-body' : 'active-audit-field'}
+                >
                   <p className="os-document-code">POMOCNÝ VÝKAZ PŘÍTOMNOSTI</p>
                   <h2 id="approval-title">{auditTraceForm?.title}</h2>
                   <p>Přidá pomocný výkaz přítomnosti k budoucím kontrolám.</p>
                   {auditTraceSubmitted ? (
                     <span className="os-approval-state">SCHVÁLENO / AKTIVNÍ<br />+0.2 NWU NA KONTROLU</span>
                   ) : (
-                    <button type="button" onClick={submitAuditTrace} data-clickaudit-manual="true">
+                    <button type="button" onClick={submitAuditTrace}>
                       {auditTraceForm?.fields.find((field) => field.type === 'buttonConfirm')?.label}
                     </button>
                   )}
@@ -628,7 +633,7 @@ function KorpOsShell() {
           <p className="os-wallpaper-mark" aria-hidden="true">KØRP<br />INTERNAL<br />OPERATIONS</p>
         </div>
 
-        <footer className="os-taskbar">
+        <footer className="os-taskbar" data-clickaudit-profile="taskbar">
           <span className="os-taskbar-start">KØRP // START</span>
           {taskbarWindowIds.map((id) => {
             const windowState = presentationWindows[id]

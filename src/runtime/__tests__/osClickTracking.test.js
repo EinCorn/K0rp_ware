@@ -11,12 +11,25 @@ const targetWith = (...matches) => ({
   },
 })
 
-test('K0rp_OS click classification ignores manual and drag-only interactions', () => {
-  assert.equal(classifyKorpOsClickTarget(targetWith('[data-clickaudit-manual]')), null)
-  assert.equal(classifyKorpOsClickTarget(targetWith('[data-window-drag-region]')), null)
+const targetWithProfile = (profile) => ({
+  closest(selector) {
+    if (selector === '[data-clickaudit-profile]') {
+      return { dataset: { clickauditProfile: profile } }
+    }
+
+    return null
+  },
+})
+
+test('K0rp_OS click classification ignores explicit non-audited elements only', () => {
+  assert.equal(classifyKorpOsClickTarget(targetWith('[data-clickaudit-ignore]')), null)
 })
 
 test('K0rp_OS click classification assigns the expected semantic profiles', () => {
+  assert.equal(classifyKorpOsClickTarget(targetWithProfile('window-drag-handle')).profile, 'window-drag-handle')
+  assert.equal(classifyKorpOsClickTarget(targetWithProfile('completed-audit-body')).profile, 'completed-audit-body')
+  assert.equal(classifyKorpOsClickTarget(targetWithProfile('active-audit-field')).profile, 'active-audit-field')
+  assert.equal(classifyKorpOsClickTarget(targetWithProfile('clickaudit-module')).profile, 'clickaudit-module')
   assert.equal(classifyKorpOsClickTarget(targetWith('[data-window-control]')).profile, 'window-control')
   assert.equal(classifyKorpOsClickTarget(targetWith('.os-taskbar')).profile, 'taskbar')
   assert.equal(classifyKorpOsClickTarget(targetWith('.os-folder-entry')).profile, 'folder-entry')

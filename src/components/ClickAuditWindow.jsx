@@ -38,6 +38,7 @@ export function ClickAuditEmbeddedWindow({
         aria-label="Přesunout okno ClickAudit"
         onPointerDown={onDragStart}
         data-window-drag-region="true"
+        data-clickaudit-profile="window-drag-handle"
       />
       <AssetButton
         className="clickaudit-window-control clickaudit-window-control-close"
@@ -45,6 +46,7 @@ export function ClickAuditEmbeddedWindow({
         assetUrl={closeControlUrl}
         onClick={onMinimize}
         data-window-control="true"
+        data-clickaudit-profile="window-control"
       />
       <div className="clickaudit-window-content">{children}</div>
     </div>
