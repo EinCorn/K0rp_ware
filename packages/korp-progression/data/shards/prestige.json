@@ -1,0 +1,48 @@
+{
+  "id": "audit-cycle-closure",
+  "title": "Uzavření auditního cyklu",
+  "formId": "audit-42-z",
+  "targetElapsedMinutes": 270,
+  "expectedRangeMinutes": [240, 310],
+  "currencyId": "auditFindings",
+  "grantFormula": {
+    "base": 3,
+    "certifiedDepartmentBonus": {"formula":"clamp(certifiedDepartments - 2, 0, 3)"},
+    "highOutputBonus": {
+      "condition": {"kind":"lifetimeResourceAtLeast","resourceId":"notionalWorkUnits","amount":600},
+      "amount": 1
+    },
+    "maximumFirstClosure": 7
+  },
+  "typicalFirstGrant": 5,
+  "reset": {
+    "resources": ["notionalWorkUnits","auditPressure","stabilization","entropy","complianceIntegrity","systemOrder","approvalUnits","idleFaith","patienceUnits","bloomIntegrity","perceivedControl"],
+    "resourceOverridesAfterReset": {"entropy":18},
+    "moduleSessionState": true,
+    "cycleScopedUpgrades": true,
+    "openTasks": true,
+    "pendingForms": true
+  },
+  "retain": {
+    "employeeId": true,
+    "settings": true,
+    "memos": true,
+    "lifetimeStats": true,
+    "certifications": true,
+    "neverResetUpgrades": true,
+    "cosmetics": true,
+    "discoveredModules": true,
+    "auditFindings": true
+  },
+  "postPrestigeChanges": [
+    {"kind":"unlockModule","moduleId":"bubble-wrap"},
+    {"kind":"setFlag","flag":"auditForms.useCycleVariant","value":true},
+    {"kind":"unlockMemo","memoId":"memo.cycle-closed"}
+  ],
+  "designIntent": [
+    "První prestige není kompletní reorganizace; je to měkké uzavření a nový auditní cyklus.",
+    "Známé moduly zůstávají viditelné a rychle znovu použitelné.",
+    "Návrat přes staré milníky má trvat přibližně 35–50 % původního času před nákupem prestige directives.",
+    "Bubble Wrap je hmatatelný nový systém, ne pouze vyšší násobitel."
+  ]
+}
