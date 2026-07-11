@@ -1,6 +1,6 @@
 # K0rp_OS — Architecture
 
-Verze: 0.1.3 pracovní návrh
+Verze: 0.2.0 pracovní návrh
 
 ## 1. Základní rozhodnutí
 
@@ -42,7 +42,6 @@ overlay bridge  = platform-sensitive, Windows-first testing
 
 Více viz `12-platform-workflow.md`.
 
-
 ## 2. Architektonický princip
 
 Nejdůležitější věta:
@@ -60,8 +59,6 @@ To znamená:
 
 ## 3. Cílová struktura repa
 
-Cílově:
-
 ```text
 K0rp_ware/
 ├─ apps/
@@ -71,276 +68,217 @@ K0rp_ware/
 │  ├─ click-audit/
 │  ├─ fidget/
 │  └─ bloom/
-│
 ├─ desktop/
 │  └─ current tauri apps during migration
-│
 ├─ packages/
 │  ├─ korp-core/
 │  ├─ korp-modules/
+│  ├─ korp-progression/
 │  ├─ korp-ui/
 │  ├─ korp-assets/
 │  ├─ korp-content/
 │  ├─ korp-save/
 │  └─ korp-api-client/
-│
 ├─ workers/
 │  └─ api/
-│
 ├─ docs/
 │  └─ k0rp-os/
-│
 └─ scripts/
 ```
 
-Toto je cílová struktura, ne první refactor. Nejdřív docs + core package. Potom postupně.
+Toto je cílová struktura, ne první refactor.
 
 ## 4. Packages
 
 ### packages/korp-core
 
-Herní logika bez UI.
-
-Obsah:
-
-- event model,
-- state model,
-- reducer,
-- resources,
-- stats,
-- unlocks,
-- achievements/failures,
-- module registry interface,
-- save/load interface.
-
-Nesmí obsahovat:
-
-- React komponenty,
-- CSS,
-- Tauri API,
-- DOM interakce,
-- konkrétní asset importy.
+Herní logika bez UI: event model, state, reducer, resources, stats a základní save interface. Nesmí obsahovat React, CSS, DOM ani Tauri API.
 
 ### packages/korp-modules
 
-Registry a manifesty modulů.
+Registry a manifesty modulů: metadata, category, maturity, surfaces, events, resources, privacy profile a feature flags.
 
-Obsah:
+### packages/korp-progression
 
-- seznam modulů,
-- metadata,
-- category,
-- maturity,
-- surfaces,
-- events,
-- produced resources,
-- unlock requirements,
-- copy references,
-- feature flags.
+Datový source of truth pro:
+
+- resource metadata;
+- audit forms;
+- upgrades/procedures;
+- memos;
+- certifications;
+- cross-module interactions;
+- first-cycle balance;
+- prestige directives;
+- desktop artifacts a surface mutations.
+
+Package je čistý TypeScript/JSON/CSV a sám nemění runtime appek.
 
 ### packages/korp-ui
 
-Shared UI komponenty.
-
-Obsah:
-
-- app shell,
-- window shell,
-- buttons,
-- panel components,
-- cards,
-- meters,
-- taskbar,
-- desktop icon components.
-
-Navazuje na současný shared `desktop/shared/k0rp-ui/`.
+Shared UI: app/window shell, taskbar, desktop icons, folders, documents, meters a interní controls.
 
 ### packages/korp-assets
 
-Sdílené assety.
-
-Obsah:
-
-- shell assets,
-- icons,
-- module icons,
-- backgrounds,
-- pixel textures,
-- sprite sheets,
-- concept references.
+Sdílené shell/module assets, backgrounds, textures a sprite sheets.
 
 ### packages/korp-content
 
-Texty a in-universe obsah.
-
-Obsah:
-
-- internal memos,
-- status messages,
-- tooltips,
-- knowledge base articles,
-- module copy,
-- language variants.
-
-Důležité: čeština je canonical. Angličtina později jako lokalizace/adaptace.
+Canonical české texty: mema, status messages, tooltips, knowledge base a localization packs.
 
 ### packages/korp-save
 
-Persistence layer.
-
-Obsah:
-
-- local storage adapter,
-- Tauri store adapter,
-- SQLite adapter později,
-- import/export,
-- migration system.
+Local storage/Tauri adapters, import/export a migrations.
 
 ### packages/korp-api-client
 
-Pozdější cloud/sync client.
-
-Není MVP. Přidat až po stabilním local-first core.
+Pozdější optional cloud/sync client. Není MVP.
 
 ## 5. Module manifest
 
-Každý modul musí mít manifest.
-
-```ts
-export type KorpModuleManifest = {
-  id: string;
-  slug: string;
-  title: string;
-  shortTitle?: string;
-  versionLabel: string;
-  category: KorpModuleCategory;
-  maturity: KorpModuleMaturity;
-  description: string;
-  inUniverseDepartment?: string;
-  surfaces: KorpSurface[];
-  privacyProfile: KorpPrivacyProfile;
-  events: KorpEventType[];
-  resourcesProduced: KorpResourceId[];
-  resourcesConsumed?: KorpResourceId[];
-  unlockRequirement?: KorpUnlockRequirement;
-  featureFlags?: string[];
-  copyPackId?: string;
-  iconAssetId?: string;
-};
-```
-
-Příklad:
-
-```ts
-export const bubbleWrapModule: KorpModuleManifest = {
-  id: "bubble-wrap",
-  slug: "bublinkova-folie",
-  title: "Bublinková Fólie",
-  shortTitle: "Fólie",
-  versionLabel: "v0.1 dílna",
-  category: "stabilization",
-  maturity: "spec",
-  description: "Certifikovaný povrch pro taktilní úlevu.",
-  inUniverseDepartment: "Oddělení Taktilního Uklidnění",
-  surfaces: ["webCard", "standaloneWindow", "osWindow", "overlayMini"],
-  privacyProfile: "korpOnly",
-  events: ["bubble.popped", "bubble.sheetCompleted"],
-  resourcesProduced: ["reliefUnits", "pressureReleased"],
-  copyPackId: "bubble-wrap.cs-CZ",
-  iconAssetId: "module.bubbleWrap"
-};
-```
+Každý modul musí mít manifest a zachovat stejné ID/event semantics napříč webem, standalone oknem, K0rp_OS oknem a overlay surface.
 
 ## 6. Event flow
 
 ```text
 UI interaction
 → module event
-→ korp-core reducer
-→ new state
-→ resources / stats / unlocks
+→ korp-core base effect
+→ progression modifiers
+→ stats / unlocks / memos
+→ surface mutation
 → UI update
-→ optional memo / achievement
 → optional local save
-```
-
-Příklad:
-
-```text
-user pops bubble
-→ bubble.popped
-→ +1 Relief Unit
-→ -0.1 Entropy
-→ sheet progress +1
-→ if sheet completed: unlock memo
 ```
 
 ## 7. Feature churn jako design requirement
 
-Produkt musí počítat s tím, že nápady se budou měnit.
-
-To znamená:
-
-- nový modul přidat přes manifest,
-- resource map rozšiřovat bez přepisování starých save files,
-- eventy verzovat,
-- content držet odděleně od logiky,
-- visuals držet odděleně od core,
-- experimentální moduly mohou být `idea` nebo `prototype`, aniž by rozbíjely released modules.
-
-Architektura má unést větu:
+- nový modul přidat přes manifest;
+- resource map rozšiřovat bez přepisování starých save files;
+- eventy verzovat;
+- content držet odděleně od logiky;
+- visuals držet odděleně od core;
+- experimentální moduly mohou být `idea` nebo `prototype`.
 
 > „Hele, ještě mě napadla další appka.“
 
-A nemá kvůli tomu spadnout jak firemní tracker v pondělí v 9:03.
+Architektura kvůli tomu nesmí spadnout jak firemní tracker v pondělí v 9:03.
 
 ## 8. Storage
 
 MVP:
 
-- lokální state,
-- export/import JSON,
-- jednoduché migrations.
+- lokální state;
+- export/import JSON;
+- jednoduché migrations;
+- save ukládá ID a stav, ne celé definice databáze.
 
-Později:
-
-- Tauri store,
-- SQLite event log,
-- optional cloud sync.
-
-Nesyncovat raw citlivou aktivitu.
+Později Tauri store, SQLite event log a optional cloud sync. Nesyncovat raw citlivou aktivitu.
 
 ## 9. Testing
 
 Minimum:
 
-- Vitest pro `korp-core`,
-- module manifest validation,
-- reducer tests,
-- save/load migration tests,
-- smoke testy pro web/desktop.
-
-Důvod: Jakmile bude modulů 8+, každá změna eventu bez testu bude malá compliance nehoda.
+- Vitest pro `korp-core`;
+- manifest validation;
+- progression typecheck/reference validation;
+- reducer tests;
+- save/load migration tests;
+- smoke testy web/desktop;
+- Windows test pro native window/overlay behavior.
 
 ## 10. Codex workflow
 
-Codex používat na malé tasky:
-
-- vytvoř package,
-- přidej manifest,
-- napiš reducer test,
-- napoj jeden modul,
-- neřeš design navíc,
-- nesahej na shared shell, pokud task neříká.
-
-Nedávat úkol:
-
-> „Udělej K0rp_OS.“
-
-Dávat úkol:
-
-> „Create packages/korp-modules with manifests for current v0.3 modules and candidate v0.4 modules. Do not touch UI.“
+Codex používat na malé tasky. Nesahej na shared shell nebo lokální gameplay modulu, pokud to task výslovně neříká.
 
 ## 11. Důležité pravidlo
 
 > Robustnost tady neznamená enterprise overengineering. Znamená to, že další blbost půjde přidat bez toho, aby se předchozí blbosti začaly tvářit jako incident.
+
+## 12. Vrstvy progression a surface
+
+```text
+korp-core         = význam eventů, state, základní reducer a stats
+korp-progression  = thresholds, forms, upgrades, memos, certifications, prestige
+korp-surface      = desktop artifacts, folders, files, windows a system mutations
+korp-modules      = module contracts a registry
+korp-ui           = vykreslení desktopu, oken a interních komponent
+```
+
+`korp-surface` může být zpočátku datově součástí `korp-progression`, ale jeho model zůstává oddělený. Surface databáze nesmí duplikovat ceny ani balance; poslouchá progression ID.
+
+## 13. Runtime provider
+
+```text
+KorpRuntimeProvider
+├─ state
+├─ lifetimeStats
+├─ dispatch(event)
+├─ submitAuditForm(formId, values)
+├─ purchaseUpgrade(upgradeId)
+├─ acknowledgeMemo(memoId)
+├─ unlockQueue
+├─ memoQueue
+├─ desktopMutationQueue
+├─ save/load
+└─ closeAuditCycle()
+```
+
+Standalone modul může mít vlastní local/session state. Pokud běží uvnitř K0rp_OS nebo je připojený, globální eventy směřují do jediného runtime.
+
+## 14. Event effect pipeline
+
+```text
+base event effect
+→ click profile
+→ permanent prestige directives
+→ cycle upgrades
+→ cross-module modifiers
+→ meter caps / derived values
+→ lifetime stats
+→ certifications
+→ unlocks
+→ memos
+→ surface mutations
+→ local save
+```
+
+Nemá vzniknout univerzální enterprise rules engine. Cílem je zabránit tomu, aby každá nová procedura přidala další hardcoded větev do jednoho reduceru.
+
+## 15. Desktop architecture
+
+```text
+KorpOsShell
+├─ DesktopSurface
+├─ WindowManager
+├─ Taskbar
+├─ StartMenu
+├─ ArtifactRegistry
+├─ ModuleHost
+├─ DocumentHost
+├─ FolderHost
+├─ ScreensaverHost
+└─ SystemNotificationQueue
+```
+
+Modulové okno není dashboard card. Document windows obsluhují audity, mema, reporty a certifikace. Folder windows zobrazují viditelné stopy progression.
+
+## 16. Audit interaction bridge
+
+První formulář `00-A` je součástí plochy. Každá úmyslná field activation:
+
+```text
+field interaction
+→ maximálně jeden clickaudit.click(profile: audit-form)
+→ změna local form state
+```
+
+Pointer move, animační frame, fyzikální tick ani každý pixel dragu nesmí vytvářet auditovaný click.
+
+## 17. Source of truth
+
+- design: `docs/k0rp-os/13-*` až `19-*`;
+- machine data: `packages/korp-progression/data/`;
+- TypeScript constants: `packages/korp-progression/src/`;
+- runtime prototyp se nepřepisuje jedním velkým refactorem;
+- integrace probíhá po vertical slices a testech.
