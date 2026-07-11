@@ -10,7 +10,11 @@ function App() {
   const appId = params.get('app')
 
   if (appId === 'click-audit') {
-    return <ClickAuditPage />
+    return (
+      <KorpRuntimeProvider>
+        <ClickAuditPage />
+      </KorpRuntimeProvider>
+    )
   }
 
   if (appId === 'fidget') {
