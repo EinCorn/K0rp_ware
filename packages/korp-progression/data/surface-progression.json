@@ -1,0 +1,167 @@
+{
+  "meta": {
+    "version": "0.1.1-draft",
+    "purpose": "Orthogonal presentation layer for the existing K0rp progression database.",
+    "changesEconomy": false,
+    "changesModuleLoops": false,
+    "canonicalGameSurface": "korp-os-desktop",
+    "primaryReleasePlatform": "windows",
+    "fallbackSurface": "web-desktop",
+    "detachedSurface": "standalone-module",
+    "futureCompanionSurface": "overlay",
+    "rules": [
+      "K0rp_OS desktop is the canonical full-game presentation.",
+      "The desktop begins nearly empty and fills through progression artifacts.",
+      "Modules remain independent procrastination apps and preserve their original loops.",
+      "Surface unlocks consume existing progression triggers; they do not alter economy.",
+      "Product delivery modes are not the same thing as player progression.",
+      "The hidden meta layer is expressed only through artifacts, UI behavior and inconsistencies."
+    ]
+  },
+  "productModes": [
+    {
+      "id": "korp-os-desktop",
+      "role": "canonical-full-game",
+      "contains": ["fake desktop", "taskbar", "window manager", "folders", "files", "module windows", "memo inbox", "forms", "knowledge base", "screensaver", "global progression", "local save"],
+      "progressionOwnership": "full",
+      "notes": "Strongest incremental loop and canonical fiction layer."
+    },
+    {
+      "id": "web-desktop",
+      "role": "fallback-full-game",
+      "contains": ["browser-hosted fake desktop", "module windows", "folders and files", "global progression", "local browser save", "download links for standalone modules"],
+      "progressionOwnership": "full-local",
+      "limitations": ["no true OS overlay", "no native always-on-top behavior", "browser window instead of real desktop shell"]
+    },
+    {
+      "id": "standalone-module",
+      "role": "detached-procrastination-app",
+      "contains": ["single module", "module-local settings", "module-local session progress", "optional event bridge"],
+      "progressionOwnership": "module-local-unless-linked",
+      "bridgeRules": [
+        "Unlinked standalone use never requires K0rp_OS.",
+        "Unlinked standalone use does not advance the global campaign.",
+        "When linked to a running K0rp_OS save, only aggregate K0rp events are forwarded.",
+        "Global rewards are accepted only for modules already authorized in that save.",
+        "Opening a module as detached window from K0rp_OS uses the same module implementation."
+      ]
+    },
+    {
+      "id": "overlay",
+      "role": "future-companion",
+      "contains": ["privacy status", "quick launch", "small module surfaces", "aggregate K0rp-only events", "optional Privacy Work Blob"],
+      "progressionOwnership": "shared-when-connected",
+      "firstCycleRequirement": false,
+      "notes": "A product-development phase, not a mandatory first-cycle unlock."
+    }
+  ],
+  "desktopBaseState": {
+    "afterIdentityAssignment": {
+      "wallpaper": "wallpaper.korp.default-empty",
+      "visibleDesktopArtifacts": ["artifact.compliance-bin"],
+      "visibleTaskbarWidgets": ["taskbar.start", "taskbar.employee-id", "taskbar.clock", "taskbar.privacy-mode"],
+      "openWindows": ["window.audit-00-a"],
+      "hiddenUntilProgression": ["global resource counters", "module shortcuts", "memo inbox", "forms folder", "archive", "knowledge base", "screensaver settings"],
+      "designIntent": "The player sees a real but almost empty employee workstation. The audit is a document window opened by startup procedure, not a game menu."
+    }
+  },
+  "artifactDefinitions": [
+    {"id":"artifact.compliance-bin","kind":"system-folder","title":"Compliance Bin","placement":"desktop-fixed","openTarget":"system.compliance-bin","resetScope":"never","availableSurfaces":["korp-os-desktop","web-desktop"]},
+    {"id":"artifact.inbox","kind":"folder","title":"Doručené","placement":"desktop-left-column","openTarget":"folder.inbox","resetScope":"never","availableSurfaces":["korp-os-desktop","web-desktop"]},
+    {"id":"artifact.forms","kind":"folder","title":"Formuláře","placement":"desktop-left-column","openTarget":"folder.forms","resetScope":"never","availableSurfaces":["korp-os-desktop","web-desktop"]},
+    {"id":"artifact.clickaudit-shortcut","kind":"module-shortcut","title":"ClickAudit","placement":"desktop-left-column","openTarget":"module.click-audit","resetScope":"never","availableSurfaces":["korp-os-desktop","web-desktop"]},
+    {"id":"artifact.fidget-shortcut","kind":"module-shortcut","title":"Fidget","placement":"desktop-left-column","openTarget":"module.fidget","resetScope":"never","availableSurfaces":["korp-os-desktop","web-desktop"]},
+    {"id":"artifact.bloom-shortcut","kind":"module-shortcut","title":"Bloom","placement":"desktop-left-column","openTarget":"module.bloom","resetScope":"never","availableSurfaces":["korp-os-desktop","web-desktop"]},
+    {"id":"artifact.button-shortcut","kind":"module-shortcut","title":"Button Compliance","placement":"desktop-left-column","openTarget":"module.button-compliance","resetScope":"never","availableSurfaces":["korp-os-desktop","web-desktop"]},
+    {"id":"artifact.pending-confirmations","kind":"folder","title":"Čekající potvrzení","placement":"desktop-auto","openTarget":"folder.pending-confirmations","resetScope":"auditCycle","availableSurfaces":["korp-os-desktop","web-desktop"]},
+    {"id":"artifact.knowledge-base","kind":"system-folder","title":"Knowledge Base","placement":"start-menu","openTarget":"system.knowledge-base","resetScope":"never","availableSurfaces":["korp-os-desktop","web-desktop"]},
+    {"id":"artifact.certificates","kind":"folder","title":"Certifikace","placement":"desktop-auto","openTarget":"folder.certificates","resetScope":"never","availableSurfaces":["korp-os-desktop","web-desktop"]},
+    {"id":"artifact.archive","kind":"system-folder","title":"Archiv","placement":"desktop-auto","openTarget":"folder.archive","resetScope":"never","availableSurfaces":["korp-os-desktop","web-desktop"]},
+    {"id":"artifact.bubble-wrap-shortcut","kind":"module-shortcut","title":"Bublinková Fólie","placement":"desktop-left-column","openTarget":"module.bubble-wrap","resetScope":"never","availableSurfaces":["korp-os-desktop","web-desktop"]}
+  ],
+  "desktopMutations": [
+    {
+      "id":"desktop.identity-assigned",
+      "trigger":{"kind":"systemEvent","eventType":"system.identityAssigned"},
+      "actions":[{"kind":"setWallpaper","assetId":"wallpaper.korp.default-empty"},{"kind":"spawnArtifact","artifactId":"artifact.compliance-bin"},{"kind":"openWindow","windowId":"window.audit-00-a"}]
+    },
+    {
+      "id":"desktop.audit-00-a-completed",
+      "trigger":{"kind":"formSubmitted","formId":"audit.00-a"},
+      "actions":[
+        {"kind":"closeWindow","windowId":"window.audit-00-a"},
+        {"kind":"spawnArtifact","artifactId":"artifact.clickaudit-shortcut"},
+        {"kind":"spawnArtifact","artifactId":"artifact.inbox"},
+        {"kind":"revealTaskbarWidget","widgetId":"taskbar.notional-work-units"},
+        {"kind":"createFile","folderId":"folder.inbox","contentId":"memo.audit-startup"},
+        {"kind":"createFile","folderId":"folder.system-records","contentId":"form.audit-00-a.approved"},
+        {"kind":"showSystemNotification","copyId":"notification.clickaudit-installed"}
+      ]
+    },
+    {
+      "id":"desktop.first-audit-batch",
+      "trigger":{"kind":"eventCountAtLeast","eventType":"clickaudit.batchCompleted","count":1},
+      "actions":[{"kind":"spawnArtifact","artifactId":"artifact.forms"},{"kind":"createFile","folderId":"folder.forms","contentId":"form.audit-10-a.pending"},{"kind":"enableStartMenuSection","sectionId":"start.procedures"}]
+    },
+    {
+      "id":"desktop.fidget-authorized",
+      "trigger":{"kind":"upgradeOwned","upgradeId":"fidget.access-permit"},
+      "actions":[{"kind":"spawnArtifact","artifactId":"artifact.fidget-shortcut"},{"kind":"createFolder","folderId":"folder.wellbeing","title":"Wellbeing"},{"kind":"revealTaskbarWidget","widgetId":"taskbar.stabilization"},{"kind":"showInstallationSequence","moduleId":"fidget"}]
+    },
+    {
+      "id":"desktop.bloom-authorized",
+      "trigger":{"kind":"upgradeOwned","upgradeId":"bloom.access-permit"},
+      "actions":[{"kind":"spawnArtifact","artifactId":"artifact.bloom-shortcut"},{"kind":"createFolder","folderId":"folder.care-alignment","title":"Care & Alignment"},{"kind":"showInstallationSequence","moduleId":"bloom"}]
+    },
+    {
+      "id":"desktop.corner-authorized",
+      "trigger":{"kind":"upgradeOwned","upgradeId":"corner.access-waiver"},
+      "actions":[{"kind":"installScreensaver","screensaverId":"screensaver.corner-watch"},{"kind":"revealSettingsPage","pageId":"settings.screen-saver"},{"kind":"createFile","folderId":"folder.forms","contentId":"form.corner-27-r.approved"},{"kind":"showSystemNotification","copyId":"notification.corner-screensaver-installed"}],
+      "notes":"Corner Watch becomes a real screensaver function first. A normal shortcut may be pinned manually later."
+    },
+    {
+      "id":"desktop.button-authorized",
+      "trigger":{"kind":"upgradeOwned","upgradeId":"button.access-permit"},
+      "actions":[{"kind":"spawnArtifact","artifactId":"artifact.button-shortcut"},{"kind":"spawnArtifact","artifactId":"artifact.pending-confirmations"},{"kind":"revealTaskbarWidget","widgetId":"taskbar.approval-units"},{"kind":"showInstallationSequence","moduleId":"button-compliance"}]
+    },
+    {
+      "id":"desktop.first-certification",
+      "trigger":{"kind":"certifiedDepartmentCountAtLeast","count":1},
+      "actions":[{"kind":"spawnArtifact","artifactId":"artifact.certificates"},{"kind":"createFile","folderId":"folder.certificates","contentId":"certificate.first-department"}]
+    },
+    {
+      "id":"desktop.multi-department-review",
+      "trigger":{"kind":"certifiedDepartmentCountAtLeast","count":3},
+      "actions":[{"kind":"spawnArtifact","artifactId":"artifact.archive"},{"kind":"spawnArtifact","artifactId":"artifact.knowledge-base"},{"kind":"createFile","folderId":"folder.forms","contentId":"form.audit-42-z.pending"},{"kind":"setDesktopClutterState","state":"administratively-populated"}]
+    },
+    {
+      "id":"desktop.first-audit-cycle-closed",
+      "trigger":{"kind":"systemEvent","eventType":"system.auditCycleClosed"},
+      "actions":[
+        {"kind":"archiveCycleArtifacts","folderId":"folder.archive","titleTemplate":"Audit Cycle {cycleNumber:02}"},
+        {"kind":"clearCycleScopedDesktopArtifacts"},
+        {"kind":"incrementOsBuildLabel"},
+        {"kind":"setWallpaper","assetId":"wallpaper.korp.post-audit-01"},
+        {"kind":"createFile","folderId":"folder.archive","contentId":"report.audit-cycle-01"},
+        {"kind":"spawnArtifact","artifactId":"artifact.bubble-wrap-shortcut"},
+        {"kind":"showRebootSequence","copyId":"reboot.first-audit-closure"}
+      ],
+      "notes":"Prestige becomes visible as a desktop cleanup, archive operation, build-number change and installation of a genuinely new module."
+    }
+  ],
+  "windowRules": {
+    "moduleWindows":{"host":"shared K0rp window manager","features":["open","close","minimize to taskbar","bring to front","drag","remember last position","optional pin"],"notes":"A module is never replaced by a dashboard card in the canonical desktop game. It opens as an application window."},
+    "documentWindows":{"usedFor":["audits","memos","reports","certificates","knowledge base"],"features":["open","close","scroll","acknowledge","file into folder"]},
+    "folderWindows":{"features":["open","sort","inspect","launch target","archive"],"progressionRole":"Folders and files are visible records of progression, not cosmetic decoration."}
+  },
+  "firstCycleSurfaceFlow": [
+    {"minuteRange":[0,12],"desktopState":"almost-empty","visible":["Compliance Bin","taskbar","Audit 00-A window"],"newSurfaceReward":"ClickAudit shortcut and Inbox folder"},
+    {"minuteRange":[12,35],"desktopState":"first-workstation","visible":["ClickAudit","Inbox","NWU taskbar counter"],"newSurfaceReward":"Forms folder and pending 10-A file"},
+    {"minuteRange":[35,65],"desktopState":"first-installed-tool","visible":["Fidget shortcut","Wellbeing folder","Stabilization widget"],"newSurfaceReward":"A second usable window and first category folder"},
+    {"minuteRange":[65,110],"desktopState":"departmental-growth","visible":["Bloom shortcut","Care & Alignment folder"],"newSurfaceReward":"The workstation now feels like a system rather than a single clicker"},
+    {"minuteRange":[110,145],"desktopState":"idle-capability","visible":["Corner Watch in Settings","screensaver selector"],"newSurfaceReward":"The first feature changes behavior outside an actively opened module"},
+    {"minuteRange":[145,195],"desktopState":"administrative-pressure","visible":["Button Compliance","Pending Confirmations","AU widget"],"newSurfaceReward":"Files and folders begin generating work for one another"},
+    {"minuteRange":[195,250],"desktopState":"populated-workstation","visible":["Certificates","Knowledge Base","Archive","pending 42-Z"],"newSurfaceReward":"The desktop visibly contains the history of the run"},
+    {"minuteRange":[250,275],"desktopState":"audit-closure-and-reboot","visible":["archived cycle folder","new wallpaper","new OS build","Bubble Wrap shortcut"],"newSurfaceReward":"Prestige is expressed as a system reorganization, not merely a number reset"}
+  ]
+}
