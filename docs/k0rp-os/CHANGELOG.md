@@ -1,77 +1,59 @@
 # K0rp_OS Docs — Changelog
 
-## v0.1.3
+## v0.2.0
 
-Datum: pracovní návrh
+Datum: 2026-07-11
 
 ### Přidáno
 
-- `11-typography-and-brand.md`.
-- Fontový standard:
-  - `Pixel Operator` pro běžné UI texty,
-  - `Pixel Operator Mono` pro systémové texty, čísla, resources, registry a logy.
-- CSS token návrh pro `--korp-font-ui` a `--korp-font-mono`.
-- Codex / AI guardrail pro fonty a logo.
+- `13-progression-and-economy.md`.
+- `14-sensory-feedback.md`.
+- `15-unlocks-memos-and-system-mutations.md`.
+- `16-playtest-checklist.md`.
+- `17-first-cycle-balance.md`.
+- `18-desktop-surface-progression.md`.
+- `19-research-basis-and-source-index.md`.
+- strojově čitelný package `packages/korp-progression`.
+- audit-first onboarding: Audit 00-A generuje ClickAudit stopu.
+- první 4–5hodinový auditní cyklus a první prestige.
+- desktop artifact/surface mutation model.
+- research source index a guardrails proti pseudovědě.
 
 ### Změněno
 
-- `01-visual-style.md` má rozšířenou typografickou sekci.
-- `10-language-and-copy.md` doplněn o font jako součást hlasu systému.
-- README doplněn o nový typography/brand dokument.
+- canonical full game je falešná plocha zaměstnance, ne katalog modulů.
+- roadmapa řadí fake desktop vertical slice před dlouhou progression implementaci.
+- moduly se odemykají jako nainstalované appky, folders, settings nebo screensaver.
+- Corner Watch je primárně skutečný screensaver.
+- prestige je reprezentováno archivací, desktop cleanupem, rebootem a novým buildem.
+- product modes jsou oddělené od player progression.
+- architecture doplněna o progression/surface vrstvy.
+- event model doplněn o transient/gameplay/milestone úrovně.
+- Codex task pack doplněn o tasks 017–025.
 
-### Brand lock
+### Nezměněno
 
-- Logo `KØrp` / `K0rp_ware` je považované za rozhodnuté a nemá se redesignovat v běžném UI polish/refactoru.
-- Docs pack neobsahuje fontové soubory; licence a bundlování fontů se musí vyřešit před release buildem.
+- logika současných ClickAudit, Fidget a Bloom appek;
+- local-first privacy;
+- Windows-first desktop strategie;
+- TypeScript-first modularita;
+- K0rp canonical tón a skrytá meta rovina;
+- samostatná použitelnost prokrastinačních modulů.
+
+## v0.1.3
+
+- typography/brand lock;
+- Pixel Operator / Pixel Operator Mono;
+- Windows-first platform workflow;
+- module registry/core baseline.
 
 ## v0.1.1
 
-Datum: pracovní návrh
-
-### Přidáno
-
-- `09-module-backlog.md`.
-- `10-language-and-copy.md`.
-- Concept board asset v `assets/concept-board-v0.1.png`.
-- Module candidates:
-  - Corner Watch,
-  - Bublinková Fólie,
-  - Button Compliance,
-  - Surface Compliance,
-  - Shape Compliance,
-  - Attention Runner,
-  - Zenová Zahrádka,
-  - Newtonova Kolíbka.
-- Resource map pro nové moduly.
-- Event model pro nové moduly.
-- Module manifest návrh.
-- Module surfaces a maturity model.
-- Codex tasky pro `korp-modules`, module registry a první prototypy.
-
-### Změněno
-
-- Product vision nyní výslovně říká, že K0rp_OS má být TypeScript-first modular engine.
-- Roadmapa rozděluje nové moduly do v0.4–v0.7.
-- Architecture víc zdůrazňuje feature churn jako design requirement.
-- Visual style doplněn o desk object / ASMR moduly.
-- Screen concepts doplněny o návrhy obrazovek nových modulů.
-
-### Jazyk
-
-- Čeština potvrzena jako primární/canonical jazyk K0rp_OS.
-- Angličtina plánovaná později.
-- Korporátní doublespeak a anglicismy jsou explicitně součástí stylu.
+- module backlog;
+- language guide;
+- candidate modules;
+- resource/event draft.
 
 ## v0.1
 
-První RFC pack:
-
-- product vision,
-- visual style,
-- product modes,
-- architecture,
-- event model,
-- privacy model,
-- screen concepts,
-- roadmap,
-- codex tasks.
+První RFC pack.
