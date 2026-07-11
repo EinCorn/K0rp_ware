@@ -1,6 +1,6 @@
 # K0rp_OS — Codex Task Pack
 
-Verze: 0.1.3 pracovní návrh
+Verze: 0.2.0 pracovní návrh
 
 ## Pravidlo pro Codex
 
@@ -17,13 +17,9 @@ Každý task musí mít:
 
 Codex je implementační kolega, ne autor světa. Nemá rozhodovat, co je K0rp a co už je obyčejná webová hračka v tmavém skinu.
 
-
 ## Platform guardrail
 
-Primary platform is **Windows**.
-Mac is a secondary dev/test/design environment.
-
-For Codex tasks:
+Primary platform is **Windows**. Mac is a secondary dev/test/design environment.
 
 ```text
 - Pure TypeScript/core/docs tasks can be tested on Mac or Windows.
@@ -33,319 +29,163 @@ For Codex tasks:
 - Do not hardcode macOS paths or assumptions.
 ```
 
-## Task 001 — Add K0rp_OS docs v0.1.3
+## Existing task baseline
+
+Tasks 001–016 cover docs, `korp-core`, `korp-modules`, current module bridges, shell prototype, save/load, memo MVP and first candidate module prototypes. Tyto tasky zůstávají historickým plánem; aktuální implementační pořadí určuje `07-roadmap.md`.
+
+## Task 017 — Add progression package without runtime integration
 
 ```text
-Create docs/k0rp-os/ and add/update the following markdown files:
+Add packages/korp-progression from the reviewed design database.
 
-00-product-vision.md
-01-visual-style.md
-02-product-modes.md
-03-architecture.md
-04-event-model.md
-05-privacy-model.md
-06-screen-concepts.md
-07-roadmap.md
-08-codex-tasks.md
-09-module-backlog.md
-10-language-and-copy.md
-11-typography-and-brand.md
-12-platform-workflow.md
-README.md
-CHANGELOG.md
+Scope:
+- package.json
+- tsconfig.json
+- src/progression.types.ts
+- src/progression.database.ts
+- src/surface-progression.database.ts
+- src/progression.validation.ts
+- src/index.ts
+- data/*.json
+- data/*.csv
+- package docs
 
-Do not modify app source code.
-Do not modify shared UI.
-Do not create new branches unless explicitly required.
+Do not modify existing application behavior.
+Do not connect the package to KorpOsShell yet.
+Add a root typecheck script and CI step.
 ```
 
-## Task 002 — Create korp-core package
+## Task 018 — Add Audit 00-A model
 
 ```text
-Create packages/korp-core as a TypeScript package.
-Add typed models for:
-- KorpEvent
-- KorpState
-- KorpResources
-- KorpStats
-- KorpUnlocks
-- KorpSettings
+Implement the first audit form as data/UI behind a feature flag.
 
-Add createInitialState().
-Add applyKorpEvent(state, event).
-Add basic Vitest tests.
-
-Do not touch UI apps yet.
-Do not refactor existing desktop apps.
-```
-
-## Task 003 — Create korp-modules package
-
-```text
-Create packages/korp-modules as a TypeScript package.
-Define KorpModuleManifest, KorpModuleCategory, KorpSurface, KorpModuleMaturity, KorpPrivacyProfile.
-Add manifests for current modules:
-- ClickAudit
-- Fidget
-- Bloom
-
-Add spec-level manifests for candidate modules:
-- Corner Watch
-- Bublinková Fólie
-- Button Compliance
-- Surface Compliance
-- Shape Compliance
-- Attention Runner
-- Zenová Zahrádka
-- Newtonova Kolíbka
-
-Do not implement UI.
-Do not touch desktop/shared shell.
-Add validation tests for required manifest fields.
-```
-
-## Task 004 — Add ClickAudit event bridge
-
-```text
-Wire ClickAudit to emit clickaudit.click events to korp-core locally.
-Keep current visuals unchanged.
-Do not modify shared shell CSS except if required for imports.
-Add minimal debug output or local state display only if needed.
-```
-
-## Task 005 — Add Fidget event bridge
-
-```text
-Wire Fidget to emit:
-- fidget.spinStarted
-- fidget.spinTick
-- fidget.spinStopped
-- fidget.modeChanged
-
-Keep current visuals unchanged.
-Do not redesign spinner.
-```
-
-## Task 006 — Add Bloom event bridge
-
-```text
-Wire Bloom to emit:
-- bloom.tileClicked
-- bloom.matchCleared
-- bloom.waveAdvanced
-- bloom.redStoneSpawned
-
-Keep current board visuals unchanged unless necessary.
-```
-
-## Task 007 — Create K0rp_OS shell prototype
-
-```text
-Create a prototype K0rp_OS app shell.
-It should show:
-- fake desktop
-- taskbar
-- icons for ClickAudit, Fidget, Bloom
-- basic status panel
-- shared progress from korp-core
-
-Do not implement overlay.
-Do not implement cloud sync.
-Do not move existing apps unless necessary.
-```
-
-## Task 008 — Local save/load
-
-```text
-Add local save/load for KorpState.
-Default to local-only.
-No account.
-No cloud.
-No telemetry.
-Add export/import JSON if simple.
-```
-
-## Task 009 — Memo system MVP
-
-```text
-Add a simple internal memo system.
-Memos unlock based on korp-core thresholds.
-Add 5 sample memos in Czech with corporate doublespeak/anglicisms.
-Keep them in a separate data file.
-No explicit lore dump.
-```
-
-## Task 010 — Corner Watch prototype
-
-```text
-Implement Corner Watch as a simple module prototype.
 Requirements:
-- dark pixel/CRT style panel
-- KØrp logo bouncing inside bounds
-- near miss detection
-- corner hit detection
-- emit corner.logoBounce, corner.nearMiss, corner.cornerHit
-- produce idleFaith resource through korp-core
-
-Do not add cloud.
-Do not implement real physics.
-Do not redesign existing modules.
+- opens as a document window on an almost-empty K0rp_OS desktop
+- every intentional field interaction emits at most one clickaudit.click with audit-form tag
+- pointer movement and render frames do not count
+- submit emits audit.formSubmitted
+- privacy explanation uses plain language
+- current standalone ClickAudit behavior remains unchanged
 ```
 
-## Task 011 — Bublinková Fólie prototype
+## Task 019 — Create shared runtime provider
 
 ```text
-Implement Bublinková Fólie as a module prototype.
-Requirements:
-- grid of bubbles
-- click to pop bubble
-- popped visual state
-- sheet progress
-- emit bubble.popped and bubble.sheetCompleted
-- produce reliefUnits and pressureReleased
+Create a KorpRuntimeProvider for K0rp_OS.
 
-Use placeholder pixel CSS if final assets are not ready.
-No sound unless simple and optional.
-```
-
-## Task 012 — Button Compliance prototype
-
-```text
-Implement Button Compliance as a module prototype.
-Requirements:
-- panel with multiple buttons
-- button pressed state
-- simple generated confirmation text
-- optional sequence completion
-- emit button.pressed and button.confirmationConfirmed
-- produce approvalUnits
-
-Keep the UI in K0rp shell language.
-```
-
-## Task 013 — Module launcher from registry
-
-```text
-Update the module launcher/control desk to read module cards from korp-modules registry.
-Show current modules as available.
-Show candidate modules as locked/spec/pending.
-Do not hardcode module list in the launcher after this task.
-Keep visuals close to current dashboard.
-```
-
-## Task 014 — Language copy pack
-
-```text
-Create packages/korp-content or equivalent content folder.
-Add Czech copy pack for:
-- current modules
-- candidate modules
-- generic status messages
-- privacy messages
-
-Copy style:
-- Czech primary
-- corporate doublespeak
-- natural anglicisms
-- dry absurd humor
-
-Do not translate everything to English yet.
-```
-
-## Task 015 — Newton Cradle spec prototype
-
-```text
-Create a non-final Newtonova Kolíbka prototype.
-Fake the physics with controlled animation states.
-Events:
-- cradle.pull
-- cradle.release
-- cradle.impact
-- cradle.cycleCompleted
-- cradle.responsibilityTransferred
-
-Do not implement complex physics engine.
-Focus on satisfying visual rhythm and event emission.
-```
-
-## Task 016 — Zen Garden spec prototype
-
-```text
-Create a non-final Zenová Zahrádka prototype.
-Use canvas or simple DOM/SVG approach.
-Requirements:
-- sand area
-- rake stroke interaction
-- movable stones optional
-- emit zen.rakeStroke and zen.patternCompleted
-
-Do not chase perfect drawing quality.
-Focus on interaction contract and modular architecture.
-```
-
-## Codex anti-patterns
-
-Nepovolit:
-
-```text
-- changing shared shell during unrelated task
-- moving app folders without migration plan
-- adding cloud sync before local state
-- replacing TypeScript core with random game engine
-- writing English-only UI copy
-- adding tracking outside stated privacy modes
-- implementing 5 modules in one giant commit
-```
-
-
-## Global guardrail — fonts and logo
-
-Každý Codex task, který sahá na UI, shared shell, module layout, dashboard nebo K0rp_OS screen, musí respektovat:
-
-```text
-Use Pixel Operator / Pixel Operator Mono as the UI font direction.
-Do not redesign or replace the K0rp/K0rp_ware logo.
-Treat the logo as an existing fixed asset.
-Do not add font files unless explicitly provided and license-cleared.
-```
-
-Acceptance criteria:
-
-- běžné UI texty používají shared font token pro Pixel Operator,
-- čísla/status/log/registry používají Pixel Operator Mono token,
-- logo asset nebyl změněn,
-- nevznikl nový wordmark nebo alternativní logo,
-- pokud font není dostupný lokálně, změna má fallback, ale neprodává fallback jako finální design.
-
-
-## Task 015 — Add platform workflow docs
-
-```text
-Add docs/k0rp-os/12-platform-workflow.md.
-Document:
-- Windows as primary desktop/release platform
-- Mac as secondary dev/test/design environment
-- Couch Mode vs Desk Mode
-- two-clone workflow
-- platform labels
-- Windows-required testing for overlay/Tauri behavior
-
-Do not modify app source code.
-```
-
-## Task 016 — Add platform test checklist
-
-```text
-Create a short manual checklist for platform testing.
 Include:
-- Web build
-- Mac smoke test
-- Windows desktop start
-- Windows transparent window check
-- Windows always-on-top check
-- Windows overlay hitbox check, when overlay exists
-- sync:korp-ui reminder
+- one global KorpState
+- lifetime stats
+- dispatch
+- unlock queue
+- memo queue
+- surface mutation queue
+- local save/load interface
 
-This can live in docs/k0rp-os/12-platform-workflow.md or a future docs/testing file.
-Do not implement test automation yet.
+Do not remove local standalone module state.
+Do not implement cloud sync.
+```
+
+## Task 020 — Fake desktop vertical slice
+
+```text
+Replace the temporary catalog-like K0rp_OS game surface behind a feature flag with:
+- empty employee desktop
+- taskbar
+- Compliance Bin
+- Audit 00-A document window
+- basic window manager
+- ClickAudit shortcut spawned after form submit
+- Inbox folder with first memo
+
+Do not redesign standalone app shells.
+Do not implement all future modules.
+```
+
+## Task 021 — Progression resolver v1
+
+```text
+Add a small resolver pipeline:
+base event
+→ owned upgrade modifiers
+→ cross-module modifiers
+→ meter caps
+→ lifetime stats
+→ unlocks
+→ memos
+→ surface mutations
+
+Implement only the first audit/ClickAudit slice.
+Do not create a generic enterprise rules engine.
+```
+
+## Task 022 — Sensory foundation
+
+```text
+Create shared sensory contracts and settings:
+- audio categories
+- material profile IDs
+- density limit API
+- feedback intensity levels
+- reduce motion
+- quiet mode
+
+Do not add final audio assets.
+Do not change existing module visuals unless required for hooks.
+```
+
+## Task 023 — First-cycle playtest harness
+
+```text
+Add a local-only debug/playtest panel behind a development flag.
+
+It may show:
+- session time
+- milestone timestamps
+- event counts
+- current/lifetime resources
+- unlock sequence
+- save export
+
+It must not send telemetry or read activity outside K0rp.
+```
+
+## Task 024 — Standalone aggregate bridge contract
+
+```text
+Define, but do not yet fully implement, the contract for a detached module to forward aggregate K0rp events into a running K0rp_OS runtime.
+
+Rules:
+- standalone remains usable unlinked
+- no raw pointer/activity stream
+- campaign rewards only for modules authorized in the save
+- no cloud
+- no overlay implementation
+```
+
+## Task 025 — Docs/reference validation
+
+```text
+Add a lightweight validation step that checks:
+- progression IDs are unique
+- referenced resource/event/form/upgrade/memo IDs exist
+- documentation index lists files 00–19
+- package TypeScript typecheck passes
+
+Do not rewrite source documents automatically.
+```
+
+## Global implementation guardrails
+
+```text
+- Do not change current ClickAudit, Fidget or Bloom gameplay unless the task explicitly names that module.
+- Do not turn the canonical desktop into a card catalog.
+- Do not expose the hidden meta layer through lore explanation.
+- Do not add daily streaks, energy, offline penalties or FOMO requirements.
+- Do not add cloud sync before stable local save.
+- Do not read app names, URLs, window text, screenshots or keys outside K0rp.
+- Do not redesign the K0rp logo.
+- Use Pixel Operator / Pixel Operator Mono direction through shared tokens; do not add unlicensed font files.
+- Run npm run sync:korp-ui after intentional shared UI changes.
 ```
