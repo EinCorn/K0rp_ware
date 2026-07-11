@@ -21,7 +21,7 @@ const lockedShortcuts = listModules()
   .filter((module) => module.status !== 'current')
   .slice(0, 2)
 
-const managedWindowIds = ['audit-00-a', 'form-10-a', 'daily-report']
+const managedWindowIds = ['audit-00-a', 'form-10-a', 'daily-report', 'forms-folder', 'inbox-folder']
 
 const initialWindows = {
   'audit-00-a': {
@@ -54,6 +54,26 @@ const initialWindows = {
     isMinimized: false,
     isOpen: true,
   },
+  'forms-folder': {
+    id: 'forms-folder',
+    title: 'FORMULÁŘE / SLOŽKA',
+    taskbarTitle: 'FORMULÁŘE',
+    x: 700,
+    y: 118,
+    zIndex: 0,
+    isMinimized: false,
+    isOpen: false,
+  },
+  'inbox-folder': {
+    id: 'inbox-folder',
+    title: 'DORUČENÉ / SLOŽKA',
+    taskbarTitle: 'DORUČENÉ',
+    x: 730,
+    y: 240,
+    zIndex: 0,
+    isMinimized: false,
+    isOpen: false,
+  },
 }
 
 function WindowHeader({ window, variant = 'document', onMinimize, onPointerDown }) {
@@ -76,13 +96,54 @@ function WindowHeader({ window, variant = 'document', onMinimize, onPointerDown 
   )
 }
 
-function DesktopIcon({ title, type, status, isLocked = false }) {
-  return (
-    <div className={'os-desktop-icon' + (isLocked ? ' is-locked' : '')}>
+function DesktopIcon({ title, type, status, isLocked = false, onOpen }) {
+  const className = 'os-desktop-icon' + (isLocked ? ' is-locked' : '') + (onOpen ? ' is-clickable' : '')
+  const iconContent = (
+    <>
       <span className={'os-icon-glyph os-icon-' + type} aria-hidden="true" />
       <span className="os-icon-label">{title}</span>
       {status && <small>{status}</small>}
+    </>
+  )
+
+  if (onOpen) {
+    return (
+      <button type="button" className={className} onClick={onOpen} aria-label={'Otevřít složku ' + title}>
+        {iconContent}
+      </button>
+    )
+  }
+
+  return (
+    <div className={className}>
+      {iconContent}
     </div>
+  )
+}
+
+function FolderEntry({ title, detail, status, kind, isLocked = false, onOpen }) {
+  const entryClassName = 'os-folder-entry' + (isLocked ? ' is-locked' : '')
+  const entryContent = (
+    <>
+      <span className={'os-file-glyph os-file-' + kind} aria-hidden="true" />
+      <span className="os-folder-entry-copy">
+        <strong>{title}</strong>
+        <small>{detail}</small>
+      </span>
+      <span className="os-folder-entry-status">{status}</span>
+    </>
+  )
+
+  return (
+    <li>
+      {onOpen && !isLocked ? (
+        <button type="button" className={entryClassName} onClick={onOpen}>
+          {entryContent}
+        </button>
+      ) : (
+        <div className={entryClassName}>{entryContent}</div>
+      )}
+    </li>
   )
 }
 
@@ -99,6 +160,11 @@ function KorpOsShell() {
   const auditTraceAvailable = auditClicks >= auditTraceApprovalThreshold
   const notionalWorkPerAudit = auditTraceApproved ? 0.2 : 0.1
   const formVisible = auditTraceAvailable || auditTraceApproved
+  const auditTraceFileStatus = auditTraceApproved
+    ? 'SCHVÁLENO / AKTIVNÍ'
+    : formVisible
+      ? 'PŘIPRAVENO KE SCHVÁLENÍ'
+      : 'ČEKÁ NA 10 KONTROL'
   const isWindowAvailable = (id) => id !== 'form-10-a' || formVisible
   const visibleWindowIds = managedWindowIds.filter((id) => (
     isWindowAvailable(id) && windows[id].isOpen && !windows[id].isMinimized
@@ -117,6 +183,7 @@ function KorpOsShell() {
     const auditWidth = Math.min(630, rect.width * 0.51)
     const formWidth = Math.min(310, rect.width * 0.29)
     const memoWidth = Math.min(392, rect.width * 0.34)
+    const folderWidth = Math.min(360, rect.width * 0.31)
 
     setWindows((currentWindows) => ({
       ...currentWindows,
@@ -134,6 +201,16 @@ function KorpOsShell() {
         ...currentWindows['daily-report'],
         x: isCompact ? 85 : Math.max(120, rect.width - memoWidth - 40),
         y: isCompact ? Math.max(448, rect.height - 131) : Math.max(300, rect.height - 207),
+      },
+      'forms-folder': {
+        ...currentWindows['forms-folder'],
+        x: isCompact ? 85 : Math.max(120, rect.width - folderWidth - 130),
+        y: isCompact ? 271 : 122,
+      },
+      'inbox-folder': {
+        ...currentWindows['inbox-folder'],
+        x: isCompact ? 85 : Math.max(120, rect.width - folderWidth - 52),
+        y: isCompact ? Math.max(448, rect.height - 131) : Math.max(242, rect.height - 305),
       },
     }))
   }, [])
@@ -161,10 +238,10 @@ function KorpOsShell() {
     }))
   }
 
-  const restoreWindow = (id) => {
+  const openWindow = (id) => {
     setWindows((currentWindows) => {
       const window = currentWindows[id]
-      if (!window || !window.isOpen) return currentWindows
+      if (!window) return currentWindows
 
       const highestZIndex = Math.max(...Object.values(currentWindows)
         .filter((currentWindow) => currentWindow.isOpen)
@@ -172,7 +249,7 @@ function KorpOsShell() {
 
       return {
         ...currentWindows,
-        [id]: { ...window, isMinimized: false, zIndex: highestZIndex + 1 },
+        [id]: { ...window, isOpen: true, isMinimized: false, zIndex: highestZIndex + 1 },
       }
     })
   }
@@ -299,10 +376,17 @@ function KorpOsShell() {
           <aside className="os-desktop-icons" aria-label="Plocha zaměstnance">
             <DesktopIcon title="Compliance Bin" type="bin" status="SYSTÉMOVÉ" />
             <DesktopIcon
+              title="Doručené"
+              type="folder"
+              status="1 MÍSTNÍ MEMO"
+              onOpen={() => openWindow('inbox-folder')}
+            />
+            <DesktopIcon
               title="Formuláře"
               type="folder"
               status={formVisible ? '1 NOVÝ SOUBOR' : 'ČEKÁ NA AUDIT'}
               isLocked={!formVisible}
+              onOpen={() => openWindow('forms-folder')}
             />
             {lockedShortcuts.map((module) => (
               <DesktopIcon key={module.id} title={module.title} type="app" status="NEINSTALOVÁNO" isLocked />
@@ -402,6 +486,86 @@ function KorpOsShell() {
               </div>
               </article>
             )}
+
+            {visibleWindowIds.includes('forms-folder') && (
+              <article
+                className="os-window os-folder-window os-forms-folder-window"
+                style={windowStyle(windows['forms-folder'])}
+                data-window-id="forms-folder"
+                aria-labelledby="forms-folder-title"
+                onPointerDown={() => bringWindowToFront('forms-folder')}
+              >
+                <WindowHeader
+                  window={windows['forms-folder']}
+                  onMinimize={minimizeWindow}
+                  onPointerDown={(event) => startWindowDrag('forms-folder', event)}
+                />
+                <div className="os-folder-body">
+                  <p className="os-folder-path">C:\K0RP\FORMULÁŘE\MÍSTNÍ RELACE</p>
+                  <h2 id="forms-folder-title">Formuláře</h2>
+                  <ul className="os-folder-list">
+                    <FolderEntry
+                      title="Žádost 10-A"
+                      detail="Rozšíření auditní stopy"
+                      status={auditTraceFileStatus}
+                      kind="form"
+                      isLocked={!formVisible}
+                      onOpen={() => openWindow('form-10-a')}
+                    />
+                    <FolderEntry
+                      title="Audit 00-A"
+                      detail="Kontrola přítomnosti"
+                      status="OTEVŘÍT DOKUMENT"
+                      kind="document"
+                      onOpen={() => openWindow('audit-00-a')}
+                    />
+                    <FolderEntry
+                      title="Záznam 10-A"
+                      detail="Archivace čeká na podpis"
+                      status="ZAMČENO"
+                      kind="archive"
+                      isLocked
+                    />
+                  </ul>
+                </div>
+              </article>
+            )}
+
+            {visibleWindowIds.includes('inbox-folder') && (
+              <article
+                className="os-window os-folder-window os-inbox-folder-window"
+                style={windowStyle(windows['inbox-folder'])}
+                data-window-id="inbox-folder"
+                aria-labelledby="inbox-folder-title"
+                onPointerDown={() => bringWindowToFront('inbox-folder')}
+              >
+                <WindowHeader
+                  window={windows['inbox-folder']}
+                  onMinimize={minimizeWindow}
+                  onPointerDown={(event) => startWindowDrag('inbox-folder', event)}
+                />
+                <div className="os-folder-body">
+                  <p className="os-folder-path">C:\K0RP\DORUČENÉ\MÍSTNÍ RELACE</p>
+                  <h2 id="inbox-folder-title">Doručené</h2>
+                  <ul className="os-folder-list">
+                    <FolderEntry
+                      title="Denní výpis"
+                      detail="Místní memo / provozní záznam"
+                      status="OTEVŘÍT MEMO"
+                      kind="memo"
+                      onOpen={() => openWindow('daily-report')}
+                    />
+                    <FolderEntry
+                      title="Startup audit"
+                      detail="Automaticky založený záznam"
+                      status="ČEKÁ NA ARCHIV"
+                      kind="archive"
+                      isLocked
+                    />
+                  </ul>
+                </div>
+              </article>
+            )}
           </section>
 
           <p className="os-wallpaper-mark" aria-hidden="true">KØRP<br />INTERNAL<br />OPERATIONS</p>
@@ -418,7 +582,7 @@ function KorpOsShell() {
                 className={'os-taskbar-window' + (window.isMinimized ? ' is-minimized' : '') + (id === activeWindowId ? ' is-active' : '')}
                 aria-pressed={id === activeWindowId}
                 aria-label={(window.isMinimized ? 'Obnovit okno ' : 'Přenést dopředu okno ') + window.taskbarTitle}
-                onClick={() => restoreWindow(id)}
+                onClick={() => openWindow(id)}
               >
                 {window.taskbarTitle}
               </button>

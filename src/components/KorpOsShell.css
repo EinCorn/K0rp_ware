@@ -119,6 +119,26 @@
   text-shadow: 1px 1px #20231e;
 }
 
+.os-desktop-icon.is-clickable {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  cursor: pointer;
+}
+
+.os-desktop-icon.is-clickable:hover .os-icon-glyph,
+.os-desktop-icon.is-clickable:focus-visible .os-icon-glyph {
+  background-color: #d9e58a;
+  outline: 2px solid var(--os-amber);
+  outline-offset: 3px;
+}
+
+.os-desktop-icon.is-clickable:hover .os-icon-label,
+.os-desktop-icon.is-clickable:focus-visible .os-icon-label {
+  color: #fffde4;
+}
+
 .os-icon-glyph {
   width: 38px;
   height: 34px;
@@ -394,6 +414,116 @@
   transform: rotate(-0.45deg);
 }
 
+.os-folder-window {
+  width: min(360px, 31vw);
+  height: 268px;
+}
+
+.os-folder-body {
+  min-height: 0;
+  padding: 9px;
+  overflow: hidden;
+  background:
+    repeating-linear-gradient(0deg, transparent 0 23px, rgba(91, 84, 66, 0.12) 23px 24px),
+    #d8d1b8;
+}
+
+.os-folder-path {
+  margin: 0;
+  padding: 5px 6px;
+  border: 1px solid #847b63;
+  color: #5d5749;
+  background: #e6debf;
+  font: 7px var(--os-mono);
+  letter-spacing: 0.08em;
+}
+
+.os-folder-body h2 {
+  margin: 9px 1px 6px;
+  color: #2d2e27;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.os-folder-list {
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid #8d846b;
+  list-style: none;
+}
+
+.os-folder-list li + li { border-top: 1px dashed #998f74; }
+
+.os-folder-entry {
+  width: 100%;
+  min-height: 48px;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr) minmax(70px, auto);
+  gap: 8px;
+  align-items: center;
+  padding: 6px 5px;
+  border: 0;
+  color: #403d33;
+  background: transparent;
+  font-family: var(--os-ui);
+  text-align: left;
+}
+
+button.os-folder-entry {
+  cursor: pointer;
+}
+
+button.os-folder-entry:hover,
+button.os-folder-entry:focus-visible {
+  color: #2c3424;
+  background: rgba(201, 212, 123, 0.55);
+  outline: 1px solid #6f7c52;
+  outline-offset: -2px;
+}
+
+.os-folder-entry.is-locked { color: #77705d; filter: saturate(0.55); }
+.os-folder-entry-copy { min-width: 0; display: grid; gap: 3px; }
+.os-folder-entry-copy strong { font-size: 12px; line-height: 1; }
+.os-folder-entry-copy small,
+.os-folder-entry-status {
+  color: #746b56;
+  font: 7px/1.15 var(--os-mono);
+  letter-spacing: 0.06em;
+}
+
+.os-folder-entry-status {
+  justify-self: end;
+  max-width: 95px;
+  color: #586443;
+  text-align: right;
+}
+
+.os-folder-entry.is-locked .os-folder-entry-status { color: #8a7255; }
+
+.os-file-glyph {
+  width: 24px;
+  height: 28px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  border: 2px solid #55574b;
+  color: #3f4632;
+  background: #ded7b5;
+  box-shadow: 2px 2px 0 rgba(61, 62, 49, 0.2);
+  font: 9px var(--os-mono);
+}
+
+.os-file-glyph::after { content: 'TXT'; }
+.os-file-form { background: #c7d17f; }
+.os-file-form::after { content: '10-A'; font-size: 7px; }
+.os-file-document { background: #d6cca7; }
+.os-file-document::after { content: '00-A'; font-size: 7px; }
+.os-file-memo { background: #ede2a8; transform: rotate(-2deg); }
+.os-file-memo::after { content: 'MEM'; font-size: 7px; }
+.os-file-archive { color: #716b5b; background: #b8b19a; }
+.os-file-archive::after { content: '...'; font-size: 11px; }
+
 .os-log-body {
   min-height: 0;
   display: grid;
@@ -497,6 +627,7 @@
   .os-document-heading > span { font-size: 10px; }
   .os-form-window { width: min(286px, 30vw); }
   .os-log-window { width: 330px; }
+  .os-folder-window { width: min(340px, 32vw); }
   .os-wallpaper-mark { right: 310px; }
   .os-taskbar-resource-ci { display: none; }
 }
@@ -526,6 +657,15 @@
   .os-form-body h2 { font-size: 16px; }
   .os-form-body > p:not(.os-document-code) { font-size: 9px; }
   .os-log-window { width: calc(100% - 97px); height: 122px; }
+  .os-folder-window { width: calc(100% - 98px); height: 186px; }
+  .os-folder-body { padding: 6px; }
+  .os-folder-path { padding: 4px; font-size: 6px; }
+  .os-folder-body h2 { margin: 6px 1px 4px; font-size: 15px; }
+  .os-folder-entry { min-height: 34px; grid-template-columns: 23px minmax(0, 1fr) 68px; gap: 5px; padding: 3px; }
+  .os-file-glyph { width: 20px; height: 23px; font-size: 7px; }
+  .os-folder-entry-copy strong { font-size: 10px; }
+  .os-folder-entry-copy small,
+  .os-folder-entry-status { font-size: 6px; }
   .os-log-body { gap: 4px; padding: 7px; }
   .os-log-body h2 { font-size: 14px; }
   .os-log-body li { min-height: 15px; padding-top: 2px; padding-bottom: 2px; font-size: 8px; }
