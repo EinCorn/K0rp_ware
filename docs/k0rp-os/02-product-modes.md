@@ -1,6 +1,6 @@
 # K0rp_OS — Product Modes
 
-Verze: 0.1.3 pracovní návrh
+Verze: 0.2.0 pracovní návrh
 
 ## 1. Přehled
 
@@ -190,7 +190,6 @@ Současný stav:
 
 > Režimy se mohou lišit. Core význam eventů musí zůstat společný.
 
-
 ## Platform priority
 
 K0rp_OS má více surfaces, ale primární desktop target je **Windows**.
@@ -205,3 +204,51 @@ Mac je podporované a užitečné dev/test prostředí, hlavně pro Couch Mode, 
 - finální pocit „pracovního počítače“.
 
 Každý product mode by měl být označený podle toho, zda jde o cross-platform feature, web-only feature, nebo Windows-required feature.
+
+## 11. Canonical hierarchy surfaces
+
+### K0rp_OS desktop
+
+Canonical full game. Vlastní globální progression, desktop artifacts, složky, soubory, window manager, screensaver, mema, lokální save a prestige.
+
+### Web desktop
+
+Fallback full-game surface v browseru. Simuluje stejnou pracovní plochu a používá stejné progression ID. Může mít lokální browser save. Neumí pravý OS overlay ani všechny native window funkce.
+
+### Standalone module
+
+Samostatná prokrastinační appka. Musí fungovat bez hlavního K0rp_OS.
+
+- nepřipojený režim: pouze module-local session/progress;
+- připojený režim: aggregate K0rp events mohou být předány do aktivního K0rp_OS runtime;
+- global campaign přijímá rewards pouze z modulu, který je v daném save autorizovaný;
+- modulová logika nesmí mít separátní přepsanou variantu pro OS, web a standalone.
+
+### Overlay
+
+Pozdější companion surface. Není podmínkou prvního auditního cyklu.
+
+- quick launch,
+- malé module surfaces,
+- privacy indicator,
+- K0rp-only events,
+- případně explicitní Privacy Work Blob.
+
+## 12. Product mode není progression unlock
+
+Release pořadí produktu a herní pořadí unlocků jsou dvě různé osy.
+
+Například Corner Watch se v kampani odemkne jako screensaver, ale jeho standalone build může být veřejně dostupný od začátku. To nepřeskakuje campaign progression, dokud standalone není připojený k autorizovanému save.
+
+## 13. Surface contract
+
+Každý modul musí používat:
+
+- stejné event names,
+- stejný module ID,
+- stejný význam resource effects,
+- stejnou privacy klasifikaci,
+- oddělený lokální UI/session state,
+- volitelný bridge do společného runtime.
+
+Rozdíl surface smí měnit presentation a window behavior, ne význam kliknutí, spinu, wave nebo completed sheetu.
