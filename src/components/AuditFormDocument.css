@@ -22,8 +22,8 @@
 .os-audit-document-heading p {
   margin: 0 0 6px;
   color: #685e3d;
-  font: 8px/9px var(--os-mono);
-  letter-spacing: 0.1em;
+  font: var(--os-type-micro)/var(--os-leading-micro) var(--os-mono);
+  letter-spacing: var(--os-tracking-micro);
 }
 
 .os-audit-document-heading h1 {
@@ -38,8 +38,8 @@
   display: block;
   margin-top: 8px;
   color: #5b574a;
-  font-size: 10px;
-  line-height: 13px;
+  font-size: var(--os-type-body);
+  line-height: var(--os-leading-body);
 }
 
 .os-audit-fields {
@@ -89,7 +89,7 @@
   position: absolute;
   inset: -7px 0 0 3px;
   color: #344028;
-  font: 28px/1 var(--os-ui);
+  font: 28px/28px var(--os-ui);
 }
 
 .os-audit-checkbox:focus-within {
@@ -114,8 +114,8 @@
 .os-audit-choice-group legend {
   padding: 0 4px;
   color: #4f4b3d;
-  font: 8px var(--os-mono);
-  letter-spacing: 0.08em;
+  font: var(--os-type-micro)/var(--os-leading-micro) var(--os-mono);
+  letter-spacing: var(--os-tracking-micro);
 }
 
 .os-audit-choice-group label {
@@ -123,8 +123,8 @@
   gap: 7px;
   align-items: center;
   color: #3f3d33;
-  font-size: 10px;
-  line-height: 12px;
+  font-size: var(--os-type-body);
+  line-height: var(--os-leading-body);
 }
 
 .os-audit-scale-group {
@@ -148,8 +148,8 @@
   min-width: 0;
   overflow: hidden;
   color: #6c634f;
-  font: 7px var(--os-mono);
-  letter-spacing: 0.08em;
+  font: var(--os-type-micro)/var(--os-leading-micro) var(--os-mono);
+  letter-spacing: var(--os-tracking-micro);
   text-overflow: ellipsis;
   white-space: nowrap;
 }
@@ -161,8 +161,8 @@
   color: #2f3d28;
   background: #c7d17f;
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.35);
-  font: 8px var(--os-mono);
-  letter-spacing: 0.08em;
+  font: var(--os-type-micro)/var(--os-leading-micro) var(--os-mono);
+  letter-spacing: var(--os-tracking-micro);
   cursor: pointer;
 }
 
@@ -174,10 +174,9 @@
 }
 
 .os-audit-submit:disabled {
-  color: #777160;
+  color: #3c3a32;
   background: #aaa48e;
   cursor: not-allowed;
-  filter: saturate(0.35);
 }
 
 .os-audit-document.is-submitted {
@@ -194,13 +193,12 @@
   border: 3px double #586746;
   color: #405230;
   background: rgba(201, 213, 125, 0.48);
-  transform: rotate(-0.6deg);
 }
 
 .os-audit-completion-stamp > span {
   grid-row: 1 / 3;
   font-size: 34px;
-  line-height: 1;
+  line-height: 34px;
 }
 
 .os-audit-completion-stamp strong {
@@ -209,19 +207,19 @@
 }
 
 .os-audit-completion-stamp small {
-  font: 7px var(--os-mono);
-  letter-spacing: 0.08em;
+  font: var(--os-type-micro)/var(--os-leading-micro) var(--os-mono);
+  letter-spacing: var(--os-tracking-micro);
 }
 
 .os-audit-document-note {
   margin: 0;
   color: #5b574a;
-  font-size: 10px;
-  line-height: 14px;
+  font-size: var(--os-type-body);
+  line-height: var(--os-leading-body);
 }
 
 .os-audit-document-error,
 .os-audit-unsupported-field {
   color: #7b403d;
-  font: 9px/1.4 var(--os-mono);
+  font: var(--os-type-body)/var(--os-leading-body) var(--os-mono);
 }
