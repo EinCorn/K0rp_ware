@@ -1,5 +1,43 @@
 # K0rp_OS Docs — Changelog
 
+## v0.3.0
+
+Datum: 2026-07-16
+
+### Přidáno
+
+- `20-core-loop.md` jako canonical Metric → Audit → Evidence gameplay contract.
+- raw metric, metric packet, audit instance, Evidence a backlog terminologie.
+- pravidla pro manual/delegated/system-generated activity.
+- Acting Lead Paradox jako budoucí mechanický motiv delegace, ne explicitní lore dump.
+- `audit.evidenceCertified` jako plánovaný milestone event.
+- packet/audit instance save a migration contract.
+
+### Změněno
+
+- `notionalWorkUnits` zůstává technický resource ID, ale player-facing význam se mění na `Evidence / EV`.
+- raw klik nebo module action už není canonical spendable currency faucet.
+- `clickaudit.batchCompleted` je auditní packet boundary, ne automatický reward.
+- Audit 10-A se plánuje jako repeatable packet audit.
+- Audit 16-C autorizuje Fidget pomocí Evidence.
+- roadmapa přidává samostatné fáze pro druhou metriku, backlog a delegaci.
+- task pack nyní odpovídá reálné historii Tasks 015–019 a plánuje Tasks 020–030.
+- first-cycle balance je označen jako migration RFC; starý 4–5hodinový balance zůstává provisional.
+- playtest gate se soustředí nejdřív na oblouk činnost → audit → Evidence → Fidget.
+- progression package docs popisují plánovanou data/runtime migraci.
+
+### Neimplementováno tímto docs updatem
+
+- runtime packet queue;
+- repeatable audit instances;
+- Evidence certification reducer;
+- Audit 10-A/16-C data migration;
+- Fidget integration;
+- delegation;
+- first-cycle CSV/JSON rebalance.
+
+Tyto změny jsou rozdělené do Tasks 020–025. Runtime na `main` po Tasku 019 může dočasně obsahovat starší v0.2 resource effects, ale nové feature je nesmějí dále rozšiřovat.
+
 ## v0.2.0
 
 Datum: 2026-07-11
@@ -33,7 +71,7 @@ Datum: 2026-07-11
 
 ### Nezměněno
 
-- logika současných ClickAudit, Fidget a Bloom appek;
+- logika tehdejších ClickAudit, Fidget a Bloom appek;
 - local-first privacy;
 - Windows-first desktop strategie;
 - TypeScript-first modularita;

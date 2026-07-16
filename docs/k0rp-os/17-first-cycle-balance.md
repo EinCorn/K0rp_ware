@@ -1,172 +1,302 @@
 # K0rp_OS — First Cycle Balance
 
-Verze: `0.2.0 pracovní RFC`  
-Cíl prvního prestige: **240–310 minut**, target **270 minut**.
+Verze: `0.3.0 migration RFC`  
+Status: early vertical slice je canonical; pozdější 4–5hodinový cycle balance je provisional do Tasku 024.
 
-## 1. Vstupní rozhodnutí
+## 1. Důvod rebalance
 
-První interaction není prázdné tlačítko a není to menu.
+V0.2 balance předpokládal:
 
-Hráč dostane formulář:
+```text
+raw click
+→ přímý NWU/AP výnos
+→ batch reward
+→ nákup upgradu
+```
+
+Canonical v0.3 loop je:
+
+```text
+raw metrika
+→ pending packet
+→ audit
+→ Evidence
+→ autorizace
+```
+
+Proto staré cumulative NWU tabulky, click yield multipliers a část upgrade costs nejsou implementation source pro Tasks 020–023.
+
+## 2. Vstupní rozhodnutí
+
+První interaction není menu ani prázdné tlačítko.
 
 ```text
 AUDIT 00-A
-Vstupní audit přítomnosti a pracovního povrchu
+☐ Jsem v práci?
+[POTVRDIT PŘÍTOMNOST]
 ```
 
 Každá úmyslná interaction ve formuláři:
 
 1. změní stav konkrétního pole;
-2. vytvoří auditovatelnou interakci;
-3. emituje `clickaudit.click` s profilem `audit-form`;
-4. objeví se ve zdrojovém rozpisu ClickAuditu;
-5. přispěje k prvním NWU a Audit Pressure.
+2. emituje právě jeden `clickaudit.click` s bezpečným K0rp profilem;
+3. objeví se v raw ClickAudit counteru;
+4. nepřidá přímo Evidence.
 
-Po odeslání formuláře se odemkne samotný ClickAudit. Hráč tak zjistí, že systém po celou dobu počítal jeho kliky, protože samozřejmě počítal.
+Po odeslání se odemkne ClickAudit. Presence Audit potvrzuje existenci relace, ne ekonomickou hodnotu hráče.
 
-Formulář obsahuje normální privacy větu lidským jazykem. In-universe humor nesmí znejasnit, co aplikace skutečně sleduje.
-
-## 2. Hlavní loop prvního cyklu
+## 3. První canonical vertical slice
 
 ```text
 Audit 00-A
 → ClickAudit
-→ formulář 10-A / auditní dávky
-→ requisition Fidgetu
-→ přirozený spin cycle
-→ compliance zahrádka Bloom
-→ volitelné Rohové Očekávání
-→ Button Compliance
-→ certifikace oddělení
-→ formulář 42-Z
-→ Uzavření auditního cyklu
-→ Schválené Závěry
-→ Bublinková Fólie
+→ 25 raw clicks
+→ ClickAudit packet 00-01
+→ Audit 10-A instance
+→ Evidence +1
+→ Audit 16-C
+→ Evidence alokována
+→ Fidget
 ```
 
-## 3. Resource hierarchie
+### Provisional playtest targets
 
-Ne všechny resources mají být viditelné současně. Složitost se odemyká jako obsah.
+| Krok | Target | Poznámka |
+|---|---:|---|
+| Audit 00-A | 1–3 min | okamžitě srozumitelný onboarding |
+| První ClickAudit packet | 3–10 min po unlocku | 25 úmyslných interakcí napříč OS |
+| První Audit 10-A | 1–3 min | krátká certifikace, ne formulářový román |
+| První Evidence | 5–15 min celkem | vznikne pouze certifikací packetu |
+| Audit 16-C / Fidget permit | 10–25 min celkem | první Evidence rychle otevře nový interaction system |
+| První Fidget packet | bude určeno Taskem 023 | podle skutečné délky session a tactile flow |
 
-| ID | Zkratka | Druh | Viditelnost | Reset | Význam |
-|---|---:|---|---|---|---|
-| `notionalWorkUnits` | NWU | currency | visible-after-audit | auditCycle | Hlavní spendable měna cyklu. |
-| `auditPressure` | AP | meter | visible-from-start | auditCycle | Tlak vytvářený auditovanými interakcemi. |
-| `stabilization` | STB | meter | visible-after-fidget | auditCycle | Dočasná stabilita z uklidňovacích procesů. |
-| `entropy` | ENT | meter | visible-after-fidget | auditCycle | Míra procesního rozptylu. |
-| `complianceIntegrity` | CI | meter | visible-after-bloom | auditCycle | Stav uspořádanosti drobných věcí. |
-| `systemOrder` | SO | meter | hidden-until-memo | auditCycle | Pocit, že systém má tvar. |
-| `perceivedProductivity` | PP | derived | hidden-until-memo | never | Odvozená ne-spendable metrika. |
-| `approvalUnits` | AU | currency | visible-after-button | auditCycle | Sekundární měna potvrzovacího panelu. |
-| `auditFindings` | AF | prestige | visible-after-first-prestige | never | Permanentní prestige měna. |
+Rozsahy jsou playtest targety, ne slib. Důležité je pořadí a význam.
 
-Module-local a hidden resources jsou podrobně definované v `packages/korp-progression/data/shards/resources.json`.
+## 4. Resource hierarchie
 
-## 4. Audity jako progression interface
+Ne všechny resources mají být viditelné současně.
 
-Databáze obsahuje sedm auditních formulářů:
+| Technical ID | Player label | Druh | Early visibility | Význam |
+|---|---|---|---|---|
+| `notionalWorkUnits` | Evidence / EV | currency | po první certifikaci | uznaná vykazatelná aktivita |
+| `auditPressure` | skryté / později AP | meter | po backlog unlocku | tlak z pending auditů a discrepancies |
+| `stabilization` | STB | meter/module state | po Fidgetu | lokální nebo cycle stabilizace |
+| `entropy` | ENT | meter | po Fidgetu | procesní rozptyl |
+| `complianceIntegrity` | CI | meter | po Bloom | stav uspořádanosti |
+| `systemOrder` | SO | meter | hidden-until-memo | odvozený pocit tvaru systému |
+| `perceivedProductivity` | PP | derived | hidden | interpretace, ne spendable currency |
+| `approvalUnits` | AU | late currency | po Button Compliance | sekundární pozdní systém |
+| `auditFindings` | AF | prestige | po first closure | permanentní závěry |
 
-- `00-A` — onboarding a první kliky;
-- `10-A` — auditní dávky;
-- `16-C` — requisition Fidgetu;
-- `23-B` — přístup do Bloom;
-- `27-R` — volitelné Rohové Očekávání;
-- `31-F` — Button Compliance;
-- `42-Z` — první prestige.
+Early taskbar:
 
-Zásadní změna systému se nekupuje pouze tlačítkem `BUY`. Hráč nejprve splní podmínky, potom vyplní formulář a až následně použije NWU/AU na aktivaci procedury.
+```text
+EV 1
+PENDING 2
+```
 
-## 5. První balance pass
+Raw kliky, rotace a další moduly mají vlastní readout uvnitř module windows.
 
-| Čas | Fáze | Hlavní surface | Cumulative NWU | Audited clicks | Očekávané nákupy |
-|---:|---|---|---:|---:|---|
-| 0–12 min | Vstupní audit | audit-00-a | 10 | — | — |
-| 12–35 min | Rozšíření auditní stopy | click-audit | 42 | 55 | counter calibration; batch standardization |
-| 35–65 min | Stabilizace rozptýlením | fidget | 88 | 75 | Fidget permit; bearing lubrication |
-| 65–110 min | Compliance zahrádka | bloom | 160 | 115 | Bloom permit; Green Handling |
-| 110–145 min | Pasivní přítomnost | corner-watch | 225 | 135 | Corner waiver |
-| 145–195 min | Opakovaný souhlas | button-compliance | 310 | 175 | Button permit; departmental routing |
-| 195–250 min | Certifikace | multi-module | 430 | 210–280 | 3–4 module certifications |
-| 250–275 min | Uzavření cyklu | audit-42-z | 450 | — | closure authority |
+## 5. Audit 10-A
 
-### Cílový objem prvního cyklu
+Audit 10-A je repeatable audit template navázaný na konkrétní ClickAudit packet.
 
-- 210–300 všech auditovaných interakcí;
-- přibližně 90–150 přímých ClickAudit kliků;
-- 5 přirozeně ukončených Fidget sessions;
-- 8 Bloom waves;
-- 3 Button sequences;
-- 3–4 certifikovaná oddělení;
-- 6–8 přijatých mem;
-- 420–500 lifetime NWU;
-- přibližně 35 lifetime Approval Units;
-- 4–6 Audit Findings po closure.
+První minimální pole:
 
-## 6. Anti-spam pravidlo ClickAuditu
+```text
+Byla zaznamenaná aktivita provedena úmyslně?
 
-Kliky se vždy počítají, ale jejich měnový výnos se nasycuje:
+○ Ano
+○ Ne
+○ Nelze potvrdit
 
-| Audited click v cyklu | NWU multiplier |
-|---:|---:|
-| 1–100 | 1.00× |
-| 101–300 | 0.40× |
-| 301+ | 0.10× |
+[PODAT VÝKAZ]
+```
 
-Batch rewards zůstávají plné. Hráč nepřijde o counter ani feedback, ale hra jej jemně směruje ke střídání modulů.
+Pro první slice:
 
-## 7. Automatizace
+- všechny tři odpovědi jsou administrativně validní;
+- každá validní certifikace přidá 1 EV;
+- volba může být uložena jako interpretace pro budoucí discrepancies;
+- packet lze certifikovat právě jednou;
+- kliky ve formuláři už tvoří část další raw dávky.
 
-Automatizace přesouvá hráče od rutiny k výjimkám:
+## 6. Packet balance
 
-- ClickAudit relay dokládá drobnou pasivní přítomnost, ale nevyplňuje formuláře;
-- Bloom assistant řeší běžný green stav, ale ne yellow/red;
-- Button stamp přebírá každý třetí standardní press, ale ne výjimku;
-- Corner Watch zaznamená hit i bez přímého pohledu;
-- Fidget meeting protocol stabilizuje pozadí, ale nenahrazuje celý spin cycle.
+### ClickAudit
 
-## 8. Cross-module rytmus
+První batch size:
 
-- vysoká Stabilization + nízká Entropy → lepší auditní batch;
-- Fidget settle → 60 sekund lepší Bloom;
-- Fidget settle → první Button sequence do 120 sekund dostane vyšší AU;
-- red Bloom clear → pending confirmation v Button Compliance;
-- Bloom wave → Button sequence do tří minut → bonus System Order;
-- Corner session → doplňková auditní stopa;
-- každý smysluplný click v modulu → zdrojový záznam v ClickAuditu.
+```text
+25 raw manual K0rp_OS interactions
+```
 
-Jde o krátká okna a vztahy, ne o povinnost neustále přepínat aplikace jako operátor rozbitého dispečinku.
+Packet:
 
-## 9. První prestige
+```text
+quantity: 25
+source: manual
+status: pending
+```
+
+Žádný přímý batch reward.
+
+### Future Fidget packet
+
+Task 023 určí podle playtestu, zda packet vzniká například:
+
+- po jedné kvalitně dokončené session;
+- po více `sessionSettled`;
+- po kombinaci rotací a přirozeného doběhu.
+
+Číslo se nesmí vybrat pouze proto, že 25 vypadá procesně uspokojivě.
+
+## 7. Anti-spam pravidlo ClickAuditu
+
+Kliky se vždy doslovně počítají.
+
+Nemají currency multiplier, protože samy currency negenerují.
+
+Anti-spam tvoří:
+
+- packet boundary;
+- auditní práce;
+- backlog;
+- idempotentní certifikace;
+- pozdější source diversity a kontrolní vzorky;
+- oddělení manual/delegated/system-generated activity.
+
+Autoclicker může nafouknout raw číslo, ale bez auditního zpracování nevytvoří odpovídající Evidence.
+
+## 8. Evidence authorization
+
+První Evidence nemá financovat procentní click upgrade.
+
+```text
+EV 1
+→ Audit 16-C
+→ EV 1 alokována
+→ Fidget autorizován
+```
+
+Fidget permit je první důkaz, že hlavní reward je nový systém.
+
+## 9. Audit backlog
+
+Backlog se začne počítat, jakmile existuje repeatable packet audit.
+
+Early status:
+
+```text
+0 pending → čistá relace
+1–2 pending → běžná administrativní stopa
+3+ pending → viditelný auditní backlog
+```
+
+Přesné pressure thresholds vzniknou až po Tasku 023 playtestu.
+
+Delegace se nesmí odemknout pouze časem. Má přijít, až backlog začne být skutečnou rutinní bolestí.
+
+## 10. Automation and delegation
+
+Budoucí automatizace nevyrábí falešné manuální metriky.
+
+```text
+manual clicks
+ delegated clicks
+ system-generated interactions
+```
+
+Každá kategorie je oddělená.
+
+Delegovaná aktivita:
+
+- může být batchována;
+- může vyžadovat audit;
+- může generovat discrepancies;
+- nesmí sama finálně certifikovat Evidence.
+
+## 11. Pozdější první cyklus
+
+Po ověření ClickAudit a Fidget loopu se znovu přebalancují:
+
+```text
+Bloom
+→ optional Corner Watch
+→ Button Compliance
+→ certifications
+→ Audit 42-Z
+→ first closure
+→ Audit Findings
+→ Bubble Wrap
+```
+
+Původní target 240–310 minut a 4–6 Audit Findings zůstává hypotéza, ne současná acceptance criteria.
+
+Task 024 musí přepsat:
+
+- `first-cycle.balance.csv`;
+- `first-cycle-phases.json`;
+- upgrade costs;
+- audit requirements;
+- cumulative resource targets;
+- first prestige math, pokud playtest ukáže potřebu.
+
+## 12. Cross-module rytmus
+
+Cross-module bonuses mají vznikat až po stabilním jednotlivém loopu.
+
+Preferované vztahy:
+
+- Fidget session vytvoří auditovatelnou metriku;
+- Bloom vytvoří jiný druh packetu;
+- Button řeší autorizaci a výjimky;
+- Corner Watch vytváří idle report, ne povinný rare gate;
+- ClickAudit sleduje source breakdown, ale nezvětšuje fyzické kliky.
+
+Nejde o povinnost neustále přepínat aplikace jako operátor rozbitého dispečinku.
+
+## 13. First prestige
+
+První prestige zůstává reprezentováno formulářem:
 
 ```text
 UZAVŘENÍ AUDITNÍHO CYKLU
 FORMULÁŘ 42-Z
 ```
 
-Resetuje current-cycle resources, module-session state, cycle upgrades a pending tasks. Zachová Employee ID, settings, mema, lifetime stats, certifikace, cosmetics, permanent upgrades, známé moduly a Audit Findings.
+Resetuje cycle state a zachovává Employee ID, settings, mema, lifetime stats, certifikace, cosmetics, permanent upgrades, známé moduly a Audit Findings.
 
-Výpočet:
+Hlavní odměnou je nový interaction system, ne pouze multiplier.
 
-```text
-3
-+ clamp(certifiedDepartments - 2, 0, 3)
-+ 1, pokud lifetime NWU >= 600
-max 7 při prvním closure
-```
+## 14. Retention guardrails
 
-Typický první výsledek: **5 AF**.
+Nepoužívat:
 
-Vedle prestige directives se odemkne **Bublinková Fólie**. První prestige musí otevřít nový způsob interakce, ne pouze navýšit násobitel.
+- daily streak;
+- propadající reward;
+- povinný corner hit;
+- offline trest;
+- energii;
+- agresivní notification badge;
+- jedinou optimální rare událost.
 
-## 10. Retention guardrails
+Používat:
 
-Nepoužívat daily streak, propadající reward, povinný corner hit, offline trest, energii, agresivní notification badge ani jedinou optimální rare událost.
+- dobrovolné uzavření směny;
+- archivovaný offline report;
+- mema v Inboxu;
+- jasné closure points;
+- audit backlog jako interní tlak, ne FOMO;
+- nový systém jako hlavní odměnu.
 
-Používat dobrovolné `UZAVŘÍT SMĚNU`, archivovaný offline report, mema v Inboxu, jasné closure points, optional idle větev a nový systém jako hlavní odměnu.
+## 15. Machine-readable migration
 
-## Machine-readable source
+Do dokončení Tasku 024 nejsou staré v0.2 JSON/CSV hodnoty canonical balance source.
 
-- `packages/korp-progression/data/progression.database.json`
-- `packages/korp-progression/data/first-cycle.balance.csv`
-- `packages/korp-progression/data/shards/first-cycle-phases.json`
-- `packages/korp-progression/src/progression.database.ts`
+Canonical význam určuje:
+
+1. `20-core-loop.md`;
+2. tato migration RFC;
+3. `07-roadmap.md`;
+4. konkrétní task acceptance criteria.
