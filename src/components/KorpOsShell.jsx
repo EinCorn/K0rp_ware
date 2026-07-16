@@ -5,8 +5,11 @@ import { classifyKorpOsClickTarget } from '../runtime/osClickTracking'
 import { useKorpRuntime } from '../runtime/useKorpRuntime'
 import {
   bringWindowStateToFront,
+  getCenteredCanvasPlacement,
+  mapClientPointToCanvas,
   minimizeWindowState,
   restoreWindowState,
+  snapWindowPosition,
 } from '../runtime/windowManager'
 import AuditFormDocument from './AuditFormDocument'
 import ClickAuditRuntimeModule from './ClickAuditRuntimeModule'
@@ -210,7 +213,12 @@ function KorpOsShell() {
   const [activity, setActivity] = useState(() => initialActivity(auditEntryForm))
   const [auditEntryValues, setAuditEntryValues] = useState(() => createAuditFormValues(auditEntryForm))
   const [windows, setWindows] = useState(initialWindows)
-  const [canvasScale, setCanvasScale] = useState(1)
+  const [canvasPlacement, setCanvasPlacement] = useState(() => getCenteredCanvasPlacement(
+    window.innerWidth,
+    window.innerHeight,
+    osCanvasWidth,
+    osCanvasHeight,
+  ))
   const desktopSpaceRef = useRef(null)
   const dragStateRef = useRef(null)
   const auditTraceAvailabilityRef = useRef(auditTraceAvailable)
@@ -255,13 +263,18 @@ function KorpOsShell() {
   ), null)
 
   useEffect(() => {
-    const updateCanvasScale = () => {
-      setCanvasScale(Math.min(1, window.innerWidth / osCanvasWidth, window.innerHeight / osCanvasHeight))
+    const updateCanvasPlacement = () => {
+      setCanvasPlacement(getCenteredCanvasPlacement(
+        window.innerWidth,
+        window.innerHeight,
+        osCanvasWidth,
+        osCanvasHeight,
+      ))
     }
 
-    updateCanvasScale()
-    window.addEventListener('resize', updateCanvasScale)
-    return () => window.removeEventListener('resize', updateCanvasScale)
+    updateCanvasPlacement()
+    window.addEventListener('resize', updateCanvasPlacement)
+    return () => window.removeEventListener('resize', updateCanvasPlacement)
   }, [])
 
   useEffect(() => {
@@ -305,12 +318,16 @@ function KorpOsShell() {
     if (!desktopSpace || !windowState) return
 
     const desktopRect = desktopSpace.getBoundingClientRect()
-    const scale = canvasScale || 1
+    const pointerPosition = mapClientPointToCanvas(
+      { x: event.clientX, y: event.clientY },
+      desktopRect,
+      { width: desktopSpace.clientWidth, height: desktopSpace.clientHeight },
+    )
     dragStateRef.current = {
       id,
       pointerId: event.pointerId,
-      offsetX: (event.clientX - desktopRect.left) / scale - windowState.x,
-      offsetY: (event.clientY - desktopRect.top) / scale - windowState.y,
+      offsetX: pointerPosition.x - windowState.x,
+      offsetY: pointerPosition.y - windowState.y,
     }
 
     event.currentTarget.setPointerCapture(event.pointerId)
@@ -326,16 +343,24 @@ function KorpOsShell() {
     if (!dragState || dragState.pointerId !== event.pointerId || !desktopSpace || !windowElement) return
 
     const desktopRect = desktopSpace.getBoundingClientRect()
-    const windowRect = windowElement.getBoundingClientRect()
-    const scale = canvasScale || 1
-    const maximumX = Math.max(0, desktopRect.width / scale - windowRect.width / scale)
-    const maximumY = Math.max(0, desktopRect.height / scale - windowRect.height / scale)
-    const nextX = Math.min(maximumX, Math.max(0, (event.clientX - desktopRect.left) / scale - dragState.offsetX))
-    const nextY = Math.min(maximumY, Math.max(0, (event.clientY - desktopRect.top) / scale - dragState.offsetY))
+    const workspaceSize = { width: desktopSpace.clientWidth, height: desktopSpace.clientHeight }
+    const pointerPosition = mapClientPointToCanvas(
+      { x: event.clientX, y: event.clientY },
+      desktopRect,
+      workspaceSize,
+    )
+    const nextPosition = snapWindowPosition(
+      {
+        x: pointerPosition.x - dragState.offsetX,
+        y: pointerPosition.y - dragState.offsetY,
+      },
+      workspaceSize,
+      { width: windowElement.offsetWidth, height: windowElement.offsetHeight },
+    )
 
     setWindows((currentWindows) => ({
       ...currentWindows,
-      [dragState.id]: { ...currentWindows[dragState.id], x: nextX, y: nextY },
+      [dragState.id]: { ...currentWindows[dragState.id], ...nextPosition },
     }))
   }
 
@@ -400,10 +425,15 @@ function KorpOsShell() {
     <main
       className="os-shell"
       aria-label="K0rp_OS pracovní plocha"
-      style={{ '--os-scale': canvasScale }}
+      style={{
+        '--os-scale': canvasPlacement.scale,
+        '--os-canvas-left': canvasPlacement.left + 'px',
+        '--os-canvas-top': canvasPlacement.top + 'px',
+      }}
       onPointerDownCapture={handleKorpOsPointerDownCapture}
     >
-      <section className="os-desktop">
+      <div className="os-canvas-viewport">
+        <section className="os-desktop">
         <header className="os-desktop-readout">
           <div className="os-brand" aria-label="K0rp_OS">
             <strong>KØrp_OS</strong>
@@ -656,7 +686,8 @@ function KorpOsShell() {
           <span className="os-taskbar-privacy">PRIVACY: LOCAL ONLY</span>
           <span className="os-taskbar-clock">10:00 / RELACE 01</span>
         </footer>
-      </section>
+        </section>
+      </div>
     </main>
   )
 }
