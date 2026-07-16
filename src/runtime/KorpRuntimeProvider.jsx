@@ -11,6 +11,7 @@ import {
   isAuditFormAvailable,
   submitAuditForm as resolveAuditFormSubmission,
 } from './auditProgression'
+import { isAuditFormComplete } from './auditFormDraft'
 import { KorpRuntimeContext } from './KorpRuntimeContext'
 import {
   clearRuntimeStorage,
@@ -109,15 +110,22 @@ function runtimeReducer(runtime, action) {
         action.value,
       )
     case 'submitMetricAuditInstance': {
+      const currentAuditInstance = (runtime.auditInstances ?? [])
+        .find((instance) => instance.id === action.instanceId)
+      const form = getAuditForm(auditForms, currentAuditInstance?.templateId)
+
+      if (
+        !currentAuditInstance
+        || !form
+        || !isAuditFormComplete(form, currentAuditInstance.values)
+      ) return runtime
+
       const certification = certifyMetricAuditInstance(
         runtime,
         action.instanceId,
         action.timestamp,
       )
       if (!certification.didCertify) return runtime
-
-      const form = getAuditForm(auditForms, certification.auditInstance.templateId)
-      if (!form) return runtime
 
       const events = [
         {
