@@ -1,167 +1,338 @@
-# Integration map — napojení na současný K0rp_ware
+# Integration map — napojení progression dat na K0rp_ware
 
-Tento soubor popisuje doporučený postup integrace databáze. Nejde o automaticky aplikovaný patch.
+Verze: `0.3.0 core-loop migration`
 
-## 1. Nový package
+Tento soubor popisuje doporučený technický postup integrace canonical Metric → Audit → Evidence modelu.
 
-Přidat:
+Canonical design:
+
+```text
+docs/k0rp-os/20-core-loop.md
+```
+
+Aktuální runtime po Tasku 019 už má společný provider, persistence, Audit 00-A/10-A baseline a asset-backed ClickAudit. Další práce je migrace ekonomiky, ne přidání dalšího paralelního runtime.
+
+## 1. Package boundary
 
 ```text
 packages/korp-progression/
 ```
 
-Package nemá obsahovat React, DOM ani Tauri API. Je to čistá datová vrstva.
+Package zůstává čistá datová vrstva:
 
-## 2. Rozšíření `KorpResources`
+- žádný React;
+- žádný DOM;
+- žádné Tauri API;
+- žádný localStorage adapter;
+- žádný window manager.
 
-Současný core už většinu resources zná. Doplnit především:
+Deklaruje IDs, definitions, requirements, effects a validation.
 
-```ts
-auditFindings: number;
-```
+## 2. Resource migration
 
-Dále je vhodné časem oddělit:
-
-```ts
-resources.current
-resources.lifetime
-resources.derived
-```
-
-První pragmatická varianta může zůstat flat, ale lifetime generated totals musí být ve stats.
-
-## 3. Nové progression-bearing eventy
-
-Přidat:
+Stávající technical ID:
 
 ```ts
-"audit.formSubmitted"
-"clickaudit.batchCompleted"
-"fidget.sessionSettled"
-"system.shiftClosed"
-"system.memoAcknowledged"
-"system.auditCycleClosed"
+notionalWorkUnits: number;
 ```
 
-`fidget.spinTick` ponechat jako transient/local event. Neměl by nafukovat persistentní global event log každý animační frame.
+se v první migraci nepřejmenovává, aby se neštěpil core/save contract.
 
-## 4. Audit interaction bridge
-
-Každé skutečné field activation:
+Player-facing metadata:
 
 ```text
-audit field change
-→ clickaudit.click(profile: audit-form)
-→ local field state
+Evidence / EV
 ```
 
-Submit:
+Reducer semantics se mění:
+
+```text
+raw activation
+≠ resource reward
+
+audit.evidenceCertified
+→ notionalWorkUnits / Evidence
+```
+
+Lifetime generated total zůstává ve stats, ale znamená lifetime certified Evidence, ne součet klikových pulse.
+
+## 3. Runtime state additions
+
+KorpRuntimeProvider potřebuje:
+
+```ts
+metricPackets: MetricPacket[];
+auditInstances: AuditInstance[];
+```
+
+Doporučený pragmatický shape:
+
+```ts
+type MetricPacket = {
+  id: string;
+  packetDefinitionId: string;
+  metricType: string;
+  source: "manual" | "delegated" | "system-generated";
+  quantity: number;
+  status: "pending" | "certified" | "rejected";
+  createdAt: number;
+  certifiedAt?: number;
+};
+
+type AuditInstance = {
+  id: string;
+  templateId: string;
+  packetId?: string;
+  status: "available" | "draft" | "submitted" | "closed";
+  values: Record<string, unknown>;
+  createdAt: number;
+  submittedAt?: number;
+};
+```
+
+`submittedFormIds` zůstává pro one-time forms. Repeatable packet audits používají `auditInstances`.
+
+## 4. New progression-bearing events
 
 ```text
 audit.formSubmitted
-→ form completion effects
-→ unlock queue
-→ memo queue
+clickaudit.batchCompleted
+audit.evidenceCertified
+fidget.sessionSettled
+system.shiftClosed
+system.memoAcknowledged
+system.auditCycleClosed
 ```
 
-Jedna vůle uživatele smí vytvořit maximálně jeden auditovaný click. Pointer move, drag frame a animace se nepočítají.
+Později:
 
-## 5. Runtime provider
+```text
+metric.packetCreated
+audit.discrepancyRaised
+delegation.activityGenerated
+delegation.trainingCompleted
+```
 
-Doporučený mezikrok:
+## 5. ClickAudit flow
+
+### Raw click
+
+```text
+intentional K0rp_OS pointer down
+→ clickaudit.click(profile/source)
+→ raw click stat
+```
+
+Žádná Evidence ani přímý Audit Pressure.
+
+### Batch boundary
+
+```text
+25 nových raw clicks od batch baseline
+→ clickaudit.batchCompleted
+→ create packet.clickaudit.manual-25 instance
+```
+
+Packet creation musí být idempotentní.
+
+### Audit instance
+
+```text
+pending ClickAudit packet
+→ offer/create Audit 10-A instance
+→ local draft values
+→ audit.formSubmitted
+→ audit.evidenceCertified
+→ packet certified
+→ Evidence +1
+```
+
+Jedna vůle uživatele smí vytvořit maximálně jeden raw click. Jeden submit smí certifikovat maximálně jeden packet.
+
+## 6. Audit interaction bridge
+
+Aktivní field:
+
+```text
+audit field change
+→ clickaudit.click(profile: active-audit-field)
+→ local field state
+```
+
+Hotový audit body:
+
+```text
+click in completed document
+→ clickaudit.click(profile: completed-audit-body)
+→ no data mutation
+```
+
+Drag handle:
+
+```text
+pointer down
+→ clickaudit.click(profile: window-drag-handle)
+→ pointer move does not generate click events
+```
+
+## 7. Runtime provider contract
+
+Doporučené minimum po Tasku 020:
 
 ```text
 KorpRuntimeProvider
-├─ state
+├─ korpState
 ├─ lifetimeStats
 ├─ dispatch(event)
-├─ applyProgressionEffects()
-├─ purchaseUpgrade()
-├─ submitAuditForm()
-├─ unlockQueue
-├─ memoQueue
-├─ save/load
-└─ closeAuditCycle()
+├─ metricPackets
+├─ auditInstances
+├─ createMetricPacket()
+├─ submitAuditInstance()
+├─ certifyEvidence()
+├─ authorization state
+├─ unlock/memo queues
+├─ save/load/reset
+└─ migration helpers
 ```
 
-Standalone moduly nemají držet vlastní izolovaný permanentní `KorpState`, pokud běží uvnitř K0rp_OS. Mohou mít lokální session state, ale globální eventy mají jít do jednoho runtime.
+Window positions, z-index, drag a minimize zůstávají presentation state v KorpOsShell.
 
-## 6. Upgrade effect resolver
-
-Nedoporučuje se přidávat všech 37 upgrades jako další větve do jednoho reducer switch.
+## 8. Resolver order
 
 Minimální pipeline:
 
 ```text
-base event effect
-→ click profile
-→ permanent directives
-→ cycle upgrades
-→ cross-module modifiers
-→ caps and meter rules
-→ stats
-→ certifications
-→ unlocks
-→ memos
+validate event
+→ update raw stats/module-local state
+→ detect natural closure/batch boundary
+→ create packet once
+→ evaluate audit availability
+→ submit audit instance
+→ certify packet once
+→ grant/spend Evidence
+→ apply authorization/unlocks
+→ memos/surface mutations
 → save
 ```
 
-## 7. Initial module visibility
+Upgrade resolver nesmí přidávat všechna pravidla do jednoho obřího switch bez datových boundaries.
+
+## 9. Initial module visibility
 
 První spuštění:
 
 ```text
-system audit surface = visible
-ClickAudit = locked until 00-A submit
+Audit 00-A = visible
+ClickAudit = locked
 Fidget = locked
 Bloom = locked
-Corner Watch = locked
-Button Compliance = locked
 ```
 
-Po dokončení prvního cyklu zůstávají známé moduly viditelné, i když některé procedury vyžadují rychlou reautorizaci.
+Po Audit 00-A:
 
-## 8. Save migration
+```text
+ClickAudit = unlocked
+Evidence = hidden until first certification nebo 0
+pending audits = 0
+```
 
-Přidat verzi progression dat nezávislou na core state:
+Po první Evidence:
+
+```text
+Audit 16-C = available
+```
+
+Po Audit 16-C a Evidence allocation:
+
+```text
+Fidget = authorized/unlocked
+```
+
+## 10. Save migration
+
+Zvýšit samostatně:
 
 ```ts
-progressionDataVersion: "0.1.0-draft"
+schemaVersion
+progressionDataVersion
 ```
 
-Save nesmí ukládat celé definice. Ukládá jen ID a stav:
+Při migraci v0.2 save:
 
-```ts
-ownedUpgradeIds: string[];
-acknowledgedMemoIds: string[];
-certifiedModuleIds: string[];
-submittedFormIds: string[];
-auditFindings: number;
-cycleNumber: number;
+```text
+clickBatchBaseline = current raw click count
+metricPackets = []
+auditInstances = []
 ```
 
-## 9. První implementační slice
+Důvod: neudělit retroaktivní packets/Evidence za starý prototypový click history.
 
-Doporučené pořadí:
+Save ukládá:
 
-1. progression package + validation;
-2. lifetime stats;
-3. Audit 00-A;
-4. všechny audit field interactions emitují clicks;
-5. ClickAudit batch 25;
-6. formulář 10-A;
-7. Fidget `sessionSettled`;
-8. Bloom `waveAdvanced`;
-9. local save;
-10. teprve potom Button/Corner a prestige.
+```text
+metric packet instances
+audit instances
+resources/stats
+authorizations
+owned upgrades
+unlocked modules/memos
+one-time submitted forms
+```
 
-## 10. Co zatím neimplementovat
+Neukládá celé definitions.
+
+## 11. Data migration tasks
+
+### Task 020
+
+Runtime + minimal data needed for ClickAudit packet and Audit 10-A.
+
+### Task 021
+
+Evidence authorization and Audit 16-C.
+
+### Task 022
+
+Asset-backed Fidget surface.
+
+### Task 023
+
+Fidget packet and shared backlog.
+
+### Task 024
+
+Full reconciliation:
+
+- resources metadata;
+- events;
+- audit forms;
+- upgrades;
+- CSV balance;
+- first-cycle phases;
+- validation;
+- docs/package parity.
+
+## 12. What not to implement yet
 
 - cloud sync;
-- daily streak;
-- raw event telemetry mimo lokální save;
-- Reorganization druhého stupně;
-- procedurální generování formulářů;
-- všech 37 upgrades naráz;
-- audio systém bez společných density limits;
-- Attention Runner před dokončením první closure smyčky.
+- overlay;
+- generic BPMN/workflow engine;
+- all packet sources at once;
+- all 37 upgrades at once;
+- delegation before backlog playtest;
+- procedurally generated audit prose;
+- fake manual clicks from assistants;
+- external raw activity telemetry.
+
+## 13. Validation additions
+
+Task 024 validation má kontrolovat:
+
+- unique packet definition IDs;
+- valid metric/event/module references;
+- valid audit template references;
+- valid Evidence resource reference;
+- one-time versus repeatable audit semantics;
+- no missing packet definition in first-cycle phases;
+- no early direct raw-action currency effect;
+- deterministic save migration version.
