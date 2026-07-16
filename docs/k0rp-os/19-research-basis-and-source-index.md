@@ -1,6 +1,6 @@
 # K0rp_OS — Research Basis and Source Index
 
-Verze: 0.2.0  
+Verze: 0.3.0  
 Účel: dohledatelnost designových rozhodnutí, nikoli tvrzení o klinickém účinku.
 
 ## 1. Interní source of truth
@@ -21,7 +21,7 @@ Verze: 0.2.0
 - `11-typography-and-brand.md`
 - `12-platform-workflow.md`
 
-### Nový design layer
+### Progression a implementation layer
 
 - `13-progression-and-economy.md`
 - `14-sensory-feedback.md`
@@ -29,6 +29,18 @@ Verze: 0.2.0
 - `16-playtest-checklist.md`
 - `17-first-cycle-balance.md`
 - `18-desktop-surface-progression.md`
+- `20-core-loop.md`
+
+### Interní autorská syntéza
+
+Canonical core loop vychází z interních designových úvah ZB-036 a ZB-037:
+
+- ZB-036 — qualification versus capability, Acting Lead Paradox, kariérní trychtýř a člověk jako provozní most pro autorizaci ostatních;
+- ZB-037 — raw metrika, auditní certifikace, Evidence, prokrastinační nástroje, backlog a delegace vlastní prokrastinace.
+
+Tyto zdroje nejsou veřejný lore dump ani technická specifikace. Mechanická rozhodnutí z nich jsou vytažena do `20-core-loop.md`. Hlas z chodby formulace, glosy a archivní věty zůstávají content bank pro budoucí mema, incidenty a oznámení.
+
+Skrytá autorská meta rovina se z těchto poznámek nesmí převádět do explicitního vysvětlení publiku.
 
 ### Machine-readable database
 
@@ -37,6 +49,8 @@ Verze: 0.2.0
 - `packages/korp-progression/data/first-cycle.balance.csv`
 - `packages/korp-progression/data/upgrade-catalog.csv`
 - `packages/korp-progression/data/memo-catalog.csv`
+
+Machine-readable first-cycle data na `main` po Tasku 019 stále částečně reprezentují v0.2 ekonomiku. Migration contract je v `packages/korp-progression/docs/first-cycle-rfc.md` a `integration-map.md`.
 
 ## 2. Akademické a odborné zdroje
 
@@ -51,6 +65,11 @@ Použití:
 - offline progress;
 - přechod od manuální činnosti ke správě systému;
 - taxonomie idle mechanik.
+
+K0rp inference:
+
+- přechod do idle vrstvy má vzniknout delegací rutiny až po zažití manuálního problému;
+- automatizace generuje dohled a výjimky, ne falešné manuální metriky.
 
 ### Reward prediction error
 
@@ -104,6 +123,11 @@ Reference:
 - aktivní krátká combo windows uvnitř idle struktury;
 - ascension a rychlejší návrat.
 
+K0rp odlišení:
+
+- raw klik není spendable currency;
+- hlavní eskalace je byrokratická hustota, ne click multiplier inflation.
+
 Official: [Cookie Clicker on Steam](https://store.steampowered.com/app/1454400/Cookie_Clicker/)
 
 ### AdVenture Capitalist
@@ -113,6 +137,11 @@ Reference:
 - ruční proces před automatizací;
 - manažer jako odstranění známé rutiny;
 - reset jako rychlý průchod starou cestou.
+
+K0rp odlišení:
+
+- stážista nevyrábí falešné manuální kliky;
+- delegace vytváří auditní chyby, výjimky a dohled.
 
 Official: [AdVenture Capitalist on Steam](https://store.steampowered.com/app/346900/AdVenture_Capitalist/)
 
@@ -175,11 +204,15 @@ Official: [Click and Conquer on Steam](https://store.steampowered.com/app/326790
 Následující jsou syntézy, nikoli přímé výsledky jednoho experimentu:
 
 - nejhodnotnější unlock mění pravidlo nebo surface;
-- automatizace má převzít rutinu, ne odstranit hračku;
+- aktivita a institucionalizovaná Evidence jsou odlišné vrstvy;
+- automatizace má převzít rutinu, ne falšovat manuální metriku;
+- delegace má přijít až po skutečně pocítěném backlogu;
+- automatizace vytváří kontrolu, výjimky a nové audity;
 - prestige má zrychlit starou cestu a otevřít nový systém;
 - desktop artifact může být silnější odměna než achievement badge;
 - finite closure a možnost odejít jsou legitimní součást retention designu;
-- auditory/visual feedback sám neutáhne dlouhou progresi bez systémové evoluce.
+- auditory/visual feedback sám neutáhne dlouhou progresi bez systémové evoluce;
+- byrokratická hustota může nahradit astronomickou number inflation jako hlavní spektákl.
 
 ## 5. Guardrails
 
@@ -189,13 +222,17 @@ Dokumentace nesmí tvrdit:
 - že konkrétní interakce produkuje určitou dávku dopaminu;
 - že každý tactile zvuk je ASMR;
 - že variable rewards musí být hlavní cestou k progresu;
-- že FOMO je nutná součást incremental hry.
+- že FOMO je nutná součást incremental hry;
+- že interní autorské bláboly jsou empirický výzkum;
+- že satirická mechanika je doslovným popisem konkrétní firmy nebo osoby.
 
 ## 6. Source update rule
 
-Při přidání nového research-driven systému:
+Při přidání nového research-driven nebo interně syntetizovaného systému:
 
 1. přidat zdroj nebo jasně označit inference;
 2. uvést, který dokument a konstanta z něj vycházejí;
 3. neodvozovat klinické tvrzení z hráčských recenzí;
-4. oddělit inspiraci, implementaci a playtest výsledek.
+4. oddělit inspiraci, implementaci a playtest výsledek;
+5. interní osobní materiál převést na obecný mechanismus, ne na identifikovatelný pracovní záznam;
+6. skrytou meta rovinu nepřevádět do explicitního produktového vysvětlení.
