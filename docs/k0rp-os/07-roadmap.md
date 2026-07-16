@@ -1,37 +1,49 @@
 # K0rp_OS — Roadmap
 
-Verze: 0.2.0 pracovní návrh
+Verze: 0.3.0 pracovní návrh
 
 ## 0. Status dokumentu
 
-Roadmap zachovává původní produktovou osu, ale upravuje implementační pořadí podle:
+Roadmap po Tasku 019 zachovává fake-desktop produktovou osu, ale nově podřizuje další implementaci canonical core loopu:
 
-- incremental/idle design research,
-- první progression databáze,
-- audit-first onboarding flow,
-- canonical fake-desktop fantasy,
-- požadavku na standalone/web/overlay surfaces,
-- současného stavu repa.
+```text
+raw metrika
+→ auditovatelná dávka
+→ audit
+→ Evidence
+→ autorizace nového systému
+```
 
-Současné appky ClickAudit, Fidget a Bloom se tímto dokumentem nerefundují ani nemění jejich lokální gameplay. Integrace probíhá přes bridge a společný runtime.
+Canonical herní kontrakt je v `20-core-loop.md`.
+
+Aktuální stav:
+
+- Fáze 0–5 mají funkční baseline na `main`;
+- Audit 00-A, ClickAudit, společný runtime, lokální persistence, window manager a asset-backed ClickAudit jsou integrovány;
+- runtime a progression data stále částečně používají v0.2 přímý `click → resource` model;
+- Fáze 6 je první ekonomická migrace, ne další vizuální prototyp.
+
+Současné standalone appky ClickAudit, Fidget a Bloom se neruší. Integrace probíhá přes společné module surface, bridge a runtime contracts.
 
 ## Fáze 0 — Current consolidation
 
+Status: baseline dokončen.
+
 Cíl: Nezbourat, co už funguje.
 
-- dokončit app-specific polish;
-- nevracet se k velkému shared-shell refactoru;
+- app-specific polish;
+- žádný další velký shared-shell refactor bez důvodu;
 - zachovat standalone ClickAudit, Fidget a Bloom;
-- main je source of truth;
+- `main` je source of truth;
 - Windows je primary desktop target.
 
 ## Fáze 1 — Docs, source index a progression RFC
 
-Cíl: Pojmenovat systém před dalším runtime vývojem.
+Status: baseline dokončen, v0.3 core-loop update probíhá.
 
 Výstupy:
 
-- docs `00–19`;
+- docs `00–20`;
 - progression/economy;
 - sensory feedback;
 - unlocks/memos/system mutations;
@@ -43,91 +55,198 @@ Výstupy:
 
 ## Fáze 2 — Existing core and registry baseline
 
-Status: základ existuje.
+Status: dokončeno.
 
 - `packages/korp-core`;
 - `packages/korp-modules`;
 - typed events/resources;
 - manifest registry;
-- ClickAudit bridge;
 - testy.
 
 Další práce musí být inkrementální, ne kompletní přepis.
 
 ## Fáze 3 — Progression package integration
 
-Cíl: Přidat datový source of truth bez změny současných appek.
+Status: základ integrován.
 
 - typecheck `packages/korp-progression`;
 - validace referencí;
 - resource metadata;
 - forms, upgrades, memos, certifications, prestige constants;
 - surface mutation constants;
-- žádné UI změny v tomto kroku.
+- datový source of truth pro Audit 00-A a 10-A.
+
+Strojová data budou ve Fázi 6–9 přebalancována na Evidence model.
 
 ## Fáze 4 — Shared runtime and local persistence
 
-Cíl: Jeden global KorpState pro K0rp_OS.
+Status: dokončeno pro první slice.
 
 - `KorpRuntimeProvider`;
 - lifetime stats;
+- progression state;
 - local save/load;
-- save migrations;
-- unlock/memo/surface queues;
-- import/export JSON;
+- bezpečný versioned save envelope;
+- module/memo/form unlock state;
 - standalone moduly si smějí ponechat local session state.
+
+Ještě chybí packet queue, repeatable audit instances, import/export a plné migrations.
 
 ## Fáze 5 — Canonical desktop vertical slice
 
-Cíl: Definovat celou hru v malém.
+Status: dokončeno.
 
 ```text
-Identity Assignment
-→ prázdná plocha
+prázdná plocha
 → Audit 00-A jako dokument
 → audit field clicks
 → ClickAudit shortcut
 → první memo v Doručených
-→ ClickAudit jako interní okno
+→ ClickAudit jako interní asset-backed okno
+```
+
+Hotové minimum:
+
+- fake desktop;
+- taskbar;
+- window manager;
+- folders/files;
+- fixed canvas;
+- wallpaper;
+- official fonts;
+- globální K0rp_OS click classification;
+- lokální privacy-safe persistence.
+
+## Fáze 6 — Metric → Audit → Evidence vertical slice
+
+Status: další implementační priorita.
+
+Cíl: Dokázat skutečný ekonomický motor hry v jednom malém oblouku.
+
+```text
+25 raw ClickAudit interakcí
+→ pending metric packet
+→ opakovatelný Audit 10-A
+→ audit.evidenceCertified
+→ Evidence +1
 ```
 
 Požadavky:
 
-- fake desktop od prvního hratelného buildu;
-- taskbar;
-- basic window manager;
-- folders/files;
-- žádný launcher plný všech modulů;
-- privacy status viditelný.
+- `clickaudit.click` zůstává doslovná raw metrika;
+- raw klik nepřidává spendable currency;
+- `clickaudit.batchCompleted` vytváří pending packet, ne reward;
+- packet je persistovaný a certifikovatelný právě jednou;
+- Audit 10-A je audit instance navázaná na konkrétní packet;
+- technické `notionalWorkUnits` se hráčsky prezentuje jako `Evidence / EV`;
+- taskbar ukazuje pouze Evidence a počet pending auditů;
+- existující saves nedostanou retroaktivně desítky packetů;
+- žádní stážisti, Fidget ani plný upgrade shop v tomto tasku.
 
-## Fáze 6 — First audit loop
+Completion gate:
 
-Cíl: Prvních 20–35 minut.
+```text
+nová hra
+→ Audit 00-A
+→ ClickAudit
+→ 25 kliků
+→ právě 1 pending packet
+→ submit 10-A
+→ právě 1 Evidence
+→ refresh zachová stav
+```
 
-- `clickaudit.batchCompleted`;
-- formulář 10-A;
-- první procedure upgrade;
-- anti-spam click yield;
-- Forms folder;
-- první system mutation;
-- první shift closure bez prestige.
+## Fáze 7 — Evidence authorization and Fidget
 
-## Fáze 7 — Current modules connected
+Cíl: Uzavřít první celý loop a přidat druhý druh raw metriky.
+
+Pořadí:
+
+1. Evidence authorization contract;
+2. Audit 16-C dostupný po první Evidence;
+3. alokace/spotřeba Evidence na povolení;
+4. asset-backed Fidget module surface v K0rp_OS;
+5. samostatná Fidget session state;
+6. `fidget.sessionSettled` jako první non-click raw metric closure.
+
+Completion gate:
+
+```text
+Evidence 1
+→ Audit 16-C
+→ Evidence alokována
+→ Fidget shortcut
+→ skutečná Fidget session
+```
+
+Fidget nesmí být odemčen pouze skrytým thresholdem NWU/AP. Musí být autorizován výsledkem auditního procesu.
+
+## Fáze 8 — Second metric, repeatable audits and backlog
+
+Cíl: Prokázat, že core loop není hardcoded pouze pro ClickAudit.
+
+- Fidget session vytvoří stabilization packet;
+- packet dostane vlastní repeatable audit template;
+- certifikace vytvoří Evidence;
+- Formuláře zobrazí queue a počet čekajících položek;
+- Audit Pressure se začne odvozovat z backlogu, stáří a nesrovnalostí;
+- hráč musí backlog skutečně pocítit;
+- žádná delegace před playtestem tohoto kroku.
+
+Completion gate:
+
+```text
+ClickAudit packet i Fidget packet
+→ stejný packet/audit framework
+→ různé raw metriky
+→ společná Evidence
+```
+
+## Fáze 9 — Delegation prototype
+
+Cíl: Převést ruční incremental loop do management vrstvy až ve chvíli, kdy existuje problém k delegování.
+
+První stážista:
+
+- generuje `delegated` raw activity, ne manual clicks;
+- může předvyplnit audit;
+- nemůže finálně certifikovat Evidence;
+- vytváří chyby a nesrovnalosti;
+- vyžaduje supervision;
+- může později školit další jednotku bez získání plné autorizace.
+
+Mechanický motiv:
+
+```text
+capability ≠ authorization
+operational responsibility ≠ formal ownership
+```
+
+Completion gate:
+
+- delegace snižuje rutinní práci;
+- současně vytváří alespoň jeden nový typ auditní povinnosti;
+- automatizace není pouze `+x/sec` do manuálního counteru.
+
+## Fáze 10 — Current modules connected
 
 Cíl: Připojit současnou trojici beze změny jejich lokální identity.
 
-- Fidget events + `fidget.sessionSettled`;
+- Fidget je dokončen ve Fázích 7–8;
 - Bloom events + `bloom.waveAdvanced`;
+- Bloom packet/audit conversion;
 - shortcuts instalované progressionem;
 - cross-module modifiers;
 - společný save;
 - standalone bridge policy.
 
-## Fáze 8 — First-cycle content and prestige
+Bloom je třetí důkaz, že stejný loop unese prostorovou/statusovou činnost, ne jen klik a rotaci.
 
-Cíl: 4–5 hodin do prvního `UZAVŘENÍ AUDITNÍHO CYKLU`.
+## Fáze 11 — First-cycle content and prestige
 
-- Button Compliance jako první nový administrativní modul;
+Cíl: Sestavit první uzavíratelný auditní cyklus po ověření core loopu.
+
+- Button Compliance;
 - Corner Watch jako screensaver/idle surface;
 - certifikace;
 - 6–8 mem;
@@ -136,9 +255,11 @@ Cíl: 4–5 hodin do prvního `UZAVŘENÍ AUDITNÍHO CYKLU`.
 - archive/reboot/build mutation;
 - post-prestige Bublinková Fólie.
 
+Dřívější target 4–5 hodin je provisional. Nový balance pass vznikne až po Metric → Audit → Evidence a backlog playtestu.
+
 Bubble Wrap je hlavní nový-system reward prvního prestige, ne jen násobitel.
 
-## Fáze 9 — Sensory foundation
+## Fáze 12 — Sensory foundation
 
 Cíl: Společná kvalita tactile feedbacku.
 
@@ -154,15 +275,15 @@ Cíl: Společná kvalita tactile feedbacku.
 
 Tato fáze musí být hotová před finalizací Bubble Wrap, Newtonovy kolíbky a Surface Compliance.
 
-## Fáze 10 — First expansion v0.4
+## Fáze 13 — First expansion
 
 Pořadí podle engine value:
 
-1. Button Compliance — testuje approvals, forms a exceptions.
-2. Corner Watch — testuje screensaver, idle/offline reporting.
-3. Bublinková Fólie — testuje sensory system a post-prestige new-system reward.
+1. Button Compliance — approvals, forms a exceptions.
+2. Corner Watch — screensaver, idle/offline reporting.
+3. Bublinková Fólie — sensory system a post-prestige new-system reward.
 
-## Fáze 11 — Desk Object / ASMR v0.5
+## Fáze 14 — Desk Object / ASMR
 
 - Newtonova Kolíbka;
 - Zenová Zahrádka;
@@ -170,7 +291,7 @@ Pořadí podle engine value:
 - free mode i procedural mode;
 - přirozené closure events.
 
-## Fáze 12 — Care / Cleaning / Alignment v0.6
+## Fáze 15 — Care / Cleaning / Alignment
 
 - Surface Compliance;
 - Shape Compliance;
@@ -179,25 +300,25 @@ Pořadí podle engine value:
 - material-specific feedback;
 - hidden surface files/memos.
 
-## Fáze 13 — Attention Corruption v0.7
+## Fáze 16 — Attention Corruption
 
 - Attention Runner;
 - companion strip;
 - low-input mode;
 - nesmí převzít hlavní ekonomiku ani změnit K0rp_OS v běžnou arcade kolekci.
 
-## Fáze 14 — Standalone hardening
+## Fáze 17 — Standalone hardening
 
 Cíl: Moduly opravdu vytrhnutelné z OS.
 
-- stejné module implementation;
+- stejná module implementation;
 - detached windows;
 - unlinked local mode;
 - linked aggregate bridge;
 - portable settings;
 - Windows release validation.
 
-## Fáze 15 — Web fallback
+## Fáze 18 — Web fallback
 
 - browser fake desktop;
 - stejné progression IDs;
@@ -205,7 +326,7 @@ Cíl: Moduly opravdu vytrhnutelné z OS.
 - module cards/download portal jako sekundární vstup;
 - jasně popsané native limitations.
 
-## Fáze 16 — Overlay MVP
+## Fáze 19 — Overlay MVP
 
 - Windows-first always-on-top bar;
 - K0rp-only mode;
@@ -214,7 +335,7 @@ Cíl: Moduly opravdu vytrhnutelné z OS.
 - žádné raw app names, URL, text, screenshots ani keylogging;
 - platform-specific bridge mimo `korp-core`.
 
-## Fáze 17 — Account / sync
+## Fáze 20 — Account / sync
 
 Až po stabilním local-first systému.
 
@@ -223,7 +344,7 @@ Až po stabilním local-first systému.
 - export/delete;
 - žádný raw activity sync.
 
-## Fáze 18 — Content expansion
+## Fáze 21 — Content expansion
 
 - memo bank;
 - knowledge base;
@@ -231,17 +352,25 @@ Až po stabilním local-first systému.
 - training materials;
 - fake incidents;
 - procedural announcements;
-- nové moduly přes core/progression/surface contracts.
+- nové moduly přes metric/packet/audit/surface contracts.
 
 ## Gate pravidla
 
 Každá fáze musí splnit alespoň jedno:
 
 - posílí core/runtime;
+- prokáže další raw metric přes stejný audit framework;
 - přidá data přes progression package;
 - přidá surface mutation;
 - integruje jeden modul bez změny ostatních;
 - prokazatelně zlepší sensory/accessibility;
 - projde playtest gate.
+
+Zakázané pokračování:
+
+- další modul bez vazby na metric/audit/Evidence loop;
+- automatizace před vznikem skutečné rutinní bolesti;
+- nový player-facing resource jen proto, že pro něj existuje zkratka;
+- další přímý `raw action → currency` reward.
 
 > Pokud jen přidává další izolovanou hračku, je to scope creep v reflexní vestě.
