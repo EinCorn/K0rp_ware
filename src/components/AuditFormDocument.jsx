@@ -116,6 +116,14 @@ export default function AuditFormDocument({
   values,
   submitted,
   headingId = 'audit-title',
+  documentLabel,
+  introText = 'Vyplňte všechna povinná pole. Rozsah auditu byl omezen na minimum, které lze stále nazvat auditem.',
+  pendingStatusText = 'ČEKÁ NA POTVRZENÍ PŘÍTOMNOSTI',
+  readyStatusText = 'POVINNÁ POLE SPLNĚNA',
+  completionHeadingLabel,
+  completionTitle = 'PŘÍTOMNOST PŘIJATA',
+  completionDetail = 'DOKUMENT SPLNĚN / MÍSTNĚ ULOŽENO',
+  completionNote = 'Auditní stopa byla předána modulu ClickAudit. Odpověď již nelze zpětně učinit méně přítomnou.',
   onFieldChange,
   onSubmit,
 }) {
@@ -131,21 +139,22 @@ export default function AuditFormDocument({
     )
   }
 
+  const activeDocumentLabel = documentLabel ?? `STARTUP PROCEDURA / FORMULÁŘ ${form.code}`
+  const closedDocumentLabel = completionHeadingLabel ?? `FORMULÁŘ ${form.code} / UZAVŘENÝ ZÁZNAM`
+
   if (submitted) {
     return (
       <div className="os-audit-document is-submitted" data-clickaudit-profile="completed-audit-body">
         <div className="os-audit-document-heading">
-          <p>FORMULÁŘ {form.code} / UZAVŘENÝ ZÁZNAM</p>
+          <p>{closedDocumentLabel}</p>
           <h1 id={headingId}>{form.title}</h1>
         </div>
         <div className="os-audit-completion-stamp">
           <span>✓</span>
-          <strong>PŘÍTOMNOST PŘIJATA</strong>
-          <small>DOKUMENT SPLNĚN / MÍSTNĚ ULOŽENO</small>
+          <strong>{completionTitle}</strong>
+          <small>{completionDetail}</small>
         </div>
-        <p className="os-audit-document-note">
-          Auditní stopa byla předána modulu ClickAudit. Odpověď již nelze zpětně učinit méně přítomnou.
-        </p>
+        <p className="os-audit-document-note">{completionNote}</p>
       </div>
     )
   }
@@ -160,9 +169,9 @@ export default function AuditFormDocument({
       }}
     >
       <div className="os-audit-document-heading">
-        <p>STARTUP PROCEDURA / FORMULÁŘ {form.code}</p>
+        <p>{activeDocumentLabel}</p>
         <h1 id={headingId}>{form.title}</h1>
-        <span>Vyplňte všechna povinná pole. Rozsah auditu byl omezen na minimum, které lze stále nazvat auditem.</span>
+        <span>{introText}</span>
       </div>
 
       <div className="os-audit-fields">
@@ -179,7 +188,7 @@ export default function AuditFormDocument({
 
       <div className="os-audit-submit-row">
         <span className="os-audit-form-status">
-          {complete ? 'POVINNÁ POLE SPLNĚNA' : 'ČEKÁ NA POTVRZENÍ PŘÍTOMNOSTI'}
+          {complete ? readyStatusText : pendingStatusText}
         </span>
         <button type="submit" className="os-audit-submit" disabled={!complete}>
           {submitField?.label ?? 'ODESLAT AUDIT'}
