@@ -12,20 +12,31 @@ const event = (overrides: Partial<KorpEvent>): KorpEvent => ({
 });
 
 describe("applyKorpEvent", () => {
-  it("maps ClickAudit clicks into audit resources and stats", () => {
+  it("records ClickAudit clicks as raw stats without awarding Evidence", () => {
     const state = createInitialState({ now: 1_000 });
     const next = applyKorpEvent(
       state,
       event({ sourceModule: "click-audit", type: "clickaudit.click", value: 2 })
     );
 
-    expect(next.resources.auditPressure).toBe(2);
-    expect(next.resources.notionalWorkUnits).toBeCloseTo(0.2);
-    expect(next.resources.perceivedProductivity).toBeCloseTo(0.1);
+    expect(next.resources.auditPressure).toBe(0);
+    expect(next.resources.notionalWorkUnits).toBe(0);
+    expect(next.resources.perceivedProductivity).toBe(0);
     expect(next.stats.totalEvents).toBe(1);
     expect(next.stats.eventsByType["clickaudit.click"]).toBe(1);
     expect(next.stats.eventsByModule["click-audit"]).toBe(1);
     expect(next.updatedAt).toBe(2_000);
+  });
+
+  it("awards spendable Evidence only through audit certification", () => {
+    const state = createInitialState({ now: 1_000 });
+    const next = applyKorpEvent(
+      state,
+      event({ type: "audit.evidenceCertified", value: 1 })
+    );
+
+    expect(next.resources.notionalWorkUnits).toBe(1);
+    expect(next.stats.eventsByType["audit.evidenceCertified"]).toBe(1);
   });
 
   it("reduces entropy for bubble pops without going below zero", () => {
