@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { createClickAuditInteractionEvents } from '../clickAuditEvents.js'
 
-test('one ClickAudit intention produces exactly one audited click', () => {
+test('one ClickAudit intention produces exactly one audited raw click', () => {
   const events = createClickAuditInteractionEvents({
     timestamp: 1000,
     sequence: 7,
@@ -22,19 +22,14 @@ test('one ClickAudit intention produces exactly one audited click', () => {
   ])
 })
 
-test('the approved trace upgrade adds only its canonical NWU pulse', () => {
+test('raw ClickAudit intentions never emit a spendable reward event', () => {
   const events = createClickAuditInteractionEvents({
     timestamp: 1000,
     sequence: 8,
-    bonusUnlocked: true,
   })
 
-  assert.deepEqual(events.map((event) => event.type), [
-    'clickaudit.click',
-    'system.externalWorkPulse',
-  ])
-  assert.equal(events[1].value, 0.1)
-  assert.equal(events.filter((event) => event.type === 'clickaudit.click').length, 1)
+  assert.deepEqual(events.map((event) => event.type), ['clickaudit.click'])
+  assert.equal(events.some((event) => event.type === 'system.externalWorkPulse'), false)
 })
 
 test('generated event ids remain sequence specific', () => {
