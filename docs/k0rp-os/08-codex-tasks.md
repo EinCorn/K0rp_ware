@@ -364,7 +364,7 @@ Přenést existující hotový Fidget do K0rp_OS stejně věrně jako ClickAudit
 
 ## Task 022A — Canonical icon pack integration
 
-Status: **CURRENT / IMPLEMENTOVÁNO** — canonical source, runtime subset, sémantický katalog a současné K0rp_OS surface čekají na Windows visual gate a merge.
+Status: **DONE / MERGED** — canonical source, runtime subset, sémantický katalog a současné K0rp_OS icon surface jsou na `main` v PR #37.
 
 ### Source a runtime contract
 
@@ -398,9 +398,50 @@ Status: **CURRENT / IMPLEMENTOVÁNO** — canonical source, runtime subset, sém
 - nevymýšlet state/control mapping, který manifest neobsahuje;
 - nekopírovat pack do jednotlivých desktop apps.
 
+## Task 022A(2.1) — K0rp_OS UI assets V3 source ingestion and validator
+
+Status: **CURRENT / IMPLEMENTOVÁNO** — exact raw snapshot, normalizovaný inventory, offline validator a pilot allowlist jsou připravené bez player-visible změny.
+
+### Source a validační hranice
+
+- canonical raw snapshot je `design/ui-source/k0rp-os-ui-assets-v3/`;
+- `design/ui-runtime/k0rp-v3/inventory.json` je deterministicky generovaný machine-readable inventory;
+- `design/ui-runtime/k0rp-v3/runtime-allowlist.json` je explicitní 45-ID boundary pouze pro 022A(2.2);
+- `npm run build:korp-ui-assets` přegeneruje pouze inventory mimo raw root;
+- `npm run validate:korp-ui-assets` offline kontroluje JSON, ID/path uniqueness, path safety, PNG/WebP dimensions, content rectangles, cap insets, materializované nine-slice families, atlasy, window metrics, checksums, allowlist, generated drift a zákaz raw importů i byte-identical kopií do runtime source.
+
+### Canonical snapshot
+
+- 1 494 souborů / 16 733 914 bajtů;
+- 493 semantic assets: 436 production a 57 reference;
+- 493 native PNG + 493 nearest-neighbour `@2x` PNG + 493 lossless WebP;
+- 109 cap-inset declarations, ale pouze 11 explicitně materializovaných nine-slice families / 99 pieces;
+- 4 atlas sheets / 48 frames a 8 konzistentních window families;
+- žádné duplicate ID/path, chybějící production assety, dimension mismatch, unsafe path ani orphaned payloady.
+
+### Známé non-blocking source vady
+
+- checksums obsahují 106 stale cest k záměrně nepřítomnému nested icon snapshotu; autoritou zůstává `design/icon-source/k0rp-icons-v2`;
+- checksums obsahují šest stale auxiliary QA sheet cest;
+- README uvádí top-level `nine_slice/`, zatímco skutečné pieces jsou pod `assets/{native,2x,webp}/nine_slice`;
+- README a `tokens.json` tvrdí, že nested icon snapshot je součástí kitu, ale canonical icons jsou vedené odděleně.
+
+### Do not
+
+- neimportovat raw V3 source do React/CSS ani jej nekopírovat do `src/assets`, `public` nebo desktop runtime folders;
+- neměnit raw pixely nebo metadata kvůli umlčení warningů;
+- negenerovat druhý icon catalog;
+- neměnit současný rendering, gameplay, persistence, window manager ani ClickAudit/Fidget surface.
+
+## Task 022A(2.2) — Audit 00-A + Formuláře window-chrome pilot
+
+Status: **NEXT VISUAL STEP** — první runtime selection z ověřeného V3 source.
+
+Pilot je omezený na Audit/Folder frame a content families, jejich explicitní nine-slice pieces, active/inactive titlebar, close/minimize states, blank Audit checkbox/radio/button states a blank folder row. `composite_blank` zůstává alternativou mimo allowlist, baked document templates nejsou runtime copy a canonical icons ani ClickAudit/Fidget app windows se nemění.
+
 ## Task 023 — Fidget metric packet and first real backlog
 
-Status: **NEXT** — Fidget session closure, packet a první skutečný backlog.
+Status: **NEXT GAMEPLAY AFTER BOUNDED VISUAL PASS** — Fidget session closure, packet a první skutečný backlog.
 
 ### Cíl
 

@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "targetTask": "022A(2.2)",
+  "scope": "Audit 00-A and Formulare window-chrome pilot",
+  "sourceRoot": "design/ui-source/k0rp-os-ui-assets-v3",
+  "copyAssets": false,
+  "groups": [
+    {
+      "id": "audit-window-family",
+      "purpose": "Audit 00-A frame, content surface and derived nine-slice pieces",
+      "assetIds": [
+        "window.audit.content",
+        "window.audit.frame",
+        "window.audit.frame.slice.b",
+        "window.audit.frame.slice.bl",
+        "window.audit.frame.slice.br",
+        "window.audit.frame.slice.c",
+        "window.audit.frame.slice.l",
+        "window.audit.frame.slice.r",
+        "window.audit.frame.slice.t",
+        "window.audit.frame.slice.tl",
+        "window.audit.frame.slice.tr"
+      ]
+    },
+    {
+      "id": "forms-folder-window-family",
+      "purpose": "Formulare folder frame, content/list surfaces and derived nine-slice pieces",
+      "assetIds": [
+        "window.folder.content",
+        "window.folder.frame",
+        "window.folder.frame.slice.b",
+        "window.folder.frame.slice.bl",
+        "window.folder.frame.slice.br",
+        "window.folder.frame.slice.c",
+        "window.folder.frame.slice.l",
+        "window.folder.frame.slice.r",
+        "window.folder.frame.slice.t",
+        "window.folder.frame.slice.tl",
+        "window.folder.frame.slice.tr",
+        "window.folder.list_surface"
+      ]
+    },
+    {
+      "id": "standard-titlebar-materials",
+      "purpose": "Active and inactive blank titlebar materials shared by the two pilot windows",
+      "assetIds": [
+        "titlebar.active.blank",
+        "titlebar.inactive.blank"
+      ]
+    },
+    {
+      "id": "pilot-window-controls",
+      "purpose": "Close and minimize controls in every declared interaction state",
+      "assetIds": [
+        "control.window.close.disabled",
+        "control.window.close.hover",
+        "control.window.close.normal",
+        "control.window.close.pressed",
+        "control.window.minimize.disabled",
+        "control.window.minimize.hover",
+        "control.window.minimize.normal",
+        "control.window.minimize.pressed"
+      ]
+    },
+    {
+      "id": "audit-basic-controls",
+      "purpose": "Blank checkbox, radio and audit button states required by the dynamic Audit 00-A form",
+      "assetIds": [
+        "button.audit.disabled",
+        "button.audit.hover",
+        "button.audit.normal",
+        "button.audit.pressed",
+        "check.checkbox.disabled",
+        "check.checkbox.mixed",
+        "check.checkbox.off",
+        "check.checkbox.on",
+        "check.radio.disabled",
+        "check.radio.off",
+        "check.radio.on"
+      ]
+    },
+    {
+      "id": "forms-folder-rows",
+      "purpose": "Blank resizable folder row; current dynamic status text remains authoritative",
+      "assetIds": [
+        "document.list_row.blank"
+      ]
+    }
+  ],
+  "exclusions": [
+    "No raw asset is copied into the Vite graph by this allowlist.",
+    "Canonical icons continue to come only from design/icon-source/k0rp-icons-v2.",
+    "Reference screens and baked document templates are not runtime copy.",
+    "ClickAudit and Fidget retain their existing canonical module surfaces."
+  ]
+}
