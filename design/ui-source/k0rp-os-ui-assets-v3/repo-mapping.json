@@ -1,0 +1,17 @@
+{
+  "repo": "EinCorn/K0rp_ware",
+  "branch": "main",
+  "docs": [
+    "docs/k0rp-os/01-visual-style.md",
+    "docs/k0rp-os/06-screen-concepts.md",
+    "docs/k0rp-os/09-module-backlog.md",
+    "docs/k0rp-os/11-typography-and-brand.md",
+    "docs/k0rp-os/15-unlocks-memos-and-system-mutations.md",
+    "docs/k0rp-os/18-desktop-surface-progression.md",
+    "docs/k0rp-os/20-core-loop.md"
+  ],
+  "notes": [
+    "App CSS was not used as a visual source.",
+    "Meta layer remains atmospheric and is not represented as an explicit public lore asset."
+  ]
+}
