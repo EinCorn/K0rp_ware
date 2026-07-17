@@ -22,7 +22,8 @@ Aktuální stav:
 - Audit 00-A, ClickAudit, společný runtime, lokální persistence, packet queue, repeatable Audit 10-A a Evidence certifikace jsou integrovány;
 - `clickaudit.click` je doslovná raw metrika a sama nepřidává spendable resource;
 - Task 021A window placement, dynamické form windows, cascade a close/minimize semantics jsou dokončené a mergnuté;
-- Task 022 je dokončený a mergnutý v PR #35; aktuálním visual preflightem je Task 022A — canonical icon pack integration, po němž zůstává Task 023 dalším gameplay krokem.
+- Task 022 je dokončený a mergnutý v PR #35 a canonical icon integration z Tasku 022A je dokončená v PR #37;
+- aktuální bounded visual pass začíná Taskem 022A(2.1) — V3 UI source ingestion a validator, pokračuje pilotem 022A(2.2) a teprve potom se vrací k Tasku 023 jako dalšímu gameplay kroku.
 
 Současné standalone appky ClickAudit, Fidget a Bloom se neruší. Integrace probíhá přes společné module surface, bridge a runtime contracts.
 
@@ -166,15 +167,18 @@ nová hra
 
 Cíl: Uzavřít první celý loop a přidat druhý druh raw metriky.
 
-Status: Task 021A, Task 021B i Task 022 jsou dokončené a mergnuté. Task 022A je aktuální implementovaný visual preflight; Task 023 je následující gameplay krok.
+Status: Task 021A, Task 021B, Task 022 i canonical icon Task 022A jsou dokončené a mergnuté. Aktuální bounded visual pass je Task 022A(2.1); Task 023 zůstává následujícím gameplay krokem po dokončení vizuálních subtasků 2.1–2.5.
 
 Pořadí:
 
 1. Task 021A — dokončený first-open window placement a dynamický cascade auditních dokumentů;
 2. Task 021B — dokončený Evidence authorization contract z PR #33: Audit 16-C, alokace 1 EV a persistentní Fidget authorization;
 3. Task 022 — dokončený sdílený asset-backed Fidget module surface z PR #35;
-4. Task 022A — aktuální canonical icon pack ingestion, validace a nasazení do existujících ploch bez změny gameplaye;
-5. Task 023 — následující `fidget.sessionSettled` jako první non-click raw metric closure, packet a první skutečný backlog.
+4. Task 022A — dokončená canonical icon pack integrace z PR #37;
+5. Task 022A(2.1) — aktuální exact V3 UI source snapshot, normalizovaný inventory, validator a pilot allowlist bez změny renderingu;
+6. Task 022A(2.2) — následující Audit 00-A + Formuláře window-chrome pilot;
+7. Task 022A(2.3–2.5) — zbývající současná standardní okna, top rail/taskbar a controls/status language;
+8. Task 023 — následující gameplay krok: `fidget.sessionSettled`, packet a první skutečný backlog.
 
 Dokončený Task 021A presentation gate:
 
@@ -212,6 +216,17 @@ npm run validate:korp-icons          manifest, asset, atlas a drift gate
 ```
 
 Aktuálně se nasazují desktopové systémové/module ikony a document-row kategorie. Bloom, další budoucí moduly, pozdější progression folders, native references a neexistující window-control mappings zůstávají pouze katalogizované pro pozdější surface.
+
+Task 022A(2.1) přidává druhou, samostatnou hranici pro V3 UI source:
+
+```text
+design/ui-source/k0rp-os-ui-assets-v3/   exact raw snapshot, bez runtime importů
+design/ui-runtime/k0rp-v3/inventory.json normalizovaný generated inventory
+design/ui-runtime/k0rp-v3/runtime-allowlist.json ručně omezený pilot 022A(2.2)
+npm run validate:korp-ui-assets          offline source, metadata, drift a runtime-boundary gate
+```
+
+Tento krok nekopíruje V3 assety do `src/assets`, nemění React/CSS a ponechává ClickAudit, Fidget i canonical icon source autoritativní v jejich stávajících surface.
 
 ## Fáze 8 — Second metric, repeatable audits and backlog
 

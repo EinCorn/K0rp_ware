@@ -30,6 +30,9 @@ jobs:
       - name: Validate K0rp icons
         run: npm run validate:korp-icons
 
+      - name: Validate K0rp UI assets
+        run: npm run validate:korp-ui-assets
+
       - name: Install korp-core test dependencies
         working-directory: packages/korp-core
         run: npm install --no-package-lock
