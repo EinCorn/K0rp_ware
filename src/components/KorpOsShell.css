@@ -551,6 +551,11 @@
     #d8d1b8;
 }
 
+.os-forms-folder-window .os-folder-body {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 .os-folder-path {
   margin: 0;
   padding: 5px 6px;

@@ -4,7 +4,7 @@ Verze: 0.3.0 pracovní návrh
 
 ## 0. Status dokumentu
 
-Roadmap po Tasku 019 zachovává fake-desktop produktovou osu, ale nově podřizuje další implementaci canonical core loopu:
+Roadmap po dokončeném Tasku 020 / PR #29 zachovává fake-desktop produktovou osu a podřizuje další implementaci canonical core loopu:
 
 ```text
 raw metrika
@@ -18,10 +18,10 @@ Canonical herní kontrakt je v `20-core-loop.md`.
 
 Aktuální stav:
 
-- Fáze 0–5 mají funkční baseline na `main`;
-- Audit 00-A, ClickAudit, společný runtime, lokální persistence, window manager a asset-backed ClickAudit jsou integrovány;
-- runtime a progression data stále částečně používají v0.2 přímý `click → resource` model;
-- Fáze 6 je první ekonomická migrace, ne další vizuální prototyp.
+- Fáze 0–6 mají funkční baseline na `main`;
+- Audit 00-A, ClickAudit, společný runtime, lokální persistence, packet queue, repeatable Audit 10-A a Evidence certifikace jsou integrovány;
+- `clickaudit.click` je doslovná raw metrika a sama nepřidává spendable resource;
+- Fáze 7 začíná window-placement preflightem před Evidence autorizací a Fidget integrací.
 
 Současné standalone appky ClickAudit, Fidget a Bloom se neruší. Integrace probíhá přes společné module surface, bridge a runtime contracts.
 
@@ -90,7 +90,7 @@ Status: dokončeno pro první slice.
 - module/memo/form unlock state;
 - standalone moduly si smějí ponechat local session state.
 
-Ještě chybí packet queue, repeatable audit instances, import/export a plné migrations.
+Packet queue a repeatable audit instances jsou integrovány. Ještě chybí import/export a plný dlouhodobý migration surface.
 
 ## Fáze 5 — Canonical desktop vertical slice
 
@@ -119,16 +119,17 @@ Hotové minimum:
 
 ## Fáze 6 — Metric → Audit → Evidence vertical slice
 
-Status: další implementační priorita.
+Status: dokončeno a mergnuto v Tasku 020 / PR #29.
 
 Cíl: Dokázat skutečný ekonomický motor hry v jednom malém oblouku.
 
 ```text
-25 raw ClickAudit interakcí
-→ pending metric packet
+Audit 00-A nastaví baseline aktuálního raw počtu
+→ první pozdější K0rp_OS klik vytvoří bootstrap packet quantity 1
 → opakovatelný Audit 10-A
 → audit.evidenceCertified
 → Evidence +1
+→ další packety po 25 nových kliknutích
 ```
 
 Požadavky:
@@ -136,6 +137,9 @@ Požadavky:
 - `clickaudit.click` zůstává doslovná raw metrika;
 - raw klik nepřidává spendable currency;
 - `clickaudit.batchCompleted` vytváří pending packet, ne reward;
+- kliky použité pro Audit 00-A jsou mimo packet baseline;
+- první post-unlock klik vytvoří právě jeden quantity-1 bootstrap packet;
+- po bootstrapu se další packety uzavírají po 25 nových kliknutích;
 - packet je persistovaný a certifikovatelný právě jednou;
 - Audit 10-A je audit instance navázaná na konkrétní packet;
 - technické `notionalWorkUnits` se hráčsky prezentuje jako `Evidence / EV`;
@@ -148,22 +152,23 @@ Completion gate:
 ```text
 nová hra
 → Audit 00-A
-→ ClickAudit
-→ 25 kliků
+→ ClickAudit unlock
+→ jeden pozdější klik
 → právě 1 pending packet
 → submit 10-A
 → právě 1 Evidence
 → refresh zachová stav
+→ další audit až po 25 dalších kliknutích
 ```
 
-## Fáze 7 — Evidence authorization and Fidget
+## Fáze 7 — Window preflight, Evidence authorization and Fidget
 
 Cíl: Uzavřít první celý loop a přidat druhý druh raw metriky.
 
 Pořadí:
 
-1. Evidence authorization contract;
-2. Audit 16-C dostupný po první Evidence;
+1. Task 021A — first-open window placement a dynamický cascade auditních dokumentů;
+2. Task 021B — Evidence authorization contract a Audit 16-C dostupný po první Evidence;
 3. alokace/spotřeba Evidence na povolení;
 4. asset-backed Fidget module surface v K0rp_OS;
 5. samostatná Fidget session state;
