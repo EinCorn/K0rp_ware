@@ -1,0 +1,33 @@
+﻿id;title;group;category;accent;meaning;repo
+click-audit;ClickAudit;modules;AUDIT / CONFIRMATION;red;Mechanické počítadlo skutečných kliků. Vlastní identita;
+fidget;Fidget;modules;STABILIZATION;yellow;Tříramenný hmatový spinner;
+bloom;Bloom;modules;CARE / CLEANING;green;Květina vyrůstající ze stavových kamenů;
+corner-watch;Corner Watch;modules;IDLE / SCREENSAVER;red;CRT obrazovka s odrážejícím se znakem a trajektorií k rohu;
+bubble-wrap;Bublinková Fólie;modules;STABILIZATION;pink;Špinavě růžová certifikovaná fólie s plnými a prasklými bublinami.;docs/k0rp-os/01-visual-style.md
+button-compliance;Button Compliance;modules;AUDIT / CONFIRMATION;red;Průmyslový potvrzovací panel s velkým tlačítkem a stavovými kontrolkami.;docs/k0rp-os/09-module-backlog.md
+surface-compliance;Surface Compliance;modules;CARE / CLEANING;orange;Napůl vyčištěná a napůl znečištěná pracovní plocha se stěrkou.;docs/k0rp-os/01-visual-style.md
+shape-compliance;Shape Compliance;modules;ALIGNMENT;yellow;Mechanická deska s tvary, otvory a jedním správně zapadlým dílem.;docs/k0rp-os/09-module-backlog.md
+attention-runner;Attention Runner;modules;ATTENTION SPLIT;orange;Malý běžec v kancelářském koridoru s procesními překážkami.;docs/k0rp-os/01-visual-style.md
+zen-garden;Zenová Zahrádka;modules;DESK OBJECT / CARE;yellow;Písečný box, kámen a hrábě;
+newton-cradle;Newtonova Kolíbka;modules;DESK OBJECT / IDLE;brass;Pět kuliček, jedna vychýlená;
+work-blob;Privacy Work Blob;modules;OVERLAY / PRIVACY;green;Stavový blob se štítem pro plánovaný privacy-safe overlay.;docs/k0rp-os/07-roadmap.md
+audit-generic;Audit — obecný;system;DOCUMENT;red;Clipboard s poli a tužkou. Semantika obecného auditu, nikoli ClickAuditu.;docs/k0rp-os/20-core-loop.md
+audit-packet;Auditní dávka;system;CORE LOOP;red;Balík raw metrik čekající na audit;
+evidence;Evidence / EV;system;CORE LOOP;green;Certifikovaný doklad jako první player-facing spendable měna.;docs/k0rp-os/20-core-loop.md
+inbox;Doručené;system;FOLDER;green;Otevřená složka s příchozím memem.;packages/korp-progression/data/surface-progression.json
+forms;Formuláře;system;FOLDER;red;Složka s kontrolním formulářem a pending stavem.;packages/korp-progression/data/surface-progression.json
+wellbeing;Wellbeing;system;FOLDER;yellow;Kategorie stabilizačních nástrojů označená spinnerem.;docs/k0rp-os/18-desktop-surface-progression.md
+care-alignment;Care & Alignment;system;FOLDER;green;Kategorie péče a zarovnání označená květinou a osovým křížem.;docs/k0rp-os/18-desktop-surface-progression.md
+pending-confirmations;Čekající potvrzení;system;FOLDER;red;Složka s potvrzovacím formulářem, tlačítkem a žlutým pending světlem.;packages/korp-progression/data/surface-progression.json
+certifications;Certifikace;system;DOCUMENT / FOLDER;green;Formální certifikát s pečetí a stuhou.;docs/k0rp-os/15-unlocks-memos-and-system-mutations.md
+knowledge-base;Knowledge Base;system;SYSTEM;blue;Interní manuál spojený s CRT terminálem a informačním symbolem.;docs/k0rp-os/06-screen-concepts.md
+archive;Archiv;system;SYSTEM FOLDER;red;Těžký archivní box s cyklem 01.;packages/korp-progression/data/surface-progression.json
+compliance-bin;Compliance Bin;system;SYSTEM;green;Kovový koš na formuláře;
+folder-closed;Složka — zavřená;system;GENERIC;brass;Kanonická zavřená manila složka pro další kategorie.;docs/k0rp-os/18-desktop-surface-progression.md
+folder-open;Složka — otevřená;system;GENERIC;brass;Stejná rodina jako zavřená složka, ale s viditelnými papíry.;docs/k0rp-os/18-desktop-surface-progression.md
+document;Dokument;system;GENERIC;blue;Obecný dokument se zalomeným rohem.;docs/k0rp-os/06-screen-concepts.md
+memo;Interní memo;system;DOCUMENT;red;Papírové memo v obálce s prioritním pinem a razítkem.;docs/k0rp-os/15-unlocks-memos-and-system-mutations.md
+settings;Nastavení;system;SYSTEM;yellow;Průmyslové ozubené kolo a dvě stavové regulace.;docs/k0rp-os/06-screen-concepts.md
+computer;Tento počítač;system;SYSTEM;green;Starý interní CRT terminál s lokálním promptem.;docs/k0rp-os/00-product-vision.md
+locked-pending;Locked / Pending;system;STATE;yellow;Zamčený modul se shutterem a pending štítkem.;docs/k0rp-os/01-visual-style.md
+audit-cycle;Audit Cycle;system;PRESTIGE / ARCHIVE;blue;Složka uzavřeného cyklu s číslem a kruhovým pohybem.;docs/k0rp-os/18-desktop-surface-progression.md
