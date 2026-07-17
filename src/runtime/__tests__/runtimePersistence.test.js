@@ -30,6 +30,7 @@ const createFreshRuntime = () => ({
   unlockedModuleIds: [],
   metricPackets: [],
   auditInstances: [],
+  moduleAuthorizations: [],
   clickAuditBatchBaseline: 0,
   clickAuditBootstrapArmed: false,
   clickAuditBootstrapCompleted: false,
@@ -114,6 +115,7 @@ const createProgressedRuntime = () => {
       values: { intentionality: 'Nelze potvrdit' },
       submittedAt: 2000,
     })],
+    moduleAuthorizations: [],
     clickAuditBatchBaseline: 8,
     clickAuditBootstrapArmed: false,
     clickAuditBootstrapCompleted: true,
@@ -123,6 +125,13 @@ const createProgressedRuntime = () => {
 const createDraftV2Save = (runtime) => ({
   schemaVersion: 2,
   progressionDataVersion: '0.2.0-draft',
+  savedAt: '2026-07-11T18:00:00.000Z',
+  runtime,
+})
+
+const createTask021ASave = (runtime) => ({
+  schemaVersion: 3,
+  progressionDataVersion: '0.2.1-draft',
   savedAt: '2026-07-11T18:00:00.000Z',
   runtime,
 })
@@ -143,9 +152,16 @@ const loadOptions = () => ({
   createFallback: createFreshRuntime,
 })
 
-test('runtime save round-trips bootstrap state, packets and audit answers', () => {
+test('runtime save round-trips packets, audit answers and module authorization', () => {
   const storage = createMemoryStorage()
   const runtime = createProgressedRuntime()
+  runtime.moduleAuthorizations = [{
+    id: 'fidget',
+    moduleId: 'fidget',
+    sourceFormId: 'audit-16-c',
+    evidenceCost: 1,
+    grantedAt: 1783792700000,
+  }]
 
   assert.equal(saveRuntimeToStorage(storage, runtime, progressionDataVersion, 1783792800000), true)
   assert.deepEqual(loadRuntimeFromStorage(storage, loadOptions()), runtime)
@@ -165,6 +181,7 @@ test('save envelope records schema and progression versions without definitions'
     'korpState',
     'lifetimeStats',
     'metricPackets',
+    'moduleAuthorizations',
     'ownedUpgradeIds',
     'submittedFormIds',
     'unlockedMemoIds',
@@ -172,6 +189,67 @@ test('save envelope records schema and progression versions without definitions'
   ])
   assert.equal('auditForms' in save.runtime, false)
   assert.equal('windows' in save.runtime, false)
+})
+
+test('Task 021A save migrates without changing runtime progress or Evidence', () => {
+  const runtime = createProgressedRuntime()
+  runtime.korpState.resources.notionalWorkUnits = 3
+  runtime.metricPackets.push(createPacket({
+    rangeStart: 9,
+    rangeEnd: 33,
+    quantity: 25,
+    createdAt: 3000,
+  }))
+  runtime.auditInstances.push(createAuditInstance(runtime.metricPackets[1]))
+  delete runtime.moduleAuthorizations
+
+  const expectedRuntime = structuredClone(runtime)
+  const migrated = hydrateRuntimeSave(createTask021ASave(runtime), loadOptions())
+
+  assert.deepEqual(migrated, {
+    ...expectedRuntime,
+    moduleAuthorizations: [],
+  })
+  assert.equal(migrated.korpState.resources.notionalWorkUnits, 3)
+  assert.equal(migrated.korpState.stats.eventsByType['clickaudit.click'], 8)
+  assert.equal(migrated.metricPackets.length, 2)
+  assert.equal(migrated.auditInstances.length, 2)
+})
+
+test('legacy Fidget unlock or permit migrates to at most one free authorization', () => {
+  const legacyStates = [
+    { hasUnlock: true, hasPermit: false },
+    { hasUnlock: false, hasPermit: true },
+    { hasUnlock: true, hasPermit: true },
+  ]
+
+  for (const { hasUnlock, hasPermit } of legacyStates) {
+    const runtime = createProgressedRuntime()
+    runtime.korpState.resources.notionalWorkUnits = 4
+    if (hasUnlock) runtime.unlockedModuleIds.push('fidget')
+    if (hasPermit) runtime.ownedUpgradeIds.push('fidget.access-permit')
+    delete runtime.moduleAuthorizations
+
+    const migrated = hydrateRuntimeSave(createTask021ASave(runtime), loadOptions())
+
+    assert.equal(migrated.korpState.resources.notionalWorkUnits, 4)
+    assert.deepEqual(migrated.moduleAuthorizations, [{
+      id: 'fidget',
+      moduleId: 'fidget',
+      sourceFormId: 'audit-16-c',
+      evidenceCost: 0,
+      grantedAt: 1783792800000,
+    }])
+    assert.equal(migrated.unlockedModuleIds.includes('fidget'), hasUnlock)
+    assert.equal(migrated.ownedUpgradeIds.includes('fidget.access-permit'), hasPermit)
+
+    const reloaded = hydrateRuntimeSave(
+      createRuntimeSave(migrated, progressionDataVersion),
+      loadOptions(),
+    )
+    assert.equal(reloaded.moduleAuthorizations.length, 1)
+    assert.equal(reloaded.korpState.resources.notionalWorkUnits, 4)
+  }
 })
 
 test('legacy v1 saves avoid retroactive packets and arm one future bootstrap click', () => {
@@ -376,6 +454,36 @@ test('loaded ids are unique and completed bootstrap overrides contradictory arme
     save.runtime.auditInstances[0],
     { id: null },
   ]
+  save.runtime.moduleAuthorizations = [
+    {
+      id: 'fidget',
+      moduleId: 'fidget',
+      sourceFormId: 'audit-16-c',
+      evidenceCost: 1,
+      grantedAt: 2000,
+    },
+    {
+      id: 'fidget-duplicate',
+      moduleId: 'fidget',
+      sourceFormId: 'audit-16-c',
+      evidenceCost: 1,
+      grantedAt: 3000,
+    },
+    {
+      id: 'fidget',
+      moduleId: 'bloom',
+      sourceFormId: 'audit-23-b',
+      evidenceCost: 1,
+      grantedAt: 4000,
+    },
+    {
+      id: 'invalid-negative-cost',
+      moduleId: 'button-compliance',
+      sourceFormId: 'audit-31-f',
+      evidenceCost: -1,
+      grantedAt: 5000,
+    },
+  ]
   save.runtime.clickAuditBootstrapArmed = true
   save.runtime.clickAuditBootstrapCompleted = true
 
@@ -387,6 +495,13 @@ test('loaded ids are unique and completed bootstrap overrides contradictory arme
   assert.deepEqual(runtime.unlockedModuleIds, ['click-audit'])
   assert.equal(runtime.metricPackets.length, 1)
   assert.equal(runtime.auditInstances.length, 1)
+  assert.deepEqual(runtime.moduleAuthorizations, [{
+    id: 'fidget',
+    moduleId: 'fidget',
+    sourceFormId: 'audit-16-c',
+    evidenceCost: 1,
+    grantedAt: 2000,
+  }])
   assert.equal(runtime.clickAuditBootstrapArmed, false)
   assert.equal(runtime.clickAuditBootstrapCompleted, true)
 })

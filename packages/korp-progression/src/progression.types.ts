@@ -85,6 +85,12 @@ export type AuditField = {
   readonly [key: string]: unknown;
 };
 
+export type AuditAuthorization = {
+  readonly moduleId: string;
+  readonly resourceId: "notionalWorkUnits";
+  readonly cost: number;
+};
+
 export type AuditFormDefinition = {
   readonly id: string;
   readonly code: string;
@@ -94,6 +100,7 @@ export type AuditFormDefinition = {
   readonly submitEvent: string;
   readonly fields: readonly AuditField[];
   readonly requirements?: Requirement;
+  readonly authorization?: AuditAuthorization;
   readonly completionEffects: readonly ProgressionEffect[];
   readonly availableAtStart?: boolean;
   readonly optional?: boolean;

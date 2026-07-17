@@ -39,6 +39,71 @@ describe("applyKorpEvent", () => {
     expect(next.stats.eventsByType["audit.evidenceCertified"]).toBe(1);
   });
 
+  it("allocates exactly the explicit Evidence cost when the balance is sufficient", () => {
+    const state = createInitialState({ now: 1_000 });
+    state.resources.notionalWorkUnits = 3;
+
+    const next = applyKorpEvent(
+      state,
+      event({ type: "authorization.evidenceAllocated", value: 1 })
+    );
+
+    expect(next.resources.notionalWorkUnits).toBe(2);
+    expect(next.stats.eventsByType["authorization.evidenceAllocated"]).toBe(1);
+  });
+
+  it("allocates the final Evidence unit without creating a negative balance", () => {
+    const state = createInitialState({ now: 1_000 });
+    state.resources.notionalWorkUnits = 1;
+
+    const next = applyKorpEvent(
+      state,
+      event({ type: "authorization.evidenceAllocated", value: 1 })
+    );
+
+    expect(next.resources.notionalWorkUnits).toBe(0);
+    expect(next.resources.notionalWorkUnits).toBeGreaterThanOrEqual(0);
+  });
+
+  it.each([
+    ["missing", undefined],
+    ["zero", 0],
+    ["negative", -1],
+    ["not finite", Number.POSITIVE_INFINITY],
+    ["not a number", Number.NaN],
+    ["greater than the balance", 2]
+  ])("fails safely for a %s Evidence allocation cost", (_label, value) => {
+    const state = createInitialState({ now: 1_000 });
+    state.resources.notionalWorkUnits = 1;
+
+    const next = applyKorpEvent(
+      state,
+      event({ type: "authorization.evidenceAllocated", value })
+    );
+
+    expect(next).toBe(state);
+    expect(next.resources.notionalWorkUnits).toBe(1);
+    expect(next.resources.notionalWorkUnits).toBeGreaterThanOrEqual(0);
+    expect(next.stats.eventsByType["authorization.evidenceAllocated"]).toBeUndefined();
+    expect(next.stats.totalEvents).toBe(0);
+    expect(next.updatedAt).toBe(1_000);
+  });
+
+  it("records authorization grants without awarding resources or passive yield", () => {
+    const state = createInitialState({ now: 1_000 });
+    state.resources.notionalWorkUnits = 1;
+    const resourcesBefore = structuredClone(state.resources);
+
+    const next = applyKorpEvent(
+      state,
+      event({ type: "authorization.granted", value: 999 })
+    );
+
+    expect(next.resources).toEqual(resourcesBefore);
+    expect(next.stats.eventsByType["authorization.granted"]).toBe(1);
+    expect(next.stats.totalEvents).toBe(1);
+  });
+
   it("reduces entropy for bubble pops without going below zero", () => {
     const state = createInitialState({ now: 1_000 });
     const next = applyKorpEvent(

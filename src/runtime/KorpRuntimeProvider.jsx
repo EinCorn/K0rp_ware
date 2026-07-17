@@ -12,6 +12,10 @@ import {
   submitAuditForm as resolveAuditFormSubmission,
 } from './auditProgression'
 import { isAuditFormComplete } from './auditFormDraft'
+import {
+  applyModuleAuthorizationTransaction,
+  isModuleAuthorized as hasModuleAuthorization,
+} from './moduleAuthorization'
 import { KorpRuntimeContext } from './KorpRuntimeContext'
 import {
   clearRuntimeStorage,
@@ -53,6 +57,7 @@ const createFreshRuntimeState = () => {
     lifetimeStats: korpState.stats,
     ...createInitialAuditProgressionState(),
     ...createInitialMetricAuditState(clickCount),
+    moduleAuthorizations: [],
   }
 }
 
@@ -141,6 +146,7 @@ function runtimeReducer(runtime, action) {
       if (action.formId === CLICK_AUDIT_TEMPLATE_ID) return runtime
 
       const form = getAuditForm(auditForms, action.formId)
+      if (form?.authorization) return runtime
       const progression = resolveAuditFormSubmission({
         form,
         korpState: runtime.korpState,
@@ -166,6 +172,18 @@ function runtimeReducer(runtime, action) {
       }
 
       return captureClickAuditBootstrapAfterSubmission(nextRuntime, form.id)
+    }
+    case 'submitModuleAuthorization': {
+      const form = getAuditForm(auditForms, action.formId)
+      const transaction = applyModuleAuthorizationTransaction({
+        runtime,
+        form,
+        values: action.values,
+        timestamp: action.timestamp,
+        applyEvents,
+      })
+
+      return transaction.runtimeState
     }
     case 'resetRuntime':
       return createFreshRuntimeState()
@@ -228,6 +246,15 @@ export function KorpRuntimeProvider({ children }) {
     dispatch({ type: 'submitAuditForm', formId, timestamp: Date.now() })
   }, [])
 
+  const submitModuleAuthorization = useCallback((formId, values) => {
+    dispatch({
+      type: 'submitModuleAuthorization',
+      formId,
+      values,
+      timestamp: Date.now(),
+    })
+  }, [])
+
   const updateAuditInstanceField = useCallback((instanceId, fieldId, value) => {
     dispatch({
       type: 'updateMetricAuditInstanceField',
@@ -265,8 +292,14 @@ export function KorpRuntimeProvider({ children }) {
       return pendingAuditInstances.some((instance) => instance.templateId === formId)
     }
 
-    return isAuditFormAvailable(getAuditForm(auditForms, formId), runtime.korpState)
-  }, [pendingAuditInstances, runtime.korpState])
+    return isAuditFormAvailable(
+      getAuditForm(auditForms, formId),
+      runtime.korpState,
+      runtime,
+    ) || runtime.moduleAuthorizations.some((authorization) => (
+      authorization.sourceFormId === formId
+    ))
+  }, [pendingAuditInstances, runtime])
 
   const isFormSubmitted = useCallback((formId) => (
     runtime.submittedFormIds.includes(formId)
@@ -284,6 +317,10 @@ export function KorpRuntimeProvider({ children }) {
     runtime.unlockedModuleIds.includes(moduleId)
   ), [runtime.unlockedModuleIds])
 
+  const isModuleAuthorized = useCallback((moduleId) => (
+    hasModuleAuthorization(runtime.moduleAuthorizations, moduleId)
+  ), [runtime.moduleAuthorizations])
+
   const value = useMemo(() => ({
     korpState: runtime.korpState,
     stats: runtime.korpState.stats,
@@ -292,6 +329,7 @@ export function KorpRuntimeProvider({ children }) {
     ownedUpgradeIds: runtime.ownedUpgradeIds,
     unlockedMemoIds: runtime.unlockedMemoIds,
     unlockedModuleIds: runtime.unlockedModuleIds,
+    moduleAuthorizations: runtime.moduleAuthorizations,
     metricPackets: runtime.metricPackets,
     auditInstances: runtime.auditInstances,
     pendingMetricPackets,
@@ -302,6 +340,7 @@ export function KorpRuntimeProvider({ children }) {
     recordOsClick,
     lastClickAuditActivity,
     submitAuditForm,
+    submitModuleAuthorization,
     updateAuditInstanceField,
     submitMetricAuditInstance,
     isFormAvailable,
@@ -309,6 +348,7 @@ export function KorpRuntimeProvider({ children }) {
     isUpgradeUnlocked,
     isMemoUnlocked,
     isModuleUnlocked,
+    isModuleAuthorized,
     resetRuntime,
   }), [
     dispatchKorpEvent,
@@ -317,6 +357,7 @@ export function KorpRuntimeProvider({ children }) {
     isFormSubmitted,
     lastClickAuditActivity,
     isMemoUnlocked,
+    isModuleAuthorized,
     isModuleUnlocked,
     isUpgradeUnlocked,
     pendingAuditInstances,
@@ -324,6 +365,7 @@ export function KorpRuntimeProvider({ children }) {
     resetRuntime,
     runtime,
     submitAuditForm,
+    submitModuleAuthorization,
     submitMetricAuditInstance,
     updateAuditInstanceField,
   ])

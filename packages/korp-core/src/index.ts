@@ -1,5 +1,10 @@
 export { applyKorpEvent } from "./reducer";
-export { clampMinimum, defaultKorpResources } from "./resources";
+export {
+  allocateEvidence,
+  canAllocateEvidence,
+  clampMinimum,
+  defaultKorpResources
+} from "./resources";
 export { KORP_CORE_STATE_VERSION, createInitialState } from "./state";
 export { applyUnlocks, defaultUnlockDefinitions, isRequirementMet } from "./unlocks";
 export type {

@@ -36,6 +36,30 @@ const ids = {
   upgradeId: new Set(database.upgrades.map((item) => item.id)),
   memoId: new Set(database.memos.map((item) => item.id))
 };
+const resourcesById = new Map(
+  database.resources.map((resource) => [resource.id, resource])
+);
+const EVIDENCE_AUTHORIZATION_RESOURCE_ID = "notionalWorkUnits";
+
+const containsResourceRequirement = (
+  requirement,
+  resourceId,
+  minimumAmount
+) => {
+  if (!requirement || typeof requirement !== "object") return false;
+
+  if (requirement.kind === "resourceAtLeast") {
+    return requirement.resourceId === resourceId
+      && Number.isFinite(requirement.amount)
+      && requirement.amount >= minimumAmount;
+  }
+
+  return requirement.kind === "all"
+    && Array.isArray(requirement.requirements)
+    && requirement.requirements.some((child) => (
+      containsResourceRequirement(child, resourceId, minimumAmount)
+    ));
+};
 
 for (const [name, rows] of Object.entries(database)) {
   if (!Array.isArray(rows)) continue;
@@ -52,6 +76,55 @@ for (const [name, rows] of Object.entries(database)) {
     seen.add(row.id);
   }
 }
+
+database.auditForms.forEach((form, index) => {
+  if (form.authorization === undefined) return;
+
+  const pathName = `auditForms[${index}].authorization`;
+  const authorization = form.authorization;
+  if (!authorization || typeof authorization !== "object") {
+    issues.push(`${pathName}: expected an object`);
+    return;
+  }
+
+  if (
+    typeof authorization.moduleId !== "string"
+    || authorization.moduleId.trim().length === 0
+  ) {
+    issues.push(`${pathName}.moduleId: expected a non-empty string`);
+  }
+
+  if (
+    typeof authorization.resourceId !== "string"
+    || authorization.resourceId.trim().length === 0
+  ) {
+    issues.push(`${pathName}.resourceId: expected a non-empty string`);
+  } else if (authorization.resourceId !== EVIDENCE_AUTHORIZATION_RESOURCE_ID) {
+    issues.push(`${pathName}.resourceId: expected notionalWorkUnits`);
+  } else if (!resourcesById.has(authorization.resourceId)) {
+    issues.push(`${pathName}.resourceId: expected a known resource`);
+  } else if (resourcesById.get(authorization.resourceId).spendable !== true) {
+    issues.push(`${pathName}.resourceId: resource must be spendable`);
+  }
+
+  if (!Number.isSafeInteger(authorization.cost) || authorization.cost <= 0) {
+    issues.push(`${pathName}.cost: expected a positive safe integer`);
+    return;
+  }
+
+  if (
+    typeof authorization.resourceId === "string"
+    && !containsResourceRequirement(
+      form.requirements,
+      authorization.resourceId,
+      authorization.cost
+    )
+  ) {
+    issues.push(
+      `${pathName}.resourceId: missing matching resourceAtLeast requirement`
+    );
+  }
+});
 
 const walk = (value, pathName = "database") => {
   if (Array.isArray(value)) {

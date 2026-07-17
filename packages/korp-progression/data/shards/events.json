@@ -14,6 +14,8 @@
   },
   {"id":"clickaudit.batchCompleted","moduleId":"click-audit","persistence":"milestone","effects":{"notionalWorkUnits":6,"perceivedProductivity":1.5},"description":"Dokončení dávky 25 auditovaných interakcí."},
   {"id":"audit.formSubmitted","moduleId":"system","persistence":"milestone","effects":{"notionalWorkUnits":8,"auditPressure":5,"kryptoManagementScore":1},"description":"Řádně podaný auditní formulář."},
+  {"id":"authorization.evidenceAllocated","moduleId":"system","persistence":"milestone","effects":{"notionalWorkUnits":-1},"description":"Evidence byla atomicky přidělena jedné autorizační žádosti."},
+  {"id":"authorization.granted","moduleId":"system","persistence":"milestone","effects":{},"description":"Modulu byla udělena trvalá autorizace k budoucímu nasazení."},
   {"id":"system.shiftClosed","moduleId":"system","persistence":"milestone","effects":{"notionalWorkUnits":4,"systemOrder":1},"description":"Dobrovolné uzavření relace. Nikdy nesmí trestat za pozdní návrat."},
   {"id":"fidget.spinStarted","moduleId":"fidget","persistence":"gameplay","effects":{},"description":"Začátek jednoho řízeného spin cyklu."},
   {"id":"fidget.speedThresholdReached","moduleId":"fidget","persistence":"gameplay","effects":{"stabilization":1.5,"perceivedControl":0.5},"description":"První dosažení stabilní rychlosti v daném cyklu."},

@@ -194,3 +194,18 @@ test('an instance without packet metadata is registered closed and never auto-op
   assert.equal(result.windows[windowId].isOpen, false)
   assert.equal(result.windows[windowId].hasOpened, false)
 })
+
+test('reconciliation preserves explicitly managed one-time form windows', () => {
+  const authorizationWindowId = getFormWindowId('audit-16-c')
+  const windows = ensureFormWindowState(
+    createBaseWindows(),
+    'audit-16-c',
+    formWindowSize,
+  )
+  const result = reconcile({
+    windows,
+    preservedDocumentIds: ['audit-16-c'],
+  })
+
+  assert.equal(result.windows[authorizationWindowId], windows[authorizationWindowId])
+})

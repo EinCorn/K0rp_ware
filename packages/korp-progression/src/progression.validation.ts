@@ -41,6 +41,29 @@ const duplicateIds = (
   return issues;
 };
 
+const containsResourceRequirement = (
+  requirement: unknown,
+  resourceId: string,
+  minimumAmount: number
+): boolean => {
+  if (requirement === null || typeof requirement !== "object") return false;
+
+  const record = requirement as Record<string, unknown>;
+  if (record.kind === "resourceAtLeast") {
+    return record.resourceId === resourceId
+      && typeof record.amount === "number"
+      && Number.isFinite(record.amount)
+      && record.amount >= minimumAmount;
+  }
+
+  if (record.kind !== "all" || !Array.isArray(record.requirements)) return false;
+  return record.requirements.some((child) => (
+    containsResourceRequirement(child, resourceId, minimumAmount)
+  ));
+};
+
+const EVIDENCE_AUTHORIZATION_RESOURCE_ID = "notionalWorkUnits";
+
 export const validateProgressionDatabase = (
   database: ProgressionDatabase
 ): ValidationIssue[] => {
@@ -63,6 +86,88 @@ export const validateProgressionDatabase = (
     ...duplicateIds(database.prestigeDirectives, "prestigeDirectives"),
     ...duplicateIds(database.firstCyclePhases, "firstCyclePhases")
   );
+
+  database.auditForms.forEach((form, index) => {
+    if (form.authorization === undefined) return;
+
+    const path = `auditForms[${index}].authorization`;
+    const rawAuthorization = form.authorization as unknown;
+    if (
+      rawAuthorization === null
+      || typeof rawAuthorization !== "object"
+      || Array.isArray(rawAuthorization)
+    ) {
+      issues.push({ path, message: "Authorization must be an object" });
+      return;
+    }
+    const authorization = rawAuthorization as Record<string, unknown>;
+
+    if (
+      typeof authorization.moduleId !== "string"
+      || authorization.moduleId.trim().length === 0
+    ) {
+      issues.push({
+        path: `${path}.moduleId`,
+        message: "Authorization moduleId must be a non-empty string"
+      });
+    }
+
+    if (
+      typeof authorization.resourceId !== "string"
+      || authorization.resourceId.trim().length === 0
+    ) {
+      issues.push({
+        path: `${path}.resourceId`,
+        message: "Authorization resourceId must be a non-empty string"
+      });
+    } else if (authorization.resourceId !== EVIDENCE_AUTHORIZATION_RESOURCE_ID) {
+      issues.push({
+        path: `${path}.resourceId`,
+        message: "Evidence authorization resource must be notionalWorkUnits"
+      });
+    } else {
+      const resource = database.resources.find((item) => (
+        item.id === authorization.resourceId
+      ));
+      if (!resource) {
+        issues.push({
+          path: `${path}.resourceId`,
+          message: "Authorization resource must reference a known resource"
+        });
+      } else if (resource.spendable !== true) {
+        issues.push({
+          path: `${path}.resourceId`,
+          message: "Authorization resource must be spendable"
+        });
+      }
+    }
+
+    if (
+      typeof authorization.cost !== "number"
+      || !Number.isSafeInteger(authorization.cost)
+      || authorization.cost <= 0
+    ) {
+      issues.push({
+        path: `${path}.cost`,
+        message: "Authorization cost must be a positive safe integer"
+      });
+      return;
+    }
+
+    if (
+      typeof authorization.resourceId === "string"
+      && !containsResourceRequirement(
+        form.requirements,
+        authorization.resourceId,
+        authorization.cost
+      )
+    ) {
+      issues.push({
+        path: `${path}.resourceId`,
+        message: "Authorization must have a matching resourceAtLeast requirement"
+      });
+    }
+  });
 
   walk(database, "database", (value, path) => {
     if (value === null || typeof value !== "object" || Array.isArray(value)) {
