@@ -1,7 +1,10 @@
 export const RUNTIME_SAVE_KEY = 'k0rp-os.runtime'
-export const RUNTIME_SAVE_SCHEMA_VERSION = 3
+export const RUNTIME_SAVE_SCHEMA_VERSION = 4
 
 const CLICK_AUDIT_TEMPLATE_ID = 'audit-10-a'
+const FIDGET_MODULE_ID = 'fidget'
+const FIDGET_LEGACY_PERMIT_ID = 'fidget.access-permit'
+const FIDGET_SOURCE_FORM_ID = 'audit-16-c'
 
 const persistedRuntimeKeys = [
   'korpState',
@@ -12,6 +15,7 @@ const persistedRuntimeKeys = [
   'unlockedModuleIds',
   'metricPackets',
   'auditInstances',
+  'moduleAuthorizations',
   'clickAuditBatchBaseline',
   'clickAuditBootstrapArmed',
   'clickAuditBootstrapCompleted',
@@ -181,6 +185,23 @@ const sanitizeAuditInstance = (instance) => {
   }
 }
 
+const sanitizeModuleAuthorization = (authorization) => {
+  if (!isPlainObject(authorization)) return null
+  if (typeof authorization.id !== 'string' || authorization.id.length === 0) return null
+  if (typeof authorization.moduleId !== 'string' || authorization.moduleId.length === 0) return null
+  if (typeof authorization.sourceFormId !== 'string' || authorization.sourceFormId.length === 0) return null
+  if (!Number.isSafeInteger(authorization.evidenceCost) || authorization.evidenceCost < 0) return null
+  if (!Number.isFinite(authorization.grantedAt) || authorization.grantedAt < 0) return null
+
+  return {
+    id: authorization.id,
+    moduleId: authorization.moduleId,
+    sourceFormId: authorization.sourceFormId,
+    evidenceCost: authorization.evidenceCost,
+    grantedAt: authorization.grantedAt,
+  }
+}
+
 const sanitizeUniqueObjects = (value, sanitizer) => {
   if (!Array.isArray(value)) return []
 
@@ -195,8 +216,72 @@ const sanitizeUniqueObjects = (value, sanitizer) => {
   }, [])
 }
 
+const sanitizeModuleAuthorizations = (value) => {
+  if (!Array.isArray(value)) return []
+
+  const seenIds = new Set()
+  const seenModuleIds = new Set()
+
+  return value.reduce((authorizations, candidate) => {
+    const authorization = sanitizeModuleAuthorization(candidate)
+    if (
+      !authorization
+      || seenIds.has(authorization.id)
+      || seenModuleIds.has(authorization.moduleId)
+    ) {
+      return authorizations
+    }
+
+    seenIds.add(authorization.id)
+    seenModuleIds.add(authorization.moduleId)
+    authorizations.push(authorization)
+    return authorizations
+  }, [])
+}
+
+const hasLegacyFidgetAuthorization = (runtime) => (
+  (
+    Array.isArray(runtime.unlockedModuleIds)
+    && runtime.unlockedModuleIds.includes(FIDGET_MODULE_ID)
+  )
+  || (
+    Array.isArray(runtime.ownedUpgradeIds)
+    && runtime.ownedUpgradeIds.includes(FIDGET_LEGACY_PERMIT_ID)
+  )
+)
+
+const getLegacyAuthorizationTimestamp = (savedAt) => {
+  const timestamp = Date.parse(savedAt)
+  return Number.isFinite(timestamp) && timestamp >= 0 ? timestamp : 0
+}
+
+const migrateModuleAuthorizationState = (runtime, savedAt) => {
+  const moduleAuthorizations = sanitizeModuleAuthorizations(runtime.moduleAuthorizations)
+
+  if (
+    hasLegacyFidgetAuthorization(runtime)
+    && !moduleAuthorizations.some(({ moduleId }) => moduleId === FIDGET_MODULE_ID)
+  ) {
+    moduleAuthorizations.push({
+      id: FIDGET_MODULE_ID,
+      moduleId: FIDGET_MODULE_ID,
+      sourceFormId: FIDGET_SOURCE_FORM_ID,
+      evidenceCost: 0,
+      grantedAt: getLegacyAuthorizationTimestamp(savedAt),
+    })
+  }
+
+  return {
+    ...runtime,
+    moduleAuthorizations,
+  }
+}
+
 const createRuntimeSnapshot = (runtime) => Object.fromEntries(
-  persistedRuntimeKeys.map((key) => [key, runtime[key]]),
+  persistedRuntimeKeys.map((key) => [
+    key,
+    key === 'moduleAuthorizations' && !Array.isArray(runtime[key]) ? [] : runtime[key],
+  ]),
 )
 
 export function createRuntimeSave(runtime, progressionDataVersion, now = Date.now()) {
@@ -219,7 +304,10 @@ export function migrateRuntimeSave(candidate, { progressionDataVersion } = {}) {
       ...candidate,
       schemaVersion: RUNTIME_SAVE_SCHEMA_VERSION,
       progressionDataVersion,
-      runtime: migrateLegacyRuntime(candidate.runtime),
+      runtime: migrateModuleAuthorizationState(
+        migrateLegacyRuntime(candidate.runtime),
+        candidate.savedAt,
+      ),
     }
   }
 
@@ -230,7 +318,21 @@ export function migrateRuntimeSave(candidate, { progressionDataVersion } = {}) {
       ...candidate,
       schemaVersion: RUNTIME_SAVE_SCHEMA_VERSION,
       progressionDataVersion,
-      runtime: migrateDraftV2Runtime(candidate.runtime),
+      runtime: migrateModuleAuthorizationState(
+        migrateDraftV2Runtime(candidate.runtime),
+        candidate.savedAt,
+      ),
+    }
+  }
+
+  if (candidate.schemaVersion === 3) {
+    if (!isPlainObject(candidate.runtime) || !isPlainObject(candidate.runtime.korpState)) return null
+
+    return {
+      ...candidate,
+      schemaVersion: RUNTIME_SAVE_SCHEMA_VERSION,
+      progressionDataVersion,
+      runtime: migrateModuleAuthorizationState(candidate.runtime, candidate.savedAt),
     }
   }
 
@@ -258,6 +360,7 @@ export function hydrateRuntimeSave(candidate, {
     unlockedModuleIds,
     metricPackets,
     auditInstances,
+    moduleAuthorizations,
     clickAuditBatchBaseline,
     clickAuditBootstrapArmed,
     clickAuditBootstrapCompleted,
@@ -277,6 +380,7 @@ export function hydrateRuntimeSave(candidate, {
     unlockedModuleIds: uniqueStringIds(unlockedModuleIds),
     metricPackets: sanitizeUniqueObjects(metricPackets, sanitizeMetricPacket),
     auditInstances: sanitizeUniqueObjects(auditInstances, sanitizeAuditInstance),
+    moduleAuthorizations: sanitizeModuleAuthorizations(moduleAuthorizations),
     clickAuditBatchBaseline: safeWholeCount(clickAuditBatchBaseline),
     clickAuditBootstrapArmed: clickAuditBootstrapArmed === true && !bootstrapCompleted,
     clickAuditBootstrapCompleted: bootstrapCompleted,

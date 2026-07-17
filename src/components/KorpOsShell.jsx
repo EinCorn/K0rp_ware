@@ -2,6 +2,11 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { listModules } from '../../packages/korp-modules/src/index'
 import { createAuditFormValues, isAuditFormComplete } from '../runtime/auditFormDraft'
 import { reconcileAuditInstanceWindows } from '../runtime/auditWindowPresentation'
+import {
+  AUTHORIZATION_FORM_WINDOW_ID,
+  getAuthorizedPendingDesktopItems,
+  reconcileAuthorizationFormWindow,
+} from '../runtime/authorizationPresentation'
 import { classifyKorpOsClickTarget } from '../runtime/osClickTracking'
 import { useKorpRuntime } from '../runtime/useKorpRuntime'
 import {
@@ -48,7 +53,7 @@ const staticWindowIds = [
   'inbox-folder',
 ]
 
-const createInitialWindows = (existingAuditInstances) => {
+const createInitialWindows = (existingAuditInstances, authorizationAvailable) => {
   let windows = {
     [auditEntryWindowId]: {
       id: auditEntryWindowId,
@@ -122,7 +127,14 @@ const createInitialWindows = (existingAuditInstances) => {
     windows = ensureFormWindowState(windows, auditInstance.id, formWindowSize)
   }
 
-  return windows
+  return reconcileAuthorizationFormWindow({
+    windows,
+    isAvailable: authorizationAvailable,
+    wasAvailable: undefined,
+    windowSize: formWindowSize,
+    workspaceSize: osWorkspaceSize,
+    formBasePosition: formDocumentBasePosition,
+  }).windows
 }
 
 const getPacketRangeLabel = (packet, sequence) => {
@@ -245,21 +257,39 @@ function KorpOsShell() {
     auditForms,
     metricPackets,
     auditInstances,
+    moduleAuthorizations,
     pendingAuditCount,
     recordOsClick,
     submitAuditForm,
+    submitModuleAuthorization,
     updateAuditInstanceField,
     submitMetricAuditInstance,
+    isFormAvailable,
     isFormSubmitted,
+    isMemoUnlocked,
+    isModuleAuthorized,
     isModuleUnlocked,
     lastClickAuditActivity,
   } = useKorpRuntime()
 
   const auditEntryForm = auditForms.find((form) => form.availableAtStart === true)
   const auditTraceForm = auditForms.find((form) => form.id === 'audit-10-a')
+  const authorizationForm = auditForms.find((form) => form.id === 'audit-16-c')
   const auditTraceFormId = auditTraceForm?.id
   const auditEntrySubmitted = auditEntryForm ? isFormSubmitted(auditEntryForm.id) : false
+  const authorizationAvailable = authorizationForm
+    ? isFormAvailable(authorizationForm.id)
+    : false
+  const fidgetAuthorized = isModuleAuthorized('fidget')
+  const authorizationSubmitted = authorizationForm
+    ? isFormSubmitted(authorizationForm.id) || fidgetAuthorized
+    : false
+  const fidgetMemoUnlocked = isMemoUnlocked('memo.fidget-requisition')
   const clickAuditUnlocked = isModuleUnlocked('click-audit')
+  const authorizedPendingItems = useMemo(
+    () => getAuthorizedPendingDesktopItems(moduleAuthorizations),
+    [moduleAuthorizations],
+  )
   const matchingAuditInstances = useMemo(() => (
     auditInstances.filter((instance) => instance.templateId === auditTraceFormId)
   ), [auditInstances, auditTraceFormId])
@@ -289,7 +319,12 @@ function KorpOsShell() {
 
   const [activity, setActivity] = useState(() => initialActivity(auditEntryForm))
   const [auditEntryValues, setAuditEntryValues] = useState(() => createAuditFormValues(auditEntryForm))
-  const [windows, setWindows] = useState(() => createInitialWindows(matchingAuditInstances))
+  const [authorizationValues, setAuthorizationValues] = useState(() => (
+    createAuditFormValues(authorizationForm)
+  ))
+  const [windows, setWindows] = useState(() => (
+    createInitialWindows(matchingAuditInstances, authorizationAvailable)
+  ))
   const [canvasPlacement, setCanvasPlacement] = useState(() => getCenteredCanvasPlacement(
     window.innerWidth,
     window.innerHeight,
@@ -300,20 +335,30 @@ function KorpOsShell() {
   const dragStateRef = useRef(null)
   const pendingAuditCountRef = useRef(pendingAuditCount)
   const knownAuditInstanceIdsRef = useRef(new Set(matchingAuditInstances.map(({ id }) => id)))
+  const authorizationAvailabilityRef = useRef(undefined)
+  const fidgetAuthorizationActivityRef = useRef(fidgetAuthorized)
   const activityEventIdRef = useRef(null)
   const recordedPointerEventsRef = useRef(new WeakSet())
 
   const auditClicks = stats.eventsByType['clickaudit.click'] ?? 0
   const formsFolderAvailable = auditEntrySubmitted
     || matchingAuditInstances.length > 0
+    || authorizationAvailable
     || windows[auditEntryWindowId]?.isOpen === false
-  const formsIconStatus = pendingAuditCount > 0
+  const baseFormsIconStatus = pendingAuditCount > 0
     ? `${pendingAuditCount} ČEKÁ NA AUDIT`
     : latestAuditWindowModel
       ? 'POSLEDNÍ DÁVKA UZAVŘENA'
       : auditEntrySubmitted
         ? '1 SPLNĚNÝ AUDIT'
         : 'ČEKÁ NA AUDIT'
+  const formsIconStatus = pendingAuditCount > 0
+    ? baseFormsIconStatus
+    : authorizationAvailable && !authorizationSubmitted
+      ? '16-C PŘIPRAVENO K ALOKACI'
+      : authorizationSubmitted
+        ? 'FIDGET AUTORIZOVÁN'
+        : baseFormsIconStatus
   const presentationWindows = {
     ...windows,
     [auditEntryWindowId]: {
@@ -321,6 +366,14 @@ function KorpOsShell() {
       title: 'FORMULÁŘ ' + (auditEntryForm?.code ?? '?') + ' / VSTUPNÍ AUDIT',
       taskbarTitle: 'AUDIT ' + (auditEntryForm?.code ?? '?'),
     },
+  }
+
+  if (windows[AUTHORIZATION_FORM_WINDOW_ID]) {
+    presentationWindows[AUTHORIZATION_FORM_WINDOW_ID] = {
+      ...windows[AUTHORIZATION_FORM_WINDOW_ID],
+      title: 'FORMULÁŘ ' + (authorizationForm?.code ?? '?') + ' / ALOKACE EVIDENCE',
+      taskbarTitle: 'AUDIT ' + (authorizationForm?.code ?? '?'),
+    }
   }
 
   for (const model of auditWindowModels) {
@@ -335,11 +388,13 @@ function KorpOsShell() {
   const isWindowAvailable = (id) => {
     if (id === 'click-audit') return clickAuditUnlocked
     if (id === 'forms-folder') return formsFolderAvailable
+    if (id === AUTHORIZATION_FORM_WINDOW_ID) return authorizationAvailable
     return true
   }
 
   const managedWindowIds = [
     ...staticWindowIds,
+    ...(authorizationAvailable ? [AUTHORIZATION_FORM_WINDOW_ID] : []),
     ...auditWindowModels.map(({ windowId }) => windowId),
   ]
   const visibleWindowIds = managedWindowIds.filter((id) => (
@@ -384,11 +439,42 @@ function KorpOsShell() {
         windowSize: formWindowSize,
         workspaceSize,
         formBasePosition: formDocumentBasePosition,
+        preservedDocumentIds: authorizationForm ? [authorizationForm.id] : [],
       })
 
       return reconciliation.windows
     })
-  }, [matchingAuditInstances, packetById])
+  }, [authorizationForm, matchingAuditInstances, packetById])
+
+  useEffect(() => {
+    const wasAvailable = authorizationAvailabilityRef.current
+    authorizationAvailabilityRef.current = authorizationAvailable
+    const workspaceSize = {
+      width: desktopSpaceRef.current?.clientWidth ?? osWorkspaceSize.width,
+      height: desktopSpaceRef.current?.clientHeight ?? osWorkspaceSize.height,
+    }
+
+    setWindows((currentWindows) => reconcileAuthorizationFormWindow({
+      windows: currentWindows,
+      isAvailable: authorizationAvailable,
+      wasAvailable,
+      windowSize: formWindowSize,
+      workspaceSize,
+      formBasePosition: formDocumentBasePosition,
+    }).windows)
+  }, [authorizationAvailable])
+
+  useEffect(() => {
+    if (fidgetAuthorized && !fidgetAuthorizationActivityRef.current) {
+      setActivity((currentActivity) => [
+        'Audit 16-C přidělil jednu Evidence žádosti o stabilizační vybavení.',
+        'Fidget byl autorizován. Samostatné nasazení zatím čeká.',
+        ...currentActivity,
+      ].slice(0, 4))
+    }
+
+    fidgetAuthorizationActivityRef.current = fidgetAuthorized
+  }, [fidgetAuthorized])
 
   useEffect(() => {
     if (pendingAuditCount > pendingAuditCountRef.current) {
@@ -536,6 +622,25 @@ function KorpOsShell() {
     ].slice(0, 4))
   }
 
+  const handleAuthorizationFieldChange = (field, value) => {
+    if (!authorizationForm || authorizationSubmitted) return
+
+    setAuthorizationValues((currentValues) => ({
+      ...currentValues,
+      [field.id]: value,
+    }))
+  }
+
+  const handleAuthorizationSubmit = () => {
+    if (
+      !authorizationForm
+      || authorizationSubmitted
+      || !isAuditFormComplete(authorizationForm, authorizationValues)
+    ) return
+
+    submitModuleAuthorization(authorizationForm.id, authorizationValues)
+  }
+
   const handleAuditInstanceFieldChange = (auditInstance, field, value) => {
     if (
       auditInstance.status !== 'available'
@@ -591,7 +696,7 @@ function KorpOsShell() {
               <DesktopIcon
                 title="Doručené"
                 type="folder"
-                status="1 MÍSTNÍ MEMO"
+                status={fidgetMemoUnlocked ? '2 MÍSTNÍ MEMO' : '1 MÍSTNÍ MEMO'}
                 onOpen={() => openWindow('inbox-folder')}
               />
               <DesktopIcon
@@ -609,6 +714,14 @@ function KorpOsShell() {
                   onOpen={() => openWindow('click-audit')}
                 />
               )}
+              {authorizedPendingItems.map((item) => (
+                <DesktopIcon
+                  key={item.id}
+                  title={item.title}
+                  type="app"
+                  status={item.status}
+                />
+              ))}
               {lockedShortcuts.map((module) => (
                 <DesktopIcon key={module.id} title={module.title} type="app" status="NEINSTALOVÁNO" isLocked />
               ))}
@@ -642,6 +755,43 @@ function KorpOsShell() {
                     submitted={auditEntrySubmitted}
                     onFieldChange={handleAuditEntryFieldChange}
                     onSubmit={handleAuditEntrySubmit}
+                  />
+                </article>
+              )}
+
+              {visibleWindowIds.includes(AUTHORIZATION_FORM_WINDOW_ID) && (
+                <article
+                  className="os-window os-audit-document-window os-authorization-audit-window"
+                  style={windowStyle(windows[AUTHORIZATION_FORM_WINDOW_ID])}
+                  data-window-id={AUTHORIZATION_FORM_WINDOW_ID}
+                  aria-labelledby="authorization-audit-title"
+                  onPointerDown={() => bringWindowToFront(AUTHORIZATION_FORM_WINDOW_ID)}
+                >
+                  <WindowHeader
+                    window={presentationWindows[AUTHORIZATION_FORM_WINDOW_ID]}
+                    variant="audit"
+                    onClose={closeWindow}
+                    onMinimize={minimizeWindow}
+                    onPointerDown={(event) => startWindowDrag(
+                      AUTHORIZATION_FORM_WINDOW_ID,
+                      event,
+                    )}
+                  />
+                  <AuditFormDocument
+                    form={authorizationForm}
+                    values={authorizationValues}
+                    submitted={authorizationSubmitted}
+                    headingId="authorization-audit-title"
+                    documentLabel={`EVIDENCE / FORMULÁŘ ${authorizationForm?.code ?? '?'}`}
+                    introText="Přidělení Evidence autorizuje nasazení. Samotný modul se nasazuje samostatně."
+                    pendingStatusText="VYŽADOVÁNA 2 POTVRZENÍ"
+                    readyStatusText="PŘIPRAVENO K ALOKACI"
+                    completionHeadingLabel={`FORMULÁŘ ${authorizationForm?.code ?? '?'} / UZAVŘENÁ AUTORIZACE`}
+                    completionTitle="AUTORIZACE PŘIDĚLENA"
+                    completionDetail="FIDGET / EV −1"
+                    completionNote="Evidence byla přidělena žádosti. Modul čeká na samostatné nasazení."
+                    onFieldChange={handleAuthorizationFieldChange}
+                    onSubmit={handleAuthorizationSubmit}
                   />
                 </article>
               )}
@@ -765,6 +915,17 @@ function KorpOsShell() {
                           onOpen={() => openWindow(model.windowId)}
                         />
                       ))}
+                      {authorizationAvailable && (
+                        <FolderEntry
+                          title={'Audit ' + (authorizationForm?.code ?? '?')}
+                          detail={authorizationForm?.title ?? 'Přidělení stabilizačního vybavení'}
+                          status={authorizationSubmitted
+                            ? 'AUTORIZOVÁNO / EV −1'
+                            : 'PŘIPRAVENO K ALOKACI'}
+                          kind="document"
+                          onOpen={() => openWindow(AUTHORIZATION_FORM_WINDOW_ID)}
+                        />
+                      )}
                       <FolderEntry
                         title={'Audit ' + (auditEntryForm?.code ?? '?')}
                         detail={auditEntryForm?.title ?? 'Kontrola přítomnosti'}
@@ -809,6 +970,14 @@ function KorpOsShell() {
                         kind="memo"
                         onOpen={() => openWindow('daily-report')}
                       />
+                      {fidgetMemoUnlocked && (
+                        <FolderEntry
+                          title="Autorizace stabilizačního vybavení"
+                          detail="Jedna Evidence byla přidělena žádosti o povolení k nasazení"
+                          status="AUTORIZOVÁNO / NASAZENÍ ČEKÁ"
+                          kind="memo"
+                        />
+                      )}
                       <FolderEntry
                         title="Startup audit"
                         detail="Automaticky založený záznam"

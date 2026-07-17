@@ -1,5 +1,7 @@
 const appendUnique = (ids, id) => (ids.includes(id) ? ids : [...ids, id])
 
+export const EVIDENCE_AUTHORIZATION_RESOURCE_ID = 'notionalWorkUnits'
+
 export const createInitialAuditProgressionState = () => ({
   submittedFormIds: [],
   ownedUpgradeIds: [],
@@ -11,19 +13,71 @@ export const getAuditForm = (auditForms, formId) => (
   auditForms.find((form) => form.id === formId)
 )
 
-export function isAuditFormAvailable(form, korpState) {
+const isRequirementSatisfied = (requirement, korpState) => {
+  if (!requirement || typeof requirement !== 'object') return false
+
+  if (requirement.kind === 'eventCountAtLeast') {
+    if (
+      typeof requirement.eventType !== 'string'
+      || !Number.isFinite(requirement.count)
+      || requirement.count < 0
+    ) return false
+
+    const eventCount = korpState?.stats?.eventsByType?.[requirement.eventType]
+    return (Number.isFinite(eventCount) ? eventCount : 0) >= requirement.count
+  }
+
+  if (requirement.kind === 'resourceAtLeast') {
+    if (
+      typeof requirement.resourceId !== 'string'
+      || !Number.isFinite(requirement.amount)
+      || requirement.amount < 0
+    ) return false
+
+    const resourceAmount = korpState?.resources?.[requirement.resourceId]
+    return Number.isFinite(resourceAmount) && resourceAmount >= requirement.amount
+  }
+
+  if (requirement.kind === 'all') {
+    return Array.isArray(requirement.requirements)
+      && requirement.requirements.length > 0
+      && requirement.requirements.every((child) => (
+        isRequirementSatisfied(child, korpState)
+      ))
+  }
+
+  return false
+}
+
+export function isAuditFormAvailable(form, korpState, progressionState) {
   if (!form) return false
+  if (
+    typeof form.id === 'string'
+    && Array.isArray(progressionState?.submittedFormIds)
+    && progressionState.submittedFormIds.includes(form.id)
+  ) return true
   if (form.availableAtStart === true) return true
 
-  const requirement = form.requirements
-  if (!requirement || requirement.kind !== 'eventCountAtLeast') return false
-  if (
-    typeof requirement.eventType !== 'string'
-    || !Number.isFinite(requirement.count)
-    || requirement.count < 0
-  ) return false
+  return isRequirementSatisfied(form.requirements, korpState)
+}
 
-  return (korpState.stats.eventsByType[requirement.eventType] ?? 0) >= requirement.count
+export function getAuditAuthorization(form) {
+  const authorization = form?.authorization
+  if (
+    !authorization
+    || typeof authorization !== 'object'
+    || typeof authorization.moduleId !== 'string'
+    || authorization.moduleId.length === 0
+    || authorization.resourceId !== EVIDENCE_AUTHORIZATION_RESOURCE_ID
+    || !Number.isSafeInteger(authorization.cost)
+    || authorization.cost <= 0
+  ) return null
+
+  return {
+    moduleId: authorization.moduleId,
+    resourceId: authorization.resourceId,
+    cost: authorization.cost,
+  }
 }
 
 export function applyAuditCompletionEffects(progressionState, completionEffects) {
@@ -56,16 +110,19 @@ export function applyAuditCompletionEffects(progressionState, completionEffects)
 }
 
 export function submitAuditForm({ form, korpState, progressionState }) {
+  const authorization = getAuditAuthorization(form)
   if (
     !form
-    || !isAuditFormAvailable(form, korpState)
+    || !isAuditFormAvailable(form, korpState, progressionState)
     || progressionState.submittedFormIds.includes(form.id)
+    || ('authorization' in form && !authorization)
   ) {
-    return { didSubmit: false, progressionState }
+    return { didSubmit: false, progressionState, authorization: null }
   }
 
   return {
     didSubmit: true,
+    authorization,
     progressionState: applyAuditCompletionEffects({
       ...progressionState,
       submittedFormIds: appendUnique(progressionState.submittedFormIds, form.id),

@@ -28,3 +28,20 @@ export const defaultKorpResources = (): KorpResources => ({
 });
 
 export const clampMinimum = (value: number, minimum = 0): number => Math.max(minimum, value);
+
+export const canAllocateEvidence = (resources: KorpResources, cost: number): boolean =>
+  Number.isFinite(resources.notionalWorkUnits) &&
+  Number.isFinite(cost) &&
+  cost > 0 &&
+  resources.notionalWorkUnits >= cost;
+
+export const allocateEvidence = (resources: KorpResources, cost: number): KorpResources => {
+  if (!canAllocateEvidence(resources, cost)) {
+    return resources;
+  }
+
+  return {
+    ...resources,
+    notionalWorkUnits: resources.notionalWorkUnits - cost
+  };
+};

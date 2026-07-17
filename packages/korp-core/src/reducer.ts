@@ -1,4 +1,4 @@
-import { clampMinimum } from "./resources";
+import { allocateEvidence, canAllocateEvidence, clampMinimum } from "./resources";
 import { applyUnlocks } from "./unlocks";
 import type { KorpEvent, KorpResources, KorpState } from "./types";
 
@@ -23,6 +23,10 @@ const applyResourceEffects = (resources: KorpResources, event: KorpEvent): KorpR
       return resources;
     case "audit.evidenceCertified":
       return updateResource(resources, "notionalWorkUnits", value, 0);
+    case "authorization.evidenceAllocated":
+      return event.value === undefined ? resources : allocateEvidence(resources, event.value);
+    case "authorization.granted":
+      return resources;
     case "fidget.spinTick":
       return {
         ...resources,
@@ -120,6 +124,13 @@ const applyStats = (state: KorpState, event: KorpEvent): KorpState => ({
 });
 
 export const applyKorpEvent = (state: KorpState, event: KorpEvent): KorpState => {
+  if (
+    event.type === "authorization.evidenceAllocated" &&
+    (event.value === undefined || !canAllocateEvidence(state.resources, event.value))
+  ) {
+    return state;
+  }
+
   const nextState = applyStats(
     {
       ...state,

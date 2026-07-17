@@ -21,6 +21,8 @@ export type KorpEventType =
   | "clickaudit.batchCompleted"
   | "audit.formSubmitted"
   | "audit.evidenceCertified"
+  | "authorization.evidenceAllocated"
+  | "authorization.granted"
   | "fidget.spinStarted"
   | "fidget.spinTick"
   | "fidget.spinStopped"

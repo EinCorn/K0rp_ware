@@ -4,7 +4,7 @@ Verze: 0.3.0 pracovní návrh
 
 ## 0. Status dokumentu
 
-Roadmap po dokončeném Tasku 020 / PR #29 zachovává fake-desktop produktovou osu a podřizuje další implementaci canonical core loopu:
+Roadmap po dokončených Taskech 020 / PR #29 a 021A / PR #31 zachovává fake-desktop produktovou osu a podřizuje další implementaci canonical core loopu:
 
 ```text
 raw metrika
@@ -21,7 +21,8 @@ Aktuální stav:
 - Fáze 0–6 mají funkční baseline na `main`;
 - Audit 00-A, ClickAudit, společný runtime, lokální persistence, packet queue, repeatable Audit 10-A a Evidence certifikace jsou integrovány;
 - `clickaudit.click` je doslovná raw metrika a sama nepřidává spendable resource;
-- Fáze 7 začíná window-placement preflightem před Evidence autorizací a Fidget integrací.
+- Task 021A window placement, dynamické form windows, cascade a close/minimize semantics jsou dokončené a mergnuté;
+- aktuálním krokem Fáze 7 je Task 021B — Evidence authorization contract a Audit 16-C; Task 022 naváže skutečným asset-backed Fidget module surface.
 
 Současné standalone appky ClickAudit, Fidget a Bloom se neruší. Integrace probíhá přes společné module surface, bridge a runtime contracts.
 
@@ -165,16 +166,16 @@ nová hra
 
 Cíl: Uzavřít první celý loop a přidat druhý druh raw metriky.
 
+Status: Task 021A dokončen a mergnut. Task 021B je aktuální implementační krok. Task 022 je následující asset-backed Fidget krok.
+
 Pořadí:
 
-1. Task 021A — first-open window placement a dynamický cascade auditních dokumentů;
-2. Task 021B — Evidence authorization contract a Audit 16-C dostupný po první Evidence;
-3. alokace/spotřeba Evidence na povolení;
-4. asset-backed Fidget module surface v K0rp_OS;
-5. samostatná Fidget session state;
-6. `fidget.sessionSettled` jako první non-click raw metric closure.
+1. Task 021A — dokončený first-open window placement a dynamický cascade auditních dokumentů;
+2. Task 021B — aktuální Evidence authorization contract: Audit 16-C, alokace 1 EV a persistentní Fidget authorization;
+3. Task 022 — následující asset-backed Fidget module surface v K0rp_OS se skutečným reusable frontendem;
+4. Task 023 — `fidget.sessionSettled` jako první non-click raw metric closure a napojení na společný packet/audit framework.
 
-Task 021A presentation gate:
+Dokončený Task 021A presentation gate:
 
 ```text
 Audit 00-A submit → baseline + unlock bez forced popupu
@@ -186,11 +187,13 @@ Audit 00-A submit → baseline + unlock bez forced popupu
 Completion gate:
 
 ```text
-Evidence 1
-→ Audit 16-C
-→ Evidence alokována
-→ Fidget shortcut
-→ skutečná Fidget session
+EV 1
+→ Audit 16-C se zpřístupní
+→ platný submit alokuje právě 1 EV
+→ EV 0
+→ Fidget je persistentně autorizován
+→ desktop ukazuje AUTORIZOVÁNO / NASAZENÍ ČEKÁ
+→ Task 022 nasadí skutečný asset-backed Fidget frontend
 ```
 
 Fidget nesmí být odemčen pouze skrytým thresholdem NWU/AP. Musí být autorizován výsledkem auditního procesu.

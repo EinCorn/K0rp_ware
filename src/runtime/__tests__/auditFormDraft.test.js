@@ -16,6 +16,7 @@ const auditForms = JSON.parse(await readFile(
 
 const audit00 = auditForms.find((form) => form.id === 'audit-00-a')
 const audit10 = auditForms.find((form) => form.id === 'audit-10-a')
+const audit16 = auditForms.find((form) => form.id === 'audit-16-c')
 
 test('Audit 00-A starts with one unchecked presence field', () => {
   assert.deepEqual(createAuditFormValues(audit00), { presence: false })
@@ -48,6 +49,39 @@ test('every Audit 10-A answer satisfies completion', () => {
   for (const answer of ['Ano', 'Ne', 'Nelze potvrdit']) {
     assert.equal(isAuditFormComplete(audit10, { intentionality: answer }), true)
   }
+})
+
+test('Audit 16-C requires both compact requisition checkboxes', () => {
+  const interactiveFields = audit16.fields.filter((field) => field.type !== 'buttonConfirm')
+
+  assert.equal(audit16.title, 'Přidělení stabilizačního vybavení')
+  assert.equal(interactiveFields.length, 2)
+  assert.equal(interactiveFields.every((field) => field.type === 'checkbox'), true)
+  assert.deepEqual(interactiveFields.map((field) => field.label), [
+    'Žádám o přidělení rotačního stabilizátoru.',
+    'Beru na vědomí, že stabilizace není řešení.',
+  ])
+  assert.deepEqual(createAuditFormValues(audit16), {
+    requisition: false,
+    acknowledgement: false,
+  })
+  assert.equal(getAuditSubmitField(audit16)?.label, 'ALOKOVAT 1 EVIDENCE')
+  assert.equal(isAuditFormComplete(audit16, {
+    requisition: false,
+    acknowledgement: false,
+  }), false)
+  assert.equal(isAuditFormComplete(audit16, {
+    requisition: true,
+    acknowledgement: false,
+  }), false)
+  assert.equal(isAuditFormComplete(audit16, {
+    requisition: false,
+    acknowledgement: true,
+  }), false)
+  assert.equal(isAuditFormComplete(audit16, {
+    requisition: true,
+    acknowledgement: true,
+  }), true)
 })
 
 test('required field validation supports future audit field types', () => {

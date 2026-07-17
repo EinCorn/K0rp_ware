@@ -16,13 +16,12 @@
     ]
   },
   {
-    "id":"audit-16-c","code":"16-C","title":"Requisition stabilizačního vybavení","estimatedMinutes":3,"interactionClickProfile":"audit-form","requirements":{"kind":"all","requirements":[{"kind":"resourceAtLeast","resourceId":"notionalWorkUnits","amount":24},{"kind":"resourceAtLeast","resourceId":"auditPressure","amount":35}]},"submitEvent":"audit.formSubmitted",
-    "completionEffects":[{"kind":"unlockUpgrade","upgradeId":"fidget.access-permit"},{"kind":"unlockMemo","memoId":"memo.fidget-requisition"}],
+    "id":"audit-16-c","code":"16-C","title":"Přidělení stabilizačního vybavení","estimatedMinutes":1,"interactionClickProfile":"audit-form","requirements":{"kind":"resourceAtLeast","resourceId":"notionalWorkUnits","amount":1},"authorization":{"moduleId":"fidget","resourceId":"notionalWorkUnits","cost":1},"submitEvent":"audit.formSubmitted",
+    "completionEffects":[{"kind":"unlockModule","moduleId":"fidget"},{"kind":"unlockMemo","memoId":"memo.fidget-requisition"}],
     "fields":[
-      {"id":"symptom","type":"multiCheck","label":"Pozorované provozní projevy","required":true,"minimumSelections":1,"options":["Klikání bez objektu","Pohyb ruky mimo schválený účel","Příliš stabilní pohled","Schůzková expozice"]},
-      {"id":"equipment","type":"radio","label":"Požadované vybavení","required":true,"options":["Rotační stabilizátor","Rotační stabilizátor s jiným názvem","Bez vybavení, ale se záznamem žádosti"]},
-      {"id":"accept","type":"checkbox","label":"Beru na vědomí, že stabilizace není řešení.","required":true},
-      {"id":"submit","type":"buttonConfirm","label":"PŘEDAT ODDĚLENÍ STABILIZACE","required":true}
+      {"id":"requisition","type":"checkbox","label":"Žádám o přidělení rotačního stabilizátoru.","required":true},
+      {"id":"acknowledgement","type":"checkbox","label":"Beru na vědomí, že stabilizace není řešení.","required":true},
+      {"id":"submit","type":"buttonConfirm","label":"ALOKOVAT 1 EVIDENCE","required":true}
     ]
   },
   {

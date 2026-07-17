@@ -211,7 +211,7 @@ Audit 00-A
 
 ## Task 021A — Window placement and form cascade preflight
 
-Priorita: **NEXT**
+Status: dokončeno a mergnuto v PR #31.
 
 ### Cíl
 
@@ -274,6 +274,8 @@ Audit 00-A submit → baseline + unlock, žádný forced popup
 
 ## Task 021B — Evidence authorization contract and Audit 16-C
 
+Status: **CURRENT** — aktuální implementační task.
+
 ### Cíl
 
 Použít první Evidence jako autorizaci nového systému, ne jako click multiplier.
@@ -304,7 +306,28 @@ Použít první Evidence jako autorizaci nového systému, ne jako click multipl
 - opakovaný submit znovu neutrácí;
 - unlock state přežije refresh.
 
+### Manual Windows gate
+
+Použít čistý nebo známý Task 020 save:
+
+```text
+1. Získat EV 1 certifikací Audit 10-A.
+2. Audit 16-C se objeví a právě jednou auto-openne jako cascaded form.
+3. Zavřít jej; znovu otevřít z Formulářů; stejné ID a session position.
+4. Ověřit, že oba povinné checkboxy jsou viditelné bez scrollování.
+5. Submitnout s EV 1.
+6. Taskbar se změní EV 1 → EV 0.
+7. Dokončený 16-C uvede, že autorizace byla udělena a EV alokována.
+8. Fidget desktop item se objeví jako AUTORIZOVÁNO / NASAZENÍ ČEKÁ a neotevře placeholder.
+9. Doručené zpřístupní autorizační memo.
+10. Refresh zachová submitted 16-C, EV 0, autorizaci, Fidget item a memo.
+11. Dokončený 16-C lze znovu otevřít, přestože je EV nyní 0.
+12. Opakované kliky ani submit nemohou utratit další EV.
+```
+
 ## Task 022 — Shared asset-backed Fidget module surface
+
+Status: **NEXT** — následující asset-backed Fidget module step po Tasku 021B.
 
 ### Cíl
 

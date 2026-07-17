@@ -15,8 +15,10 @@ export function reconcileAuditInstanceWindows({
   workspaceSize,
   formBasePosition,
   entryDocumentId = 'audit-00-a',
+  preservedDocumentIds = [],
 }) {
   const currentInstanceIds = new Set(auditInstances.map(({ id }) => id))
+  const preservedDocumentIdSet = new Set(preservedDocumentIds)
   const newlyCreatedInstanceIds = new Set(
     auditInstances
       .filter(({ id }) => !knownInstanceIds.has(id))
@@ -29,6 +31,7 @@ export function reconcileAuditInstanceWindows({
     if (
       windowState.kind !== 'form'
       || windowState.documentId === entryDocumentId
+      || preservedDocumentIdSet.has(windowState.documentId)
       || currentInstanceIds.has(windowState.documentId)
     ) continue
 

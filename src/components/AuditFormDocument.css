@@ -69,6 +69,68 @@
   padding: 8px 9px;
 }
 
+.os-authorization-audit-window .os-audit-document {
+  gap: 8px;
+  padding: 11px 13px;
+}
+
+.os-authorization-audit-window .os-audit-document-heading p {
+  margin-bottom: 3px;
+}
+
+.os-authorization-audit-window .os-audit-document-heading h1 {
+  font-size: 20px;
+  line-height: 20px;
+}
+
+.os-authorization-audit-window .os-audit-document-heading > span {
+  margin-top: 4px;
+  font-size: 11px;
+  line-height: 14px;
+}
+
+.os-authorization-audit-window .os-audit-fields {
+  align-content: start;
+  gap: 6px;
+  overflow: hidden;
+}
+
+.os-authorization-audit-window .os-audit-checkbox {
+  min-height: 45px;
+  grid-template-columns: 22px minmax(0, 1fr);
+  gap: 8px;
+  padding: 6px 9px;
+  border-width: 1px;
+}
+
+.os-authorization-audit-window .os-audit-checkbox-box {
+  width: 18px;
+  height: 18px;
+  border-width: 2px;
+}
+
+.os-authorization-audit-window .os-audit-checkbox input:checked + .os-audit-checkbox-box::after {
+  inset: -7px 0 0 1px;
+  font-size: 23px;
+  line-height: 23px;
+}
+
+.os-authorization-audit-window .os-audit-checkbox strong {
+  font-size: 15px;
+  line-height: 17px;
+  letter-spacing: -0.02em;
+}
+
+.os-authorization-audit-window .os-audit-submit-row {
+  gap: 8px;
+  padding-top: 6px;
+}
+
+.os-authorization-audit-window .os-audit-submit {
+  min-width: 154px;
+  padding: 7px 9px;
+}
+
 .os-audit-checkbox {
   min-height: 72px;
   display: grid;
