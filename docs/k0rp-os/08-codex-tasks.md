@@ -274,7 +274,7 @@ Audit 00-A submit → baseline + unlock, žádný forced popup
 
 ## Task 021B — Evidence authorization contract and Audit 16-C
 
-Status: **CURRENT** — aktuální implementační task.
+Status: dokončeno a mergnuto v PR #33.
 
 ### Cíl
 
@@ -327,7 +327,7 @@ Použít čistý nebo známý Task 020 save:
 
 ## Task 022 — Shared asset-backed Fidget module surface
 
-Status: **NEXT** — následující asset-backed Fidget module step po Tasku 021B.
+Status: **CURRENT / IMPLEMENTOVÁNO** — sdílený asset-backed Fidget surface čeká na Windows visual/interaction gate a merge.
 
 ### Cíl
 
@@ -336,12 +336,17 @@ Přenést existující hotový Fidget do K0rp_OS stejně věrně jako ClickAudit
 ### Scope
 
 - extrahovat skutečný reusable Fidget module content;
-- uvnitř OS používat app-window bez standalone shellu;
-- standalone preview používá stejný modul;
+- `FidgetModule` vlastní spinner DOM, motion, modes, effects a accessibility bez Tauri nebo runtime progression vazby;
+- `FidgetEmbeddedWindow` používá uvnitř OS pouze skutečný 181×181 `app-window.png`, real mode/close controls a OS drag/minimize adapter;
+- `FidgetStandaloneShell` používá skutečný 230×230 `app-shell.png` a stejný modul;
+- `FidgetPage` volí `?app=fidget` nebo app-window-only `?app=fidget&surface=window`;
 - zachovat původní spinner, mode a sensory feel;
 - napojit module unlock na authorization z Tasku 021B;
+- stabilní window ID `fidget`, taskbar label `FIDGET`, first-open center a žádný authorization auto-open;
+- přesně jeden actionable desktop shortcut `AUTORIZOVÁNO / NASAZENO`;
 - lokální session state může zůstat module-local;
-- window manager vlastní drag/minimize/taskbar.
+- window manager vlastní drag/minimize/taskbar;
+- ClickAudit zůstává centralizovaný v K0rp_OS capture vrstvě a jeden Fidget pointer intent se nezapisuje podruhé.
 
 ### Do not
 
@@ -358,6 +363,8 @@ Přenést existující hotový Fidget do K0rp_OS stejně věrně jako ClickAudit
 - standalone preview zůstane použitelný.
 
 ## Task 023 — Fidget metric packet and first real backlog
+
+Status: **NEXT** — Fidget session closure, packet a první skutečný backlog.
 
 ### Cíl
 

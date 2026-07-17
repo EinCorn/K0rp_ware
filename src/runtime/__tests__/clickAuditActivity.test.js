@@ -13,6 +13,7 @@ test('activity mapping provides a neutral entry for every supported OS click pro
     'completed-audit-body',
     'active-audit-field',
     'clickaudit-module',
+    'fidget-module',
     'desktop-icon',
     'taskbar',
     'folder-entry',

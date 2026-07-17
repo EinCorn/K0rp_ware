@@ -3,6 +3,7 @@ const PROFILE_MESSAGES = {
   'completed-audit-body': 'Uzavřený audit byl znovu procesně navštíven.',
   'active-audit-field': 'Auditní vstup byl zaznamenán pro místní zpracování.',
   'clickaudit-module': 'ClickAudit přijal další evidovaný úkon.',
+  'fidget-module': 'Fidget přijal místní stabilizační interakci.',
   'desktop-icon': 'Zástupce na ploše byl lokálně potvrzen.',
   taskbar: 'Stav okna byl předán taskbaru.',
   'folder-entry': 'Položka složky byla zkontrolována.',

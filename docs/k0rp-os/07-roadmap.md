@@ -22,7 +22,7 @@ Aktuální stav:
 - Audit 00-A, ClickAudit, společný runtime, lokální persistence, packet queue, repeatable Audit 10-A a Evidence certifikace jsou integrovány;
 - `clickaudit.click` je doslovná raw metrika a sama nepřidává spendable resource;
 - Task 021A window placement, dynamické form windows, cascade a close/minimize semantics jsou dokončené a mergnuté;
-- aktuálním krokem Fáze 7 je Task 021B — Evidence authorization contract a Audit 16-C; Task 022 naváže skutečným asset-backed Fidget module surface.
+- Task 021B je mergnutý v PR #33; aktuálním krokem Fáze 7 je implementovaný Task 022 — shared asset-backed Fidget module surface, po němž následuje Task 023.
 
 Současné standalone appky ClickAudit, Fidget a Bloom se neruší. Integrace probíhá přes společné module surface, bridge a runtime contracts.
 
@@ -166,14 +166,14 @@ nová hra
 
 Cíl: Uzavřít první celý loop a přidat druhý druh raw metriky.
 
-Status: Task 021A dokončen a mergnut. Task 021B je aktuální implementační krok. Task 022 je následující asset-backed Fidget krok.
+Status: Task 021A dokončen a mergnut. Task 021B dokončen a mergnut v PR #33. Task 022 je aktuální implementovaný krok; Task 023 je následující.
 
 Pořadí:
 
 1. Task 021A — dokončený first-open window placement a dynamický cascade auditních dokumentů;
-2. Task 021B — aktuální Evidence authorization contract: Audit 16-C, alokace 1 EV a persistentní Fidget authorization;
-3. Task 022 — následující asset-backed Fidget module surface v K0rp_OS se skutečným reusable frontendem;
-4. Task 023 — `fidget.sessionSettled` jako první non-click raw metric closure a napojení na společný packet/audit framework.
+2. Task 021B — dokončený Evidence authorization contract z PR #33: Audit 16-C, alokace 1 EV a persistentní Fidget authorization;
+3. Task 022 — aktuální sdílený asset-backed Fidget module surface v K0rp_OS, standalone shellu a window-only preview;
+4. Task 023 — následující `fidget.sessionSettled` jako první non-click raw metric closure, packet a první skutečný backlog.
 
 Dokončený Task 021A presentation gate:
 
@@ -192,8 +192,10 @@ EV 1
 → platný submit alokuje právě 1 EV
 → EV 0
 → Fidget je persistentně autorizován
-→ desktop ukazuje AUTORIZOVÁNO / NASAZENÍ ČEKÁ
-→ Task 022 nasadí skutečný asset-backed Fidget frontend
+→ desktop ukazuje AUTORIZOVÁNO / NASAZENO
+→ explicitní otevření zobrazí skutečné asset-backed Fidget okno
+→ stejné FidgetModule používají standalone i window-only preview
+→ Fidget zatím nevytváří Evidence; session closure a packet patří do Tasku 023
 ```
 
 Fidget nesmí být odemčen pouze skrytým thresholdem NWU/AP. Musí být autorizován výsledkem auditního procesu.

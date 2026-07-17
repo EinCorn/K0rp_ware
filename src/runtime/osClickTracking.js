@@ -3,6 +3,7 @@ export const CLICK_AUDIT_PROFILES = new Set([
   'completed-audit-body',
   'active-audit-field',
   'clickaudit-module',
+  'fidget-module',
   'desktop-icon',
   'taskbar',
   'folder-entry',
@@ -33,6 +34,11 @@ export function classifyKorpOsClickTarget(target) {
   if (element.closest('.os-shell')) return { profile: 'generic-os' }
 
   return null
+}
+
+export function classifyKorpOsIntentionEvent(eventType, target) {
+  if (eventType !== 'pointerdown') return null
+  return classifyKorpOsClickTarget(target)
 }
 
 export function createKorpOsClickEvent({
