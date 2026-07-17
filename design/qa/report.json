@@ -1,0 +1,9827 @@
+{
+  "asset_count": 493,
+  "failure_count": 0,
+  "failures": [],
+  "assets": [
+    {
+      "id": "bar.taskbar.full.blank",
+      "size": [
+        773,
+        53
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        773,
+        53
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.taskbar.full.blank.slice.b",
+      "size": [
+        753,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        753,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.taskbar.full.blank.slice.bl",
+      "size": [
+        10,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        10,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.taskbar.full.blank.slice.br",
+      "size": [
+        10,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        10,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.taskbar.full.blank.slice.c",
+      "size": [
+        753,
+        37
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        753,
+        37
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.taskbar.full.blank.slice.l",
+      "size": [
+        10,
+        37
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        10,
+        37
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.taskbar.full.blank.slice.r",
+      "size": [
+        10,
+        37
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        10,
+        37
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.taskbar.full.blank.slice.t",
+      "size": [
+        753,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        753,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.taskbar.full.blank.slice.tl",
+      "size": [
+        10,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        10,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.taskbar.full.blank.slice.tr",
+      "size": [
+        10,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        10,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.clicks.blank",
+      "size": [
+        149,
+        67
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        149,
+        67
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.clicks.reference",
+      "size": [
+        149,
+        67
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        149,
+        67
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.cpu.blank",
+      "size": [
+        146,
+        67
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        146,
+        67
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.cpu.reference",
+      "size": [
+        146,
+        67
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        146,
+        67
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.devotion.blank",
+      "size": [
+        128,
+        66
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        128,
+        66
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.devotion.reference",
+      "size": [
+        128,
+        66
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        128,
+        66
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.employee_build.blank",
+      "size": [
+        198,
+        67
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        198,
+        67
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.employee_build.reference",
+      "size": [
+        198,
+        67
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        198,
+        67
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.generic",
+      "size": [
+        137,
+        57
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        137,
+        57
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.generic.slice.b",
+      "size": [
+        117,
+        9
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        9
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.generic.slice.bl",
+      "size": [
+        10,
+        9
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        10,
+        9
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.generic.slice.br",
+      "size": [
+        10,
+        9
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        10,
+        9
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.generic.slice.c",
+      "size": [
+        117,
+        39
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        39
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.generic.slice.l",
+      "size": [
+        10,
+        39
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        10,
+        39
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.generic.slice.r",
+      "size": [
+        10,
+        39
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        10,
+        39
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.generic.slice.t",
+      "size": [
+        117,
+        9
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        9
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.generic.slice.tl",
+      "size": [
+        10,
+        9
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        10,
+        9
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.generic.slice.tr",
+      "size": [
+        10,
+        9
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        10,
+        9
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.logo",
+      "size": [
+        220,
+        68
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        220,
+        68
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.logo.reference",
+      "size": [
+        220,
+        68
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        220,
+        68
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.metabolism.blank",
+      "size": [
+        149,
+        66
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        149,
+        66
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.metabolism.reference",
+      "size": [
+        149,
+        66
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        149,
+        66
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.ram.blank",
+      "size": [
+        133,
+        68
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        133,
+        68
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.ram.reference",
+      "size": [
+        133,
+        68
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        133,
+        68
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.time_date.blank",
+      "size": [
+        158,
+        67
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        158,
+        67
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.time_date.reference",
+      "size": [
+        158,
+        67
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        158,
+        67
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.utility_group.blank",
+      "size": [
+        188,
+        67
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        188,
+        67
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.utility_group.reference",
+      "size": [
+        188,
+        67
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        188,
+        67
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.work_blob.blank",
+      "size": [
+        131,
+        67
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        131,
+        67
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.cell.work_blob.reference",
+      "size": [
+        131,
+        67
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        131,
+        67
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.full.blank",
+      "size": [
+        1355,
+        69
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        1355,
+        69
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.full.blank.slice.b",
+      "size": [
+        1319,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        1319,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.full.blank.slice.bl",
+      "size": [
+        18,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        18,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.full.blank.slice.br",
+      "size": [
+        18,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        18,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.full.blank.slice.c",
+      "size": [
+        1319,
+        53
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        1319,
+        53
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.full.blank.slice.l",
+      "size": [
+        18,
+        53
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        18,
+        53
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.full.blank.slice.r",
+      "size": [
+        18,
+        53
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        18,
+        53
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.full.blank.slice.t",
+      "size": [
+        1319,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        1319,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.full.blank.slice.tl",
+      "size": [
+        18,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        18,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.full.blank.slice.tr",
+      "size": [
+        18,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        18,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.structure.cap_left",
+      "size": [
+        84,
+        54
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        84,
+        54
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.structure.cap_right",
+      "size": [
+        83,
+        54
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        83,
+        54
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.structure.rule",
+      "size": [
+        605,
+        21
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        605,
+        21
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.structure.tile_l",
+      "size": [
+        128,
+        49
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        128,
+        49
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.structure.tile_m",
+      "size": [
+        137,
+        57
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        137,
+        57
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.structure.tile_s",
+      "size": [
+        145,
+        55
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        145,
+        55
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.structure.tile_xl",
+      "size": [
+        140,
+        53
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        140,
+        53
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.utility.evidence.reference",
+      "size": [
+        42,
+        54
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        42,
+        54
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.utility.network.reference",
+      "size": [
+        43,
+        54
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        43,
+        54
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.utility.pending.reference",
+      "size": [
+        42,
+        54
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        42,
+        54
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "bar.top.utility.power.reference",
+      "size": [
+        43,
+        54
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        43,
+        54
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.audit.disabled",
+      "size": [
+        73,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        73,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.audit.hover",
+      "size": [
+        73,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        73,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.audit.normal",
+      "size": [
+        73,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        73,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.audit.pressed",
+      "size": [
+        73,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        73,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.audit.reference",
+      "size": [
+        73,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        73,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.authorize.disabled",
+      "size": [
+        128,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        128,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.authorize.hover",
+      "size": [
+        128,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        128,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.authorize.normal",
+      "size": [
+        128,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        128,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.authorize.pressed",
+      "size": [
+        128,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        128,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.authorize.reference",
+      "size": [
+        128,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        128,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.cancel.disabled",
+      "size": [
+        66,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        66,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.cancel.hover",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.cancel.normal",
+      "size": [
+        73,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        73,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.cancel.pressed",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.confirm.disabled",
+      "size": [
+        66,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        66,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.confirm.hover",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.confirm.normal",
+      "size": [
+        73,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        73,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.confirm.pressed",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.continue.disabled",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.continue.hover",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.continue.normal",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.continue.pressed",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.continue.reference",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.done.disabled",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.done.hover",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.done.normal",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.done.pressed",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.done.reference",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.lock.disabled",
+      "size": [
+        112,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        112,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.lock.hover",
+      "size": [
+        112,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        112,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.lock.normal",
+      "size": [
+        112,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        112,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.lock.pressed",
+      "size": [
+        112,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        112,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.lock.reference",
+      "size": [
+        112,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        112,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.neutral.disabled",
+      "size": [
+        73,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        73,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.neutral.hover",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.neutral.hover.reference",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.neutral.normal",
+      "size": [
+        73,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        73,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.neutral.normal.reference",
+      "size": [
+        73,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        73,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.neutral.pressed",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.neutral.pressed.reference",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.primary.disabled",
+      "size": [
+        66,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        66,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.primary.disabled.reference",
+      "size": [
+        66,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        66,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.primary.hover",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.primary.hover.reference",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.primary.normal",
+      "size": [
+        73,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        73,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.primary.normal.reference",
+      "size": [
+        73,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        73,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.primary.pressed",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.primary.pressed.reference",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.return.disabled",
+      "size": [
+        115,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        115,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.return.hover",
+      "size": [
+        115,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        115,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.return.normal",
+      "size": [
+        115,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        115,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.return.pressed",
+      "size": [
+        115,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        115,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.return.reference",
+      "size": [
+        115,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        115,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.secondary.disabled",
+      "size": [
+        66,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        66,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.secondary.disabled.reference",
+      "size": [
+        66,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        66,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.secondary.hover",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.secondary.hover.reference",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.secondary.normal",
+      "size": [
+        73,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        73,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.secondary.normal.reference",
+      "size": [
+        73,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        73,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.secondary.pressed",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.secondary.pressed.reference",
+      "size": [
+        65,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        65,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.send.disabled",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.send.hover",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.send.normal",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.send.pressed",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.send.reference",
+      "size": [
+        117,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.system.disabled",
+      "size": [
+        119,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        119,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.system.hover",
+      "size": [
+        119,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        119,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.system.normal",
+      "size": [
+        119,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        119,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.system.pressed",
+      "size": [
+        119,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        119,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.system.reference",
+      "size": [
+        119,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        119,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.unlock.disabled",
+      "size": [
+        119,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        119,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.unlock.hover",
+      "size": [
+        119,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        119,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.unlock.normal",
+      "size": [
+        119,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        119,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.unlock.pressed",
+      "size": [
+        119,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        119,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.unlock.reference",
+      "size": [
+        119,
+        27
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        119,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.warning.disabled",
+      "size": [
+        117,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.warning.hover",
+      "size": [
+        117,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.warning.normal",
+      "size": [
+        117,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.warning.pressed",
+      "size": [
+        117,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "button.warning.reference",
+      "size": [
+        117,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        117,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "check.checkbox.disabled",
+      "size": [
+        20,
+        21
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        20,
+        21
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "check.checkbox.mixed",
+      "size": [
+        21,
+        23
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        21,
+        23
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "check.checkbox.off",
+      "size": [
+        21,
+        22
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        21,
+        22
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "check.checkbox.on",
+      "size": [
+        21,
+        21
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        21,
+        21
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "check.radio.disabled",
+      "size": [
+        18,
+        19
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        18,
+        19
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "check.radio.off",
+      "size": [
+        18,
+        18
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        18,
+        18
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "check.radio.on",
+      "size": [
+        19,
+        20
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        19,
+        20
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "check.toggle.alert",
+      "size": [
+        46,
+        22
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        46,
+        22
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "check.toggle.off",
+      "size": [
+        40,
+        19
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        40,
+        19
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "check.toggle.on",
+      "size": [
+        45,
+        19
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        45,
+        19
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.close.disabled",
+      "size": [
+        34,
+        34
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.close.hover",
+      "size": [
+        34,
+        34
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.close.normal",
+      "size": [
+        34,
+        36
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.close.pressed",
+      "size": [
+        34,
+        36
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.help.disabled",
+      "size": [
+        35,
+        34
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.help.hover",
+      "size": [
+        35,
+        34
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.help.normal",
+      "size": [
+        35,
+        36
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.help.pressed",
+      "size": [
+        35,
+        36
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.maximize.disabled",
+      "size": [
+        34,
+        34
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.maximize.hover",
+      "size": [
+        34,
+        34
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.maximize.normal",
+      "size": [
+        34,
+        36
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.maximize.pressed",
+      "size": [
+        34,
+        36
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.menu.disabled",
+      "size": [
+        35,
+        34
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.menu.hover",
+      "size": [
+        35,
+        34
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.menu.normal",
+      "size": [
+        35,
+        36
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.menu.pressed",
+      "size": [
+        35,
+        36
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.minimize.disabled",
+      "size": [
+        35,
+        34
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.minimize.hover",
+      "size": [
+        35,
+        34
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.minimize.normal",
+      "size": [
+        35,
+        36
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.minimize.pressed",
+      "size": [
+        35,
+        36
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.pin.disabled",
+      "size": [
+        34,
+        34
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.pin.hover",
+      "size": [
+        34,
+        34
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.pin.normal",
+      "size": [
+        34,
+        36
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.pin.pressed",
+      "size": [
+        34,
+        36
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.restore.disabled",
+      "size": [
+        35,
+        34
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.restore.hover",
+      "size": [
+        35,
+        34
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.restore.normal",
+      "size": [
+        35,
+        36
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "control.window.restore.pressed",
+      "size": [
+        35,
+        36
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        35,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "digit.flip.0",
+      "size": [
+        27,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "digit.flip.1",
+      "size": [
+        27,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "digit.flip.2",
+      "size": [
+        27,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "digit.flip.3",
+      "size": [
+        27,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "digit.flip.4",
+      "size": [
+        27,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "digit.flip.5",
+      "size": [
+        27,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "digit.flip.6",
+      "size": [
+        27,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "digit.flip.7",
+      "size": [
+        27,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "digit.flip.8",
+      "size": [
+        27,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "digit.flip.9",
+      "size": [
+        27,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "digit.separator.colon",
+      "size": [
+        27,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "digit.separator.dash",
+      "size": [
+        27,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "digit.separator.slash",
+      "size": [
+        27,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.accessory.paper_overlay_left",
+      "size": [
+        51,
+        92
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        51,
+        92
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.accessory.paper_overlay_middle",
+      "size": [
+        55,
+        92
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        55,
+        92
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.accessory.paper_overlay_right",
+      "size": [
+        54,
+        88
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        54,
+        88
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.accessory.paperclip",
+      "size": [
+        34,
+        80
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        80
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.accessory.pushpin",
+      "size": [
+        47,
+        83
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        47,
+        83
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.accessory.signature_rows",
+      "size": [
+        181,
+        99
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        181,
+        99
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.accessory.sticky_note",
+      "size": [
+        70,
+        73
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        70,
+        73
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.accessory.tape_strip",
+      "size": [
+        89,
+        52
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        89,
+        52
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.audit_00a.template",
+      "size": [
+        189,
+        250
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        189,
+        250
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.audit_10a.template",
+      "size": [
+        194,
+        250
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        194,
+        250
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.audit_16c.template",
+      "size": [
+        195,
+        249
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        195,
+        249
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.evidence.template",
+      "size": [
+        177,
+        249
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        177,
+        249
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.archive",
+      "size": [
+        32,
+        39
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        32,
+        39
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.audit_packet",
+      "size": [
+        30,
+        40
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        30,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.certificate",
+      "size": [
+        29,
+        38
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        29,
+        38
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.checklist",
+      "size": [
+        33,
+        34
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        33,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.clip",
+      "size": [
+        37,
+        34
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        37,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.document",
+      "size": [
+        33,
+        41
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        33,
+        41
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.evidence",
+      "size": [
+        37,
+        40
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        37,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.form",
+      "size": [
+        38,
+        43
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        38,
+        43
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.graph",
+      "size": [
+        40,
+        33
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        40,
+        33
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.knowledge",
+      "size": [
+        27,
+        37
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        37
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.memo",
+      "size": [
+        38,
+        43
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        38,
+        43
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.note",
+      "size": [
+        34,
+        38
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        38
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.photo",
+      "size": [
+        37,
+        32
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        37,
+        32
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.schema",
+      "size": [
+        44,
+        22
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        44,
+        22
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.table",
+      "size": [
+        39,
+        28
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        39,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.file_icon.text",
+      "size": [
+        31,
+        33
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        31,
+        33
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.folder.closed",
+      "size": [
+        118,
+        109
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        118,
+        109
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.folder.open",
+      "size": [
+        143,
+        112
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        143,
+        112
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.footer.internal",
+      "size": [
+        260,
+        14
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        260,
+        14
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.footer.review",
+      "size": [
+        260,
+        13
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        260,
+        13
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.footer.version",
+      "size": [
+        181,
+        26
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        181,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.generic_form.template",
+      "size": [
+        188,
+        250
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        188,
+        250
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.internal_memo.template",
+      "size": [
+        188,
+        249
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        188,
+        249
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.list_row.blank",
+      "size": [
+        417,
+        20
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        417,
+        20
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.list_row.evidence.reference",
+      "size": [
+        417,
+        20
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        417,
+        20
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.list_row.new.reference",
+      "size": [
+        417,
+        20
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        417,
+        20
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.list_row.pending.reference",
+      "size": [
+        417,
+        20
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        417,
+        20
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.list_row.read.reference",
+      "size": [
+        417,
+        20
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        417,
+        20
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.list_row.received.reference",
+      "size": [
+        417,
+        20
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        417,
+        20
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.mark.check",
+      "size": [
+        38,
+        38
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        38,
+        38
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.mark.cross",
+      "size": [
+        40,
+        40
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        40,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.mark.help",
+      "size": [
+        40,
+        39
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        40,
+        39
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.mark.ok",
+      "size": [
+        41,
+        39
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        41,
+        39
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.mark.warning",
+      "size": [
+        41,
+        40
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        41,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.paper.clean_new",
+      "size": [
+        155,
+        222
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        155,
+        222
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.paper.clean_worn",
+      "size": [
+        170,
+        221
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        170,
+        221
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.paper.grid",
+      "size": [
+        169,
+        225
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        169,
+        225
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.paper.lined",
+      "size": [
+        155,
+        225
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        155,
+        225
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.scrap.note_1",
+      "size": [
+        96,
+        76
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        96,
+        76
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.scrap.note_2",
+      "size": [
+        81,
+        75
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        81,
+        75
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.scrap.note_3",
+      "size": [
+        87,
+        73
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        87,
+        73
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.scrap.tape_1",
+      "size": [
+        112,
+        44
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        112,
+        44
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.scrap.tape_2",
+      "size": [
+        70,
+        39
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        70,
+        39
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.scrap.tape_3",
+      "size": [
+        77,
+        41
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        77,
+        41
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.seal.approved",
+      "size": [
+        69,
+        68
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        69,
+        68
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.seal.archived",
+      "size": [
+        88,
+        87
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        88,
+        87
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.seal.checked",
+      "size": [
+        71,
+        71
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        71,
+        71
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.seal.evidence",
+      "size": [
+        91,
+        92
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        91,
+        92
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.seal.pending",
+      "size": [
+        85,
+        85
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        85,
+        85
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.seal.received",
+      "size": [
+        60,
+        69
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        60,
+        69
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.seal.rejected",
+      "size": [
+        71,
+        70
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        71,
+        70
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.seal.verified",
+      "size": [
+        88,
+        87
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        88,
+        87
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.seal.waiting",
+      "size": [
+        69,
+        69
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        69,
+        69
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.stamp.approved",
+      "size": [
+        106,
+        36
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        106,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.stamp.archived",
+      "size": [
+        90,
+        34
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        90,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.stamp.cancelled",
+      "size": [
+        91,
+        37
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        91,
+        37
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.stamp.certified",
+      "size": [
+        120,
+        35
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        120,
+        35
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.stamp.confidential",
+      "size": [
+        131,
+        40
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        131,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.stamp.internal",
+      "size": [
+        71,
+        38
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        71,
+        38
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.stamp.pending",
+      "size": [
+        85,
+        34
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        85,
+        34
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.stamp.read",
+      "size": [
+        100,
+        36
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        100,
+        36
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.stamp.received",
+      "size": [
+        81,
+        37
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        81,
+        37
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "document.stamp.rejected",
+      "size": [
+        94,
+        37
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        94,
+        37
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "hazard.caution",
+      "size": [
+        158,
+        35
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        158,
+        35
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "hazard.danger",
+      "size": [
+        158,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        158,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "indicator.lamp.blue",
+      "size": [
+        32,
+        32
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        32,
+        32
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "indicator.lamp.green",
+      "size": [
+        32,
+        31
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        32,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "indicator.lamp.off",
+      "size": [
+        32,
+        31
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        32,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "indicator.lamp.red",
+      "size": [
+        31,
+        32
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        31,
+        32
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "indicator.lamp.yellow",
+      "size": [
+        32,
+        31
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        32,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.long.disabled",
+      "size": [
+        87,
+        29
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        87,
+        29
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.long.error",
+      "size": [
+        85,
+        29
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        85,
+        29
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.long.focus",
+      "size": [
+        85,
+        29
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        85,
+        29
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.long.normal",
+      "size": [
+        85,
+        29
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        85,
+        29
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.medium.disabled",
+      "size": [
+        87,
+        29
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        87,
+        29
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.medium.error",
+      "size": [
+        85,
+        29
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        85,
+        29
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.medium.focus",
+      "size": [
+        85,
+        29
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        85,
+        29
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.medium.normal",
+      "size": [
+        85,
+        29
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        85,
+        29
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.short.disabled",
+      "size": [
+        87,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        87,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.short.error",
+      "size": [
+        85,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        85,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.short.focus",
+      "size": [
+        85,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        85,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.short.normal",
+      "size": [
+        85,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        85,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.textarea.disabled",
+      "size": [
+        87,
+        58
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        87,
+        58
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.textarea.error",
+      "size": [
+        85,
+        58
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        85,
+        58
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.textarea.focus",
+      "size": [
+        85,
+        58
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        85,
+        58
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "input.textarea.normal",
+      "size": [
+        85,
+        58
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        85,
+        58
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "notification.badge.large",
+      "size": [
+        28,
+        18
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        28,
+        18
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "notification.badge.medium",
+      "size": [
+        16,
+        15
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        16,
+        15
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "notification.badge.small",
+      "size": [
+        9,
+        13
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        9,
+        13
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "progress.frame",
+      "size": [
+        258,
+        22
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        258,
+        22
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "progress.segment.green",
+      "size": [
+        12,
+        12
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        12,
+        12
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "progress.segment.red",
+      "size": [
+        12,
+        12
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        12,
+        12
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "progress.segment.yellow",
+      "size": [
+        12,
+        12
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        12,
+        12
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "progress.segmented.empty",
+      "size": [
+        258,
+        22
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        258,
+        22
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "progress.segmented.green_78",
+      "size": [
+        258,
+        22
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        258,
+        22
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "progress.segmented.mix_green_red_50",
+      "size": [
+        258,
+        22
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        258,
+        22
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "progress.segmented.mix_green_yellow_65",
+      "size": [
+        258,
+        22
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        258,
+        22
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "progress.segmented.mix_yellow_red_40",
+      "size": [
+        258,
+        22
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        258,
+        22
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "progress.segmented.red_15",
+      "size": [
+        258,
+        22
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        258,
+        22
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "progress.segmented.yellow_42",
+      "size": [
+        258,
+        22
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        258,
+        22
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "scrollbar.horizontal.hover",
+      "size": [
+        235,
+        25
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        235,
+        25
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "scrollbar.horizontal.normal",
+      "size": [
+        235,
+        25
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        235,
+        25
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "scrollbar.vertical.disabled",
+      "size": [
+        20,
+        139
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        20,
+        139
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "scrollbar.vertical.hover",
+      "size": [
+        20,
+        139
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        20,
+        139
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "scrollbar.vertical.normal",
+      "size": [
+        20,
+        139
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        20,
+        139
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "scrollbar.vertical.pressed",
+      "size": [
+        20,
+        139
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        20,
+        139
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "surface.dark_clean",
+      "size": [
+        121,
+        116
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        121,
+        116
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "surface.dim",
+      "size": [
+        123,
+        116
+      ],
+      "alpha_min": 0,
+      "alpha_max": 170,
+      "alpha_bbox": [
+        0,
+        0,
+        123,
+        116
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "surface.grid",
+      "size": [
+        132,
+        116
+      ],
+      "alpha_min": 0,
+      "alpha_max": 170,
+      "alpha_bbox": [
+        0,
+        0,
+        132,
+        116
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "surface.locked",
+      "size": [
+        119,
+        116
+      ],
+      "alpha_min": 0,
+      "alpha_max": 170,
+      "alpha_bbox": [
+        0,
+        0,
+        119,
+        116
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "surface.paper_aged",
+      "size": [
+        135,
+        110
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        135,
+        110
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "surface.paper_clean",
+      "size": [
+        124,
+        109
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        124,
+        109
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "surface.paper_dirty",
+      "size": [
+        141,
+        116
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        141,
+        116
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "surface.scanlines",
+      "size": [
+        135,
+        117
+      ],
+      "alpha_min": 0,
+      "alpha_max": 170,
+      "alpha_bbox": [
+        0,
+        0,
+        135,
+        117
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "system.badge.archived",
+      "size": [
+        62,
+        20
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        62,
+        20
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.badge.certified",
+      "size": [
+        61,
+        20
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        61,
+        20
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.badge.confidential",
+      "size": [
+        62,
+        20
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        62,
+        20
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.badge.internal",
+      "size": [
+        40,
+        20
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        40,
+        20
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.badge.pending",
+      "size": [
+        40,
+        20
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        40,
+        20
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.evidence_level.blue",
+      "size": [
+        43,
+        44
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        43,
+        44
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.evidence_level.gray",
+      "size": [
+        42,
+        45
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        42,
+        45
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.evidence_level.green",
+      "size": [
+        42,
+        45
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        42,
+        45
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.evidence_level.red",
+      "size": [
+        42,
+        45
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        42,
+        45
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.evidence_level.skull",
+      "size": [
+        40,
+        43
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        40,
+        43
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.evidence_level.yellow",
+      "size": [
+        44,
+        45
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        44,
+        45
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.icon.chat",
+      "size": [
+        23,
+        25
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        23,
+        25
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.icon.document",
+      "size": [
+        18,
+        20
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        18,
+        20
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.icon.file",
+      "size": [
+        21,
+        25
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        21,
+        25
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.icon.folder",
+      "size": [
+        21,
+        25
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        21,
+        25
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.icon.help",
+      "size": [
+        22,
+        25
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        22,
+        25
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.icon.lock_closed",
+      "size": [
+        22,
+        25
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        22,
+        25
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.icon.lock_open",
+      "size": [
+        22,
+        25
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        22,
+        25
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.icon.mail",
+      "size": [
+        25,
+        25
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        25,
+        25
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.icon.mail_closed",
+      "size": [
+        25,
+        25
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        25,
+        25
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.icon.settings",
+      "size": [
+        22,
+        25
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        22,
+        25
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.icon.warning",
+      "size": [
+        25,
+        25
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        25,
+        25
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.screen.audit_cycle_closed.reference",
+      "size": [
+        197,
+        252
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        197,
+        252
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.screen.authorization.reference",
+      "size": [
+        206,
+        252
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        206,
+        252
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.screen.dark_shell",
+      "size": [
+        240,
+        180
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        240,
+        180
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.screen.evidence_certified.reference",
+      "size": [
+        186,
+        252
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        186,
+        252
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.screen.identity.reference",
+      "size": [
+        206,
+        252
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        206,
+        252
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.screen.installation.reference",
+      "size": [
+        206,
+        252
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        206,
+        252
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.screen.lock.reference",
+      "size": [
+        232,
+        252
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        232,
+        252
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.screen.lock_shell",
+      "size": [
+        220,
+        260
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        220,
+        260
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.screen.modal_alert.reference",
+      "size": [
+        238,
+        124
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        238,
+        124
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.screen.modal_confirm.reference",
+      "size": [
+        238,
+        127
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        238,
+        127
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.screen.paper_shell",
+      "size": [
+        220,
+        260
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        220,
+        260
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.toast.error",
+      "size": [
+        149,
+        65
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        149,
+        65
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.toast.info",
+      "size": [
+        149,
+        65
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        149,
+        65
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.toast.neutral",
+      "size": [
+        149,
+        65
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        149,
+        65
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.toast.success",
+      "size": [
+        149,
+        65
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        149,
+        65
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "system.toast.warning",
+      "size": [
+        149,
+        65
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        149,
+        65
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.readout.evidence.blank",
+      "size": [
+        63,
+        50
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        63,
+        50
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.readout.evidence.reference",
+      "size": [
+        63,
+        50
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        63,
+        50
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.readout.pending.blank",
+      "size": [
+        62,
+        44
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        62,
+        44
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.readout.pending.reference",
+      "size": [
+        62,
+        44
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        62,
+        44
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.readout.privacy.blank",
+      "size": [
+        66,
+        46
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        66,
+        46
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.readout.privacy.reference",
+      "size": [
+        66,
+        46
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        66,
+        46
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.search.blank",
+      "size": [
+        177,
+        42
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        177,
+        42
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.search.reference",
+      "size": [
+        177,
+        42
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        177,
+        42
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.start.blank",
+      "size": [
+        162,
+        41
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        162,
+        41
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.start.reference",
+      "size": [
+        162,
+        41
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        162,
+        41
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.tray.blank",
+      "size": [
+        243,
+        39
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        243,
+        39
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.tray.reference",
+      "size": [
+        243,
+        39
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        243,
+        39
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.tray_lamp.active",
+      "size": [
+        30,
+        30
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        30,
+        30
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.tray_lamp.normal",
+      "size": [
+        34,
+        33
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        34,
+        33
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.tray_lamp.off",
+      "size": [
+        30,
+        29
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        30,
+        29
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.tray_lamp.warning",
+      "size": [
+        27,
+        26
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        27,
+        26
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.window.active.blank",
+      "size": [
+        138,
+        40
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        138,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.window.active.reference",
+      "size": [
+        138,
+        40
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        138,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.window.attention.blank",
+      "size": [
+        145,
+        40
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        145,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.window.attention.reference",
+      "size": [
+        145,
+        40
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        145,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.window.disabled.blank",
+      "size": [
+        141,
+        40
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        141,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.window.disabled.reference",
+      "size": [
+        141,
+        40
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        141,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.window.icon_only",
+      "size": [
+        67,
+        40
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        67,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.window.icon_only.reference",
+      "size": [
+        67,
+        40
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        67,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.window.inactive.blank",
+      "size": [
+        143,
+        41
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        143,
+        41
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.window.inactive.reference",
+      "size": [
+        143,
+        41
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        143,
+        41
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.window.minimized.blank",
+      "size": [
+        139,
+        40
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        139,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "taskbar.window.minimized.reference",
+      "size": [
+        139,
+        40
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        139,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "texture.diamond_plate",
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "texture.metal_worn_1",
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "texture.metal_worn_2",
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "texture.metal_worn_3",
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "texture.panel_dark",
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "texture.paper",
+      "size": [
+        64,
+        64
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        64,
+        64
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "titlebar.active.blank",
+      "size": [
+        368,
+        32
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        368,
+        32
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "titlebar.attention.blank",
+      "size": [
+        366,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        366,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "titlebar.inactive.blank",
+      "size": [
+        368,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        368,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "titlebar.pinned.blank",
+      "size": [
+        368,
+        31
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        368,
+        31
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.audit.composite_blank",
+      "size": [
+        173,
+        164
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        173,
+        164
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.audit.content",
+      "size": [
+        157,
+        128
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        157,
+        128
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.audit.frame",
+      "size": [
+        173,
+        164
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        173,
+        164
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.audit.frame.slice.b",
+      "size": [
+        157,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        157,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.audit.frame.slice.bl",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.audit.frame.slice.br",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.audit.frame.slice.c",
+      "size": [
+        157,
+        128
+      ],
+      "alpha_min": 0,
+      "alpha_max": 0,
+      "alpha_bbox": null,
+      "tight_alpha": true,
+      "empty": true,
+      "expected_empty": true,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.audit.frame.slice.l",
+      "size": [
+        8,
+        128
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        128
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.audit.frame.slice.r",
+      "size": [
+        8,
+        128
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        128
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.audit.frame.slice.t",
+      "size": [
+        157,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        157,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.audit.frame.slice.tl",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.audit.frame.slice.tr",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.compact_module.composite_blank",
+      "size": [
+        168,
+        139
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        168,
+        139
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.compact_module.content",
+      "size": [
+        152,
+        104
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        152,
+        104
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.compact_module.frame",
+      "size": [
+        168,
+        139
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        168,
+        139
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.compact_module.frame.slice.b",
+      "size": [
+        152,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        152,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.compact_module.frame.slice.bl",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.compact_module.frame.slice.br",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.compact_module.frame.slice.c",
+      "size": [
+        152,
+        103
+      ],
+      "alpha_min": 0,
+      "alpha_max": 0,
+      "alpha_bbox": null,
+      "tight_alpha": true,
+      "empty": true,
+      "expected_empty": true,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.compact_module.frame.slice.l",
+      "size": [
+        8,
+        103
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        103
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.compact_module.frame.slice.r",
+      "size": [
+        8,
+        103
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        103
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.compact_module.frame.slice.t",
+      "size": [
+        152,
+        28
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        152,
+        27
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.compact_module.frame.slice.tl",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.compact_module.frame.slice.tr",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.document_memo.composite_blank",
+      "size": [
+        196,
+        158
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        196,
+        158
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.document_memo.content",
+      "size": [
+        180,
+        122
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        180,
+        122
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.document_memo.frame",
+      "size": [
+        196,
+        158
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        196,
+        158
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.document_memo.frame.slice.b",
+      "size": [
+        180,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        180,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.document_memo.frame.slice.bl",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.document_memo.frame.slice.br",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.document_memo.frame.slice.c",
+      "size": [
+        180,
+        122
+      ],
+      "alpha_min": 0,
+      "alpha_max": 0,
+      "alpha_bbox": null,
+      "tight_alpha": true,
+      "empty": true,
+      "expected_empty": true,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.document_memo.frame.slice.l",
+      "size": [
+        8,
+        122
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        122
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.document_memo.frame.slice.r",
+      "size": [
+        8,
+        122
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        122
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.document_memo.frame.slice.t",
+      "size": [
+        180,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        180,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.document_memo.frame.slice.tl",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.document_memo.frame.slice.tr",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.folder.composite_blank",
+      "size": [
+        172,
+        155
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        172,
+        155
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.folder.content",
+      "size": [
+        156,
+        119
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        156,
+        119
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.folder.frame",
+      "size": [
+        172,
+        155
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        172,
+        155
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.folder.frame.slice.b",
+      "size": [
+        156,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        156,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.folder.frame.slice.bl",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.folder.frame.slice.br",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.folder.frame.slice.c",
+      "size": [
+        156,
+        119
+      ],
+      "alpha_min": 0,
+      "alpha_max": 0,
+      "alpha_bbox": null,
+      "tight_alpha": true,
+      "empty": true,
+      "expected_empty": true,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.folder.frame.slice.l",
+      "size": [
+        8,
+        119
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        119
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.folder.frame.slice.r",
+      "size": [
+        8,
+        119
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        119
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.folder.frame.slice.t",
+      "size": [
+        156,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        156,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.folder.frame.slice.tl",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.folder.frame.slice.tr",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.folder.list_surface",
+      "size": [
+        156,
+        119
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        156,
+        119
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.lock_panel.composite_blank",
+      "size": [
+        166,
+        127
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        166,
+        127
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.lock_panel.content",
+      "size": [
+        150,
+        91
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        150,
+        91
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.lock_panel.frame",
+      "size": [
+        166,
+        127
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        166,
+        127
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.lock_panel.frame.slice.b",
+      "size": [
+        150,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        150,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.lock_panel.frame.slice.bl",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.lock_panel.frame.slice.br",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.lock_panel.frame.slice.c",
+      "size": [
+        150,
+        91
+      ],
+      "alpha_min": 0,
+      "alpha_max": 0,
+      "alpha_bbox": null,
+      "tight_alpha": true,
+      "empty": true,
+      "expected_empty": true,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.lock_panel.frame.slice.l",
+      "size": [
+        8,
+        91
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        91
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.lock_panel.frame.slice.r",
+      "size": [
+        8,
+        91
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        91
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.lock_panel.frame.slice.t",
+      "size": [
+        150,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        150,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.lock_panel.frame.slice.tl",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.lock_panel.frame.slice.tr",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.lock_panel.reference",
+      "size": [
+        166,
+        127
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        166,
+        127
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.standard_module.composite_blank",
+      "size": [
+        217,
+        155
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        217,
+        155
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.standard_module.content",
+      "size": [
+        201,
+        119
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        201,
+        119
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.standard_module.frame",
+      "size": [
+        217,
+        155
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        217,
+        155
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.standard_module.frame.slice.b",
+      "size": [
+        201,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        201,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.standard_module.frame.slice.bl",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.standard_module.frame.slice.br",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.standard_module.frame.slice.c",
+      "size": [
+        201,
+        119
+      ],
+      "alpha_min": 0,
+      "alpha_max": 0,
+      "alpha_bbox": null,
+      "tight_alpha": true,
+      "empty": true,
+      "expected_empty": true,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.standard_module.frame.slice.l",
+      "size": [
+        8,
+        119
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        119
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.standard_module.frame.slice.r",
+      "size": [
+        8,
+        119
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        119
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.standard_module.frame.slice.t",
+      "size": [
+        201,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        201,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.standard_module.frame.slice.tl",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.standard_module.frame.slice.tr",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.system_modal.composite_blank",
+      "size": [
+        175,
+        139
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        175,
+        139
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.system_modal.content",
+      "size": [
+        159,
+        103
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        159,
+        103
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.system_modal.frame",
+      "size": [
+        175,
+        139
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        175,
+        139
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.system_modal.frame.slice.b",
+      "size": [
+        159,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        159,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.system_modal.frame.slice.bl",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.system_modal.frame.slice.br",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.system_modal.frame.slice.c",
+      "size": [
+        159,
+        103
+      ],
+      "alpha_min": 0,
+      "alpha_max": 0,
+      "alpha_bbox": null,
+      "tight_alpha": true,
+      "empty": true,
+      "expected_empty": true,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.system_modal.frame.slice.l",
+      "size": [
+        8,
+        103
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        103
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.system_modal.frame.slice.r",
+      "size": [
+        8,
+        103
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        103
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.system_modal.frame.slice.t",
+      "size": [
+        159,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        159,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.system_modal.frame.slice.tl",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.system_modal.frame.slice.tr",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.toast.composite_blank",
+      "size": [
+        149,
+        65
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        149,
+        65
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.toast.content",
+      "size": [
+        133,
+        40
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        133,
+        40
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": false,
+      "status": "PASS"
+    },
+    {
+      "id": "window.toast.frame",
+      "size": [
+        149,
+        65
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        149,
+        65
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.toast.frame.slice.b",
+      "size": [
+        133,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        133,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.toast.frame.slice.bl",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.toast.frame.slice.br",
+      "size": [
+        8,
+        8
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        8
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.toast.frame.slice.c",
+      "size": [
+        133,
+        29
+      ],
+      "alpha_min": 0,
+      "alpha_max": 0,
+      "alpha_bbox": null,
+      "tight_alpha": true,
+      "empty": true,
+      "expected_empty": true,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.toast.frame.slice.l",
+      "size": [
+        8,
+        29
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        29
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.toast.frame.slice.r",
+      "size": [
+        8,
+        29
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        29
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.toast.frame.slice.t",
+      "size": [
+        133,
+        28
+      ],
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        133,
+        17
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.toast.frame.slice.tl",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    },
+    {
+      "id": "window.toast.frame.slice.tr",
+      "size": [
+        8,
+        28
+      ],
+      "alpha_min": 255,
+      "alpha_max": 255,
+      "alpha_bbox": [
+        0,
+        0,
+        8,
+        28
+      ],
+      "tight_alpha": true,
+      "empty": false,
+      "expected_empty": false,
+      "expected_partial_alpha": true,
+      "status": "PASS"
+    }
+  ]
+}
