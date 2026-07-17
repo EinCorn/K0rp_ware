@@ -22,7 +22,7 @@ Aktuální stav:
 - Audit 00-A, ClickAudit, společný runtime, lokální persistence, packet queue, repeatable Audit 10-A a Evidence certifikace jsou integrovány;
 - `clickaudit.click` je doslovná raw metrika a sama nepřidává spendable resource;
 - Task 021A window placement, dynamické form windows, cascade a close/minimize semantics jsou dokončené a mergnuté;
-- Task 021B je mergnutý v PR #33; aktuálním krokem Fáze 7 je implementovaný Task 022 — shared asset-backed Fidget module surface, po němž následuje Task 023.
+- Task 022 je dokončený a mergnutý v PR #35; aktuálním visual preflightem je Task 022A — canonical icon pack integration, po němž zůstává Task 023 dalším gameplay krokem.
 
 Současné standalone appky ClickAudit, Fidget a Bloom se neruší. Integrace probíhá přes společné module surface, bridge a runtime contracts.
 
@@ -166,14 +166,15 @@ nová hra
 
 Cíl: Uzavřít první celý loop a přidat druhý druh raw metriky.
 
-Status: Task 021A dokončen a mergnut. Task 021B dokončen a mergnut v PR #33. Task 022 je aktuální implementovaný krok; Task 023 je následující.
+Status: Task 021A, Task 021B i Task 022 jsou dokončené a mergnuté. Task 022A je aktuální implementovaný visual preflight; Task 023 je následující gameplay krok.
 
 Pořadí:
 
 1. Task 021A — dokončený first-open window placement a dynamický cascade auditních dokumentů;
 2. Task 021B — dokončený Evidence authorization contract z PR #33: Audit 16-C, alokace 1 EV a persistentní Fidget authorization;
-3. Task 022 — aktuální sdílený asset-backed Fidget module surface v K0rp_OS, standalone shellu a window-only preview;
-4. Task 023 — následující `fidget.sessionSettled` jako první non-click raw metric closure, packet a první skutečný backlog.
+3. Task 022 — dokončený sdílený asset-backed Fidget module surface z PR #35;
+4. Task 022A — aktuální canonical icon pack ingestion, validace a nasazení do existujících ploch bez změny gameplaye;
+5. Task 023 — následující `fidget.sessionSettled` jako první non-click raw metric closure, packet a první skutečný backlog.
 
 Dokončený Task 021A presentation gate:
 
@@ -199,6 +200,18 @@ EV 1
 ```
 
 Fidget nesmí být odemčen pouze skrytým thresholdem NWU/AP. Musí být autorizován výsledkem auditního procesu.
+
+Task 022A drží raw icon source oddělený od runtime subsetu:
+
+```text
+design/icon-source/k0rp-icons-v2/   canonical raw pack, 32 semantic IDs
+src/assets/icons/korp-v2/           pouze aktuálně nasazené PNG64
+src/ui/korpIconCatalog.js            generovaný sémantický katalog
+npm run build:korp-icons             deterministická regenerace
+npm run validate:korp-icons          manifest, asset, atlas a drift gate
+```
+
+Aktuálně se nasazují desktopové systémové/module ikony a document-row kategorie. Bloom, další budoucí moduly, pozdější progression folders, native references a neexistující window-control mappings zůstávají pouze katalogizované pro pozdější surface.
 
 ## Fáze 8 — Second metric, repeatable audits and backlog
 

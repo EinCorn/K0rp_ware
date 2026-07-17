@@ -12,6 +12,12 @@ import {
   reconcileFidgetWindow,
 } from '../runtime/fidgetPresentation'
 import { classifyKorpOsIntentionEvent } from '../runtime/osClickTracking'
+import {
+  KORP_DESKTOP_ICON_IDS,
+  KORP_FOLDER_ICON_IDS,
+  getKorpModuleIconId,
+  isKorpDesktopItemActionable,
+} from '../runtime/korpIconPresentation'
 import { useKorpRuntime } from '../runtime/useKorpRuntime'
 import {
   bringWindowStateToFront,
@@ -29,6 +35,7 @@ import AuditFormDocument from './AuditFormDocument'
 import ClickAuditRuntimeModule from './ClickAuditRuntimeModule'
 import { ClickAuditEmbeddedWindow } from './ClickAuditWindow'
 import { FidgetEmbeddedWindow } from './FidgetWindow'
+import KorpIcon from './KorpIcon'
 import './KorpOsShell.css'
 
 const initialActivity = (auditEntryForm) => [
@@ -201,12 +208,14 @@ function WindowHeader({ window, variant = 'document', onClose, onMinimize, onPoi
   )
 }
 
-function DesktopIcon({ title, type, status, isLocked = false, onOpen }) {
-  const canOpen = Boolean(onOpen) && !isLocked
+function DesktopIcon({ title, iconId, status, isLocked = false, onOpen }) {
+  const canOpen = isKorpDesktopItemActionable({ isLocked, onOpen })
   const className = 'os-desktop-icon' + (isLocked ? ' is-locked' : '') + (canOpen ? ' is-clickable' : '')
   const iconContent = (
     <>
-      <span className={'os-icon-glyph os-icon-' + type} aria-hidden="true" />
+      <span className="os-icon-glyph" data-korp-icon-slot={iconId} aria-hidden="true">
+        <KorpIcon className="os-icon-image" iconId={iconId} slot="desktop" />
+      </span>
       <span className="os-icon-label">{title}</span>
       {status && <small>{status}</small>}
     </>
@@ -229,11 +238,13 @@ function DesktopIcon({ title, type, status, isLocked = false, onOpen }) {
   return <div className={className} data-clickaudit-profile="desktop-icon">{iconContent}</div>
 }
 
-function FolderEntry({ title, detail, status, kind, isLocked = false, onOpen }) {
+function FolderEntry({ title, detail, status, iconId, isLocked = false, onOpen }) {
   const entryClassName = 'os-folder-entry' + (isLocked ? ' is-locked' : '')
   const entryContent = (
     <>
-      <span className={'os-file-glyph os-file-' + kind} aria-hidden="true" />
+      <span className="os-file-glyph" aria-hidden="true">
+        <KorpIcon className="os-file-icon-image" iconId={iconId} slot="folder-entry" />
+      </span>
       <span className="os-folder-entry-copy">
         <strong>{title}</strong>
         <small>{detail}</small>
@@ -713,16 +724,20 @@ function KorpOsShell() {
 
           <div ref={desktopSpaceRef} className="os-desktop-space">
             <aside className="os-desktop-icons" aria-label="Plocha zaměstnance">
-              <DesktopIcon title="Compliance Bin" type="bin" status="SYSTÉMOVÉ" />
+              <DesktopIcon
+                title="Compliance Bin"
+                iconId={KORP_DESKTOP_ICON_IDS.complianceBin}
+                status="SYSTÉMOVÉ"
+              />
               <DesktopIcon
                 title="Doručené"
-                type="folder"
+                iconId={KORP_DESKTOP_ICON_IDS.inbox}
                 status={fidgetMemoUnlocked ? '2 MÍSTNÍ MEMO' : '1 MÍSTNÍ MEMO'}
                 onOpen={() => openWindow('inbox-folder')}
               />
               <DesktopIcon
                 title="Formuláře"
-                type="folder"
+                iconId={KORP_DESKTOP_ICON_IDS.forms}
                 status={formsIconStatus}
                 isLocked={!formsFolderAvailable}
                 onOpen={() => openWindow('forms-folder')}
@@ -730,7 +745,7 @@ function KorpOsShell() {
               {clickAuditUnlocked && (
                 <DesktopIcon
                   title="ClickAudit"
-                  type="app"
+                  iconId={KORP_DESKTOP_ICON_IDS.clickAudit}
                   status={auditClicks + ' EVIDOVANÝCH KLIKŮ'}
                   onOpen={() => openWindow('click-audit')}
                 />
@@ -739,13 +754,19 @@ function KorpOsShell() {
                 <DesktopIcon
                   key={item.id}
                   title={item.title}
-                  type="app"
+                  iconId={item.iconId}
                   status={item.status}
                   onOpen={() => openWindow(item.windowId)}
                 />
               ))}
               {lockedShortcuts.map((module) => (
-                <DesktopIcon key={module.id} title={module.title} type="app" status="NEINSTALOVÁNO" isLocked />
+                <DesktopIcon
+                  key={module.id}
+                  title={module.title}
+                  iconId={getKorpModuleIconId(module.id)}
+                  status="NEINSTALOVÁNO"
+                  isLocked
+                />
               ))}
             </aside>
 
@@ -936,7 +957,7 @@ function KorpOsShell() {
                           title={'Audit ' + (auditTraceForm?.code ?? '?') + ' / dávka'}
                           detail="Čeká na uzavření další dávky raw aktivity"
                           status="ČEKÁ NA DÁVKU"
-                          kind="form"
+                          iconId={KORP_FOLDER_ICON_IDS.auditPacket}
                           isLocked
                         />
                       )}
@@ -948,7 +969,7 @@ function KorpOsShell() {
                             ? `${model.packet.quantity} kliků / rozsah ${model.packet.rangeStart}–${model.packet.rangeEnd}`
                             : 'Dávka bez dostupného packetu'}
                           status={model.fileStatus}
-                          kind="form"
+                          iconId={KORP_FOLDER_ICON_IDS.auditPacket}
                           onOpen={() => openWindow(model.windowId)}
                         />
                       ))}
@@ -959,7 +980,7 @@ function KorpOsShell() {
                           status={authorizationSubmitted
                             ? 'AUTORIZOVÁNO / EV −1'
                             : 'PŘIPRAVENO K ALOKACI'}
-                          kind="document"
+                          iconId={KORP_FOLDER_ICON_IDS.authorizationForm}
                           onOpen={() => openWindow(AUTHORIZATION_FORM_WINDOW_ID)}
                         />
                       )}
@@ -967,14 +988,14 @@ function KorpOsShell() {
                         title={'Audit ' + (auditEntryForm?.code ?? '?')}
                         detail={auditEntryForm?.title ?? 'Kontrola přítomnosti'}
                         status={auditEntrySubmitted ? 'SPLNĚNO / OTEVŘÍT' : 'OTEVŘÍT DOKUMENT'}
-                        kind="document"
+                        iconId={KORP_FOLDER_ICON_IDS.auditEntry}
                         onOpen={() => openWindow(auditEntryWindowId)}
                       />
                       <FolderEntry
                         title="Evidence packet archive"
                         detail="Certifikované dávky / lokální evidence"
                         status={metricPackets.some((packet) => packet.status === 'certified') ? 'MÍSTNĚ ULOŽENO' : 'ZAMČENO'}
-                        kind="archive"
+                        iconId={KORP_FOLDER_ICON_IDS.evidenceArchive}
                         isLocked={!metricPackets.some((packet) => packet.status === 'certified')}
                       />
                     </ul>
@@ -1004,7 +1025,7 @@ function KorpOsShell() {
                         title="Denní výpis"
                         detail="Místní memo / provozní záznam"
                         status="OTEVŘÍT MEMO"
-                        kind="memo"
+                        iconId={KORP_FOLDER_ICON_IDS.memo}
                         onOpen={() => openWindow('daily-report')}
                       />
                       {fidgetMemoUnlocked && (
@@ -1012,14 +1033,14 @@ function KorpOsShell() {
                           title="Autorizace stabilizačního vybavení"
                           detail="Jedna Evidence byla přidělena žádosti o povolení k nasazení"
                           status="AUTORIZOVÁNO / NASAZENO"
-                          kind="memo"
+                          iconId={KORP_FOLDER_ICON_IDS.memo}
                         />
                       )}
                       <FolderEntry
                         title="Startup audit"
                         detail="Automaticky založený záznam"
                         status={auditEntrySubmitted ? 'PŘIJAT / LOKÁLNĚ' : 'ČEKÁ NA SPLNĚNÍ'}
-                        kind="archive"
+                        iconId={KORP_FOLDER_ICON_IDS.startupDocument}
                         isLocked={!auditEntrySubmitted}
                       />
                     </ul>

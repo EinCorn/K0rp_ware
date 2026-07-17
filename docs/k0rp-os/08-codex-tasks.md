@@ -327,7 +327,7 @@ Použít čistý nebo známý Task 020 save:
 
 ## Task 022 — Shared asset-backed Fidget module surface
 
-Status: **CURRENT / IMPLEMENTOVÁNO** — sdílený asset-backed Fidget surface čeká na Windows visual/interaction gate a merge.
+Status: **DONE / MERGED** — sdílený asset-backed Fidget surface je na `main` v PR #35.
 
 ### Cíl
 
@@ -361,6 +361,42 @@ Přenést existující hotový Fidget do K0rp_OS stejně věrně jako ClickAudit
 - embedded app odpovídá standalone vzhledu;
 - drag/minimize/restore fungují;
 - standalone preview zůstane použitelný.
+
+## Task 022A — Canonical icon pack integration
+
+Status: **CURRENT / IMPLEMENTOVÁNO** — canonical source, runtime subset, sémantický katalog a současné K0rp_OS surface čekají na Windows visual gate a merge.
+
+### Source a runtime contract
+
+- raw source zůstává beze změny v `design/icon-source/k0rp-icons-v2/`;
+- `manifest.json` je jediná sémantická autorita; README/CSV odchylky jsou pouze zdokumentované;
+- `src/assets/icons/k0rp-v2/` obsahuje jen PNG64 pro současné viditelné surface;
+- `src/ui/korpIconCatalog.js` katalogizuje všech 32 ID, ale runtime URL má jen nasazený subset;
+- `npm run build:korp-icons` deterministicky kopíruje subset a generuje katalog;
+- `npm run validate:korp-icons` kontroluje schema, ID, path safety, soubory, rozměry, ICO profily, atlasy, required mappings a generated drift;
+- CI spouští icon validation před ostatními build gates.
+
+### Nasazeno nyní
+
+- desktop: Compliance Bin, Doručené, Formuláře, ClickAudit, Fidget, locked Corner Watch a Bublinková Fólie;
+- dokumenty: obecný audit 00-A/16-C, Audit 10-A packet, memo, startup document a Evidence archive;
+- CSS `K`, folder/bin konstrukce a pseudo-labely `TXT`, `10-A`, `00-A`, `MEM` byly odstraněny z canonical current paths;
+- locked stav zachovává vlastní module icon a používá jen opacity/saturation.
+
+### Rezervováno
+
+- Bloom nemá v současném shellu shortcut a jeho source/native reference se proto nezobrazuje ani nebundluje jako runtime asset;
+- další module/progression/system ikony zůstávají v raw katalogu do vzniku odpovídajících surface;
+- pack nedeklaruje close/minimize ani app-specific controls, takže existující OS a ClickAudit/Fidget controls zůstávají beze změny;
+- manifest neurčuje Tauri/native targety, proto se native icon directories v tomto tasku nemění.
+
+### Do not
+
+- neměnit gameplay, authorization, packet ani Evidence semantics;
+- nepřidávat Bloom shortcut, nové unlocky ani Task 023 events;
+- neimportovat raw source pack do Vite graphu;
+- nevymýšlet state/control mapping, který manifest neobsahuje;
+- nekopírovat pack do jednotlivých desktop apps.
 
 ## Task 023 — Fidget metric packet and first real backlog
 

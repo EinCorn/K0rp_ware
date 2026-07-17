@@ -8,7 +8,7 @@ export const FIDGET_DEPLOYED_DESKTOP_ITEM = Object.freeze({
   windowId: FIDGET_WINDOW_ID,
   title: 'Fidget',
   status: 'AUTORIZOVÁNO / NASAZENO',
-  glyph: 'generic-app',
+  iconId: 'fidget',
   isInteractive: true,
 })
 
