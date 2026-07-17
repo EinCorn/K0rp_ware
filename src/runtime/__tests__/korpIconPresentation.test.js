@@ -36,10 +36,10 @@ test('canonical catalog keeps all source IDs unique and deploys only current-sur
     ...Object.values(KORP_DESKTOP_ICON_IDS),
     ...KORP_VISIBLE_LOCKED_MODULE_ICON_IDS,
   ]) {
-    assert.equal(resolveKorpRuntimeIcon(id)?.intendedSize, 32)
+    assert.equal(resolveKorpRuntimeIcon(id)?.intendedSize, 40)
   }
   for (const id of Object.values(KORP_FOLDER_ICON_IDS)) {
-    assert.equal(resolveKorpRuntimeIcon(id)?.intendedSize, 24)
+    assert.equal(resolveKorpRuntimeIcon(id)?.intendedSize, 30)
   }
 
   assert.equal(getKorpIcon('bloom')?.runtimeUrl, null)
@@ -88,4 +88,9 @@ test('canonical current paths have no CSS fallback letters or document codes', (
   for (const obsoleteContent of ["content: 'K'", "content: 'TXT'", "content: '10-A'", "content: '00-A'", "content: 'MEM'"]) {
     assert.equal(css.includes(obsoleteContent), false, obsoleteContent)
   }
+
+  assert.equal(css.includes('filter: brightness(1.12)'), false)
+  assert.match(css, /\.os-desktop-icon\.is-clickable:hover \.os-icon-glyph::before \{\s*opacity: 1;/)
+  assert.match(css, /\.os-icon-glyph::before \{[\s\S]*?box-shadow:/)
+  assert.match(css, /\.os-desktop-icon\.is-clickable:focus-visible \{\s*outline: none;/)
 })

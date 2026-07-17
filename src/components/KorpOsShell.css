@@ -197,11 +197,18 @@
   cursor: pointer;
 }
 
-.os-desktop-icon.is-clickable:hover .os-icon-glyph,
-.os-desktop-icon.is-clickable:focus-visible .os-icon-glyph {
-  outline: 2px solid var(--os-amber);
-  outline-offset: 3px;
-  filter: brightness(1.12);
+.os-desktop-icon.is-clickable:hover .os-icon-glyph::before {
+  opacity: 1;
+}
+
+.os-desktop-icon.is-clickable:focus-visible {
+  outline: none;
+}
+
+.os-desktop-icon.is-clickable:focus-visible .os-icon-glyph::before {
+  opacity: 1;
+  background: rgba(255, 255, 238, 0.16);
+  box-shadow: 0 0 10px 5px rgba(255, 255, 238, 0.38);
 }
 
 .os-desktop-icon.is-clickable:hover .os-icon-label,
@@ -210,29 +217,41 @@
 }
 
 .os-icon-glyph {
-  width: 38px;
+  width: 40px;
   height: 34px;
   display: grid;
+  position: relative;
+  isolation: isolate;
   place-items: center;
 }
 
+.os-icon-glyph::before {
+  content: '';
+  width: 26px;
+  height: 26px;
+  position: absolute;
+  z-index: 0;
+  border-radius: 50%;
+  opacity: 0;
+  background: rgba(255, 255, 238, 0.12);
+  box-shadow: 0 0 8px 4px rgba(255, 255, 238, 0.3);
+  pointer-events: none;
+}
+
 .os-icon-glyph[data-korp-icon-slot='compliance-bin'] {
-  width: 31px;
   height: 36px;
 }
 
-.os-icon-glyph[data-korp-icon-slot='inbox'],
-.os-icon-glyph[data-korp-icon-slot='forms'] {
-  width: 42px;
-}
-
 .os-icon-image {
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
+  margin-block: -3px;
   display: block;
+  position: relative;
+  z-index: 1;
   object-fit: contain;
-  image-rendering: pixelated;
   image-rendering: crisp-edges;
+  image-rendering: pixelated;
 }
 
 .os-desktop-icon.is-locked { color: #c2c3ad; }
@@ -613,19 +632,20 @@ button.os-folder-entry:focus-visible {
 .os-folder-entry.is-locked .os-folder-entry-status { color: #63563f; }
 
 .os-file-glyph {
-  width: 24px;
+  width: 28px;
   height: 28px;
   display: grid;
   place-items: center;
 }
 
 .os-file-icon-image {
-  width: 24px;
-  height: 24px;
+  width: 30px;
+  height: 30px;
+  margin: -1px;
   display: block;
   object-fit: contain;
-  image-rendering: pixelated;
   image-rendering: crisp-edges;
+  image-rendering: pixelated;
 }
 
 .korp-icon.is-missing {

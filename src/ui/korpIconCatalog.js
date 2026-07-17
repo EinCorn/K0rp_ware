@@ -25,7 +25,7 @@ export const KORP_ICON_CATALOG = Object.freeze([
     intrinsicWidth: 64,
     intrinsicHeight: 64,
     intendedSlots: Object.freeze(["desktop"]),
-    intendedSize: 32,
+    intendedSize: 40,
     runtimeUrl: runtimeUrls["click-audit"] ?? null,
     variants: Object.freeze({
     }),
@@ -46,7 +46,7 @@ export const KORP_ICON_CATALOG = Object.freeze([
     intrinsicWidth: 64,
     intrinsicHeight: 64,
     intendedSlots: Object.freeze(["desktop"]),
-    intendedSize: 32,
+    intendedSize: 40,
     runtimeUrl: runtimeUrls["fidget"] ?? null,
     variants: Object.freeze({
     }),
@@ -88,7 +88,7 @@ export const KORP_ICON_CATALOG = Object.freeze([
     intrinsicWidth: 64,
     intrinsicHeight: 64,
     intendedSlots: Object.freeze(["desktop"]),
-    intendedSize: 32,
+    intendedSize: 40,
     runtimeUrl: runtimeUrls["corner-watch"] ?? null,
     variants: Object.freeze({
     }),
@@ -109,7 +109,7 @@ export const KORP_ICON_CATALOG = Object.freeze([
     intrinsicWidth: 64,
     intrinsicHeight: 64,
     intendedSlots: Object.freeze(["desktop"]),
-    intendedSize: 32,
+    intendedSize: 40,
     runtimeUrl: runtimeUrls["bubble-wrap"] ?? null,
     variants: Object.freeze({
     }),
@@ -277,7 +277,7 @@ export const KORP_ICON_CATALOG = Object.freeze([
     intrinsicWidth: 64,
     intrinsicHeight: 64,
     intendedSlots: Object.freeze(["folder-entry"]),
-    intendedSize: 24,
+    intendedSize: 30,
     runtimeUrl: runtimeUrls["audit-generic"] ?? null,
     variants: Object.freeze({
     }),
@@ -298,7 +298,7 @@ export const KORP_ICON_CATALOG = Object.freeze([
     intrinsicWidth: 64,
     intrinsicHeight: 64,
     intendedSlots: Object.freeze(["folder-entry"]),
-    intendedSize: 24,
+    intendedSize: 30,
     runtimeUrl: runtimeUrls["audit-packet"] ?? null,
     variants: Object.freeze({
     }),
@@ -319,7 +319,7 @@ export const KORP_ICON_CATALOG = Object.freeze([
     intrinsicWidth: 64,
     intrinsicHeight: 64,
     intendedSlots: Object.freeze(["folder-entry"]),
-    intendedSize: 24,
+    intendedSize: 30,
     runtimeUrl: runtimeUrls["evidence"] ?? null,
     variants: Object.freeze({
     }),
@@ -340,7 +340,7 @@ export const KORP_ICON_CATALOG = Object.freeze([
     intrinsicWidth: 64,
     intrinsicHeight: 64,
     intendedSlots: Object.freeze(["desktop"]),
-    intendedSize: 32,
+    intendedSize: 40,
     runtimeUrl: runtimeUrls["inbox"] ?? null,
     variants: Object.freeze({
     }),
@@ -361,7 +361,7 @@ export const KORP_ICON_CATALOG = Object.freeze([
     intrinsicWidth: 64,
     intrinsicHeight: 64,
     intendedSlots: Object.freeze(["desktop"]),
-    intendedSize: 32,
+    intendedSize: 40,
     runtimeUrl: runtimeUrls["forms"] ?? null,
     variants: Object.freeze({
     }),
@@ -508,7 +508,7 @@ export const KORP_ICON_CATALOG = Object.freeze([
     intrinsicWidth: 64,
     intrinsicHeight: 64,
     intendedSlots: Object.freeze(["desktop"]),
-    intendedSize: 32,
+    intendedSize: 40,
     runtimeUrl: runtimeUrls["compliance-bin"] ?? null,
     variants: Object.freeze({
     }),
@@ -571,7 +571,7 @@ export const KORP_ICON_CATALOG = Object.freeze([
     intrinsicWidth: 64,
     intrinsicHeight: 64,
     intendedSlots: Object.freeze(["folder-entry"]),
-    intendedSize: 24,
+    intendedSize: 30,
     runtimeUrl: runtimeUrls["document"] ?? null,
     variants: Object.freeze({
     }),
@@ -592,7 +592,7 @@ export const KORP_ICON_CATALOG = Object.freeze([
     intrinsicWidth: 64,
     intrinsicHeight: 64,
     intendedSlots: Object.freeze(["folder-entry"]),
-    intendedSize: 24,
+    intendedSize: 30,
     runtimeUrl: runtimeUrls["memo"] ?? null,
     variants: Object.freeze({
     }),

@@ -47,7 +47,7 @@ Do not hand-edit the generated catalog or copied runtime PNG files. Validation p
 
 The catalog contains metadata and raw/native references for all 32 semantic IDs. Only current visible mappings receive a literal Vite `new URL(...)` runtime URL, so future raw icons do not enter the production asset graph.
 
-Current desktop icons render as square 32px images inside the existing per-type desktop glyph slots. Folder/document icons render as square 24px images inside the existing 24×28px row slot and 28px grid column. The wrappers retain the pre-Task-022A layout geometry while `object-fit: contain` and pixelated rendering keep the canonical raster square and unstretched.
+Current desktop icons render as square 40px images while the desktop item column and vertical slot flow remain unchanged. Folder/document icons render as square 30px images inside the existing 28px grid column and 48px row. Even centering geometry, `object-fit: contain`, and a final `image-rendering: pixelated` declaration keep the canonical raster square, stable, and unstretched. Hover and keyboard focus use a neutral white box-shadow glow without outlines, transforms, or filter re-rasterization.
 
 ## Current deployment
 

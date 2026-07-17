@@ -28,7 +28,7 @@ const baseManifest = () => ({
   icons: [{ ...baseIcon }],
 })
 
-const selection = { id: 'click-audit', slots: ['desktop'], intendedSize: 32 }
+const selection = { id: 'click-audit', slots: ['desktop'], intendedSize: 40 }
 
 test('the required current-surface contract stays independent from runtime selections', () => {
   assert.deepEqual(KORP_REQUIRED_CURRENT_ICON_IDS, [
