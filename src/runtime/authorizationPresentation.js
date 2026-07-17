@@ -10,16 +10,6 @@ export const AUTHORIZATION_FORM_WINDOW_ID = getFormWindowId(
   AUTHORIZATION_FORM_DOCUMENT_ID,
 )
 
-export const FIDGET_AUTHORIZED_PENDING_ITEM = Object.freeze({
-  id: 'authorized-module:fidget',
-  kind: 'authorized-module',
-  moduleId: 'fidget',
-  title: 'Fidget',
-  status: 'AUTORIZOVÁNO / NASAZENÍ ČEKÁ',
-  glyph: 'generic-app',
-  isInteractive: false,
-})
-
 export function reconcileAuthorizationFormWindow({
   windows,
   isAvailable,
@@ -59,13 +49,4 @@ export function reconcileAuthorizationFormWindow({
   })
 
   return { windows: nextWindows, windowId, didAutoOpen: true }
-}
-
-export function getAuthorizedPendingDesktopItems(moduleAuthorizations) {
-  const isFidgetAuthorized = Array.isArray(moduleAuthorizations)
-    && moduleAuthorizations.some((authorization) => (
-      authorization?.moduleId === FIDGET_AUTHORIZED_PENDING_ITEM.moduleId
-    ))
-
-  return isFidgetAuthorized ? [FIDGET_AUTHORIZED_PENDING_ITEM] : []
 }

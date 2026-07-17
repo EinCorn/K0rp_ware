@@ -2,8 +2,6 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   AUTHORIZATION_FORM_WINDOW_ID,
-  FIDGET_AUTHORIZED_PENDING_ITEM,
-  getAuthorizedPendingDesktopItems,
   reconcileAuthorizationFormWindow,
 } from '../authorizationPresentation.js'
 import {
@@ -221,22 +219,4 @@ test('completed available form closes and reopens with one stable id and positio
     Object.keys(reopened).filter((id) => id === AUTHORIZATION_FORM_WINDOW_ID).length,
     1,
   )
-})
-
-test('Fidget pending desktop item appears once only after authorization', () => {
-  assert.deepEqual(getAuthorizedPendingDesktopItems([]), [])
-  assert.deepEqual(getAuthorizedPendingDesktopItems(undefined), [])
-
-  const items = getAuthorizedPendingDesktopItems([
-    { id: 'fidget', moduleId: 'fidget' },
-    { id: 'fidget-duplicate', moduleId: 'fidget' },
-  ])
-
-  assert.deepEqual(items, [FIDGET_AUTHORIZED_PENDING_ITEM])
-  assert.equal(items[0].title, 'Fidget')
-  assert.equal(items[0].status, 'AUTORIZOVÁNO / NASAZENÍ ČEKÁ')
-  assert.equal(items[0].glyph, 'generic-app')
-  assert.equal(items[0].isInteractive, false)
-  assert.equal('windowId' in items[0], false)
-  assert.equal('openTarget' in items[0], false)
 })

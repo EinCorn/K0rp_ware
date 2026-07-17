@@ -1,0 +1,147 @@
+.fidget-window-frame,
+.fidget-standalone-shell,
+.fidget-window-frame *,
+.fidget-standalone-shell * {
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.fidget-window-frame,
+.fidget-standalone-shell {
+  position: relative;
+  overflow: hidden;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+}
+
+.fidget-window-frame-embedded,
+.fidget-window-frame-standalone {
+  width: 181px;
+  height: 181px;
+}
+
+.fidget-window-frame-embedded {
+  filter: drop-shadow(4px 5px 0 rgba(16, 18, 14, 0.42));
+}
+
+.fidget-window-content {
+  position: absolute;
+  left: 7px;
+  top: 7px;
+  width: 167px;
+  height: 167px;
+  overflow: hidden;
+  border-radius: 6px;
+  background: transparent;
+}
+
+.fidget-window-drag-region {
+  position: absolute;
+  z-index: 20;
+  left: 24px;
+  right: 24px;
+  top: 0;
+  height: 23px;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  cursor: grab;
+}
+
+.fidget-window-drag-region:active { cursor: grabbing; }
+
+.fidget-asset-control {
+  position: absolute;
+  z-index: 30;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  color: transparent;
+  background-color: transparent;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+  image-rendering: pixelated;
+  cursor: pointer;
+  transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
+}
+
+.fidget-asset-control:hover,
+.fidget-asset-control:focus-visible {
+  transform: translateY(-1px);
+  filter: brightness(1.08);
+}
+
+.fidget-asset-control:active {
+  transform: translateY(0);
+  filter: brightness(0.96);
+}
+
+.fidget-window-control-mode,
+.fidget-window-control-close {
+  top: 3px;
+  width: 19px;
+  height: 19px;
+}
+
+.fidget-window-control-mode { left: 4px; }
+.fidget-window-control-close { right: 4px; }
+
+.fidget-window-control-mode[aria-pressed='true'],
+.fidget-shell-control-mode[aria-pressed='true'] {
+  filter: drop-shadow(0 0 6px rgba(201, 163, 62, 0.55));
+}
+
+.fidget-standalone-shell {
+  width: 230px;
+  height: 230px;
+}
+
+.fidget-standalone-drag-region {
+  position: absolute;
+  left: 6px;
+  top: 6px;
+  width: 46px;
+  height: 24px;
+}
+
+.fidget-window-frame-standalone {
+  position: absolute;
+  left: 36px;
+  top: 24px;
+}
+
+.fidget-shell-control-pin,
+.fidget-shell-control-mode {
+  left: 14px;
+  width: 20.5px;
+  height: 20.5px;
+}
+
+.fidget-shell-control-pin { top: 27px; }
+.fidget-shell-control-mode { top: 47px; }
+
+.fidget-shell-control-close {
+  left: 200px;
+  top: 5px;
+  width: 19px;
+  height: 19px;
+}
+
+.fidget-shell-control-pin[aria-pressed='true'] {
+  filter: drop-shadow(0 0 5px rgba(217, 123, 128, 0.46));
+}
+
+.os-fidget-asset-window {
+  position: absolute;
+  width: 181px;
+  height: 181px;
+  overflow: visible;
+  background: transparent;
+  pointer-events: auto;
+}

@@ -4,10 +4,14 @@ import { createAuditFormValues, isAuditFormComplete } from '../runtime/auditForm
 import { reconcileAuditInstanceWindows } from '../runtime/auditWindowPresentation'
 import {
   AUTHORIZATION_FORM_WINDOW_ID,
-  getAuthorizedPendingDesktopItems,
   reconcileAuthorizationFormWindow,
 } from '../runtime/authorizationPresentation'
-import { classifyKorpOsClickTarget } from '../runtime/osClickTracking'
+import {
+  FIDGET_WINDOW_ID,
+  getFidgetDesktopItems,
+  reconcileFidgetWindow,
+} from '../runtime/fidgetPresentation'
+import { classifyKorpOsIntentionEvent } from '../runtime/osClickTracking'
 import { useKorpRuntime } from '../runtime/useKorpRuntime'
 import {
   bringWindowStateToFront,
@@ -24,6 +28,7 @@ import {
 import AuditFormDocument from './AuditFormDocument'
 import ClickAuditRuntimeModule from './ClickAuditRuntimeModule'
 import { ClickAuditEmbeddedWindow } from './ClickAuditWindow'
+import { FidgetEmbeddedWindow } from './FidgetWindow'
 import './KorpOsShell.css'
 
 const initialActivity = (auditEntryForm) => [
@@ -42,7 +47,7 @@ const dailyReportWindowSize = { width: 392, height: 192 }
 const formDocumentBasePosition = { x: 184, y: 58 }
 const auditEntryWindowId = getFormWindowId('audit-00-a')
 const lockedShortcuts = listModules()
-  .filter((module) => module.status !== 'current')
+  .filter((module) => module.id !== FIDGET_WINDOW_ID && module.status !== 'current')
   .slice(0, 2)
 
 const staticWindowIds = [
@@ -53,7 +58,10 @@ const staticWindowIds = [
   'inbox-folder',
 ]
 
-const createInitialWindows = (existingAuditInstances, authorizationAvailable) => {
+const createInitialWindows = (
+  existingAuditInstances,
+  authorizationAvailable,
+) => {
   let windows = {
     [auditEntryWindowId]: {
       id: auditEntryWindowId,
@@ -127,7 +135,7 @@ const createInitialWindows = (existingAuditInstances, authorizationAvailable) =>
     windows = ensureFormWindowState(windows, auditInstance.id, formWindowSize)
   }
 
-  return reconcileAuthorizationFormWindow({
+  windows = reconcileAuthorizationFormWindow({
     windows,
     isAvailable: authorizationAvailable,
     wasAvailable: undefined,
@@ -135,6 +143,8 @@ const createInitialWindows = (existingAuditInstances, authorizationAvailable) =>
     workspaceSize: osWorkspaceSize,
     formBasePosition: formDocumentBasePosition,
   }).windows
+
+  return windows
 }
 
 const getPacketRangeLabel = (packet, sequence) => {
@@ -286,8 +296,8 @@ function KorpOsShell() {
     : false
   const fidgetMemoUnlocked = isMemoUnlocked('memo.fidget-requisition')
   const clickAuditUnlocked = isModuleUnlocked('click-audit')
-  const authorizedPendingItems = useMemo(
-    () => getAuthorizedPendingDesktopItems(moduleAuthorizations),
+  const fidgetDesktopItems = useMemo(
+    () => getFidgetDesktopItems(moduleAuthorizations),
     [moduleAuthorizations],
   )
   const matchingAuditInstances = useMemo(() => (
@@ -323,7 +333,10 @@ function KorpOsShell() {
     createAuditFormValues(authorizationForm)
   ))
   const [windows, setWindows] = useState(() => (
-    createInitialWindows(matchingAuditInstances, authorizationAvailable)
+    createInitialWindows(
+      matchingAuditInstances,
+      authorizationAvailable,
+    )
   ))
   const [canvasPlacement, setCanvasPlacement] = useState(() => getCenteredCanvasPlacement(
     window.innerWidth,
@@ -387,6 +400,7 @@ function KorpOsShell() {
 
   const isWindowAvailable = (id) => {
     if (id === 'click-audit') return clickAuditUnlocked
+    if (id === FIDGET_WINDOW_ID) return fidgetAuthorized
     if (id === 'forms-folder') return formsFolderAvailable
     if (id === AUTHORIZATION_FORM_WINDOW_ID) return authorizationAvailable
     return true
@@ -394,6 +408,7 @@ function KorpOsShell() {
 
   const managedWindowIds = [
     ...staticWindowIds,
+    ...(fidgetAuthorized ? [FIDGET_WINDOW_ID] : []),
     ...(authorizationAvailable ? [AUTHORIZATION_FORM_WINDOW_ID] : []),
     ...auditWindowModels.map(({ windowId }) => windowId),
   ]
@@ -468,7 +483,7 @@ function KorpOsShell() {
     if (fidgetAuthorized && !fidgetAuthorizationActivityRef.current) {
       setActivity((currentActivity) => [
         'Audit 16-C přidělil jednu Evidence žádosti o stabilizační vybavení.',
-        'Fidget byl autorizován. Samostatné nasazení zatím čeká.',
+        'Fidget byl autorizován a je připraven k ručnímu nasazení z plochy.',
         ...currentActivity,
       ].slice(0, 4))
     }
@@ -516,10 +531,16 @@ function KorpOsShell() {
       height: desktopSpaceRef.current?.clientHeight ?? osWorkspaceSize.height,
     }
 
-    setWindows((currentWindows) => openWindowState(currentWindows, id, {
-      workspaceSize,
-      formBasePosition: formDocumentBasePosition,
-    }))
+    setWindows((currentWindows) => {
+      const availableWindows = id === FIDGET_WINDOW_ID
+        ? reconcileFidgetWindow({ windows: currentWindows, moduleAuthorizations })
+        : currentWindows
+
+      return openWindowState(availableWindows, id, {
+        workspaceSize,
+        formBasePosition: formDocumentBasePosition,
+      })
+    })
   }
 
   const startWindowDrag = (id, event) => {
@@ -592,7 +613,7 @@ function KorpOsShell() {
     if (nativeEvent && recordedPointerEventsRef.current.has(nativeEvent)) return
     if (nativeEvent) recordedPointerEventsRef.current.add(nativeEvent)
 
-    const classification = classifyKorpOsClickTarget(event.target)
+    const classification = classifyKorpOsIntentionEvent(event.type, event.target)
     if (!classification) return
 
     recordOsClick(classification)
@@ -714,12 +735,13 @@ function KorpOsShell() {
                   onOpen={() => openWindow('click-audit')}
                 />
               )}
-              {authorizedPendingItems.map((item) => (
+              {fidgetDesktopItems.map((item) => (
                 <DesktopIcon
                   key={item.id}
                   title={item.title}
                   type="app"
                   status={item.status}
+                  onOpen={() => openWindow(item.windowId)}
                 />
               ))}
               {lockedShortcuts.map((module) => (
@@ -810,6 +832,21 @@ function KorpOsShell() {
                   >
                     <ClickAuditRuntimeModule centralizedTracking />
                   </ClickAuditEmbeddedWindow>
+                </article>
+              )}
+
+              {visibleWindowIds.includes(FIDGET_WINDOW_ID) && (
+                <article
+                  className="os-fidget-asset-window"
+                  style={windowStyle(windows[FIDGET_WINDOW_ID])}
+                  data-window-id={FIDGET_WINDOW_ID}
+                  aria-label="Fidget"
+                  onPointerDown={() => bringWindowToFront(FIDGET_WINDOW_ID)}
+                >
+                  <FidgetEmbeddedWindow
+                    onDragStart={(event) => startWindowDrag(FIDGET_WINDOW_ID, event)}
+                    onMinimize={() => minimizeWindow(FIDGET_WINDOW_ID)}
+                  />
                 </article>
               )}
 
@@ -974,7 +1011,7 @@ function KorpOsShell() {
                         <FolderEntry
                           title="Autorizace stabilizačního vybavení"
                           detail="Jedna Evidence byla přidělena žádosti o povolení k nasazení"
-                          status="AUTORIZOVÁNO / NASAZENÍ ČEKÁ"
+                          status="AUTORIZOVÁNO / NASAZENO"
                           kind="memo"
                         />
                       )}
