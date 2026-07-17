@@ -1,5 +1,7 @@
 export const RUNTIME_SAVE_KEY = 'k0rp-os.runtime'
-export const RUNTIME_SAVE_SCHEMA_VERSION = 2
+export const RUNTIME_SAVE_SCHEMA_VERSION = 3
+
+const CLICK_AUDIT_TEMPLATE_ID = 'audit-10-a'
 
 const persistedRuntimeKeys = [
   'korpState',
@@ -11,6 +13,8 @@ const persistedRuntimeKeys = [
   'metricPackets',
   'auditInstances',
   'clickAuditBatchBaseline',
+  'clickAuditBootstrapArmed',
+  'clickAuditBootstrapCompleted',
 ]
 
 const isPlainObject = (value) => (
@@ -28,6 +32,122 @@ const uniqueStringIds = (value) => {
 const safeWholeCount = (value) => (
   Number.isFinite(value) && value > 0 ? Math.floor(value) : 0
 )
+
+const getRuntimeEventCount = (runtime, eventType) => safeWholeCount(
+  runtime.korpState?.stats?.eventsByType?.[eventType],
+)
+
+const getRuntimeClickCount = (runtime) => (
+  getRuntimeEventCount(runtime, 'clickaudit.click')
+)
+
+const hasClickAuditUnlocked = (runtime) => (
+  Array.isArray(runtime.unlockedModuleIds)
+  && runtime.unlockedModuleIds.includes('click-audit')
+)
+
+const withoutRepeatableAuditSubmission = (submittedFormIds) => (
+  Array.isArray(submittedFormIds)
+    ? submittedFormIds.filter((formId) => formId !== CLICK_AUDIT_TEMPLATE_ID)
+    : submittedFormIds
+)
+
+const withMetricBatchCount = (stats, nextBatchCount) => {
+  if (!isPlainObject(stats)) return stats
+
+  const eventsByType = isPlainObject(stats.eventsByType) ? { ...stats.eventsByType } : {}
+  const eventsByModule = isPlainObject(stats.eventsByModule) ? { ...stats.eventsByModule } : {}
+  const currentBatchCount = safeWholeCount(eventsByType['clickaudit.batchCompleted'])
+  const retainedBatchCount = Math.min(safeWholeCount(nextBatchCount), currentBatchCount)
+  const removedBatchCount = currentBatchCount - retainedBatchCount
+
+  if (retainedBatchCount > 0) {
+    eventsByType['clickaudit.batchCompleted'] = retainedBatchCount
+  } else {
+    delete eventsByType['clickaudit.batchCompleted']
+  }
+
+  const clickAuditModuleCount = Math.max(
+    0,
+    safeWholeCount(eventsByModule['click-audit']) - removedBatchCount,
+  )
+  if (clickAuditModuleCount > 0) {
+    eventsByModule['click-audit'] = clickAuditModuleCount
+  } else {
+    delete eventsByModule['click-audit']
+  }
+
+  return {
+    ...stats,
+    totalEvents: Math.max(0, safeWholeCount(stats.totalEvents) - removedBatchCount),
+    eventsByType,
+    eventsByModule,
+  }
+}
+
+const migrateLegacyRuntime = (runtime) => {
+  const clickCount = getRuntimeClickCount(runtime)
+  const resources = isPlainObject(runtime.korpState.resources)
+    ? runtime.korpState.resources
+    : {}
+  const bootstrapArmed = hasClickAuditUnlocked(runtime)
+
+  return {
+    ...runtime,
+    korpState: {
+      ...runtime.korpState,
+      stats: withMetricBatchCount(runtime.korpState.stats, 0),
+      resources: {
+        ...resources,
+        notionalWorkUnits: 0,
+      },
+    },
+    lifetimeStats: withMetricBatchCount(runtime.lifetimeStats, 0),
+    submittedFormIds: withoutRepeatableAuditSubmission(runtime.submittedFormIds),
+    metricPackets: [],
+    auditInstances: [],
+    clickAuditBatchBaseline: clickCount,
+    clickAuditBootstrapArmed: bootstrapArmed,
+    clickAuditBootstrapCompleted: false,
+  }
+}
+
+const migrateDraftV2Runtime = (runtime) => {
+  const clickCount = getRuntimeClickCount(runtime)
+  const certifiedEvidenceCount = getRuntimeEventCount(runtime, 'audit.evidenceCertified')
+  const hasCertifiedEvidence = certifiedEvidenceCount > 0
+  const certifiedPackets = hasCertifiedEvidence && Array.isArray(runtime.metricPackets)
+    ? runtime.metricPackets
+      .filter((packet) => isPlainObject(packet) && packet.status === 'certified')
+      .slice(0, certifiedEvidenceCount)
+    : []
+  const certifiedPacketIds = new Set(certifiedPackets.map((packet) => packet.id))
+  const submittedAuditInstances = Array.isArray(runtime.auditInstances)
+    ? runtime.auditInstances.filter((instance) => (
+      isPlainObject(instance)
+      && certifiedPacketIds.has(instance.packetId)
+      && (instance.status === 'submitted' || instance.status === 'closed')
+    ))
+    : []
+  const retainedBatchCount = certifiedPackets.length
+
+  return {
+    ...runtime,
+    korpState: {
+      ...runtime.korpState,
+      stats: withMetricBatchCount(runtime.korpState.stats, retainedBatchCount),
+    },
+    lifetimeStats: withMetricBatchCount(runtime.lifetimeStats, retainedBatchCount),
+    submittedFormIds: hasCertifiedEvidence
+      ? runtime.submittedFormIds
+      : withoutRepeatableAuditSubmission(runtime.submittedFormIds),
+    metricPackets: certifiedPackets,
+    auditInstances: submittedAuditInstances,
+    clickAuditBatchBaseline: clickCount,
+    clickAuditBootstrapArmed: hasClickAuditUnlocked(runtime) && !hasCertifiedEvidence,
+    clickAuditBootstrapCompleted: hasCertifiedEvidence,
+  }
+}
 
 const sanitizeMetricPacket = (packet) => {
   if (!isPlainObject(packet)) return null
@@ -95,30 +215,22 @@ export function migrateRuntimeSave(candidate, { progressionDataVersion } = {}) {
   if (candidate.schemaVersion === 1) {
     if (!isPlainObject(candidate.runtime) || !isPlainObject(candidate.runtime.korpState)) return null
 
-    const clickCount = safeWholeCount(
-      candidate.runtime.korpState.stats?.eventsByType?.['clickaudit.click'],
-    )
-    const resources = isPlainObject(candidate.runtime.korpState.resources)
-      ? candidate.runtime.korpState.resources
-      : {}
+    return {
+      ...candidate,
+      schemaVersion: RUNTIME_SAVE_SCHEMA_VERSION,
+      progressionDataVersion,
+      runtime: migrateLegacyRuntime(candidate.runtime),
+    }
+  }
+
+  if (candidate.schemaVersion === 2) {
+    if (!isPlainObject(candidate.runtime) || !isPlainObject(candidate.runtime.korpState)) return null
 
     return {
       ...candidate,
-      schemaVersion: 2,
+      schemaVersion: RUNTIME_SAVE_SCHEMA_VERSION,
       progressionDataVersion,
-      runtime: {
-        ...candidate.runtime,
-        korpState: {
-          ...candidate.runtime.korpState,
-          resources: {
-            ...resources,
-            notionalWorkUnits: 0,
-          },
-        },
-        metricPackets: [],
-        auditInstances: [],
-        clickAuditBatchBaseline: clickCount,
-      },
+      runtime: migrateDraftV2Runtime(candidate.runtime),
     }
   }
 
@@ -147,10 +259,14 @@ export function hydrateRuntimeSave(candidate, {
     metricPackets,
     auditInstances,
     clickAuditBatchBaseline,
+    clickAuditBootstrapArmed,
+    clickAuditBootstrapCompleted,
   } = migrated.runtime
 
   if (!isPlainObject(korpState) || korpState.version !== coreStateVersion) return fallback()
   if (!isPlainObject(korpState.stats) || !isPlainObject(korpState.resources) || !isPlainObject(lifetimeStats)) return fallback()
+
+  const bootstrapCompleted = clickAuditBootstrapCompleted === true
 
   return {
     korpState,
@@ -162,6 +278,8 @@ export function hydrateRuntimeSave(candidate, {
     metricPackets: sanitizeUniqueObjects(metricPackets, sanitizeMetricPacket),
     auditInstances: sanitizeUniqueObjects(auditInstances, sanitizeAuditInstance),
     clickAuditBatchBaseline: safeWholeCount(clickAuditBatchBaseline),
+    clickAuditBootstrapArmed: clickAuditBootstrapArmed === true && !bootstrapCompleted,
+    clickAuditBootstrapCompleted: bootstrapCompleted,
   }
 }
 

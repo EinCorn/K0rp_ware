@@ -1,6 +1,6 @@
 {
   "id": "k0rp-progression-db",
-  "version": "0.2.0-draft",
+  "version": "0.2.1-draft",
   "canonicalLocale": "cs-CZ",
   "targetFirstPrestigeMinutes": 270,
   "compatibleRepo": "EinCorn/K0rp_ware",

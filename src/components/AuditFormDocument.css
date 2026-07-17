@@ -50,6 +50,25 @@
   overflow: auto;
 }
 
+.os-packet-audit-window .os-audit-document {
+  gap: 10px;
+  padding: 14px;
+}
+
+.os-packet-audit-window .os-audit-document-heading > span {
+  margin-top: 6px;
+}
+
+.os-packet-audit-window .os-audit-fields {
+  align-content: start;
+  overflow: hidden;
+}
+
+.os-packet-audit-window .os-audit-choice-group {
+  gap: 4px;
+  padding: 8px 9px;
+}
+
 .os-audit-checkbox {
   min-height: 72px;
   display: grid;

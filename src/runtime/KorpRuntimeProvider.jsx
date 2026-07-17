@@ -23,10 +23,11 @@ import { formatClickAuditActivity } from './clickAuditActivity'
 import {
   CLICK_AUDIT_TEMPLATE_ID,
   appendClickAuditPackets,
-  certifyMetricAuditInstance,
+  captureClickAuditBootstrapAfterSubmission,
   createInitialMetricAuditState,
   getPendingAuditInstances,
   getPendingMetricPackets,
+  resolveMetricAuditCertification,
   updateMetricAuditInstanceField,
 } from './metricAuditFlow'
 
@@ -120,43 +121,15 @@ function runtimeReducer(runtime, action) {
         || !isAuditFormComplete(form, currentAuditInstance.values)
       ) return runtime
 
-      const certification = certifyMetricAuditInstance(
+      const certification = resolveMetricAuditCertification(
         runtime,
         action.instanceId,
+        form.id,
         action.timestamp,
       )
       if (!certification.didCertify) return runtime
 
-      const events = [
-        {
-          id: `k0rp-os-audit-form-submitted-${certification.auditInstance.id}-${action.timestamp}`,
-          timestamp: action.timestamp,
-          sourceModule: 'system',
-          type: 'audit.formSubmitted',
-          tags: ['k0rp-os', 'audit-form', form.id, 'metric-packet'],
-          meta: {
-            formId: form.id,
-            auditInstanceId: certification.auditInstance.id,
-            packetId: certification.packet.id,
-          },
-        },
-        {
-          id: `k0rp-os-evidence-certified-${certification.packet.id}-${action.timestamp}`,
-          timestamp: action.timestamp,
-          sourceModule: 'system',
-          type: 'audit.evidenceCertified',
-          value: 1,
-          tags: ['k0rp-os', 'evidence', 'metric-packet'],
-          meta: {
-            formId: form.id,
-            auditInstanceId: certification.auditInstance.id,
-            packetId: certification.packet.id,
-            metricType: certification.packet.metricType,
-            evidenceAmount: 1,
-          },
-        },
-      ]
-      const korpState = applyEvents(runtime.korpState, events)
+      const korpState = applyEvents(runtime.korpState, certification.events)
 
       return {
         ...certification.runtimeState,
@@ -185,12 +158,14 @@ function runtimeReducer(runtime, action) {
         meta: { formId: form.id },
       })
 
-      return {
+      const nextRuntime = {
         ...runtime,
         ...progression.progressionState,
         korpState,
         lifetimeStats: korpState.stats,
       }
+
+      return captureClickAuditBootstrapAfterSubmission(nextRuntime, form.id)
     }
     case 'resetRuntime':
       return createFreshRuntimeState()

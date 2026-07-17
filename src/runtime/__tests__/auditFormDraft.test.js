@@ -15,6 +15,7 @@ const auditForms = JSON.parse(await readFile(
 ))
 
 const audit00 = auditForms.find((form) => form.id === 'audit-00-a')
+const audit10 = auditForms.find((form) => form.id === 'audit-10-a')
 
 test('Audit 00-A starts with one unchecked presence field', () => {
   assert.deepEqual(createAuditFormValues(audit00), { presence: false })
@@ -24,6 +25,29 @@ test('Audit 00-A starts with one unchecked presence field', () => {
 test('Audit 00-A becomes complete only after presence is confirmed', () => {
   assert.equal(isAuditFormComplete(audit00, { presence: false }), false)
   assert.equal(isAuditFormComplete(audit00, { presence: true }), true)
+})
+
+test('Audit 10-A has one required radio answer and one submit field', () => {
+  const interactiveFields = audit10.fields.filter((field) => field.type !== 'buttonConfirm')
+  const submitFields = audit10.fields.filter((field) => field.type === 'buttonConfirm')
+
+  assert.equal(audit10.title, 'Ověření zaznamenané aktivity')
+  assert.equal(interactiveFields.length, 1)
+  assert.equal(interactiveFields[0].id, 'intentionality')
+  assert.equal(interactiveFields[0].type, 'radio')
+  assert.equal(interactiveFields[0].required, true)
+  assert.equal(interactiveFields[0].label, 'Byla zaznamenaná aktivita provedena úmyslně?')
+  assert.deepEqual(interactiveFields[0].options, ['Ano', 'Ne', 'Nelze potvrdit'])
+  assert.equal(submitFields.length, 1)
+  assert.equal(submitFields[0].required, true)
+  assert.equal(submitFields[0].label, 'CERTIFIKOVAT ZÁZNAM')
+  assert.equal(isAuditFormComplete(audit10, { intentionality: null }), false)
+})
+
+test('every Audit 10-A answer satisfies completion', () => {
+  for (const answer of ['Ano', 'Ne', 'Nelze potvrdit']) {
+    assert.equal(isAuditFormComplete(audit10, { intentionality: answer }), true)
+  }
 })
 
 test('required field validation supports future audit field types', () => {

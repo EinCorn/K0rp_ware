@@ -551,7 +551,7 @@ function KorpOsShell() {
 
               {visibleWindowIds.includes('audit-trace') && (
                 <article
-                  className="os-window os-audit-document-window"
+                  className="os-window os-audit-document-window os-packet-audit-window"
                   style={windowStyle(windows['audit-trace'])}
                   data-window-id="audit-trace"
                   aria-labelledby="approval-title"
@@ -569,9 +569,9 @@ function KorpOsShell() {
                     submitted={auditTraceSubmitted}
                     headingId="approval-title"
                     documentLabel={`AUDITOVATELNÁ DÁVKA / ${auditTracePacket?.id ?? 'NEURČENO'}`}
-                    introText={`Dávka obsahuje ${auditTracePacket?.quantity ?? 0} raw interakcí. Samotný záznam není Evidence, dokud nebude certifikován.`}
-                    pendingStatusText="ČEKÁ NA ÚPLNÉ VYPLNĚNÍ"
-                    readyStatusText="DÁVKA PŘIPRAVENA K CERTIFIKACI"
+                    introText={`Zaznamenaných raw interakcí: ${auditTracePacket?.quantity ?? 0}. Samotný záznam není Evidence, dokud nebude certifikován.`}
+                    pendingStatusText="ZVOLTE ODPOVĚĎ"
+                    readyStatusText="ZÁZNAM PŘIPRAVEN K CERTIFIKACI"
                     completionHeadingLabel={`FORMULÁŘ ${auditTraceForm?.code ?? '?'} / CERTIFIKOVANÁ DÁVKA`}
                     completionTitle="EVIDENCE CERTIFIKOVÁNA"
                     completionDetail={`${auditTracePacket?.id ?? 'DÁVKA'} / EV +1`}

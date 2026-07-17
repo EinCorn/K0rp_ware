@@ -21,7 +21,32 @@ export const createInitialMetricAuditState = (clickCount = 0) => ({
   metricPackets: [],
   auditInstances: [],
   clickAuditBatchBaseline: safeWholeCount(clickCount),
+  clickAuditBootstrapArmed: false,
+  clickAuditBootstrapCompleted: false,
 })
+
+export function armClickAuditBootstrap(runtimeState, totalClickCount) {
+  if (
+    runtimeState.clickAuditBootstrapArmed === true
+    || runtimeState.clickAuditBootstrapCompleted === true
+  ) return runtimeState
+
+  return {
+    ...runtimeState,
+    clickAuditBatchBaseline: safeWholeCount(totalClickCount),
+    clickAuditBootstrapArmed: true,
+    clickAuditBootstrapCompleted: false,
+  }
+}
+
+export function captureClickAuditBootstrapAfterSubmission(runtimeState, formId) {
+  if (formId !== 'audit-00-a') return runtimeState
+
+  return armClickAuditBootstrap(
+    runtimeState,
+    runtimeState.korpState?.stats?.eventsByType?.['clickaudit.click'] ?? 0,
+  )
+}
 
 export const getPendingMetricPackets = (runtimeState) => (
   (runtimeState.metricPackets ?? []).filter((packet) => packet.status === 'pending')
@@ -49,6 +74,8 @@ export function appendClickAuditPackets(runtimeState, totalClickCount, timestamp
   const metricPackets = [...(runtimeState.metricPackets ?? [])]
   const auditInstances = [...(runtimeState.auditInstances ?? [])]
   const existingPacketIds = new Set(metricPackets.map((packet) => packet.id))
+  let bootstrapCompleted = runtimeState.clickAuditBootstrapCompleted === true
+  let bootstrapArmed = runtimeState.clickAuditBootstrapArmed === true && !bootstrapCompleted
   let cursor = Math.min(
     safeWholeCount(runtimeState.clickAuditBatchBaseline),
     safeTotalClickCount,
@@ -57,19 +84,16 @@ export function appendClickAuditPackets(runtimeState, totalClickCount, timestamp
   const createdAuditInstances = []
   const batchEvents = []
 
-  while (safeTotalClickCount - cursor >= CLICK_AUDIT_PACKET_SIZE) {
-    const rangeStart = cursor + 1
-    const rangeEnd = cursor + CLICK_AUDIT_PACKET_SIZE
+  const appendPacket = (rangeStart, rangeEnd, quantity) => {
     const packetId = packetIdForRange(rangeStart, rangeEnd)
 
-    cursor = rangeEnd
-    if (existingPacketIds.has(packetId)) continue
+    if (existingPacketIds.has(packetId)) return
 
     const packet = {
       id: packetId,
       metricType: 'clickaudit.click',
       source: 'manual',
-      quantity: CLICK_AUDIT_PACKET_SIZE,
+      quantity,
       status: 'pending',
       createdAt: timestamp,
       auditTemplateId: CLICK_AUDIT_TEMPLATE_ID,
@@ -95,7 +119,7 @@ export function appendClickAuditPackets(runtimeState, totalClickCount, timestamp
       timestamp,
       sourceModule: 'click-audit',
       type: 'clickaudit.batchCompleted',
-      value: CLICK_AUDIT_PACKET_SIZE,
+      value: quantity,
       tags: ['k0rp-os', 'metric-packet', 'clickaudit'],
       meta: {
         packetId,
@@ -108,12 +132,33 @@ export function appendClickAuditPackets(runtimeState, totalClickCount, timestamp
     })
   }
 
+  if (bootstrapArmed && safeTotalClickCount > cursor) {
+    const bootstrapClick = cursor + 1
+
+    appendPacket(bootstrapClick, bootstrapClick, 1)
+    cursor = bootstrapClick
+    bootstrapArmed = false
+    bootstrapCompleted = true
+  }
+
+  if (bootstrapCompleted) {
+    while (safeTotalClickCount - cursor >= CLICK_AUDIT_PACKET_SIZE) {
+      const rangeStart = cursor + 1
+      const rangeEnd = cursor + CLICK_AUDIT_PACKET_SIZE
+
+      appendPacket(rangeStart, rangeEnd, CLICK_AUDIT_PACKET_SIZE)
+      cursor = rangeEnd
+    }
+  }
+
   return {
     runtimeState: {
       ...runtimeState,
       metricPackets,
       auditInstances,
       clickAuditBatchBaseline: cursor,
+      clickAuditBootstrapArmed: bootstrapArmed,
+      clickAuditBootstrapCompleted: bootstrapCompleted,
     },
     createdPackets,
     createdAuditInstances,
@@ -190,5 +235,51 @@ export function certifyMetricAuditInstance(runtimeState, instanceId, timestamp =
         submittedAuditInstance.templateId,
       ),
     },
+  }
+}
+
+export function resolveMetricAuditCertification(
+  runtimeState,
+  instanceId,
+  formId,
+  timestamp = Date.now(),
+) {
+  const certification = certifyMetricAuditInstance(runtimeState, instanceId, timestamp)
+
+  if (!certification.didCertify) {
+    return { ...certification, events: [] }
+  }
+
+  const eventMeta = {
+    formId,
+    auditInstanceId: certification.auditInstance.id,
+    packetId: certification.packet.id,
+  }
+
+  return {
+    ...certification,
+    events: [
+      {
+        id: `k0rp-os-audit-form-submitted-${certification.auditInstance.id}-${timestamp}`,
+        timestamp,
+        sourceModule: 'system',
+        type: 'audit.formSubmitted',
+        tags: ['k0rp-os', 'audit-form', formId, 'metric-packet'],
+        meta: eventMeta,
+      },
+      {
+        id: `k0rp-os-evidence-certified-${certification.packet.id}-${timestamp}`,
+        timestamp,
+        sourceModule: 'system',
+        type: 'audit.evidenceCertified',
+        value: 1,
+        tags: ['k0rp-os', 'evidence', 'metric-packet'],
+        meta: {
+          ...eventMeta,
+          metricType: certification.packet.metricType,
+          evidenceAmount: 1,
+        },
+      },
+    ],
   }
 }
