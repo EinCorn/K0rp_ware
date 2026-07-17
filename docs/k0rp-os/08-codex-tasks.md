@@ -72,10 +72,10 @@ Status: dokončeno a mergnuto.
 Status: dokončeno a mergnuto.
 
 - progression databáze jako source pro formuláře;
-- canonical 25-click threshold;
+- původní 25-click threshold, později nahrazený bootstrap flow z Tasku 020;
 - module/memo/upgrade state.
 
-Poznámka: ekonomický význam tohoto flow bude změněn Taskem 020.
+Poznámka: ekonomický význam tohoto flow změnil Task 020 na canonical Metric → Audit → Evidence loop.
 
 ### Task 017 — Versioned local runtime save
 
@@ -106,32 +106,36 @@ Status: dokončeno a mergnuto.
 - central activity copy;
 - raw click counter a persistence.
 
-## 3. Next implementation tasks
+## 3. Aktuální a navazující implementation tasks
 
 ## Task 020 — Metric → Audit → Evidence vertical slice
 
-Priorita: **NEXT**
+Status: dokončeno a mergnuto v PR #29.
 
 ### Cíl
 
 Nahradit starý `raw click → currency` prototyp prvním úplným canonical loopem:
 
 ```text
-25 raw kliků
-→ pending packet
+Audit 00-A nastaví baseline aktuálního raw počtu
+→ první pozdější K0rp_OS klik
+→ bootstrap pending packet quantity 1
 → Audit 10-A instance
 → certifikace
 → Evidence +1
+→ pozdější packety po 25 dalších kliknutích
 ```
 
 ### Scope
 
 - zachovat absolutní ClickAudit raw counter;
 - změnit `clickaudit.click`, aby nepřidával spendable currency;
-- `clickaudit.batchCompleted` vytvoří právě jeden pending packet;
+- Audit 00-A nastaví baseline a explicitně armuje jeden bootstrap packet;
+- první post-unlock klik vytvoří právě jeden quantity-1 pending packet;
+- po bootstrap range vytváří `clickaudit.batchCompleted` packety po 25 dalších kliknutích;
 - přidat persistované `metricPackets`;
 - přidat persistované repeatable `auditInstances`;
-- Audit 10-A navázat na nejstarší pending ClickAudit packet;
+- každou Audit 10-A instanci navázat na její konkrétní pending ClickAudit packet;
 - validní submit emituje `audit.formSubmitted` a právě jeden `audit.evidenceCertified`;
 - technický `notionalWorkUnits` prezentovat jako `Evidence / EV`;
 - první certifikovaný packet přidá právě 1 Evidence;
@@ -147,16 +151,19 @@ Při načtení starého save:
 ```text
 batch baseline = aktuální počet raw ClickAudit kliků
 pending packets = 0
+bootstrap = armnout pouze pokud je ClickAudit odemčený a chybí validní certifikovaná Evidence
 ```
 
-Další packet vznikne až z nových kliků po migraci.
+Další packet vznikne až z nových kliků po migraci. Draft-v2 backlog s EV 0 se zahodí; platná certifikovaná Evidence se znovu neuděluje.
 
 ### Testy
 
 - klik sám nezvyšuje Evidence;
-- 24 nových kliků nevytvoří packet;
-- 25. klik vytvoří právě jeden packet;
-- 50 nových kliků vytvoří dva packety;
+- pre-unlock kliky nevytvoří packet;
+- submit 00-A zachytí baseline a armuje bootstrap;
+- první post-unlock klik vytvoří právě jeden quantity-1 packet;
+- další 24 kliků nevytvoří normální packet;
+- 25. další klik vytvoří právě jeden quantity-25 packet;
 - stejný batch se po refreshi nevytvoří podruhé;
 - Audit 10-A certifikuje právě jeden packet;
 - repeated submit nepřidá druhou Evidence;
@@ -192,16 +199,80 @@ npm run build
 
 ```text
 Audit 00-A
-→ ClickAudit
-→ 25 kliků
+→ ClickAudit unlock
+→ jeden pozdější klik
 → 1 čekající audit
 → Audit 10-A
 → EV 1
 → refresh
 → stejný stav
+→ další audit až po 25 dalších kliknutích
 ```
 
-## Task 021 — Evidence authorization contract and Audit 16-C
+## Task 021A — Window placement and form cascade preflight
+
+Priorita: **NEXT**
+
+### Cíl
+
+Oddělit placement oken od runtime progression state a umožnit více auditních dokumentů současně.
+
+### Scope
+
+- neformulářová okna při prvním otevření centrovat v usable workspace;
+- visible activation a taskbar restore ponechají poslední `x/y`;
+- stabilní ID `form:audit-00-a` a `form:<audit-instance-id>`;
+- každá repeatable Audit 10-A instance má vlastní okno, taskbar stav a položku ve Formulářích;
+- nové dokumenty kaskádovat od aktuální pozice naposledy fokusovaného formuláře o integer `+18/+14`;
+- při lower/right overflow deterministicky wrapnout k base pozici a pokračovat bez edge pilingu;
+- OS-rendered document/folder windows mají oddělený minimize a close; close skryje okno i jeho taskbar položku bez smazání dokumentu;
+- submit Audit 00-A pouze zachytí baseline a odemkne surfaces; nesmí vynutit otevření žádného nového okna, včetně ClickAuditu nebo Audit 10-A;
+- quantity-1 bootstrap Audit 10-A auto-openout právě jednou;
+- pozdější quantity-25 Audit 10-A instance pouze zařadit do queue ve Formulářích bez auto-openu a bez focus steal;
+- explicitní otevření pozdější instance z Formulářů vytvoří/obnoví její vlastní okno a teprve tehdy použije cascade od current form anchor;
+- certifikovaný dokument ponechat samostatně dostupný;
+- window placement a minimize/focus stav nepersistovat do runtime save.
+
+### Tests
+
+- first-open center, visible activation a minimized restore;
+- close je odlišný od minimize a explicitní reopen obnoví stejné window ID a session position;
+- stabilní unikátní form IDs a idempotentní reopen;
+- moved anchor mění další cascade origin;
+- integer `+18/+14`, deterministic boundary wrap a clamp;
+- submit 00-A nezpůsobí forced popup;
+- bootstrap 10-A se auto-openne právě jednou;
+- pozdější quantity-25 instance zůstane ve Formulářích až do explicitního otevření;
+- dvě 10-A instance zůstávají nezávislé a taskbar je obnovuje samostatně.
+
+### Do not
+
+- neimplementovat Audit 16-C ani Evidence spending;
+- nepřenášet Fidget;
+- nepřidávat resize ani persisted window positions;
+- neměnit Task 020 packet/Evidence semantiku;
+- nepřidávat cloud, overlay ani Tauri-specific změny.
+
+### Explicit visual-control exception
+
+Asset-backed ClickAudit close control je mimo scope Tasku 021A. Může dočasně zachovat existující minimize chování i close vizuál; sjednocení assetu, accessible labelu a close/minimize semantiky patří do samostatného pozdějšího visual-controls tasku.
+
+### Manual Windows gate
+
+```text
+Audit 00-A submit → baseline + unlock, žádný forced popup
+→ explicit first open ClickAuditu → centered
+→ tentýž první pozdější klik vytvoří bootstrap 10-A → auto-open právě jednou +18/+14 od current form anchor
+→ Formuláře / Doručené explicit first open → centered
+→ move + minimize + taskbar restore → stejné x/y
+→ close standardního OS okna → zmizí z desktopu i taskbaru; explicit reopen → stejné ID a session x/y
+→ move + certify
+→ 25 dalších kliků → druhé 10-A pouze v queue Formulářů, bez popupu a focus steal
+→ explicit open z Formulářů → druhé samostatné 10-A +18/+14 od current form anchor
+→ obě okna independent drag/minimize/restore a bez clippingu
+```
+
+## Task 021B — Evidence authorization contract and Audit 16-C
 
 ### Cíl
 
@@ -245,7 +316,7 @@ Přenést existující hotový Fidget do K0rp_OS stejně věrně jako ClickAudit
 - uvnitř OS používat app-window bez standalone shellu;
 - standalone preview používá stejný modul;
 - zachovat původní spinner, mode a sensory feel;
-- napojit module unlock na authorization z Tasku 021;
+- napojit module unlock na authorization z Tasku 021B;
 - lokální session state může zůstat module-local;
 - window manager vlastní drag/minimize/taskbar.
 

@@ -1,14 +1,19 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { listModules } from '../../packages/korp-modules/src/index'
 import { createAuditFormValues, isAuditFormComplete } from '../runtime/auditFormDraft'
+import { reconcileAuditInstanceWindows } from '../runtime/auditWindowPresentation'
 import { classifyKorpOsClickTarget } from '../runtime/osClickTracking'
 import { useKorpRuntime } from '../runtime/useKorpRuntime'
 import {
   bringWindowStateToFront,
+  closeWindowState,
+  ensureFormWindowState,
   getCenteredCanvasPlacement,
+  getCenteredWindowPosition,
+  getFormWindowId,
   mapClientPointToCanvas,
   minimizeWindowState,
-  restoreWindowState,
+  openWindowState,
   snapWindowPosition,
 } from '../runtime/windowManager'
 import AuditFormDocument from './AuditFormDocument'
@@ -24,83 +29,122 @@ const initialActivity = (auditEntryForm) => [
 
 const osCanvasWidth = 1520
 const osCanvasHeight = 855
+const osWorkspaceSize = { width: 1514, height: 776 }
+const formWindowSize = { width: 470, height: 310 }
+const clickAuditWindowSize = { width: 181, height: 181 }
+const folderWindowSize = { width: 360, height: 268 }
+const dailyReportWindowSize = { width: 392, height: 192 }
+const formDocumentBasePosition = { x: 184, y: 58 }
+const auditEntryWindowId = getFormWindowId('audit-00-a')
 const lockedShortcuts = listModules()
   .filter((module) => module.status !== 'current')
   .slice(0, 2)
 
-const managedWindowIds = [
-  'audit-entry',
+const staticWindowIds = [
+  auditEntryWindowId,
   'click-audit',
-  'audit-trace',
   'daily-report',
   'forms-folder',
   'inbox-folder',
 ]
 
-const initialWindows = {
-  'audit-entry': {
-    id: 'audit-entry',
-    title: null,
-    taskbarTitle: null,
-    x: 184,
-    y: 58,
-    zIndex: 3,
-    isMinimized: false,
-    isOpen: true,
-  },
-  'click-audit': {
-    id: 'click-audit',
-    title: 'CLICKAUDIT / MÍSTNÍ MODUL',
-    taskbarTitle: 'CLICKAUDIT',
-    x: 250,
-    y: 250,
-    zIndex: 2,
-    isMinimized: false,
-    isOpen: false,
-  },
-  'audit-trace': {
-    id: 'audit-trace',
-    title: null,
-    taskbarTitle: null,
-    x: 965,
-    y: 96,
-    zIndex: 3,
-    isMinimized: false,
-    isOpen: true,
-  },
-  'daily-report': {
-    id: 'daily-report',
-    title: 'DENNÍ VÝPIS / MÍSTNÍ MEMO',
-    taskbarTitle: 'DENNÍ VÝPIS',
-    x: 1082,
-    y: 569,
-    zIndex: 1,
-    isMinimized: false,
-    isOpen: true,
-  },
-  'forms-folder': {
-    id: 'forms-folder',
-    title: 'FORMULÁŘE / SLOŽKA',
-    taskbarTitle: 'FORMULÁŘE',
-    x: 1024,
-    y: 118,
-    zIndex: 0,
-    isMinimized: false,
-    isOpen: false,
-  },
-  'inbox-folder': {
-    id: 'inbox-folder',
-    title: 'DORUČENÉ / SLOŽKA',
-    taskbarTitle: 'DORUČENÉ',
-    x: 1102,
-    y: 471,
-    zIndex: 0,
-    isMinimized: false,
-    isOpen: false,
-  },
+const createInitialWindows = (existingAuditInstances) => {
+  let windows = {
+    [auditEntryWindowId]: {
+      id: auditEntryWindowId,
+      documentId: 'audit-00-a',
+      kind: 'form',
+      title: null,
+      taskbarTitle: null,
+      width: formWindowSize.width,
+      height: formWindowSize.height,
+      ...formDocumentBasePosition,
+      zIndex: 3,
+      isMinimized: false,
+      isOpen: true,
+      hasOpened: true,
+    },
+    'click-audit': {
+      id: 'click-audit',
+      kind: 'module',
+      title: 'CLICKAUDIT / MÍSTNÍ MODUL',
+      taskbarTitle: 'CLICKAUDIT',
+      width: clickAuditWindowSize.width,
+      height: clickAuditWindowSize.height,
+      ...getCenteredWindowPosition(osWorkspaceSize, clickAuditWindowSize),
+      zIndex: 2,
+      isMinimized: false,
+      isOpen: false,
+      hasOpened: false,
+    },
+    'daily-report': {
+      id: 'daily-report',
+      kind: 'memo',
+      title: 'DENNÍ VÝPIS / MÍSTNÍ MEMO',
+      taskbarTitle: 'DENNÍ VÝPIS',
+      width: dailyReportWindowSize.width,
+      height: dailyReportWindowSize.height,
+      ...getCenteredWindowPosition(osWorkspaceSize, dailyReportWindowSize),
+      zIndex: 1,
+      isMinimized: false,
+      isOpen: true,
+      hasOpened: true,
+    },
+    'forms-folder': {
+      id: 'forms-folder',
+      kind: 'folder',
+      title: 'FORMULÁŘE / SLOŽKA',
+      taskbarTitle: 'FORMULÁŘE',
+      width: folderWindowSize.width,
+      height: folderWindowSize.height,
+      ...getCenteredWindowPosition(osWorkspaceSize, folderWindowSize),
+      zIndex: 0,
+      isMinimized: false,
+      isOpen: false,
+      hasOpened: false,
+    },
+    'inbox-folder': {
+      id: 'inbox-folder',
+      kind: 'folder',
+      title: 'DORUČENÉ / SLOŽKA',
+      taskbarTitle: 'DORUČENÉ',
+      width: folderWindowSize.width,
+      height: folderWindowSize.height,
+      ...getCenteredWindowPosition(osWorkspaceSize, folderWindowSize),
+      zIndex: 0,
+      isMinimized: false,
+      isOpen: false,
+      hasOpened: false,
+    },
+  }
+
+  for (const auditInstance of existingAuditInstances) {
+    windows = ensureFormWindowState(windows, auditInstance.id, formWindowSize)
+  }
+
+  return windows
 }
 
-function WindowHeader({ window, variant = 'document', onMinimize, onPointerDown }) {
+const getPacketRangeLabel = (packet, sequence) => {
+  if (!packet) return `#${sequence}`
+  if (packet.rangeStart === packet.rangeEnd) return String(packet.rangeStart)
+  return `${packet.rangeStart}–${packet.rangeEnd}`
+}
+
+const getAuditInstanceFileStatus = (instance, packet) => {
+  if (instance.status === 'submitted' || instance.status === 'closed') {
+    return 'CERTIFIKOVÁNO / EV +1'
+  }
+  if (instance.status === 'draft') return 'ROZPRACOVÁNO'
+  if (packet?.status === 'pending') return 'ČEKÁ NA AUDIT'
+  return 'ČEKÁ NA DÁVKU'
+}
+
+const getAuditInstanceHeadingId = (windowId) => (
+  `approval-title-${windowId.replace(/[^a-zA-Z0-9_-]/g, '-')}`
+)
+
+function WindowHeader({ window, variant = 'document', onClose, onMinimize, onPointerDown }) {
   return (
     <header
       className={'os-window-header os-window-header-' + variant}
@@ -119,6 +163,17 @@ function WindowHeader({ window, variant = 'document', onMinimize, onPointerDown 
         data-clickaudit-profile="window-control"
       >
         —
+      </button>
+      <button
+        type="button"
+        className="os-window-close"
+        aria-label={'Zavřít okno ' + window.taskbarTitle}
+        onPointerDown={(event) => event.stopPropagation()}
+        onClick={() => onClose(window.id)}
+        data-window-control="true"
+        data-clickaudit-profile="window-control"
+      >
+        ×
       </button>
     </header>
   )
@@ -190,7 +245,6 @@ function KorpOsShell() {
     auditForms,
     metricPackets,
     auditInstances,
-    pendingMetricPackets,
     pendingAuditCount,
     recordOsClick,
     submitAuditForm,
@@ -203,25 +257,39 @@ function KorpOsShell() {
 
   const auditEntryForm = auditForms.find((form) => form.availableAtStart === true)
   const auditTraceForm = auditForms.find((form) => form.id === 'audit-10-a')
+  const auditTraceFormId = auditTraceForm?.id
   const auditEntrySubmitted = auditEntryForm ? isFormSubmitted(auditEntryForm.id) : false
   const clickAuditUnlocked = isModuleUnlocked('click-audit')
-  const pendingPacketIds = new Set(pendingMetricPackets.map((packet) => packet.id))
-  const pendingAuditInstance = auditInstances.find((instance) => (
-    instance.templateId === auditTraceForm?.id
-    && pendingPacketIds.has(instance.packetId)
-    && (instance.status === 'available' || instance.status === 'draft')
-  ))
-  const matchingAuditInstances = auditInstances.filter((instance) => instance.templateId === auditTraceForm?.id)
-  const latestAuditInstance = matchingAuditInstances.length > 0
-    ? matchingAuditInstances[matchingAuditInstances.length - 1]
+  const matchingAuditInstances = useMemo(() => (
+    auditInstances.filter((instance) => instance.templateId === auditTraceFormId)
+  ), [auditInstances, auditTraceFormId])
+  const packetById = useMemo(() => (
+    new Map(metricPackets.map((packet) => [packet.id, packet]))
+  ), [metricPackets])
+  const auditWindowModels = useMemo(() => matchingAuditInstances.map((instance, index) => {
+    const packet = packetById.get(instance.packetId)
+    const windowId = getFormWindowId(instance.id)
+    const rangeLabel = getPacketRangeLabel(packet, index + 1)
+
+    return {
+      windowId,
+      headingId: getAuditInstanceHeadingId(windowId),
+      instance,
+      packet,
+      rangeLabel,
+      submitted: instance.status === 'submitted' || instance.status === 'closed',
+      fileStatus: getAuditInstanceFileStatus(instance, packet),
+      title: `AUDITNÍ DÁVKA / FORMULÁŘ ${auditTraceForm?.code ?? '?'} / ${rangeLabel}`,
+      taskbarTitle: `AUDIT ${auditTraceForm?.code ?? '?'} · ${rangeLabel}`,
+    }
+  }), [auditTraceForm, matchingAuditInstances, packetById])
+  const latestAuditWindowModel = auditWindowModels.length > 0
+    ? auditWindowModels[auditWindowModels.length - 1]
     : null
-  const auditTraceInstance = pendingAuditInstance ?? latestAuditInstance
-  const auditTracePacket = metricPackets.find((packet) => packet.id === auditTraceInstance?.packetId)
-  const auditTraceSubmitted = auditTraceInstance?.status === 'submitted' || auditTraceInstance?.status === 'closed'
 
   const [activity, setActivity] = useState(() => initialActivity(auditEntryForm))
   const [auditEntryValues, setAuditEntryValues] = useState(() => createAuditFormValues(auditEntryForm))
-  const [windows, setWindows] = useState(initialWindows)
+  const [windows, setWindows] = useState(() => createInitialWindows(matchingAuditInstances))
   const [canvasPlacement, setCanvasPlacement] = useState(() => getCenteredCanvasPlacement(
     window.innerWidth,
     window.innerHeight,
@@ -231,49 +299,55 @@ function KorpOsShell() {
   const desktopSpaceRef = useRef(null)
   const dragStateRef = useRef(null)
   const pendingAuditCountRef = useRef(pendingAuditCount)
+  const knownAuditInstanceIdsRef = useRef(new Set(matchingAuditInstances.map(({ id }) => id)))
   const activityEventIdRef = useRef(null)
   const recordedPointerEventsRef = useRef(new WeakSet())
 
   const auditClicks = stats.eventsByType['clickaudit.click'] ?? 0
-  const formVisible = Boolean(auditTraceInstance)
-  const formsFolderAvailable = auditEntrySubmitted || matchingAuditInstances.length > 0
-  const auditTraceFileStatus = pendingAuditInstance
-    ? `${pendingAuditCount} ČEKÁ NA AUDIT`
-    : auditTraceSubmitted
-      ? 'CERTIFIKOVÁNO / EV +1'
-      : 'ČEKÁ NA DÁVKU'
+  const formsFolderAvailable = auditEntrySubmitted
+    || matchingAuditInstances.length > 0
+    || windows[auditEntryWindowId]?.isOpen === false
   const formsIconStatus = pendingAuditCount > 0
     ? `${pendingAuditCount} ČEKÁ NA AUDIT`
-    : latestAuditInstance
+    : latestAuditWindowModel
       ? 'POSLEDNÍ DÁVKA UZAVŘENA'
       : auditEntrySubmitted
         ? '1 SPLNĚNÝ AUDIT'
         : 'ČEKÁ NA AUDIT'
   const presentationWindows = {
     ...windows,
-    'audit-entry': {
-      ...windows['audit-entry'],
+    [auditEntryWindowId]: {
+      ...windows[auditEntryWindowId],
       title: 'FORMULÁŘ ' + (auditEntryForm?.code ?? '?') + ' / VSTUPNÍ AUDIT',
       taskbarTitle: 'AUDIT ' + (auditEntryForm?.code ?? '?'),
     },
-    'audit-trace': {
-      ...windows['audit-trace'],
-      title: 'AUDITNÍ DÁVKA / FORMULÁŘ ' + (auditTraceForm?.code ?? '?'),
-      taskbarTitle: 'AUDIT ' + (auditTraceForm?.code ?? '?'),
-    },
+  }
+
+  for (const model of auditWindowModels) {
+    if (!windows[model.windowId]) continue
+    presentationWindows[model.windowId] = {
+      ...windows[model.windowId],
+      title: model.title,
+      taskbarTitle: model.taskbarTitle,
+    }
   }
 
   const isWindowAvailable = (id) => {
     if (id === 'click-audit') return clickAuditUnlocked
-    if (id === 'audit-trace') return formVisible
     if (id === 'forms-folder') return formsFolderAvailable
     return true
   }
 
+  const managedWindowIds = [
+    ...staticWindowIds,
+    ...auditWindowModels.map(({ windowId }) => windowId),
+  ]
   const visibleWindowIds = managedWindowIds.filter((id) => (
-    isWindowAvailable(id) && windows[id].isOpen && !windows[id].isMinimized
+    isWindowAvailable(id) && windows[id]?.isOpen && !windows[id].isMinimized
   ))
-  const taskbarWindowIds = managedWindowIds.filter((id) => isWindowAvailable(id) && windows[id].isOpen)
+  const taskbarWindowIds = managedWindowIds.filter((id) => (
+    isWindowAvailable(id) && windows[id]?.isOpen
+  ))
   const activeWindowId = visibleWindowIds.reduce((frontmostId, id) => (
     !frontmostId || windows[id].zIndex > windows[frontmostId].zIndex ? id : frontmostId
   ), null)
@@ -292,6 +366,29 @@ function KorpOsShell() {
     window.addEventListener('resize', updateCanvasPlacement)
     return () => window.removeEventListener('resize', updateCanvasPlacement)
   }, [])
+
+  useEffect(() => {
+    const knownInstanceIds = knownAuditInstanceIdsRef.current
+    knownAuditInstanceIdsRef.current = new Set(matchingAuditInstances.map(({ id }) => id))
+    const workspaceSize = {
+      width: desktopSpaceRef.current?.clientWidth ?? osWorkspaceSize.width,
+      height: desktopSpaceRef.current?.clientHeight ?? osWorkspaceSize.height,
+    }
+
+    setWindows((currentWindows) => {
+      const reconciliation = reconcileAuditInstanceWindows({
+        windows: currentWindows,
+        auditInstances: matchingAuditInstances,
+        packetById,
+        knownInstanceIds,
+        windowSize: formWindowSize,
+        workspaceSize,
+        formBasePosition: formDocumentBasePosition,
+      })
+
+      return reconciliation.windows
+    })
+  }, [matchingAuditInstances, packetById])
 
   useEffect(() => {
     if (pendingAuditCount > pendingAuditCountRef.current) {
@@ -323,8 +420,20 @@ function KorpOsShell() {
     setWindows((currentWindows) => minimizeWindowState(currentWindows, id))
   }
 
+  const closeWindow = (id) => {
+    setWindows((currentWindows) => closeWindowState(currentWindows, id))
+  }
+
   const openWindow = (id) => {
-    setWindows((currentWindows) => restoreWindowState(currentWindows, id))
+    const workspaceSize = {
+      width: desktopSpaceRef.current?.clientWidth ?? osWorkspaceSize.width,
+      height: desktopSpaceRef.current?.clientHeight ?? osWorkspaceSize.height,
+    }
+
+    setWindows((currentWindows) => openWindowState(currentWindows, id, {
+      workspaceSize,
+      formBasePosition: formDocumentBasePosition,
+    }))
   }
 
   const startWindowDrag = (id, event) => {
@@ -427,21 +536,25 @@ function KorpOsShell() {
     ].slice(0, 4))
   }
 
-  const handleAuditTraceFieldChange = (field, value) => {
-    if (!pendingAuditInstance || auditTraceSubmitted) return
-    updateAuditInstanceField(pendingAuditInstance.id, field.id, value)
-  }
-
-  const submitAuditTrace = () => {
+  const handleAuditInstanceFieldChange = (auditInstance, field, value) => {
     if (
-      !pendingAuditInstance
-      || !auditTraceForm
-      || !isAuditFormComplete(auditTraceForm, pendingAuditInstance.values)
+      auditInstance.status !== 'available'
+      && auditInstance.status !== 'draft'
     ) return
 
-    submitMetricAuditInstance(pendingAuditInstance.id)
+    updateAuditInstanceField(auditInstance.id, field.id, value)
+  }
+
+  const submitAuditInstance = (model) => {
+    if (
+      !auditTraceForm
+      || model.submitted
+      || !isAuditFormComplete(auditTraceForm, model.instance.values)
+    ) return
+
+    submitMetricAuditInstance(model.instance.id)
     setActivity((currentActivity) => [
-      'Dávka ' + (auditTracePacket?.id ?? '?') + ' byla certifikována.',
+      'Dávka ' + (model.packet?.id ?? '?') + ' byla certifikována.',
       'Evidence +1. Aktivita byla procesně uznána bez zjištění výsledku.',
       ...currentActivity,
     ].slice(0, 4))
@@ -508,19 +621,20 @@ function KorpOsShell() {
               onPointerUp={endWindowDrag}
               onPointerCancel={endWindowDrag}
             >
-              {visibleWindowIds.includes('audit-entry') && (
+              {visibleWindowIds.includes(auditEntryWindowId) && (
                 <article
                   className="os-window os-audit-document-window"
-                  style={windowStyle(windows['audit-entry'])}
-                  data-window-id="audit-entry"
+                  style={windowStyle(windows[auditEntryWindowId])}
+                  data-window-id={auditEntryWindowId}
                   aria-labelledby="audit-title"
-                  onPointerDown={() => bringWindowToFront('audit-entry')}
+                  onPointerDown={() => bringWindowToFront(auditEntryWindowId)}
                 >
                   <WindowHeader
-                    window={presentationWindows['audit-entry']}
+                    window={presentationWindows[auditEntryWindowId]}
                     variant="audit"
+                    onClose={closeWindow}
                     onMinimize={minimizeWindow}
-                    onPointerDown={(event) => startWindowDrag('audit-entry', event)}
+                    onPointerDown={(event) => startWindowDrag(auditEntryWindowId, event)}
                   />
                   <AuditFormDocument
                     form={auditEntryForm}
@@ -549,38 +663,42 @@ function KorpOsShell() {
                 </article>
               )}
 
-              {visibleWindowIds.includes('audit-trace') && (
+              {auditWindowModels.map((model) => visibleWindowIds.includes(model.windowId) && (
                 <article
+                  key={model.windowId}
                   className="os-window os-audit-document-window os-packet-audit-window"
-                  style={windowStyle(windows['audit-trace'])}
-                  data-window-id="audit-trace"
-                  aria-labelledby="approval-title"
-                  onPointerDown={() => bringWindowToFront('audit-trace')}
+                  style={windowStyle(windows[model.windowId])}
+                  data-window-id={model.windowId}
+                  aria-labelledby={model.headingId}
+                  onPointerDown={() => bringWindowToFront(model.windowId)}
                 >
                   <WindowHeader
-                    window={presentationWindows['audit-trace']}
+                    window={presentationWindows[model.windowId]}
                     variant="audit"
+                    onClose={closeWindow}
                     onMinimize={minimizeWindow}
-                    onPointerDown={(event) => startWindowDrag('audit-trace', event)}
+                    onPointerDown={(event) => startWindowDrag(model.windowId, event)}
                   />
                   <AuditFormDocument
                     form={auditTraceForm}
-                    values={auditTraceInstance?.values ?? {}}
-                    submitted={auditTraceSubmitted}
-                    headingId="approval-title"
-                    documentLabel={`AUDITOVATELNÁ DÁVKA / ${auditTracePacket?.id ?? 'NEURČENO'}`}
-                    introText={`Zaznamenaných raw interakcí: ${auditTracePacket?.quantity ?? 0}. Samotný záznam není Evidence, dokud nebude certifikován.`}
+                    values={model.instance.values ?? {}}
+                    submitted={model.submitted}
+                    headingId={model.headingId}
+                    documentLabel={`AUDITOVATELNÁ DÁVKA / ${model.packet?.id ?? 'NEURČENO'}`}
+                    introText={`Zaznamenaných raw interakcí: ${model.packet?.quantity ?? 0}. Samotný záznam není Evidence, dokud nebude certifikován.`}
                     pendingStatusText="ZVOLTE ODPOVĚĎ"
                     readyStatusText="ZÁZNAM PŘIPRAVEN K CERTIFIKACI"
                     completionHeadingLabel={`FORMULÁŘ ${auditTraceForm?.code ?? '?'} / CERTIFIKOVANÁ DÁVKA`}
                     completionTitle="EVIDENCE CERTIFIKOVÁNA"
-                    completionDetail={`${auditTracePacket?.id ?? 'DÁVKA'} / EV +1`}
+                    completionDetail={`${model.packet?.id ?? 'DÁVKA'} / EV +1`}
                     completionNote="Zaznamenaná aktivita byla uznána jako Evidence. Účinek aktivity zůstal mimo rozsah auditu."
-                    onFieldChange={handleAuditTraceFieldChange}
-                    onSubmit={submitAuditTrace}
+                    onFieldChange={(field, value) => (
+                      handleAuditInstanceFieldChange(model.instance, field, value)
+                    )}
+                    onSubmit={() => submitAuditInstance(model)}
                   />
                 </article>
-              )}
+              ))}
 
               {visibleWindowIds.includes('daily-report') && (
                 <article
@@ -592,6 +710,7 @@ function KorpOsShell() {
                 >
                   <WindowHeader
                     window={windows['daily-report']}
+                    onClose={closeWindow}
                     onMinimize={minimizeWindow}
                     onPointerDown={(event) => startWindowDrag('daily-report', event)}
                   />
@@ -617,6 +736,7 @@ function KorpOsShell() {
                 >
                   <WindowHeader
                     window={windows['forms-folder']}
+                    onClose={closeWindow}
                     onMinimize={minimizeWindow}
                     onPointerDown={(event) => startWindowDrag('forms-folder', event)}
                   />
@@ -624,22 +744,33 @@ function KorpOsShell() {
                     <p className="os-folder-path">C:\K0RP\FORMULÁŘE\MÍSTNÍ RELACE</p>
                     <h2 id="forms-folder-title">Formuláře</h2>
                     <ul className="os-folder-list">
-                      <FolderEntry
-                        title={'Audit ' + (auditTraceForm?.code ?? '?') + ' / dávka'}
-                        detail={auditTracePacket
-                          ? `${auditTracePacket.quantity} kliků / rozsah ${auditTracePacket.rangeStart}–${auditTracePacket.rangeEnd}`
-                          : 'Čeká na uzavření další dávky raw aktivity'}
-                        status={auditTraceFileStatus}
-                        kind="form"
-                        isLocked={!formVisible}
-                        onOpen={() => openWindow('audit-trace')}
-                      />
+                      {auditWindowModels.length === 0 && (
+                        <FolderEntry
+                          title={'Audit ' + (auditTraceForm?.code ?? '?') + ' / dávka'}
+                          detail="Čeká na uzavření další dávky raw aktivity"
+                          status="ČEKÁ NA DÁVKU"
+                          kind="form"
+                          isLocked
+                        />
+                      )}
+                      {auditWindowModels.map((model) => (
+                        <FolderEntry
+                          key={model.windowId}
+                          title={`Audit ${auditTraceForm?.code ?? '?'} / ${model.rangeLabel}`}
+                          detail={model.packet
+                            ? `${model.packet.quantity} kliků / rozsah ${model.packet.rangeStart}–${model.packet.rangeEnd}`
+                            : 'Dávka bez dostupného packetu'}
+                          status={model.fileStatus}
+                          kind="form"
+                          onOpen={() => openWindow(model.windowId)}
+                        />
+                      ))}
                       <FolderEntry
                         title={'Audit ' + (auditEntryForm?.code ?? '?')}
                         detail={auditEntryForm?.title ?? 'Kontrola přítomnosti'}
                         status={auditEntrySubmitted ? 'SPLNĚNO / OTEVŘÍT' : 'OTEVŘÍT DOKUMENT'}
                         kind="document"
-                        onOpen={() => openWindow('audit-entry')}
+                        onOpen={() => openWindow(auditEntryWindowId)}
                       />
                       <FolderEntry
                         title="Evidence packet archive"
@@ -663,6 +794,7 @@ function KorpOsShell() {
                 >
                   <WindowHeader
                     window={windows['inbox-folder']}
+                    onClose={closeWindow}
                     onMinimize={minimizeWindow}
                     onPointerDown={(event) => startWindowDrag('inbox-folder', event)}
                   />

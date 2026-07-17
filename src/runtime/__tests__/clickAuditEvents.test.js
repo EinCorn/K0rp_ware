@@ -22,6 +22,23 @@ test('one ClickAudit intention produces exactly one audited raw click', () => {
   ])
 })
 
+test('one semantic close control click produces exactly one audited raw click', () => {
+  const events = createClickAuditInteractionEvents({
+    timestamp: 1000,
+    sequence: 8,
+    profile: 'window-control',
+  })
+
+  assert.equal(events.length, 1)
+  assert.equal(events[0].type, 'clickaudit.click')
+  assert.equal(events[0].meta.profile, 'window-control')
+  assert.deepEqual(events[0].tags, [
+    'k0rp-os',
+    'clickaudit-telemetry',
+    'window-control',
+  ])
+})
+
 test('raw ClickAudit intentions never emit a spendable reward event', () => {
   const events = createClickAuditInteractionEvents({
     timestamp: 1000,

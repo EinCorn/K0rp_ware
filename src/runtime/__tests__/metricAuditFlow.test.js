@@ -160,3 +160,36 @@ test('one audit answer persists and certification emits exactly one Evidence eve
   assert.deepEqual(repeated.events, [])
   assert.equal(repeated.runtimeState, certified.runtimeState)
 })
+
+test('a certified repeatable audit remains while the next packet creates a distinct instance', () => {
+  const bootstrap = appendClickAuditPackets(createArmedState(), 1, 1000)
+  const firstInstance = bootstrap.createdAuditInstances[0]
+  const drafted = updateMetricAuditInstanceField(
+    bootstrap.runtimeState,
+    firstInstance.id,
+    'intentionality',
+    'Ano',
+  )
+  const certified = resolveMetricAuditCertification(
+    drafted,
+    firstInstance.id,
+    'audit-10-a',
+    2000,
+  )
+  const nextPacket = appendClickAuditPackets(certified.runtimeState, 26, 3000)
+  const secondInstance = nextPacket.createdAuditInstances[0]
+
+  assert.notEqual(firstInstance.id, secondInstance.id)
+  assert.equal(nextPacket.runtimeState.auditInstances.length, 2)
+  assert.equal(nextPacket.runtimeState.auditInstances[0].id, firstInstance.id)
+  assert.equal(nextPacket.runtimeState.auditInstances[0].packetId, nextPacket.runtimeState.metricPackets[0].id)
+  assert.equal(nextPacket.runtimeState.auditInstances[0].status, 'submitted')
+  assert.equal(nextPacket.runtimeState.auditInstances[0].values.intentionality, 'Ano')
+  assert.equal(nextPacket.runtimeState.auditInstances[1].id, secondInstance.id)
+  assert.equal(nextPacket.runtimeState.auditInstances[1].packetId, nextPacket.runtimeState.metricPackets[1].id)
+  assert.equal(nextPacket.runtimeState.auditInstances[1].status, 'available')
+  assert.equal(nextPacket.runtimeState.metricPackets[0].status, 'certified')
+  assert.equal(nextPacket.runtimeState.metricPackets[1].status, 'pending')
+  assert.equal(getPendingMetricPackets(nextPacket.runtimeState).length, 1)
+  assert.equal(getPendingAuditInstances(nextPacket.runtimeState, 'audit-10-a').length, 1)
+})

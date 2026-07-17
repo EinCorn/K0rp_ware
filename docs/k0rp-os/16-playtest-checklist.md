@@ -52,6 +52,7 @@ Původní first-prestige target 240–310 minut je provisional do Tasku 024.
 - audit field activation počítá právě jeden raw click;
 - pointer movement se nepočítá;
 - po submitu se odemkne ClickAudit;
+- samotné zachycení baseline ani unlock nevynutí otevření žádného nového okna, včetně ClickAuditu nebo Audit 10-A;
 - Audit 00-A sám nepřidá Evidence.
 
 ## 5. Raw metric integrity
@@ -73,12 +74,15 @@ Správná odpověď je první.
 
 ## 6. Packet creation
 
-- 24 nových kliků nevytvoří packet;
-- 25. klik vytvoří právě jeden pending packet;
+- po bootstrap range prvních 24 nových kliků nevytvoří další packet;
+- 25. další klik vytvoří právě jeden quantity-25 pending packet;
 - packet má jasný stav a množství;
 - po refreshi se nevytvoří znovu;
 - starý save nevytvoří retroaktivní packets;
 - další dávka začne od správné baseline;
+- quantity-1 bootstrap Audit 10-A se auto-openne právě jednou;
+- pozdější quantity-25 Audit 10-A pouze přibude do queue ve Formulářích a neukradne focus;
+- pozdější Audit 10-A se otevře a kaskáduje až explicitní akcí hráče ve Formulářích;
 - batch nevypadá jako automaticky otevřená reward chest.
 
 Kvalitativní otázka:
