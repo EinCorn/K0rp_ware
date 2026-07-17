@@ -62,7 +62,7 @@ const initialWindows = {
     id: 'audit-trace',
     title: null,
     taskbarTitle: null,
-    x: 1072,
+    x: 965,
     y: 96,
     zIndex: 3,
     isMinimized: false,
@@ -188,27 +188,36 @@ function KorpOsShell() {
     korpState,
     stats,
     auditForms,
+    metricPackets,
+    auditInstances,
+    pendingMetricPackets,
+    pendingAuditCount,
     recordOsClick,
     submitAuditForm,
-    isFormAvailable,
+    updateAuditInstanceField,
+    submitMetricAuditInstance,
     isFormSubmitted,
-    isUpgradeUnlocked,
     isModuleUnlocked,
     lastClickAuditActivity,
   } = useKorpRuntime()
 
   const auditEntryForm = auditForms.find((form) => form.availableAtStart === true)
-  const auditTraceForm = auditForms.find((form) => form.requirements?.kind === 'eventCountAtLeast')
-  const auditTraceRequirement = auditTraceForm?.requirements
-  const auditTraceUpgradeId = auditTraceForm?.completionEffects
-    .find((effect) => effect.kind === 'unlockUpgrade')?.upgradeId
+  const auditTraceForm = auditForms.find((form) => form.id === 'audit-10-a')
   const auditEntrySubmitted = auditEntryForm ? isFormSubmitted(auditEntryForm.id) : false
-  const auditTraceAvailable = auditTraceForm ? isFormAvailable(auditTraceForm.id) : false
-  const auditTraceSubmitted = auditTraceForm ? isFormSubmitted(auditTraceForm.id) : false
-  const auditTraceUpgradeUnlocked = auditTraceUpgradeId
-    ? isUpgradeUnlocked(auditTraceUpgradeId)
-    : false
   const clickAuditUnlocked = isModuleUnlocked('click-audit')
+  const pendingPacketIds = new Set(pendingMetricPackets.map((packet) => packet.id))
+  const pendingAuditInstance = auditInstances.find((instance) => (
+    instance.templateId === auditTraceForm?.id
+    && pendingPacketIds.has(instance.packetId)
+    && (instance.status === 'available' || instance.status === 'draft')
+  ))
+  const matchingAuditInstances = auditInstances.filter((instance) => instance.templateId === auditTraceForm?.id)
+  const latestAuditInstance = matchingAuditInstances.length > 0
+    ? matchingAuditInstances[matchingAuditInstances.length - 1]
+    : null
+  const auditTraceInstance = pendingAuditInstance ?? latestAuditInstance
+  const auditTracePacket = metricPackets.find((packet) => packet.id === auditTraceInstance?.packetId)
+  const auditTraceSubmitted = auditTraceInstance?.status === 'submitted' || auditTraceInstance?.status === 'closed'
 
   const [activity, setActivity] = useState(() => initialActivity(auditEntryForm))
   const [auditEntryValues, setAuditEntryValues] = useState(() => createAuditFormValues(auditEntryForm))
@@ -221,18 +230,25 @@ function KorpOsShell() {
   ))
   const desktopSpaceRef = useRef(null)
   const dragStateRef = useRef(null)
-  const auditTraceAvailabilityRef = useRef(auditTraceAvailable)
+  const pendingAuditCountRef = useRef(pendingAuditCount)
   const activityEventIdRef = useRef(null)
   const recordedPointerEventsRef = useRef(new WeakSet())
 
   const auditClicks = stats.eventsByType['clickaudit.click'] ?? 0
-  const formVisible = auditTraceAvailable || auditTraceSubmitted
-  const formsFolderAvailable = auditEntrySubmitted || formVisible
-  const auditTraceFileStatus = auditTraceSubmitted
-    ? 'SCHVÁLENO / AKTIVNÍ'
-    : formVisible
-      ? 'PŘIPRAVENO KE SCHVÁLENÍ'
-      : 'ČEKÁ NA ' + (auditTraceRequirement?.count ?? '?') + ' KONTROL'
+  const formVisible = Boolean(auditTraceInstance)
+  const formsFolderAvailable = auditEntrySubmitted || matchingAuditInstances.length > 0
+  const auditTraceFileStatus = pendingAuditInstance
+    ? `${pendingAuditCount} ČEKÁ NA AUDIT`
+    : auditTraceSubmitted
+      ? 'CERTIFIKOVÁNO / EV +1'
+      : 'ČEKÁ NA DÁVKU'
+  const formsIconStatus = pendingAuditCount > 0
+    ? `${pendingAuditCount} ČEKÁ NA AUDIT`
+    : latestAuditInstance
+      ? 'POSLEDNÍ DÁVKA UZAVŘENA'
+      : auditEntrySubmitted
+        ? '1 SPLNĚNÝ AUDIT'
+        : 'ČEKÁ NA AUDIT'
   const presentationWindows = {
     ...windows,
     'audit-entry': {
@@ -242,8 +258,8 @@ function KorpOsShell() {
     },
     'audit-trace': {
       ...windows['audit-trace'],
-      title: 'FORMULÁŘE / ŽÁDOST ' + (auditTraceForm?.code ?? '?'),
-      taskbarTitle: 'ŽÁDOST ' + (auditTraceForm?.code ?? '?'),
+      title: 'AUDITNÍ DÁVKA / FORMULÁŘ ' + (auditTraceForm?.code ?? '?'),
+      taskbarTitle: 'AUDIT ' + (auditTraceForm?.code ?? '?'),
     },
   }
 
@@ -278,15 +294,16 @@ function KorpOsShell() {
   }, [])
 
   useEffect(() => {
-    if (auditTraceAvailable && !auditTraceAvailabilityRef.current) {
+    if (pendingAuditCount > pendingAuditCountRef.current) {
       setActivity((currentActivity) => [
-        'Formulář ' + auditTraceForm.code + ' byl doručen do složky Formuláře.',
+        'Nová dávka aktivity čeká na Audit ' + (auditTraceForm?.code ?? '?') + '.',
+        'Kliky byly zaznamenány. Jejich význam zatím nebyl schválen.',
         ...currentActivity,
       ].slice(0, 4))
     }
 
-    auditTraceAvailabilityRef.current = auditTraceAvailable
-  }, [auditTraceAvailable, auditTraceForm])
+    pendingAuditCountRef.current = pendingAuditCount
+  }, [auditTraceForm, pendingAuditCount])
 
   useEffect(() => {
     if (!lastClickAuditActivity || activityEventIdRef.current === lastClickAuditActivity.id) return
@@ -395,7 +412,7 @@ function KorpOsShell() {
     }))
   }
 
-  const handleAuditEntrySubmit = (submitField) => {
+  const handleAuditEntrySubmit = () => {
     if (
       !auditEntryForm
       || auditEntrySubmitted
@@ -410,13 +427,22 @@ function KorpOsShell() {
     ].slice(0, 4))
   }
 
-  const submitAuditTrace = () => {
-    if (!auditTraceAvailable || auditTraceSubmitted || !auditTraceForm) return
+  const handleAuditTraceFieldChange = (field, value) => {
+    if (!pendingAuditInstance || auditTraceSubmitted) return
+    updateAuditInstanceField(pendingAuditInstance.id, field.id, value)
+  }
 
-    submitAuditForm(auditTraceForm.id)
+  const submitAuditTrace = () => {
+    if (
+      !pendingAuditInstance
+      || !auditTraceForm
+      || !isAuditFormComplete(auditTraceForm, pendingAuditInstance.values)
+    ) return
+
+    submitMetricAuditInstance(pendingAuditInstance.id)
     setActivity((currentActivity) => [
-      'Rozšíření auditní stopy bylo schváleno. Výkaz získal další kolonku.',
-      'Příští kontrola přítomnosti bude vykázána jako +0.2 NWU.',
+      'Dávka ' + (auditTracePacket?.id ?? '?') + ' byla certifikována.',
+      'Evidence +1. Aktivita byla procesně uznána bez zjištění výsledku.',
       ...currentActivity,
     ].slice(0, 4))
   }
@@ -434,258 +460,261 @@ function KorpOsShell() {
     >
       <div className="os-canvas-viewport">
         <section className="os-desktop">
-        <header className="os-desktop-readout">
-          <div className="os-brand" aria-label="K0rp_OS">
-            <strong>KØrp_OS</strong>
-            <span>BUILD 0.2 / PRACOVNÍ STANICE</span>
-          </div>
-          <div className="os-session-readout">
-            <span className="os-status-lamp" aria-hidden="true" />
-            <span>RELACE 01</span>
-            <span>EMPLOYEE LOCAL-000</span>
-          </div>
-        </header>
+          <header className="os-desktop-readout">
+            <div className="os-brand" aria-label="K0rp_OS">
+              <strong>KØrp_OS</strong>
+              <span>BUILD 0.3 / PRACOVNÍ STANICE</span>
+            </div>
+            <div className="os-session-readout">
+              <span className="os-status-lamp" aria-hidden="true" />
+              <span>RELACE 01</span>
+              <span>EMPLOYEE LOCAL-000</span>
+            </div>
+          </header>
 
-        <div ref={desktopSpaceRef} className="os-desktop-space">
-          <aside className="os-desktop-icons" aria-label="Plocha zaměstnance">
-            <DesktopIcon title="Compliance Bin" type="bin" status="SYSTÉMOVÉ" />
-            <DesktopIcon
-              title="Doručené"
-              type="folder"
-              status="1 MÍSTNÍ MEMO"
-              onOpen={() => openWindow('inbox-folder')}
-            />
-            <DesktopIcon
-              title="Formuláře"
-              type="folder"
-              status={formVisible ? '1 NOVÝ SOUBOR' : auditEntrySubmitted ? '1 SPLNĚNÝ AUDIT' : 'ČEKÁ NA AUDIT'}
-              isLocked={!formsFolderAvailable}
-              onOpen={() => openWindow('forms-folder')}
-            />
-            {clickAuditUnlocked && (
+          <div ref={desktopSpaceRef} className="os-desktop-space">
+            <aside className="os-desktop-icons" aria-label="Plocha zaměstnance">
+              <DesktopIcon title="Compliance Bin" type="bin" status="SYSTÉMOVÉ" />
               <DesktopIcon
-                title="ClickAudit"
-                type="app"
-                status={auditClicks + ' EVIDOVANÝCH KLIKŮ'}
-                onOpen={() => openWindow('click-audit')}
+                title="Doručené"
+                type="folder"
+                status="1 MÍSTNÍ MEMO"
+                onOpen={() => openWindow('inbox-folder')}
               />
-            )}
-            {lockedShortcuts.map((module) => (
-              <DesktopIcon key={module.id} title={module.title} type="app" status="NEINSTALOVÁNO" isLocked />
-            ))}
-          </aside>
-
-          <section
-            className="os-window-layer"
-            aria-label="Otevřená okna"
-            onPointerMove={moveWindow}
-            onPointerUp={endWindowDrag}
-            onPointerCancel={endWindowDrag}
-          >
-            {visibleWindowIds.includes('audit-entry') && (
-              <article
-                className="os-window os-audit-document-window"
-                style={windowStyle(windows['audit-entry'])}
-                data-window-id="audit-entry"
-                aria-labelledby="audit-title"
-                onPointerDown={() => bringWindowToFront('audit-entry')}
-              >
-                <WindowHeader
-                  window={presentationWindows['audit-entry']}
-                  variant="audit"
-                  onMinimize={minimizeWindow}
-                  onPointerDown={(event) => startWindowDrag('audit-entry', event)}
+              <DesktopIcon
+                title="Formuláře"
+                type="folder"
+                status={formsIconStatus}
+                isLocked={!formsFolderAvailable}
+                onOpen={() => openWindow('forms-folder')}
+              />
+              {clickAuditUnlocked && (
+                <DesktopIcon
+                  title="ClickAudit"
+                  type="app"
+                  status={auditClicks + ' EVIDOVANÝCH KLIKŮ'}
+                  onOpen={() => openWindow('click-audit')}
                 />
-                <AuditFormDocument
-                  form={auditEntryForm}
-                  values={auditEntryValues}
-                  submitted={auditEntrySubmitted}
-                  onFieldChange={handleAuditEntryFieldChange}
-                  onSubmit={handleAuditEntrySubmit}
-                />
-              </article>
-            )}
+              )}
+              {lockedShortcuts.map((module) => (
+                <DesktopIcon key={module.id} title={module.title} type="app" status="NEINSTALOVÁNO" isLocked />
+              ))}
+            </aside>
 
-            {visibleWindowIds.includes('click-audit') && (
-              <article
-                className="os-clickaudit-asset-window"
-                style={windowStyle(windows['click-audit'])}
-                data-window-id="click-audit"
-                aria-label="ClickAudit"
-                onPointerDown={() => bringWindowToFront('click-audit')}
-              >
-                <ClickAuditEmbeddedWindow
-                  onDragStart={(event) => startWindowDrag('click-audit', event)}
-                  onMinimize={() => minimizeWindow('click-audit')}
+            <section
+              className="os-window-layer"
+              aria-label="Otevřená okna"
+              onPointerMove={moveWindow}
+              onPointerUp={endWindowDrag}
+              onPointerCancel={endWindowDrag}
+            >
+              {visibleWindowIds.includes('audit-entry') && (
+                <article
+                  className="os-window os-audit-document-window"
+                  style={windowStyle(windows['audit-entry'])}
+                  data-window-id="audit-entry"
+                  aria-labelledby="audit-title"
+                  onPointerDown={() => bringWindowToFront('audit-entry')}
                 >
-                  <ClickAuditRuntimeModule centralizedTracking />
-                </ClickAuditEmbeddedWindow>
-              </article>
-            )}
+                  <WindowHeader
+                    window={presentationWindows['audit-entry']}
+                    variant="audit"
+                    onMinimize={minimizeWindow}
+                    onPointerDown={(event) => startWindowDrag('audit-entry', event)}
+                  />
+                  <AuditFormDocument
+                    form={auditEntryForm}
+                    values={auditEntryValues}
+                    submitted={auditEntrySubmitted}
+                    onFieldChange={handleAuditEntryFieldChange}
+                    onSubmit={handleAuditEntrySubmit}
+                  />
+                </article>
+              )}
 
-            {visibleWindowIds.includes('audit-trace') && (
-              <article
-                className="os-window os-form-window"
-                style={windowStyle(windows['audit-trace'])}
-                data-window-id="audit-trace"
-                aria-labelledby="approval-title"
-                onPointerDown={() => bringWindowToFront('audit-trace')}
-              >
-                <WindowHeader
-                  window={presentationWindows['audit-trace']}
-                  onMinimize={minimizeWindow}
-                  onPointerDown={(event) => startWindowDrag('audit-trace', event)}
-                />
-                <div
-                  className={'os-form-body ' + (auditTraceSubmitted ? 'is-approved' : 'is-available')}
-                  data-clickaudit-profile={auditTraceSubmitted ? 'completed-audit-body' : 'active-audit-field'}
+              {visibleWindowIds.includes('click-audit') && (
+                <article
+                  className="os-clickaudit-asset-window"
+                  style={windowStyle(windows['click-audit'])}
+                  data-window-id="click-audit"
+                  aria-label="ClickAudit"
+                  onPointerDown={() => bringWindowToFront('click-audit')}
                 >
-                  <p className="os-document-code">POMOCNÝ VÝKAZ PŘÍTOMNOSTI</p>
-                  <h2 id="approval-title">{auditTraceForm?.title}</h2>
-                  <p>Přidá pomocný výkaz přítomnosti k budoucím kontrolám.</p>
-                  {auditTraceSubmitted ? (
-                    <span className="os-approval-state">SCHVÁLENO / AKTIVNÍ<br />+0.2 NWU NA KONTROLU</span>
-                  ) : (
-                    <button type="button" onClick={submitAuditTrace}>
-                      {auditTraceForm?.fields.find((field) => field.type === 'buttonConfirm')?.label}
-                    </button>
-                  )}
-                </div>
-              </article>
-            )}
+                  <ClickAuditEmbeddedWindow
+                    onDragStart={(event) => startWindowDrag('click-audit', event)}
+                    onMinimize={() => minimizeWindow('click-audit')}
+                  >
+                    <ClickAuditRuntimeModule centralizedTracking />
+                  </ClickAuditEmbeddedWindow>
+                </article>
+              )}
 
-            {visibleWindowIds.includes('daily-report') && (
-              <article
-                className="os-window os-log-window"
-                style={windowStyle(windows['daily-report'])}
-                data-window-id="daily-report"
-                aria-labelledby="activity-title"
-                onPointerDown={() => bringWindowToFront('daily-report')}
-              >
-                <WindowHeader
-                  window={windows['daily-report']}
-                  onMinimize={minimizeWindow}
-                  onPointerDown={(event) => startWindowDrag('daily-report', event)}
-                />
-                <div className="os-log-body">
-                  <div>
-                    <p className="os-document-code">POSLEDNÍ DOKLADY ČINNOSTI</p>
-                    <h2 id="activity-title">Denní výpis</h2>
+              {visibleWindowIds.includes('audit-trace') && (
+                <article
+                  className="os-window os-audit-document-window os-packet-audit-window"
+                  style={windowStyle(windows['audit-trace'])}
+                  data-window-id="audit-trace"
+                  aria-labelledby="approval-title"
+                  onPointerDown={() => bringWindowToFront('audit-trace')}
+                >
+                  <WindowHeader
+                    window={presentationWindows['audit-trace']}
+                    variant="audit"
+                    onMinimize={minimizeWindow}
+                    onPointerDown={(event) => startWindowDrag('audit-trace', event)}
+                  />
+                  <AuditFormDocument
+                    form={auditTraceForm}
+                    values={auditTraceInstance?.values ?? {}}
+                    submitted={auditTraceSubmitted}
+                    headingId="approval-title"
+                    documentLabel={`AUDITOVATELNÁ DÁVKA / ${auditTracePacket?.id ?? 'NEURČENO'}`}
+                    introText={`Zaznamenaných raw interakcí: ${auditTracePacket?.quantity ?? 0}. Samotný záznam není Evidence, dokud nebude certifikován.`}
+                    pendingStatusText="ZVOLTE ODPOVĚĎ"
+                    readyStatusText="ZÁZNAM PŘIPRAVEN K CERTIFIKACI"
+                    completionHeadingLabel={`FORMULÁŘ ${auditTraceForm?.code ?? '?'} / CERTIFIKOVANÁ DÁVKA`}
+                    completionTitle="EVIDENCE CERTIFIKOVÁNA"
+                    completionDetail={`${auditTracePacket?.id ?? 'DÁVKA'} / EV +1`}
+                    completionNote="Zaznamenaná aktivita byla uznána jako Evidence. Účinek aktivity zůstal mimo rozsah auditu."
+                    onFieldChange={handleAuditTraceFieldChange}
+                    onSubmit={submitAuditTrace}
+                  />
+                </article>
+              )}
+
+              {visibleWindowIds.includes('daily-report') && (
+                <article
+                  className="os-window os-log-window"
+                  style={windowStyle(windows['daily-report'])}
+                  data-window-id="daily-report"
+                  aria-labelledby="activity-title"
+                  onPointerDown={() => bringWindowToFront('daily-report')}
+                >
+                  <WindowHeader
+                    window={windows['daily-report']}
+                    onMinimize={minimizeWindow}
+                    onPointerDown={(event) => startWindowDrag('daily-report', event)}
+                  />
+                  <div className="os-log-body">
+                    <div>
+                      <p className="os-document-code">POSLEDNÍ DOKLADY ČINNOSTI</p>
+                      <h2 id="activity-title">Denní výpis</h2>
+                    </div>
+                    <ol>
+                      {activity.slice(0, 3).map((entry, index) => <li key={entry + '-' + index}>{entry}</li>)}
+                    </ol>
                   </div>
-                  <ol>
-                    {activity.slice(0, 3).map((entry, index) => <li key={entry + '-' + index}>{entry}</li>)}
-                  </ol>
-                </div>
-              </article>
-            )}
+                </article>
+              )}
 
-            {visibleWindowIds.includes('forms-folder') && (
-              <article
-                className="os-window os-folder-window os-forms-folder-window"
-                style={windowStyle(windows['forms-folder'])}
-                data-window-id="forms-folder"
-                aria-labelledby="forms-folder-title"
-                onPointerDown={() => bringWindowToFront('forms-folder')}
-              >
-                <WindowHeader
-                  window={windows['forms-folder']}
-                  onMinimize={minimizeWindow}
-                  onPointerDown={(event) => startWindowDrag('forms-folder', event)}
-                />
-                <div className="os-folder-body">
-                  <p className="os-folder-path">C:\K0RP\FORMULÁŘE\MÍSTNÍ RELACE</p>
-                  <h2 id="forms-folder-title">Formuláře</h2>
-                  <ul className="os-folder-list">
-                    <FolderEntry
-                      title={'Žádost ' + (auditTraceForm?.code ?? '?')}
-                      detail={auditTraceForm?.title}
-                      status={auditTraceFileStatus}
-                      kind="form"
-                      isLocked={!formVisible}
-                      onOpen={() => openWindow('audit-trace')}
-                    />
-                    <FolderEntry
-                      title={'Audit ' + (auditEntryForm?.code ?? '?')}
-                      detail={auditEntryForm?.title ?? 'Kontrola přítomnosti'}
-                      status={auditEntrySubmitted ? 'SPLNĚNO / OTEVŘÍT' : 'OTEVŘÍT DOKUMENT'}
-                      kind="document"
-                      onOpen={() => openWindow('audit-entry')}
-                    />
-                    <FolderEntry
-                      title={'Záznam ' + (auditTraceForm?.code ?? '?')}
-                      detail="Archivace čeká na podpis"
-                      status="ZAMČENO"
-                      kind="archive"
-                      isLocked
-                    />
-                  </ul>
-                </div>
-              </article>
-            )}
+              {visibleWindowIds.includes('forms-folder') && (
+                <article
+                  className="os-window os-folder-window os-forms-folder-window"
+                  style={windowStyle(windows['forms-folder'])}
+                  data-window-id="forms-folder"
+                  aria-labelledby="forms-folder-title"
+                  onPointerDown={() => bringWindowToFront('forms-folder')}
+                >
+                  <WindowHeader
+                    window={windows['forms-folder']}
+                    onMinimize={minimizeWindow}
+                    onPointerDown={(event) => startWindowDrag('forms-folder', event)}
+                  />
+                  <div className="os-folder-body">
+                    <p className="os-folder-path">C:\K0RP\FORMULÁŘE\MÍSTNÍ RELACE</p>
+                    <h2 id="forms-folder-title">Formuláře</h2>
+                    <ul className="os-folder-list">
+                      <FolderEntry
+                        title={'Audit ' + (auditTraceForm?.code ?? '?') + ' / dávka'}
+                        detail={auditTracePacket
+                          ? `${auditTracePacket.quantity} kliků / rozsah ${auditTracePacket.rangeStart}–${auditTracePacket.rangeEnd}`
+                          : 'Čeká na uzavření další dávky raw aktivity'}
+                        status={auditTraceFileStatus}
+                        kind="form"
+                        isLocked={!formVisible}
+                        onOpen={() => openWindow('audit-trace')}
+                      />
+                      <FolderEntry
+                        title={'Audit ' + (auditEntryForm?.code ?? '?')}
+                        detail={auditEntryForm?.title ?? 'Kontrola přítomnosti'}
+                        status={auditEntrySubmitted ? 'SPLNĚNO / OTEVŘÍT' : 'OTEVŘÍT DOKUMENT'}
+                        kind="document"
+                        onOpen={() => openWindow('audit-entry')}
+                      />
+                      <FolderEntry
+                        title="Evidence packet archive"
+                        detail="Certifikované dávky / lokální evidence"
+                        status={metricPackets.some((packet) => packet.status === 'certified') ? 'MÍSTNĚ ULOŽENO' : 'ZAMČENO'}
+                        kind="archive"
+                        isLocked={!metricPackets.some((packet) => packet.status === 'certified')}
+                      />
+                    </ul>
+                  </div>
+                </article>
+              )}
 
-            {visibleWindowIds.includes('inbox-folder') && (
-              <article
-                className="os-window os-folder-window os-inbox-folder-window"
-                style={windowStyle(windows['inbox-folder'])}
-                data-window-id="inbox-folder"
-                aria-labelledby="inbox-folder-title"
-                onPointerDown={() => bringWindowToFront('inbox-folder')}
-              >
-                <WindowHeader
-                  window={windows['inbox-folder']}
-                  onMinimize={minimizeWindow}
-                  onPointerDown={(event) => startWindowDrag('inbox-folder', event)}
-                />
-                <div className="os-folder-body">
-                  <p className="os-folder-path">C:\K0RP\DORUČENÉ\MÍSTNÍ RELACE</p>
-                  <h2 id="inbox-folder-title">Doručené</h2>
-                  <ul className="os-folder-list">
-                    <FolderEntry
-                      title="Denní výpis"
-                      detail="Místní memo / provozní záznam"
-                      status="OTEVŘÍT MEMO"
-                      kind="memo"
-                      onOpen={() => openWindow('daily-report')}
-                    />
-                    <FolderEntry
-                      title="Startup audit"
-                      detail="Automaticky založený záznam"
-                      status={auditEntrySubmitted ? 'PŘIJAT / LOKÁLNĚ' : 'ČEKÁ NA SPLNĚNÍ'}
-                      kind="archive"
-                      isLocked={!auditEntrySubmitted}
-                    />
-                  </ul>
-                </div>
-              </article>
-            )}
-          </section>
+              {visibleWindowIds.includes('inbox-folder') && (
+                <article
+                  className="os-window os-folder-window os-inbox-folder-window"
+                  style={windowStyle(windows['inbox-folder'])}
+                  data-window-id="inbox-folder"
+                  aria-labelledby="inbox-folder-title"
+                  onPointerDown={() => bringWindowToFront('inbox-folder')}
+                >
+                  <WindowHeader
+                    window={windows['inbox-folder']}
+                    onMinimize={minimizeWindow}
+                    onPointerDown={(event) => startWindowDrag('inbox-folder', event)}
+                  />
+                  <div className="os-folder-body">
+                    <p className="os-folder-path">C:\K0RP\DORUČENÉ\MÍSTNÍ RELACE</p>
+                    <h2 id="inbox-folder-title">Doručené</h2>
+                    <ul className="os-folder-list">
+                      <FolderEntry
+                        title="Denní výpis"
+                        detail="Místní memo / provozní záznam"
+                        status="OTEVŘÍT MEMO"
+                        kind="memo"
+                        onOpen={() => openWindow('daily-report')}
+                      />
+                      <FolderEntry
+                        title="Startup audit"
+                        detail="Automaticky založený záznam"
+                        status={auditEntrySubmitted ? 'PŘIJAT / LOKÁLNĚ' : 'ČEKÁ NA SPLNĚNÍ'}
+                        kind="archive"
+                        isLocked={!auditEntrySubmitted}
+                      />
+                    </ul>
+                  </div>
+                </article>
+              )}
+            </section>
 
-          <p className="os-wallpaper-mark" aria-hidden="true">KØRP<br />INTERNAL<br />OPERATIONS</p>
-        </div>
+            <p className="os-wallpaper-mark" aria-hidden="true">KØRP<br />INTERNAL<br />OPERATIONS</p>
+          </div>
 
-        <footer className="os-taskbar" data-clickaudit-profile="taskbar">
-          <span className="os-taskbar-start">KØRP // START</span>
-          {taskbarWindowIds.map((id) => {
-            const windowState = presentationWindows[id]
-            return (
-              <button
-                key={id}
-                type="button"
-                className={'os-taskbar-window' + (windowState.isMinimized ? ' is-minimized' : '') + (id === activeWindowId ? ' is-active' : '')}
-                aria-pressed={id === activeWindowId}
-                aria-label={(windowState.isMinimized ? 'Obnovit okno ' : 'Přenést dopředu okno ') + windowState.taskbarTitle}
-                onClick={() => openWindow(id)}
-              >
-                {windowState.taskbarTitle}
-              </button>
-            )
-          })}
-          <span className="os-taskbar-resource os-taskbar-resource-nwu">NWU {korpState.resources.notionalWorkUnits.toFixed(1)}</span>
-          <span className="os-taskbar-resource os-taskbar-resource-ap">AP {korpState.resources.auditPressure.toFixed(0)}</span>
-          <span className="os-taskbar-resource os-taskbar-resource-ci">CI {korpState.resources.complianceIntegrity.toFixed(0)}</span>
-          <span className="os-taskbar-privacy">PRIVACY: LOCAL ONLY</span>
-          <span className="os-taskbar-clock">10:00 / RELACE 01</span>
-        </footer>
+          <footer className="os-taskbar" data-clickaudit-profile="taskbar">
+            <span className="os-taskbar-start">KØRP // START</span>
+            {taskbarWindowIds.map((id) => {
+              const windowState = presentationWindows[id]
+              return (
+                <button
+                  key={id}
+                  type="button"
+                  className={'os-taskbar-window' + (windowState.isMinimized ? ' is-minimized' : '') + (id === activeWindowId ? ' is-active' : '')}
+                  aria-pressed={id === activeWindowId}
+                  aria-label={(windowState.isMinimized ? 'Obnovit okno ' : 'Přenést dopředu okno ') + windowState.taskbarTitle}
+                  onClick={() => openWindow(id)}
+                >
+                  {windowState.taskbarTitle}
+                </button>
+              )
+            })}
+            <span className="os-taskbar-resource os-taskbar-resource-nwu">EV {korpState.resources.notionalWorkUnits.toFixed(0)}</span>
+            <span className="os-taskbar-resource os-taskbar-resource-ap">AUDITY {pendingAuditCount}</span>
+            <span className="os-taskbar-privacy">PRIVACY: LOCAL ONLY</span>
+            <span className="os-taskbar-clock">10:00 / RELACE 01</span>
+          </footer>
         </section>
       </div>
     </main>

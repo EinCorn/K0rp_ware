@@ -19,12 +19,10 @@ const applyResourceEffects = (resources: KorpResources, event: KorpEvent): KorpR
 
   switch (event.type) {
     case "clickaudit.click":
-      return {
-        ...resources,
-        auditPressure: resources.auditPressure + value,
-        notionalWorkUnits: resources.notionalWorkUnits + value * 0.1,
-        perceivedProductivity: resources.perceivedProductivity + value * 0.05
-      };
+    case "clickaudit.batchCompleted":
+      return resources;
+    case "audit.evidenceCertified":
+      return updateResource(resources, "notionalWorkUnits", value, 0);
     case "fidget.spinTick":
       return {
         ...resources,

@@ -14,7 +14,6 @@ export default function ClickAuditRuntimeModule({ centralizedTracking = false, i
     return recordOsClick({
       profile: 'clickaudit-module',
       tags: ['manual-confirmation'],
-      includeAuditTraceBonus: true,
     })
   }
 

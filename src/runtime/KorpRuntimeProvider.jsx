@@ -11,6 +11,7 @@ import {
   isAuditFormAvailable,
   submitAuditForm as resolveAuditFormSubmission,
 } from './auditProgression'
+import { isAuditFormComplete } from './auditFormDraft'
 import { KorpRuntimeContext } from './KorpRuntimeContext'
 import {
   clearRuntimeStorage,
@@ -19,6 +20,16 @@ import {
 } from './runtimePersistence'
 import { createClickAuditInteractionEvents } from './clickAuditEvents'
 import { formatClickAuditActivity } from './clickAuditActivity'
+import {
+  CLICK_AUDIT_TEMPLATE_ID,
+  appendClickAuditPackets,
+  captureClickAuditBootstrapAfterSubmission,
+  createInitialMetricAuditState,
+  getPendingAuditInstances,
+  getPendingMetricPackets,
+  resolveMetricAuditCertification,
+  updateMetricAuditInstanceField,
+} from './metricAuditFlow'
 
 const auditForms = KORP_PROGRESSION_DATABASE.auditForms
 const progressionDataVersion = KORP_PROGRESSION_DATABASE.meta.version
@@ -35,11 +46,13 @@ const getRuntimeStorage = () => {
 
 const createFreshRuntimeState = () => {
   const korpState = createInitialState({ settings: { platform: 'web' } })
+  const clickCount = korpState.stats.eventsByType['clickaudit.click'] ?? 0
 
   return {
     korpState,
     lifetimeStats: korpState.stats,
     ...createInitialAuditProgressionState(),
+    ...createInitialMetricAuditState(clickCount),
   }
 }
 
@@ -48,6 +61,11 @@ const createRuntimeState = () => loadRuntimeFromStorage(getRuntimeStorage(), {
   coreStateVersion: KORP_CORE_STATE_VERSION,
   createFallback: createFreshRuntimeState,
 })
+
+const applyEvents = (korpState, events) => events.reduce(
+  (currentState, event) => applyKorpEvent(currentState, event),
+  korpState,
+)
 
 function runtimeReducer(runtime, action) {
   switch (action.type) {
@@ -61,10 +79,7 @@ function runtimeReducer(runtime, action) {
       }
     }
     case 'dispatchKorpEvents': {
-      const korpState = action.events.reduce(
-        (currentState, event) => applyKorpEvent(currentState, event),
-        runtime.korpState,
-      )
+      const korpState = applyEvents(runtime.korpState, action.events)
 
       return {
         ...runtime,
@@ -72,7 +87,59 @@ function runtimeReducer(runtime, action) {
         lifetimeStats: korpState.stats,
       }
     }
+    case 'recordOsClick': {
+      const clickKorpState = applyEvents(runtime.korpState, action.events)
+      const totalClickCount = clickKorpState.stats.eventsByType['clickaudit.click'] ?? 0
+      const packetResult = appendClickAuditPackets({
+        ...runtime,
+        korpState: clickKorpState,
+        lifetimeStats: clickKorpState.stats,
+      }, totalClickCount, action.timestamp)
+      const korpState = applyEvents(clickKorpState, packetResult.batchEvents)
+
+      return {
+        ...packetResult.runtimeState,
+        korpState,
+        lifetimeStats: korpState.stats,
+      }
+    }
+    case 'updateMetricAuditInstanceField':
+      return updateMetricAuditInstanceField(
+        runtime,
+        action.instanceId,
+        action.fieldId,
+        action.value,
+      )
+    case 'submitMetricAuditInstance': {
+      const currentAuditInstance = (runtime.auditInstances ?? [])
+        .find((instance) => instance.id === action.instanceId)
+      const form = getAuditForm(auditForms, currentAuditInstance?.templateId)
+
+      if (
+        !currentAuditInstance
+        || !form
+        || !isAuditFormComplete(form, currentAuditInstance.values)
+      ) return runtime
+
+      const certification = resolveMetricAuditCertification(
+        runtime,
+        action.instanceId,
+        form.id,
+        action.timestamp,
+      )
+      if (!certification.didCertify) return runtime
+
+      const korpState = applyEvents(runtime.korpState, certification.events)
+
+      return {
+        ...certification.runtimeState,
+        korpState,
+        lifetimeStats: korpState.stats,
+      }
+    }
     case 'submitAuditForm': {
+      if (action.formId === CLICK_AUDIT_TEMPLATE_ID) return runtime
+
       const form = getAuditForm(auditForms, action.formId)
       const progression = resolveAuditFormSubmission({
         form,
@@ -91,12 +158,14 @@ function runtimeReducer(runtime, action) {
         meta: { formId: form.id },
       })
 
-      return {
+      const nextRuntime = {
         ...runtime,
         ...progression.progressionState,
         korpState,
         lifetimeStats: korpState.stats,
       }
+
+      return captureClickAuditBootstrapAfterSubmission(nextRuntime, form.id)
     }
     case 'resetRuntime':
       return createFreshRuntimeState()
@@ -127,37 +196,53 @@ export function KorpRuntimeProvider({ children }) {
   const recordOsClick = useCallback(({
     profile,
     tags = [],
-    includeAuditTraceBonus = false,
   } = {}) => {
     const knownClickCount = runtime.korpState.stats.eventsByType['clickaudit.click'] ?? 0
     const sequence = Math.max(osClickSequenceRef.current, knownClickCount) + 1
+    const timestamp = Date.now()
     osClickSequenceRef.current = sequence
 
     const events = createClickAuditInteractionEvents({
-      timestamp: Date.now(),
+      timestamp,
       sequence,
       profile,
       tags,
-      bonusUnlocked: includeAuditTraceBonus && runtime.ownedUpgradeIds.includes('sys.audit-batch-standardization'),
     })
     const clickEvent = events[0]
-    const clickCount = knownClickCount + 1
 
     dispatch({
-      type: 'dispatchKorpEvents',
+      type: 'recordOsClick',
       events,
+      timestamp,
     })
     setLastClickAuditActivity({
       id: clickEvent.id,
       event: clickEvent,
-      entry: formatClickAuditActivity(clickEvent, clickCount),
+      entry: formatClickAuditActivity(clickEvent, sequence),
     })
 
-    return { count: clickCount, event: clickEvent }
-  }, [runtime.korpState.stats.eventsByType, runtime.ownedUpgradeIds])
+    return { count: sequence, event: clickEvent }
+  }, [runtime.korpState.stats.eventsByType])
 
   const submitAuditForm = useCallback((formId) => {
     dispatch({ type: 'submitAuditForm', formId, timestamp: Date.now() })
+  }, [])
+
+  const updateAuditInstanceField = useCallback((instanceId, fieldId, value) => {
+    dispatch({
+      type: 'updateMetricAuditInstanceField',
+      instanceId,
+      fieldId,
+      value,
+    })
+  }, [])
+
+  const submitMetricAuditInstance = useCallback((instanceId) => {
+    dispatch({
+      type: 'submitMetricAuditInstance',
+      instanceId,
+      timestamp: Date.now(),
+    })
   }, [])
 
   const resetRuntime = useCallback(() => {
@@ -166,9 +251,22 @@ export function KorpRuntimeProvider({ children }) {
     dispatch({ type: 'resetRuntime' })
   }, [])
 
-  const isFormAvailable = useCallback((formId) => (
-    isAuditFormAvailable(getAuditForm(auditForms, formId), runtime.korpState)
-  ), [runtime.korpState])
+  const pendingMetricPackets = useMemo(
+    () => getPendingMetricPackets(runtime),
+    [runtime],
+  )
+  const pendingAuditInstances = useMemo(
+    () => getPendingAuditInstances(runtime),
+    [runtime],
+  )
+
+  const isFormAvailable = useCallback((formId) => {
+    if (formId === CLICK_AUDIT_TEMPLATE_ID) {
+      return pendingAuditInstances.some((instance) => instance.templateId === formId)
+    }
+
+    return isAuditFormAvailable(getAuditForm(auditForms, formId), runtime.korpState)
+  }, [pendingAuditInstances, runtime.korpState])
 
   const isFormSubmitted = useCallback((formId) => (
     runtime.submittedFormIds.includes(formId)
@@ -194,11 +292,18 @@ export function KorpRuntimeProvider({ children }) {
     ownedUpgradeIds: runtime.ownedUpgradeIds,
     unlockedMemoIds: runtime.unlockedMemoIds,
     unlockedModuleIds: runtime.unlockedModuleIds,
+    metricPackets: runtime.metricPackets,
+    auditInstances: runtime.auditInstances,
+    pendingMetricPackets,
+    pendingAuditInstances,
+    pendingAuditCount: pendingMetricPackets.length,
     auditForms,
     dispatchKorpEvent,
     recordOsClick,
     lastClickAuditActivity,
     submitAuditForm,
+    updateAuditInstanceField,
+    submitMetricAuditInstance,
     isFormAvailable,
     isFormSubmitted,
     isUpgradeUnlocked,
@@ -214,9 +319,13 @@ export function KorpRuntimeProvider({ children }) {
     isMemoUnlocked,
     isModuleUnlocked,
     isUpgradeUnlocked,
+    pendingAuditInstances,
+    pendingMetricPackets,
     resetRuntime,
     runtime,
     submitAuditForm,
+    submitMetricAuditInstance,
+    updateAuditInstanceField,
   ])
 
   return (

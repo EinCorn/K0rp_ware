@@ -8,13 +8,11 @@
     ]
   },
   {
-    "id":"audit-10-a","code":"10-A","title":"Žádost o rozšíření auditní stopy","estimatedMinutes":3,"interactionClickProfile":"audit-form","requirements":{"kind":"eventCountAtLeast","eventType":"clickaudit.click","count":25},"submitEvent":"audit.formSubmitted",
-    "completionEffects":[{"kind":"unlockUpgrade","upgradeId":"sys.audit-batch-standardization"},{"kind":"unlockMemo","memoId":"memo.audit-trace-available"}],
+    "id":"audit-10-a","code":"10-A","title":"Ověření zaznamenané aktivity","estimatedMinutes":1,"interactionClickProfile":"audit-form","submitEvent":"audit.formSubmitted",
+    "completionEffects":[],
     "fields":[
-      {"id":"evidenceSufficiency","type":"radio","label":"Dosavadní objem evidence","required":true,"options":["Nedostatečný","Dostatečný pro zjištění nedostatečnosti","Nelze ověřit bez další evidence"]},
-      {"id":"newColumn","type":"checkbox","label":"Požaduji zavedení pomocné kolonky bez změny původní kolonky.","required":true},
-      {"id":"impact","type":"radio","label":"Očekávaný dopad","required":true,"options":["Více záznamu","Přesvědčivější záznam","Záznam s vyšší administrativní hustotou"]},
-      {"id":"submit","type":"buttonConfirm","label":"PŘEDLOŽIT K AUTORIZACI","required":true}
+      {"id":"intentionality","type":"radio","label":"Byla zaznamenaná aktivita provedena úmyslně?","required":true,"options":["Ano","Ne","Nelze potvrdit"]},
+      {"id":"submit","type":"buttonConfirm","label":"CERTIFIKOVAT ZÁZNAM","required":true}
     ]
   },
   {
