@@ -225,15 +225,24 @@ Oddělit placement oken od runtime progression state a umožnit více auditních
 - každá repeatable Audit 10-A instance má vlastní okno, taskbar stav a položku ve Formulářích;
 - nové dokumenty kaskádovat od aktuální pozice naposledy fokusovaného formuláře o integer `+18/+14`;
 - při lower/right overflow deterministicky wrapnout k base pozici a pokračovat bez edge pilingu;
-- bootstrap 10-A auto-openout právě jednou; certifikovaný dokument ponechat samostatně dostupný;
+- OS-rendered document/folder windows mají oddělený minimize a close; close skryje okno i jeho taskbar položku bez smazání dokumentu;
+- submit Audit 00-A pouze zachytí baseline a odemkne surfaces; nesmí vynutit otevření žádného nového okna, včetně ClickAuditu nebo Audit 10-A;
+- quantity-1 bootstrap Audit 10-A auto-openout právě jednou;
+- pozdější quantity-25 Audit 10-A instance pouze zařadit do queue ve Formulářích bez auto-openu a bez focus steal;
+- explicitní otevření pozdější instance z Formulářů vytvoří/obnoví její vlastní okno a teprve tehdy použije cascade od current form anchor;
+- certifikovaný dokument ponechat samostatně dostupný;
 - window placement a minimize/focus stav nepersistovat do runtime save.
 
 ### Tests
 
 - first-open center, visible activation a minimized restore;
+- close je odlišný od minimize a explicitní reopen obnoví stejné window ID a session position;
 - stabilní unikátní form IDs a idempotentní reopen;
 - moved anchor mění další cascade origin;
 - integer `+18/+14`, deterministic boundary wrap a clamp;
+- submit 00-A nezpůsobí forced popup;
+- bootstrap 10-A se auto-openne právě jednou;
+- pozdější quantity-25 instance zůstane ve Formulářích až do explicitního otevření;
 - dvě 10-A instance zůstávají nezávislé a taskbar je obnovuje samostatně.
 
 ### Do not
@@ -244,14 +253,22 @@ Oddělit placement oken od runtime progression state a umožnit více auditních
 - neměnit Task 020 packet/Evidence semantiku;
 - nepřidávat cloud, overlay ani Tauri-specific změny.
 
+### Explicit visual-control exception
+
+Asset-backed ClickAudit close control je mimo scope Tasku 021A. Může dočasně zachovat existující minimize chování i close vizuál; sjednocení assetu, accessible labelu a close/minimize semantiky patří do samostatného pozdějšího visual-controls tasku.
+
 ### Manual Windows gate
 
 ```text
-ClickAudit / Formuláře / Doručené first open → centered
+Audit 00-A submit → baseline + unlock, žádný forced popup
+→ explicit first open ClickAuditu → centered
+→ tentýž první pozdější klik vytvoří bootstrap 10-A → auto-open právě jednou +18/+14 od current form anchor
+→ Formuláře / Doručené explicit first open → centered
 → move + minimize + taskbar restore → stejné x/y
-→ bootstrap 10-A → samostatné okno +18/+14 od current form anchor
+→ close standardního OS okna → zmizí z desktopu i taskbaru; explicit reopen → stejné ID a session x/y
 → move + certify
-→ 25 dalších kliků → druhé samostatné 10-A +18/+14
+→ 25 dalších kliků → druhé 10-A pouze v queue Formulářů, bez popupu a focus steal
+→ explicit open z Formulářů → druhé samostatné 10-A +18/+14 od current form anchor
 → obě okna independent drag/minimize/restore a bez clippingu
 ```
 

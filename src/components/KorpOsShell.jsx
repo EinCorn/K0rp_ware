@@ -1,10 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { listModules } from '../../packages/korp-modules/src/index'
 import { createAuditFormValues, isAuditFormComplete } from '../runtime/auditFormDraft'
+import { reconcileAuditInstanceWindows } from '../runtime/auditWindowPresentation'
 import { classifyKorpOsClickTarget } from '../runtime/osClickTracking'
 import { useKorpRuntime } from '../runtime/useKorpRuntime'
 import {
   bringWindowStateToFront,
+  closeWindowState,
   ensureFormWindowState,
   getCenteredCanvasPlacement,
   getCenteredWindowPosition,
@@ -142,7 +144,7 @@ const getAuditInstanceHeadingId = (windowId) => (
   `approval-title-${windowId.replace(/[^a-zA-Z0-9_-]/g, '-')}`
 )
 
-function WindowHeader({ window, variant = 'document', onMinimize, onPointerDown }) {
+function WindowHeader({ window, variant = 'document', onClose, onMinimize, onPointerDown }) {
   return (
     <header
       className={'os-window-header os-window-header-' + variant}
@@ -161,6 +163,17 @@ function WindowHeader({ window, variant = 'document', onMinimize, onPointerDown 
         data-clickaudit-profile="window-control"
       >
         —
+      </button>
+      <button
+        type="button"
+        className="os-window-close"
+        aria-label={'Zavřít okno ' + window.taskbarTitle}
+        onPointerDown={(event) => event.stopPropagation()}
+        onClick={() => onClose(window.id)}
+        data-window-control="true"
+        data-clickaudit-profile="window-control"
+      >
+        ×
       </button>
     </header>
   )
@@ -287,12 +300,13 @@ function KorpOsShell() {
   const dragStateRef = useRef(null)
   const pendingAuditCountRef = useRef(pendingAuditCount)
   const knownAuditInstanceIdsRef = useRef(new Set(matchingAuditInstances.map(({ id }) => id)))
-  const autoFrontFrameRef = useRef(null)
   const activityEventIdRef = useRef(null)
   const recordedPointerEventsRef = useRef(new WeakSet())
 
   const auditClicks = stats.eventsByType['clickaudit.click'] ?? 0
-  const formsFolderAvailable = auditEntrySubmitted || matchingAuditInstances.length > 0
+  const formsFolderAvailable = auditEntrySubmitted
+    || matchingAuditInstances.length > 0
+    || windows[auditEntryWindowId]?.isOpen === false
   const formsIconStatus = pendingAuditCount > 0
     ? `${pendingAuditCount} ČEKÁ NA AUDIT`
     : latestAuditWindowModel
@@ -353,76 +367,28 @@ function KorpOsShell() {
     return () => window.removeEventListener('resize', updateCanvasPlacement)
   }, [])
 
-  useEffect(() => () => {
-    if (autoFrontFrameRef.current !== null) {
-      window.cancelAnimationFrame(autoFrontFrameRef.current)
-    }
-  }, [])
-
   useEffect(() => {
-    const currentInstanceIds = new Set(matchingAuditInstances.map(({ id }) => id))
-    const newInstanceIds = new Set(
-      matchingAuditInstances
-        .filter(({ id }) => !knownAuditInstanceIdsRef.current.has(id))
-        .map(({ id }) => id),
-    )
+    const knownInstanceIds = knownAuditInstanceIdsRef.current
+    knownAuditInstanceIdsRef.current = new Set(matchingAuditInstances.map(({ id }) => id))
     const workspaceSize = {
       width: desktopSpaceRef.current?.clientWidth ?? osWorkspaceSize.width,
       height: desktopSpaceRef.current?.clientHeight ?? osWorkspaceSize.height,
     }
 
-    knownAuditInstanceIdsRef.current = currentInstanceIds
     setWindows((currentWindows) => {
-      let nextWindows = currentWindows
-
-      for (const [id, windowState] of Object.entries(currentWindows)) {
-        if (
-          windowState.kind !== 'form'
-          || windowState.documentId === 'audit-00-a'
-          || currentInstanceIds.has(windowState.documentId)
-        ) continue
-
-        if (nextWindows === currentWindows) nextWindows = { ...currentWindows }
-        delete nextWindows[id]
-      }
-
-      for (const auditInstance of matchingAuditInstances) {
-        const windowId = getFormWindowId(auditInstance.id)
-        const withDescriptor = ensureFormWindowState(
-          nextWindows,
-          auditInstance.id,
-          formWindowSize,
-        )
-
-        nextWindows = withDescriptor
-        if (newInstanceIds.has(auditInstance.id)) {
-          nextWindows = openWindowState(nextWindows, windowId, {
-            workspaceSize,
-            formBasePosition: formDocumentBasePosition,
-          })
-        }
-      }
-
-      return nextWindows
-    })
-
-    if (newInstanceIds.size > 0) {
-      const newWindowIds = matchingAuditInstances
-        .filter(({ id }) => newInstanceIds.has(id))
-        .map(({ id }) => getFormWindowId(id))
-
-      if (autoFrontFrameRef.current !== null) {
-        window.cancelAnimationFrame(autoFrontFrameRef.current)
-      }
-      autoFrontFrameRef.current = window.requestAnimationFrame(() => {
-        setWindows((currentWindows) => newWindowIds.reduce(
-          (nextWindows, id) => bringWindowStateToFront(nextWindows, id),
-          currentWindows,
-        ))
-        autoFrontFrameRef.current = null
+      const reconciliation = reconcileAuditInstanceWindows({
+        windows: currentWindows,
+        auditInstances: matchingAuditInstances,
+        packetById,
+        knownInstanceIds,
+        windowSize: formWindowSize,
+        workspaceSize,
+        formBasePosition: formDocumentBasePosition,
       })
-    }
-  }, [matchingAuditInstances])
+
+      return reconciliation.windows
+    })
+  }, [matchingAuditInstances, packetById])
 
   useEffect(() => {
     if (pendingAuditCount > pendingAuditCountRef.current) {
@@ -452,6 +418,10 @@ function KorpOsShell() {
 
   const minimizeWindow = (id) => {
     setWindows((currentWindows) => minimizeWindowState(currentWindows, id))
+  }
+
+  const closeWindow = (id) => {
+    setWindows((currentWindows) => closeWindowState(currentWindows, id))
   }
 
   const openWindow = (id) => {
@@ -662,6 +632,7 @@ function KorpOsShell() {
                   <WindowHeader
                     window={presentationWindows[auditEntryWindowId]}
                     variant="audit"
+                    onClose={closeWindow}
                     onMinimize={minimizeWindow}
                     onPointerDown={(event) => startWindowDrag(auditEntryWindowId, event)}
                   />
@@ -704,6 +675,7 @@ function KorpOsShell() {
                   <WindowHeader
                     window={presentationWindows[model.windowId]}
                     variant="audit"
+                    onClose={closeWindow}
                     onMinimize={minimizeWindow}
                     onPointerDown={(event) => startWindowDrag(model.windowId, event)}
                   />
@@ -738,6 +710,7 @@ function KorpOsShell() {
                 >
                   <WindowHeader
                     window={windows['daily-report']}
+                    onClose={closeWindow}
                     onMinimize={minimizeWindow}
                     onPointerDown={(event) => startWindowDrag('daily-report', event)}
                   />
@@ -763,6 +736,7 @@ function KorpOsShell() {
                 >
                   <WindowHeader
                     window={windows['forms-folder']}
+                    onClose={closeWindow}
                     onMinimize={minimizeWindow}
                     onPointerDown={(event) => startWindowDrag('forms-folder', event)}
                   />
@@ -820,6 +794,7 @@ function KorpOsShell() {
                 >
                   <WindowHeader
                     window={windows['inbox-folder']}
+                    onClose={closeWindow}
                     onMinimize={minimizeWindow}
                     onPointerDown={(event) => startWindowDrag('inbox-folder', event)}
                   />

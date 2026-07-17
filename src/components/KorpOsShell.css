@@ -351,7 +351,8 @@
   white-space: nowrap;
 }
 
-.os-window-minimize {
+.os-window-minimize,
+.os-window-close {
   flex: 0 0 auto;
   width: 18px;
   height: 16px;
@@ -368,11 +369,17 @@
 }
 
 .os-window-minimize:hover,
-.os-window-minimize:focus-visible {
+.os-window-minimize:focus-visible,
+.os-window-close:hover,
+.os-window-close:focus-visible {
   color: #f4eed5;
   background: #9b5148;
   outline: 1px solid #f3e9bd;
   outline-offset: 1px;
+}
+
+.os-window-close {
+  padding-bottom: 1px;
 }
 
 .os-audit-window {

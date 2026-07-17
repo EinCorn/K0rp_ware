@@ -3,6 +3,7 @@ import test from 'node:test'
 import {
   FORM_WINDOW_CASCADE_OFFSET,
   bringWindowStateToFront,
+  closeWindowState,
   ensureFormWindowState,
   fitCanvasScale,
   getCascadedWindowPosition,
@@ -29,6 +30,93 @@ test('minimize marks an open window without closing it', () => {
   const next = minimizeWindowState(windows, 'audit')
   assert.equal(next.audit.isOpen, true)
   assert.equal(next.audit.isMinimized, true)
+})
+
+test('close removes an open or minimized window from open state while preserving placement', () => {
+  const minimized = minimizeWindowState(windows, 'audit')
+  const closed = closeWindowState(minimized, 'audit')
+
+  assert.equal(closed.audit.isOpen, false)
+  assert.equal(closed.audit.isMinimized, false)
+  assert.deepEqual(
+    { x: closed.audit.x, y: closed.audit.y, zIndex: closed.audit.zIndex },
+    { x: 184, y: 58, zIndex: 2 },
+  )
+  assert.deepEqual(
+    Object.keys(closed).filter((id) => closed[id].isOpen),
+    ['clickaudit'],
+  )
+  assert.equal(closeWindowState(closed, 'audit'), closed)
+  assert.equal(closeWindowState(closed, 'missing'), closed)
+})
+
+test('reopening a closed descriptor preserves x/y and never duplicates the window', () => {
+  const formWindowId = 'form:audit-instance-a'
+  const opened = {
+    folder: {
+      id: 'folder', kind: 'folder', width: 360, height: 268,
+      x: 600, y: 250, zIndex: 9, isOpen: true, isMinimized: false, hasOpened: true,
+    },
+    [formWindowId]: {
+      id: formWindowId, documentId: 'audit-instance-a', kind: 'form',
+      width: 470, height: 310, x: 412, y: 206, zIndex: 8,
+      isOpen: true, isMinimized: false, hasOpened: true,
+    },
+  }
+  const closed = closeWindowState(opened, formWindowId)
+  const reopened = openWindowState(closed, formWindowId, {
+    workspaceSize,
+    formBasePosition,
+  })
+
+  assert.equal(reopened[formWindowId].isOpen, true)
+  assert.equal(reopened[formWindowId].isMinimized, false)
+  assert.equal(reopened[formWindowId].hasOpened, true)
+  assert.deepEqual(
+    { x: reopened[formWindowId].x, y: reopened[formWindowId].y },
+    { x: 412, y: 206 },
+  )
+  assert.equal(reopened[formWindowId].zIndex, 10)
+  assert.equal(Object.keys(reopened).filter((id) => id === formWindowId).length, 1)
+})
+
+test('closing pending or certified audit windows cannot mutate audit or Evidence data', () => {
+  const pendingId = 'form:audit-pending'
+  const certifiedId = 'form:audit-certified'
+  const runtimeState = {
+    auditInstances: [
+      { id: 'audit-pending', packetId: 'packet-pending', status: 'available', values: {} },
+      { id: 'audit-certified', packetId: 'packet-certified', status: 'submitted', values: { intentionality: 'Ano' } },
+    ],
+    metricPackets: [
+      { id: 'packet-pending', status: 'pending' },
+      { id: 'packet-certified', status: 'certified' },
+    ],
+    korpState: { resources: { notionalWorkUnits: 1 } },
+  }
+  const runtimeSnapshot = structuredClone(runtimeState)
+  const auditWindows = {
+    [pendingId]: {
+      id: pendingId, documentId: 'audit-pending', kind: 'form', width: 470, height: 310,
+      x: 300, y: 180, zIndex: 4, isOpen: true, isMinimized: false, hasOpened: true,
+    },
+    [certifiedId]: {
+      id: certifiedId, documentId: 'audit-certified', kind: 'form', width: 470, height: 310,
+      x: 318, y: 194, zIndex: 5, isOpen: true, isMinimized: false, hasOpened: true,
+    },
+  }
+
+  const pendingClosed = closeWindowState(auditWindows, pendingId)
+  const bothClosed = closeWindowState(pendingClosed, certifiedId)
+
+  assert.equal(bothClosed[pendingId].isOpen, false)
+  assert.equal(bothClosed[certifiedId].isOpen, false)
+  assert.deepEqual(runtimeState, runtimeSnapshot)
+  assert.equal(runtimeState.auditInstances[0].status, 'available')
+  assert.equal(runtimeState.auditInstances[1].status, 'submitted')
+  assert.equal(runtimeState.metricPackets[0].status, 'pending')
+  assert.equal(runtimeState.metricPackets[1].status, 'certified')
+  assert.equal(runtimeState.korpState.resources.notionalWorkUnits, 1)
 })
 
 test('taskbar restore reopens a minimized window and brings it forward', () => {

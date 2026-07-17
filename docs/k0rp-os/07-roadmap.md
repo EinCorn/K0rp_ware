@@ -174,6 +174,15 @@ Pořadí:
 5. samostatná Fidget session state;
 6. `fidget.sessionSettled` jako první non-click raw metric closure.
 
+Task 021A presentation gate:
+
+```text
+Audit 00-A submit → baseline + unlock bez forced popupu
+→ první pozdější klik → quantity-1 bootstrap 10-A auto-open právě jednou
+→ pozdější quantity-25 packet → queue ve Formulářích bez focus steal
+→ explicit open z Formulářů → vlastní 10-A okno s cascade od current form anchor
+```
+
 Completion gate:
 
 ```text

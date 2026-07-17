@@ -230,6 +230,20 @@ export function minimizeWindowState(windows, id) {
   }
 }
 
+export function closeWindowState(windows, id) {
+  const windowState = windows[id]
+  if (!windowState || (!windowState.isOpen && !windowState.isMinimized)) return windows
+
+  return {
+    ...windows,
+    [id]: {
+      ...windowState,
+      isOpen: false,
+      isMinimized: false,
+    },
+  }
+}
+
 export function restoreWindowState(windows, id) {
   const windowState = windows[id]
   if (!windowState) return windows

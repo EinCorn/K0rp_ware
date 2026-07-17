@@ -190,4 +190,6 @@ test('a certified repeatable audit remains while the next packet creates a disti
   assert.equal(nextPacket.runtimeState.auditInstances[1].status, 'available')
   assert.equal(nextPacket.runtimeState.metricPackets[0].status, 'certified')
   assert.equal(nextPacket.runtimeState.metricPackets[1].status, 'pending')
+  assert.equal(getPendingMetricPackets(nextPacket.runtimeState).length, 1)
+  assert.equal(getPendingAuditInstances(nextPacket.runtimeState, 'audit-10-a').length, 1)
 })
