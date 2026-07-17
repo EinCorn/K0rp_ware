@@ -1,0 +1,316 @@
+{
+  "name": "K0rp_OS Icon Set v0.2",
+  "sourceSize": 64,
+  "rendering": "pixel art, RGBA transparency, nearest-neighbor scaling",
+  "styleRules": [
+    "One clear semantic object per icon.",
+    "ClickAudit is a mechanical numeric counter; generic audit uses the clipboard.",
+    "Consistent dark outline, upper-left highlight, lower-right block shadow.",
+    "Restricted K0rp palette with at most one dominant accent family per icon.",
+    "No tiny prose inside icons; only digits or compact system marks where semantically necessary.",
+    "Folders share one silhouette family; open and closed states remain visibly related.",
+    "The hidden meta layer remains atmospheric and is not represented as an explicit lore glyph."
+  ],
+  "sourceDocs": [
+    "docs/k0rp-os/00-product-vision.md",
+    "docs/k0rp-os/01-visual-style.md",
+    "docs/k0rp-os/06-screen-concepts.md",
+    "docs/k0rp-os/07-roadmap.md",
+    "docs/k0rp-os/09-module-backlog.md",
+    "docs/k0rp-os/15-unlocks-memos-and-system-mutations.md",
+    "docs/k0rp-os/18-desktop-surface-progression.md",
+    "docs/k0rp-os/20-core-loop.md",
+    "packages/korp-modules/src/registry.ts",
+    "packages/korp-progression/data/surface-progression.json"
+  ],
+  "icons": [
+    {
+      "id": "click-audit",
+      "title": "ClickAudit",
+      "group": "modules",
+      "category": "AUDIT / CONFIRMATION",
+      "accent": "red",
+      "meaning": "Mechanické počítadlo skutečných kliků. Vlastní identita; clipboard patří obecným auditům.",
+      "repo": "packages/korp-modules/src/registry.ts"
+    },
+    {
+      "id": "fidget",
+      "title": "Fidget",
+      "group": "modules",
+      "category": "STABILIZATION",
+      "accent": "yellow",
+      "meaning": "Tříramenný hmatový spinner; žádná analytická metafora navíc.",
+      "repo": "packages/korp-modules/src/registry.ts"
+    },
+    {
+      "id": "bloom",
+      "title": "Bloom",
+      "group": "modules",
+      "category": "CARE / CLEANING",
+      "accent": "green",
+      "meaning": "Květina vyrůstající ze stavových kamenů; spojuje růst s puzzle deskou.",
+      "repo": "packages/korp-modules/src/registry.ts"
+    },
+    {
+      "id": "corner-watch",
+      "title": "Corner Watch",
+      "group": "modules",
+      "category": "IDLE / SCREENSAVER",
+      "accent": "red",
+      "meaning": "CRT obrazovka s odrážejícím se znakem a trajektorií k rohu; není to kamera.",
+      "repo": "docs/k0rp-os/09-module-backlog.md"
+    },
+    {
+      "id": "bubble-wrap",
+      "title": "Bublinková Fólie",
+      "group": "modules",
+      "category": "STABILIZATION",
+      "accent": "pink",
+      "meaning": "Špinavě růžová certifikovaná fólie s plnými a prasklými bublinami.",
+      "repo": "docs/k0rp-os/01-visual-style.md"
+    },
+    {
+      "id": "button-compliance",
+      "title": "Button Compliance",
+      "group": "modules",
+      "category": "AUDIT / CONFIRMATION",
+      "accent": "red",
+      "meaning": "Průmyslový potvrzovací panel s velkým tlačítkem a stavovými kontrolkami.",
+      "repo": "docs/k0rp-os/09-module-backlog.md"
+    },
+    {
+      "id": "surface-compliance",
+      "title": "Surface Compliance",
+      "group": "modules",
+      "category": "CARE / CLEANING",
+      "accent": "orange",
+      "meaning": "Napůl vyčištěná a napůl znečištěná pracovní plocha se stěrkou.",
+      "repo": "docs/k0rp-os/01-visual-style.md"
+    },
+    {
+      "id": "shape-compliance",
+      "title": "Shape Compliance",
+      "group": "modules",
+      "category": "ALIGNMENT",
+      "accent": "yellow",
+      "meaning": "Mechanická deska s tvary, otvory a jedním správně zapadlým dílem.",
+      "repo": "docs/k0rp-os/09-module-backlog.md"
+    },
+    {
+      "id": "attention-runner",
+      "title": "Attention Runner",
+      "group": "modules",
+      "category": "ATTENTION SPLIT",
+      "accent": "orange",
+      "meaning": "Malý běžec v kancelářském koridoru s procesními překážkami.",
+      "repo": "docs/k0rp-os/01-visual-style.md"
+    },
+    {
+      "id": "zen-garden",
+      "title": "Zenová Zahrádka",
+      "group": "modules",
+      "category": "DESK OBJECT / CARE",
+      "accent": "yellow",
+      "meaning": "Písečný box, kámen a hrábě; bez květiny, aby se nepletl s Bloom.",
+      "repo": "docs/k0rp-os/09-module-backlog.md"
+    },
+    {
+      "id": "newton-cradle",
+      "title": "Newtonova Kolíbka",
+      "group": "modules",
+      "category": "DESK OBJECT / IDLE",
+      "accent": "brass",
+      "meaning": "Pět kuliček, jedna vychýlená; přenos hybnosti a odpovědnosti.",
+      "repo": "docs/k0rp-os/09-module-backlog.md"
+    },
+    {
+      "id": "work-blob",
+      "title": "Privacy Work Blob",
+      "group": "modules",
+      "category": "OVERLAY / PRIVACY",
+      "accent": "green",
+      "meaning": "Stavový blob se štítem pro plánovaný privacy-safe overlay.",
+      "repo": "docs/k0rp-os/07-roadmap.md"
+    },
+    {
+      "id": "audit-generic",
+      "title": "Audit — obecný",
+      "group": "system",
+      "category": "DOCUMENT",
+      "accent": "red",
+      "meaning": "Clipboard s poli a tužkou. Semantika obecného auditu, nikoli ClickAuditu.",
+      "repo": "docs/k0rp-os/20-core-loop.md"
+    },
+    {
+      "id": "audit-packet",
+      "title": "Auditní dávka",
+      "group": "system",
+      "category": "CORE LOOP",
+      "accent": "red",
+      "meaning": "Balík raw metrik čekající na audit; svázané formuláře s pending tabem.",
+      "repo": "docs/k0rp-os/20-core-loop.md"
+    },
+    {
+      "id": "evidence",
+      "title": "Evidence / EV",
+      "group": "system",
+      "category": "CORE LOOP",
+      "accent": "green",
+      "meaning": "Certifikovaný doklad jako první player-facing spendable měna.",
+      "repo": "docs/k0rp-os/20-core-loop.md"
+    },
+    {
+      "id": "inbox",
+      "title": "Doručené",
+      "group": "system",
+      "category": "FOLDER",
+      "accent": "green",
+      "meaning": "Otevřená složka s příchozím memem.",
+      "repo": "packages/korp-progression/data/surface-progression.json"
+    },
+    {
+      "id": "forms",
+      "title": "Formuláře",
+      "group": "system",
+      "category": "FOLDER",
+      "accent": "red",
+      "meaning": "Složka s kontrolním formulářem a pending stavem.",
+      "repo": "packages/korp-progression/data/surface-progression.json"
+    },
+    {
+      "id": "wellbeing",
+      "title": "Wellbeing",
+      "group": "system",
+      "category": "FOLDER",
+      "accent": "yellow",
+      "meaning": "Kategorie stabilizačních nástrojů označená spinnerem.",
+      "repo": "docs/k0rp-os/18-desktop-surface-progression.md"
+    },
+    {
+      "id": "care-alignment",
+      "title": "Care & Alignment",
+      "group": "system",
+      "category": "FOLDER",
+      "accent": "green",
+      "meaning": "Kategorie péče a zarovnání označená květinou a osovým křížem.",
+      "repo": "docs/k0rp-os/18-desktop-surface-progression.md"
+    },
+    {
+      "id": "pending-confirmations",
+      "title": "Čekající potvrzení",
+      "group": "system",
+      "category": "FOLDER",
+      "accent": "red",
+      "meaning": "Složka s potvrzovacím formulářem, tlačítkem a žlutým pending světlem.",
+      "repo": "packages/korp-progression/data/surface-progression.json"
+    },
+    {
+      "id": "certifications",
+      "title": "Certifikace",
+      "group": "system",
+      "category": "DOCUMENT / FOLDER",
+      "accent": "green",
+      "meaning": "Formální certifikát s pečetí a stuhou.",
+      "repo": "docs/k0rp-os/15-unlocks-memos-and-system-mutations.md"
+    },
+    {
+      "id": "knowledge-base",
+      "title": "Knowledge Base",
+      "group": "system",
+      "category": "SYSTEM",
+      "accent": "blue",
+      "meaning": "Interní manuál spojený s CRT terminálem a informačním symbolem.",
+      "repo": "docs/k0rp-os/06-screen-concepts.md"
+    },
+    {
+      "id": "archive",
+      "title": "Archiv",
+      "group": "system",
+      "category": "SYSTEM FOLDER",
+      "accent": "red",
+      "meaning": "Těžký archivní box s cyklem 01.",
+      "repo": "packages/korp-progression/data/surface-progression.json"
+    },
+    {
+      "id": "compliance-bin",
+      "title": "Compliance Bin",
+      "group": "system",
+      "category": "SYSTEM",
+      "accent": "green",
+      "meaning": "Kovový koš na formuláře; systémový objekt výchozí plochy.",
+      "repo": "packages/korp-progression/data/surface-progression.json"
+    },
+    {
+      "id": "folder-closed",
+      "title": "Složka — zavřená",
+      "group": "system",
+      "category": "GENERIC",
+      "accent": "brass",
+      "meaning": "Kanonická zavřená manila složka pro další kategorie.",
+      "repo": "docs/k0rp-os/18-desktop-surface-progression.md"
+    },
+    {
+      "id": "folder-open",
+      "title": "Složka — otevřená",
+      "group": "system",
+      "category": "GENERIC",
+      "accent": "brass",
+      "meaning": "Stejná rodina jako zavřená složka, ale s viditelnými papíry.",
+      "repo": "docs/k0rp-os/18-desktop-surface-progression.md"
+    },
+    {
+      "id": "document",
+      "title": "Dokument",
+      "group": "system",
+      "category": "GENERIC",
+      "accent": "blue",
+      "meaning": "Obecný dokument se zalomeným rohem.",
+      "repo": "docs/k0rp-os/06-screen-concepts.md"
+    },
+    {
+      "id": "memo",
+      "title": "Interní memo",
+      "group": "system",
+      "category": "DOCUMENT",
+      "accent": "red",
+      "meaning": "Papírové memo v obálce s prioritním pinem a razítkem.",
+      "repo": "docs/k0rp-os/15-unlocks-memos-and-system-mutations.md"
+    },
+    {
+      "id": "settings",
+      "title": "Nastavení",
+      "group": "system",
+      "category": "SYSTEM",
+      "accent": "yellow",
+      "meaning": "Průmyslové ozubené kolo a dvě stavové regulace.",
+      "repo": "docs/k0rp-os/06-screen-concepts.md"
+    },
+    {
+      "id": "computer",
+      "title": "Tento počítač",
+      "group": "system",
+      "category": "SYSTEM",
+      "accent": "green",
+      "meaning": "Starý interní CRT terminál s lokálním promptem.",
+      "repo": "docs/k0rp-os/00-product-vision.md"
+    },
+    {
+      "id": "locked-pending",
+      "title": "Locked / Pending",
+      "group": "system",
+      "category": "STATE",
+      "accent": "yellow",
+      "meaning": "Zamčený modul se shutterem a pending štítkem.",
+      "repo": "docs/k0rp-os/01-visual-style.md"
+    },
+    {
+      "id": "audit-cycle",
+      "title": "Audit Cycle",
+      "group": "system",
+      "category": "PRESTIGE / ARCHIVE",
+      "accent": "blue",
+      "meaning": "Složka uzavřeného cyklu s číslem a kruhovým pohybem.",
+      "repo": "docs/k0rp-os/18-desktop-surface-progression.md"
+    }
+  ]
+}
