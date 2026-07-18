@@ -234,7 +234,7 @@ src/ui/korpUiAssetCatalog.js              deterministický semantic catalog
 npm run build:korp-ui-runtime             regenerate + byte/dimension/drift check
 ```
 
-Audit 00-A používá pevný V3 audit frame 346×328 a Formuláře pevný folder frame 344×310. Dynamic HTML, canonical document icons, window-manager semantics a gameplay zůstávají autoritativní. Audit 10-A, Audit 16-C, Doručené, Denní výpis, ClickAudit a Fidget zatím vizuálně neměníme.
+Audit 00-A používá nativní V3 audit frame 173×164 a Formuláře nativní folder frame 172×155; generované `@2x` PNG zůstávají pouze density assety. Dynamic HTML, canonical document icons, window-manager semantics a gameplay zůstávají autoritativní. Audit 10-A, Audit 16-C, Doručené, Denní výpis, ClickAudit a Fidget zatím vizuálně neměníme.
 
 ## Fáze 8 — Second metric, repeatable audits and backlog
 
