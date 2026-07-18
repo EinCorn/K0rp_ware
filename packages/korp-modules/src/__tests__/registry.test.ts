@@ -42,6 +42,10 @@ describe("default module registry", () => {
     expect(getModuleById("not-a-module")).toBeUndefined();
   });
 
+  it("declares the canonical Fidget session closure event", () => {
+    expect(getModuleById("fidget")?.emittedEventTypes).toContain("fidget.sessionSettled");
+  });
+
   it("filters by status, surface, and category", () => {
     expect(listModulesByStatus("current").map((module) => module.id)).toEqual([
       "click-audit",

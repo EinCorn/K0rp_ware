@@ -72,7 +72,7 @@ export type KorpModuleMaturity = KorpModuleStatus;
 
 export type KorpModuleEventType =
   | `clickaudit.${"click" | "milestoneReached" | "sourceUpdated" | "reset"}`
-  | `fidget.${"spinStarted" | "spinTick" | "spinStopped" | "modeChanged" | "speedThresholdReached"}`
+  | `fidget.${"spinStarted" | "spinTick" | "spinStopped" | "modeChanged" | "speedThresholdReached" | "sessionSettled"}`
   | `bloom.${"tileClicked" | "matchCleared" | "waveAdvanced" | "redStoneSpawned" | "boardReset"}`
   | `corner.${"logoBounce" | "nearMiss" | "cornerHit" | "speedChanged" | "sessionCompleted"}`
   | `bubble.${"popped" | "defectivePressed" | "rareBubblePopped" | "sheetCompleted" | "sheetReplaced"}`

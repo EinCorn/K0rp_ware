@@ -44,7 +44,8 @@ export const defaultModuleRegistry = [
       "fidget.spinTick",
       "fidget.spinStopped",
       "fidget.modeChanged",
-      "fidget.speedThresholdReached"
+      "fidget.speedThresholdReached",
+      "fidget.sessionSettled"
     ],
     producedResourceKeys: ["stabilization", "perceivedControl"]
   }),

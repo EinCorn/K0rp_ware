@@ -13,6 +13,12 @@ import {
 } from '../runtime/fidgetPresentation'
 import { classifyKorpOsIntentionEvent } from '../runtime/osClickTracking'
 import {
+  CLICK_AUDIT_METRIC_TYPE,
+  FIDGET_METRIC_TYPE,
+  describeMetricAuditPacket,
+  isMetricAuditTemplateId,
+} from '../runtime/metricAuditFlow'
+import {
   KORP_DESKTOP_ICON_IDS,
   KORP_FOLDER_ICON_IDS,
   getKorpModuleIconId,
@@ -154,13 +160,8 @@ const createInitialWindows = (
   return windows
 }
 
-const getPacketRangeLabel = (packet, sequence) => {
-  if (!packet) return `#${sequence}`
-  if (packet.rangeStart === packet.rangeEnd) return String(packet.rangeStart)
-  return `${packet.rangeStart}–${packet.rangeEnd}`
-}
-
 const getAuditInstanceFileStatus = (instance, packet) => {
+  if (packet?.status === 'rejected') return 'ZAMÍTNUTO / UZAVŘENO'
   if (instance.status === 'submitted' || instance.status === 'closed') {
     return 'CERTIFIKOVÁNO / EV +1'
   }
@@ -281,6 +282,7 @@ function KorpOsShell() {
     moduleAuthorizations,
     pendingAuditCount,
     recordOsClick,
+    recordFidgetSessionSettled,
     submitAuditForm,
     submitModuleAuthorization,
     updateAuditInstanceField,
@@ -296,7 +298,6 @@ function KorpOsShell() {
   const auditEntryForm = auditForms.find((form) => form.availableAtStart === true)
   const auditTraceForm = auditForms.find((form) => form.id === 'audit-10-a')
   const authorizationForm = auditForms.find((form) => form.id === 'audit-16-c')
-  const auditTraceFormId = auditTraceForm?.id
   const auditEntrySubmitted = auditEntryForm ? isFormSubmitted(auditEntryForm.id) : false
   const authorizationAvailable = authorizationForm
     ? isFormAvailable(authorizationForm.id)
@@ -311,29 +312,46 @@ function KorpOsShell() {
     () => getFidgetDesktopItems(moduleAuthorizations),
     [moduleAuthorizations],
   )
-  const matchingAuditInstances = useMemo(() => (
-    auditInstances.filter((instance) => instance.templateId === auditTraceFormId)
-  ), [auditInstances, auditTraceFormId])
   const packetById = useMemo(() => (
     new Map(metricPackets.map((packet) => [packet.id, packet]))
   ), [metricPackets])
-  const auditWindowModels = useMemo(() => matchingAuditInstances.map((instance, index) => {
+  const metricAuditInstances = useMemo(() => auditInstances.filter((instance) => (
+    isMetricAuditTemplateId(instance.templateId)
+    && packetById.has(instance.packetId)
+  )), [auditInstances, packetById])
+  const auditWindowModels = useMemo(() => metricAuditInstances.map((instance, index) => {
     const packet = packetById.get(instance.packetId)
+    const form = auditForms.find((candidate) => candidate.id === instance.templateId)
     const windowId = getFormWindowId(instance.id)
-    const rangeLabel = getPacketRangeLabel(packet, index + 1)
+    const descriptor = describeMetricAuditPacket(packet, form, index + 1)
+    const isFidgetPacket = packet?.metricType === FIDGET_METRIC_TYPE
 
     return {
       windowId,
       headingId: getAuditInstanceHeadingId(windowId),
       instance,
       packet,
-      rangeLabel,
+      form,
+      ...descriptor,
       submitted: instance.status === 'submitted' || instance.status === 'closed',
       fileStatus: getAuditInstanceFileStatus(instance, packet),
-      title: `AUDITNÍ DÁVKA / FORMULÁŘ ${auditTraceForm?.code ?? '?'} / ${rangeLabel}`,
-      taskbarTitle: `AUDIT ${auditTraceForm?.code ?? '?'} · ${rangeLabel}`,
+      windowTitle: `AUDITNÍ DÁVKA / FORMULÁŘ ${form?.code ?? '?'} / ${descriptor.rangeLabel}`,
+      taskbarTitle: `AUDIT ${form?.code ?? '?'} · ${descriptor.rangeLabel}`,
+      documentLabel: isFidgetPacket
+        ? `STABILIZAČNÍ RELACE / ${packet?.id ?? 'NEURČENO'}`
+        : `AUDITOVATELNÁ DÁVKA / ${packet?.id ?? 'NEURČENO'}`,
+      introText: isFidgetPacket
+        ? `Zaznamenaných stabilizačních relací: ${packet?.quantity ?? 0}. Relace není Evidence, dokud nebude certifikována.`
+        : `Zaznamenaných raw interakcí: ${packet?.quantity ?? 0}. Samotný záznam není Evidence, dokud nebude certifikován.`,
+      completionHeadingLabel: `FORMULÁŘ ${form?.code ?? '?'} / CERTIFIKOVANÁ DÁVKA`,
+      completionTitle: isFidgetPacket
+        ? 'STABILIZACE CERTIFIKOVÁNA'
+        : 'EVIDENCE CERTIFIKOVÁNA',
+      completionNote: isFidgetPacket
+        ? 'Stabilizační relace byla administrativně uznána jako Evidence. Odpověď nemění výsledek certifikace.'
+        : 'Zaznamenaná aktivita byla uznána jako Evidence. Účinek aktivity zůstal mimo rozsah auditu.',
     }
-  }), [auditTraceForm, matchingAuditInstances, packetById])
+  }), [auditForms, metricAuditInstances, packetById])
   const latestAuditWindowModel = auditWindowModels.length > 0
     ? auditWindowModels[auditWindowModels.length - 1]
     : null
@@ -345,7 +363,7 @@ function KorpOsShell() {
   ))
   const [windows, setWindows] = useState(() => (
     createInitialWindows(
-      matchingAuditInstances,
+      metricAuditInstances,
       authorizationAvailable,
     )
   ))
@@ -358,7 +376,7 @@ function KorpOsShell() {
   const desktopSpaceRef = useRef(null)
   const dragStateRef = useRef(null)
   const pendingAuditCountRef = useRef(pendingAuditCount)
-  const knownAuditInstanceIdsRef = useRef(new Set(matchingAuditInstances.map(({ id }) => id)))
+  const knownAuditInstanceIdsRef = useRef(new Set(metricAuditInstances.map(({ id }) => id)))
   const authorizationAvailabilityRef = useRef(undefined)
   const fidgetAuthorizationActivityRef = useRef(fidgetAuthorized)
   const activityEventIdRef = useRef(null)
@@ -366,7 +384,7 @@ function KorpOsShell() {
 
   const auditClicks = stats.eventsByType['clickaudit.click'] ?? 0
   const formsFolderAvailable = auditEntrySubmitted
-    || matchingAuditInstances.length > 0
+    || metricAuditInstances.length > 0
     || authorizationAvailable
     || windows[auditEntryWindowId]?.isOpen === false
   const baseFormsIconStatus = pendingAuditCount > 0
@@ -404,7 +422,7 @@ function KorpOsShell() {
     if (!windows[model.windowId]) continue
     presentationWindows[model.windowId] = {
       ...windows[model.windowId],
-      title: model.title,
+      title: model.windowTitle,
       taskbarTitle: model.taskbarTitle,
     }
   }
@@ -450,7 +468,7 @@ function KorpOsShell() {
 
   useEffect(() => {
     const knownInstanceIds = knownAuditInstanceIdsRef.current
-    knownAuditInstanceIdsRef.current = new Set(matchingAuditInstances.map(({ id }) => id))
+    knownAuditInstanceIdsRef.current = new Set(metricAuditInstances.map(({ id }) => id))
     const workspaceSize = {
       width: desktopSpaceRef.current?.clientWidth ?? osWorkspaceSize.width,
       height: desktopSpaceRef.current?.clientHeight ?? osWorkspaceSize.height,
@@ -459,7 +477,7 @@ function KorpOsShell() {
     setWindows((currentWindows) => {
       const reconciliation = reconcileAuditInstanceWindows({
         windows: currentWindows,
-        auditInstances: matchingAuditInstances,
+        auditInstances: metricAuditInstances,
         packetById,
         knownInstanceIds,
         windowSize: formWindowSize,
@@ -470,7 +488,7 @@ function KorpOsShell() {
 
       return reconciliation.windows
     })
-  }, [authorizationForm, matchingAuditInstances, packetById])
+  }, [authorizationForm, metricAuditInstances, packetById])
 
   useEffect(() => {
     const wasAvailable = authorizationAvailabilityRef.current
@@ -505,14 +523,14 @@ function KorpOsShell() {
   useEffect(() => {
     if (pendingAuditCount > pendingAuditCountRef.current) {
       setActivity((currentActivity) => [
-        'Nová dávka aktivity čeká na Audit ' + (auditTraceForm?.code ?? '?') + '.',
-        'Kliky byly zaznamenány. Jejich význam zatím nebyl schválen.',
+        'Nová dávka metriky čeká ve Formulářích na audit.',
+        'Raw aktivita byla zaznamenána. Její význam zatím nebyl certifikován.',
         ...currentActivity,
       ].slice(0, 4))
     }
 
     pendingAuditCountRef.current = pendingAuditCount
-  }, [auditTraceForm, pendingAuditCount])
+  }, [pendingAuditCount])
 
   useEffect(() => {
     if (!lastClickAuditActivity || activityEventIdRef.current === lastClickAuditActivity.id) return
@@ -684,9 +702,9 @@ function KorpOsShell() {
 
   const submitAuditInstance = (model) => {
     if (
-      !auditTraceForm
+      !model.form
       || model.submitted
-      || !isAuditFormComplete(auditTraceForm, model.instance.values)
+      || !isAuditFormComplete(model.form, model.instance.values)
     ) return
 
     submitMetricAuditInstance(model.instance.id)
@@ -867,6 +885,7 @@ function KorpOsShell() {
                   <FidgetEmbeddedWindow
                     onDragStart={(event) => startWindowDrag(FIDGET_WINDOW_ID, event)}
                     onMinimize={() => minimizeWindow(FIDGET_WINDOW_ID)}
+                    onSessionSettled={recordFidgetSessionSettled}
                   />
                 </article>
               )}
@@ -888,18 +907,19 @@ function KorpOsShell() {
                     onPointerDown={(event) => startWindowDrag(model.windowId, event)}
                   />
                   <AuditFormDocument
-                    form={auditTraceForm}
+                    form={model.form}
                     values={model.instance.values ?? {}}
                     submitted={model.submitted}
                     headingId={model.headingId}
-                    documentLabel={`AUDITOVATELNÁ DÁVKA / ${model.packet?.id ?? 'NEURČENO'}`}
-                    introText={`Zaznamenaných raw interakcí: ${model.packet?.quantity ?? 0}. Samotný záznam není Evidence, dokud nebude certifikován.`}
+                    controlScopeId={model.instance.id}
+                    documentLabel={model.documentLabel}
+                    introText={model.introText}
                     pendingStatusText="ZVOLTE ODPOVĚĎ"
                     readyStatusText="ZÁZNAM PŘIPRAVEN K CERTIFIKACI"
-                    completionHeadingLabel={`FORMULÁŘ ${auditTraceForm?.code ?? '?'} / CERTIFIKOVANÁ DÁVKA`}
-                    completionTitle="EVIDENCE CERTIFIKOVÁNA"
+                    completionHeadingLabel={model.completionHeadingLabel}
+                    completionTitle={model.completionTitle}
                     completionDetail={`${model.packet?.id ?? 'DÁVKA'} / EV +1`}
-                    completionNote="Zaznamenaná aktivita byla uznána jako Evidence. Účinek aktivity zůstal mimo rozsah auditu."
+                    completionNote={model.completionNote}
                     onFieldChange={(field, value) => (
                       handleAuditInstanceFieldChange(model.instance, field, value)
                     )}
@@ -952,7 +972,9 @@ function KorpOsShell() {
                     <p className="os-folder-path">C:\K0RP\FORMULÁŘE\MÍSTNÍ RELACE</p>
                     <h2 id="forms-folder-title">Formuláře</h2>
                     <ul className="os-folder-list">
-                      {auditWindowModels.length === 0 && (
+                      {!auditWindowModels.some((model) => (
+                        model.packet?.metricType === CLICK_AUDIT_METRIC_TYPE
+                      )) && (
                         <FolderEntry
                           title={'Audit ' + (auditTraceForm?.code ?? '?') + ' / dávka'}
                           detail="Čeká na uzavření další dávky raw aktivity"
@@ -964,10 +986,8 @@ function KorpOsShell() {
                       {auditWindowModels.map((model) => (
                         <FolderEntry
                           key={model.windowId}
-                          title={`Audit ${auditTraceForm?.code ?? '?'} / ${model.rangeLabel}`}
-                          detail={model.packet
-                            ? `${model.packet.quantity} kliků / rozsah ${model.packet.rangeStart}–${model.packet.rangeEnd}`
-                            : 'Dávka bez dostupného packetu'}
+                          title={model.title}
+                          detail={model.detail}
                           status={model.fileStatus}
                           iconId={KORP_FOLDER_ICON_IDS.auditPacket}
                           onOpen={() => openWindow(model.windowId)}

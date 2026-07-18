@@ -104,6 +104,7 @@ export type AuditFormDefinition = {
   readonly completionEffects: readonly ProgressionEffect[];
   readonly availableAtStart?: boolean;
   readonly optional?: boolean;
+  readonly repeatable?: boolean;
 };
 
 export type UpgradeCost = {

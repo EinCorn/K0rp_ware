@@ -28,6 +28,21 @@ describe("applyKorpEvent", () => {
     expect(next.updatedAt).toBe(2_000);
   });
 
+  it("records a settled Fidget session as raw stats without changing resources", () => {
+    const state = createInitialState({ now: 1_000 });
+    const resourcesBefore = structuredClone(state.resources);
+    const next = applyKorpEvent(
+      state,
+      event({ sourceModule: "fidget", type: "fidget.sessionSettled", value: 1 })
+    );
+
+    expect(next.resources).toEqual(resourcesBefore);
+    expect(next.stats.totalEvents).toBe(1);
+    expect(next.stats.eventsByType["fidget.sessionSettled"]).toBe(1);
+    expect(next.stats.eventsByModule.fidget).toBe(1);
+    expect(next.updatedAt).toBe(2_000);
+  });
+
   it("awards spendable Evidence only through audit certification", () => {
     const state = createInitialState({ now: 1_000 });
     const next = applyKorpEvent(

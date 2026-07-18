@@ -17,6 +17,7 @@ const auditForms = JSON.parse(await readFile(
 const audit00 = auditForms.find((form) => form.id === 'audit-00-a')
 const audit10 = auditForms.find((form) => form.id === 'audit-10-a')
 const audit16 = auditForms.find((form) => form.id === 'audit-16-c')
+const audit18 = auditForms.find((form) => form.id === 'audit-18-s')
 
 test('Audit 00-A starts with one unchecked presence field', () => {
   assert.deepEqual(createAuditFormValues(audit00), { presence: false })
@@ -82,6 +83,31 @@ test('Audit 16-C requires both compact requisition checkboxes', () => {
     requisition: true,
     acknowledgement: true,
   }), true)
+})
+
+test('Audit 18-S is the fixed repeatable stabilization certification form', () => {
+  const interactiveFields = audit18.fields.filter((field) => field.type !== 'buttonConfirm')
+
+  assert.equal(audit18.code, '18-S')
+  assert.equal(audit18.title, 'Ověření stabilizační relace')
+  assert.equal(audit18.repeatable, true)
+  assert.deepEqual(audit18.completionEffects, [])
+  assert.equal(interactiveFields.length, 1)
+  assert.deepEqual(interactiveFields[0], {
+    id: 'naturalClosure',
+    type: 'radio',
+    label: 'Byla zaznamenaná stabilizační relace ukončena přirozeně?',
+    required: true,
+    options: ['Ano', 'Ne', 'Nelze potvrdit'],
+  })
+  assert.equal(getAuditSubmitField(audit18)?.label, '[CERTIFIKOVAT STABILIZACI]')
+  assert.equal(isAuditFormComplete(audit18, { naturalClosure: null }), false)
+})
+
+test('every Audit 18-S answer is administratively valid', () => {
+  for (const answer of ['Ano', 'Ne', 'Nelze potvrdit']) {
+    assert.equal(isAuditFormComplete(audit18, { naturalClosure: answer }), true)
+  }
 })
 
 test('required field validation supports future audit field types', () => {

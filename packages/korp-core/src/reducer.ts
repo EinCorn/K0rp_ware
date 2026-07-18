@@ -20,6 +20,7 @@ const applyResourceEffects = (resources: KorpResources, event: KorpEvent): KorpR
   switch (event.type) {
     case "clickaudit.click":
     case "clickaudit.batchCompleted":
+    case "fidget.sessionSettled":
       return resources;
     case "audit.evidenceCertified":
       return updateResource(resources, "notionalWorkUnits", value, 0);

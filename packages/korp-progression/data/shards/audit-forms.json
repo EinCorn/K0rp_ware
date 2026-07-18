@@ -25,6 +25,14 @@
     ]
   },
   {
+    "id":"audit-18-s","code":"18-S","title":"Ověření stabilizační relace","estimatedMinutes":1,"interactionClickProfile":"audit-form","repeatable":true,"submitEvent":"audit.formSubmitted",
+    "completionEffects":[],
+    "fields":[
+      {"id":"naturalClosure","type":"radio","label":"Byla zaznamenaná stabilizační relace ukončena přirozeně?","required":true,"options":["Ano","Ne","Nelze potvrdit"]},
+      {"id":"submit","type":"buttonConfirm","label":"[CERTIFIKOVAT STABILIZACI]","required":true}
+    ]
+  },
+  {
     "id":"audit-23-b","code":"23-B","title":"Přístup do compliance zahrádky","estimatedMinutes":4,"interactionClickProfile":"audit-form","requirements":{"kind":"all","requirements":[{"kind":"eventCountAtLeast","eventType":"fidget.sessionSettled","count":2},{"kind":"lifetimeResourceAtLeast","resourceId":"stabilization","amount":18}]},"submitEvent":"audit.formSubmitted",
     "completionEffects":[{"kind":"unlockUpgrade","upgradeId":"bloom.access-permit"},{"kind":"unlockMemo","memoId":"memo.bloom-access"}],
     "fields":[

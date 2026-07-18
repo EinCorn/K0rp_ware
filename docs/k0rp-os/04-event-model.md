@@ -211,7 +211,7 @@ fidget.speedThresholdReached
 fidget.sessionSettled
 ```
 
-`spinTick` je transient/local. `sessionSettled` je auditovatelný natural closure.
+`spinTick`, pointer moves, animation frames a průběžné physics změny jsou transient/local a nesmějí vytvářet progression eventy. `fidget.sessionSettled` vzniká právě jednou až po úmyslném smysluplném pohybu a jeho přirozeném doběhu. Nese jen privacy-safe metadata potřebná pro auditovatelný pořádek relací: sequence, mode a `source: manual`. Raw closure mění event/stat count, ale sama nepřidává Evidence ani jiný přímý currency reward.
 
 ### Bloom
 
@@ -318,10 +318,11 @@ ClickAudit
 → Evidence
 
 Fidget
-→ rotations / sessionSettled raw metric
-→ stabilization packets
-→ audit
-→ Evidence
+→ `fidget.sessionSettled` raw metric
+→ každé 3 nové closures vytvoří `fidget-sessions-<rangeStart>-<rangeEnd>`
+→ repeatable Audit 18-S
+→ certifikace právě jednou
+→ Evidence +1
 
 Bloom
 → status changes / waveAdvanced raw metric
@@ -390,7 +391,7 @@ Doslovná agregovatelná aktivita:
 ### Metric closure
 
 - `clickaudit.batchCompleted`;
-- `fidget.sessionSettled`;
+- `fidget.sessionSettled` — raw natural closure; každé tři nové closures tvoří packet boundary a neúplný zbytek zůstává v baseline/cursoru;
 - `bloom.waveAdvanced`;
 - `corner.sessionCompleted`;
 - `button.sequenceCompleted`.
@@ -425,7 +426,9 @@ pointer down na drag handle
 → 0 dalších click events
 ```
 
-## 13. Click packet flow
+## 13. Metric packet flows
+
+### ClickAudit
 
 ```text
 25 nových raw ClickAudit clicks od batch baseline
@@ -439,12 +442,29 @@ pointer down na drag handle
 → Evidence +1
 ```
 
+### Fidget
+
+```text
+3 nové `fidget.sessionSettled` od Fidget baseline/cursoru
+→ create packet `fidget-sessions-<rangeStart>-<rangeEnd>`
+→ status pending
+→ create/offer repeatable Audit 18-S instance
+→ audit.formSubmitted
+→ audit.evidenceCertified
+→ packet status certified
+→ Evidence +1 právě jednou
+```
+
+Vytvoření Fidget packetu je queue mutation. Nikdy samo neotevře auditní okno a nikdy nepřevezme focus. ClickAudit a Fidget packet audity sdílejí jednu pending queue; taskbar zobrazuje jejich celkový pending count.
+
 Idempotency guards musí zabránit:
 
-- dvojitému packetu za stejný rozsah kliků;
+- dvojitému packetu za stejný ClickAudit nebo Fidget rozsah;
 - dvojité certifikaci;
 - retroaktivnímu vytvoření packetů po save migration;
 - double-countingu capture a explicit handleru.
+
+Schema 4 → 5 migration nastaví Fidget baseline na aktuální počet `fidget.sessionSettled` a nevytvoří žádný retroaktivní Fidget packet.
 
 ## 14. Delegation source contract
 
@@ -473,6 +493,6 @@ Surface mutation reprezentuje výsledek ekonomiky. Sama nesmí obcházet audit n
 
 ## 16. Migration status
 
-Po Tasku 019 reducer a machine-readable data stále částečně mapují raw events přímo na resources.
+Task 023 aktivně přidává druhý metric source s pevným provisional/playtestable packet size `3`, Audit 18-S a smíšeným backlogem. Runtime musí zachovat pravidlo, že `fidget.sessionSettled` Evidence přímo neuděluje.
 
-Task 020 mění ClickAudit slice. Task 023 ověří druhý metric source. Task 024 sjednotí machine data, balance a docs.
+Machine-readable `events.json` stále obsahuje staré přímé Fidget yieldy, včetně `notionalWorkUnits`. Tento známý rozpor se v Tasku 023 nepoužívá jako runtime Evidence flow a jeho reconciliation spolu s balance/data parity zůstává Tasku 024.

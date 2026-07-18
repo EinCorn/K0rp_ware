@@ -4,7 +4,6 @@ import {
   FIDGET_MOTION,
   calculateFidgetDragVelocity,
   calculateFidgetReleaseVelocity,
-  clampFidgetValue,
   clampFidgetVelocity,
   classifyFidgetGesture,
   getFidgetClickDirection,
@@ -13,6 +12,19 @@ import {
   getNormalizedFidgetSpeed,
   normalizeFidgetDegreeDelta,
 } from '../runtime/fidgetMotion'
+import {
+  FIDGET_SESSION_INPUT_KINDS,
+  FIDGET_SESSION_FRAME_MS,
+  FIDGET_SESSION_MEANINGFUL_VELOCITY_EPSILON,
+  FIDGET_SESSION_POINTER_OUTCOMES,
+  advanceFidgetSessionTracker,
+  cancelFidgetSessionTracker,
+  createFidgetSessionTracker,
+  getFidgetSessionClampedDeltaFrames,
+  getFidgetSessionPointerOutcome,
+  registerFidgetSessionInput,
+  stopActiveFidgetSessionMotion,
+} from '../runtime/fidgetSession'
 import './FidgetModule.css'
 
 const CONFETTI_COLORS = [
@@ -37,7 +49,10 @@ const createDragState = () => ({
   moved: false,
 })
 
-export default function FidgetModule({ mode = FIDGET_MODES.manual }) {
+export default function FidgetModule({
+  mode = FIDGET_MODES.manual,
+  onSessionSettled,
+}) {
   const spinnerRef = useRef(null)
   const confettiLayerRef = useRef(null)
   const angleRef = useRef(0)
@@ -46,7 +61,14 @@ export default function FidgetModule({ mode = FIDGET_MODES.manual }) {
   const lastConfettiAtRef = useRef(0)
   const dragRef = useRef(createDragState())
   const timeoutIdsRef = useRef(new Set())
+  const sessionTrackerRef = useRef(createFidgetSessionTracker())
+  const sessionClockRef = useRef(0)
+  const onSessionSettledRef = useRef(onSessionSettled)
   const isClickMode = mode === FIDGET_MODES.click
+
+  useEffect(() => {
+    onSessionSettledRef.current = onSessionSettled
+  }, [onSessionSettled])
 
   useEffect(() => {
     let animationFrame = 0
@@ -94,12 +116,9 @@ export default function FidgetModule({ mode = FIDGET_MODES.manual }) {
     const tick = (timestamp) => {
       const spinner = spinnerRef.current
       const lastFrameTime = lastFrameTimeRef.current || timestamp
-      const deltaFrames = clampFidgetValue(
-        (timestamp - lastFrameTime) / 16.6667,
-        0.25,
-        2.2,
-      )
+      const deltaFrames = getFidgetSessionClampedDeltaFrames(timestamp - lastFrameTime)
       lastFrameTimeRef.current = timestamp
+      sessionClockRef.current += deltaFrames * FIDGET_SESSION_FRAME_MS
 
       if (spinner) {
         if (!dragRef.current.active) {
@@ -131,6 +150,15 @@ export default function FidgetModule({ mode = FIDGET_MODES.manual }) {
           emitRainbowConfetti(normalizedSpeed)
           lastConfettiAtRef.current = timestamp
         }
+
+        const sessionUpdate = advanceFidgetSessionTracker(sessionTrackerRef.current, {
+          timestamp: sessionClockRef.current,
+          isDragging: dragRef.current.active,
+        })
+        sessionTrackerRef.current = sessionUpdate.tracker
+        if (sessionUpdate.settledSession) {
+          onSessionSettledRef.current?.(sessionUpdate.settledSession)
+        }
       }
 
       animationFrame = window.requestAnimationFrame(tick)
@@ -143,6 +171,7 @@ export default function FidgetModule({ mode = FIDGET_MODES.manual }) {
       timeoutIds.forEach((timeoutId) => window.clearTimeout(timeoutId))
       timeoutIds.clear()
       confettiLayer?.replaceChildren()
+      sessionTrackerRef.current = cancelFidgetSessionTracker(sessionTrackerRef.current)
     }
   }, [])
 
@@ -178,6 +207,17 @@ export default function FidgetModule({ mode = FIDGET_MODES.manual }) {
       velocityRef.current + direction * (14 + Math.random() * 12) * strength,
     )
     pulseSpinner()
+    return velocityRef.current
+  }
+
+  const registerSessionInput = (inputKind, velocity, timestamp = sessionClockRef.current) => {
+    sessionTrackerRef.current = registerFidgetSessionInput(sessionTrackerRef.current, {
+      timestamp,
+      mode,
+      inputKind,
+      velocity,
+      isQualifiedInput: true,
+    })
   }
 
   const handleClick = (event) => {
@@ -187,7 +227,11 @@ export default function FidgetModule({ mode = FIDGET_MODES.manual }) {
     if (!spinner) return
 
     const bounds = spinner.getBoundingClientRect()
-    flick(getFidgetClickDirection(event.clientX, bounds.left, bounds.width), 0.95)
+    const velocity = flick(
+      getFidgetClickDirection(event.clientX, bounds.left, bounds.width),
+      0.95,
+    )
+    registerSessionInput(FIDGET_SESSION_INPUT_KINDS.click, velocity)
   }
 
   const handlePointerDown = (event) => {
@@ -209,6 +253,11 @@ export default function FidgetModule({ mode = FIDGET_MODES.manual }) {
     }
     spinner.classList.add('is-dragging')
     velocityRef.current = 0
+    const sessionUpdate = advanceFidgetSessionTracker(sessionTrackerRef.current, {
+      timestamp: sessionClockRef.current,
+      isDragging: true,
+    })
+    sessionTrackerRef.current = sessionUpdate.tracker
   }
 
   const handlePointerMove = (event) => {
@@ -237,12 +286,15 @@ export default function FidgetModule({ mode = FIDGET_MODES.manual }) {
     drag.time = now
   }
 
-  const finishPointerGesture = (event) => {
+  const completePointerGesture = (event, { cancelled = false } = {}) => {
     const spinner = spinnerRef.current
     const drag = dragRef.current
     if (!spinner || !drag.active || drag.pointerId !== event.pointerId || isClickMode) return
 
-    const wasTap = !drag.moved
+    const pointerOutcome = getFidgetSessionPointerOutcome({
+      moved: drag.moved,
+      cancelled,
+    })
     drag.active = false
     drag.pointerId = null
 
@@ -252,10 +304,29 @@ export default function FidgetModule({ mode = FIDGET_MODES.manual }) {
 
     dragRef.current = createDragState()
     spinner.classList.remove('is-dragging')
-    velocityRef.current = wasTap
-      ? 0
-      : calculateFidgetReleaseVelocity(velocityRef.current)
+    const finishedAt = sessionClockRef.current
+    if (!drag.moved) {
+      velocityRef.current = 0
+    } else {
+      velocityRef.current = calculateFidgetReleaseVelocity(velocityRef.current)
+    }
+
+    if (pointerOutcome === FIDGET_SESSION_POINTER_OUTCOMES.tap) {
+      sessionTrackerRef.current = stopActiveFidgetSessionMotion(
+        sessionTrackerRef.current,
+        finishedAt,
+      )
+    } else if (pointerOutcome === FIDGET_SESSION_POINTER_OUTCOMES.dragRelease) {
+      registerSessionInput(
+        FIDGET_SESSION_INPUT_KINDS.dragRelease,
+        velocityRef.current,
+        finishedAt,
+      )
+    }
   }
+
+  const finishPointerGesture = (event) => completePointerGesture(event)
+  const cancelPointerGesture = (event) => completePointerGesture(event, { cancelled: true })
 
   const handleWheel = (event) => {
     if (isClickMode) return
@@ -264,6 +335,10 @@ export default function FidgetModule({ mode = FIDGET_MODES.manual }) {
     velocityRef.current = clampFidgetVelocity(
       velocityRef.current + event.deltaY * -0.06,
     )
+    const wheelImpulse = Math.abs(event.deltaY * -0.06)
+    if (wheelImpulse > FIDGET_SESSION_MEANINGFUL_VELOCITY_EPSILON) {
+      registerSessionInput(FIDGET_SESSION_INPUT_KINDS.wheel, velocityRef.current)
+    }
   }
 
   return (
@@ -288,13 +363,14 @@ export default function FidgetModule({ mode = FIDGET_MODES.manual }) {
           onPointerDown={handlePointerDown}
           onPointerMove={handlePointerMove}
           onPointerUp={finishPointerGesture}
-          onPointerCancel={finishPointerGesture}
-          onLostPointerCapture={finishPointerGesture}
+          onPointerCancel={cancelPointerGesture}
+          onLostPointerCapture={cancelPointerGesture}
           onWheel={handleWheel}
           onKeyDown={(event) => {
             if (isClickMode && (event.code === 'Space' || event.key === 'Enter')) {
               event.preventDefault()
-              flick()
+              const velocity = flick()
+              registerSessionInput(FIDGET_SESSION_INPUT_KINDS.keyboard, velocity)
             }
           }}
         >

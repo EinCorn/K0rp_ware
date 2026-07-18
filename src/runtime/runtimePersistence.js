@@ -1,7 +1,14 @@
-export const RUNTIME_SAVE_KEY = 'k0rp-os.runtime'
-export const RUNTIME_SAVE_SCHEMA_VERSION = 4
+import {
+  CLICK_AUDIT_METRIC_TYPE,
+  CLICK_AUDIT_TEMPLATE_ID,
+  FIDGET_AUDIT_TEMPLATE_ID,
+  FIDGET_METRIC_TYPE,
+  FIDGET_SESSIONS_PER_PACKET,
+} from './metricAuditFlow.js'
 
-const CLICK_AUDIT_TEMPLATE_ID = 'audit-10-a'
+export const RUNTIME_SAVE_KEY = 'k0rp-os.runtime'
+export const RUNTIME_SAVE_SCHEMA_VERSION = 5
+
 const FIDGET_MODULE_ID = 'fidget'
 const FIDGET_LEGACY_PERMIT_ID = 'fidget.access-permit'
 const FIDGET_SOURCE_FORM_ID = 'audit-16-c'
@@ -19,6 +26,7 @@ const persistedRuntimeKeys = [
   'clickAuditBatchBaseline',
   'clickAuditBootstrapArmed',
   'clickAuditBootstrapCompleted',
+  'fidgetSessionBatchBaseline',
 ]
 
 const isPlainObject = (value) => (
@@ -37,12 +45,28 @@ const safeWholeCount = (value) => (
   Number.isFinite(value) && value > 0 ? Math.floor(value) : 0
 )
 
+const isSafeWholeCount = (value) => (
+  Number.isSafeInteger(value) && value >= 0
+)
+
+const isSafePositiveCount = (value) => (
+  Number.isSafeInteger(value) && value > 0
+)
+
+const isSafeTimestamp = (value) => (
+  Number.isSafeInteger(value) && value >= 0
+)
+
 const getRuntimeEventCount = (runtime, eventType) => safeWholeCount(
   runtime.korpState?.stats?.eventsByType?.[eventType],
 )
 
 const getRuntimeClickCount = (runtime) => (
   getRuntimeEventCount(runtime, 'clickaudit.click')
+)
+
+const getRuntimeFidgetSessionCount = (runtime) => (
+  getRuntimeEventCount(runtime, FIDGET_METRIC_TYPE)
 )
 
 const hasClickAuditUnlocked = (runtime) => (
@@ -52,7 +76,10 @@ const hasClickAuditUnlocked = (runtime) => (
 
 const withoutRepeatableAuditSubmission = (submittedFormIds) => (
   Array.isArray(submittedFormIds)
-    ? submittedFormIds.filter((formId) => formId !== CLICK_AUDIT_TEMPLATE_ID)
+    ? submittedFormIds.filter((formId) => (
+      formId !== CLICK_AUDIT_TEMPLATE_ID
+      && formId !== FIDGET_AUDIT_TEMPLATE_ID
+    ))
     : submittedFormIds
 )
 
@@ -153,22 +180,74 @@ const migrateDraftV2Runtime = (runtime) => {
   }
 }
 
+const migrateFidgetMetricState = (runtime) => ({
+  ...runtime,
+  fidgetSessionBatchBaseline: getRuntimeFidgetSessionCount(runtime),
+})
+
+const metricPacketContracts = {
+  [CLICK_AUDIT_METRIC_TYPE]: {
+    auditTemplateId: CLICK_AUDIT_TEMPLATE_ID,
+    packetIdForRange: (rangeStart, rangeEnd) => (
+      `clickaudit-clicks-${rangeStart}-${rangeEnd}`
+    ),
+  },
+  [FIDGET_METRIC_TYPE]: {
+    auditTemplateId: FIDGET_AUDIT_TEMPLATE_ID,
+    packetIdForRange: (rangeStart, rangeEnd) => (
+      `fidget-sessions-${rangeStart}-${rangeEnd}`
+    ),
+  },
+}
+
 const sanitizeMetricPacket = (packet) => {
   if (!isPlainObject(packet)) return null
-  if (typeof packet.id !== 'string' || packet.id.length === 0) return null
-  if (typeof packet.metricType !== 'string' || packet.metricType.length === 0) return null
-  if (!['manual', 'delegated', 'system-generated'].includes(packet.source)) return null
+  const contract = metricPacketContracts[packet.metricType]
+  if (!contract) return null
+  if (packet.source !== 'manual') return null
   if (!['pending', 'certified', 'rejected'].includes(packet.status)) return null
-  if (!Number.isFinite(packet.quantity) || packet.quantity <= 0) return null
-  if (!Number.isFinite(packet.createdAt)) return null
-  if (typeof packet.auditTemplateId !== 'string' || packet.auditTemplateId.length === 0) return null
+  if (!isSafePositiveCount(packet.quantity)) return null
+  if (!isSafePositiveCount(packet.rangeStart)) return null
+  if (!isSafePositiveCount(packet.rangeEnd)) return null
+  if (packet.rangeStart > packet.rangeEnd) return null
+  if (packet.quantity !== packet.rangeEnd - packet.rangeStart + 1) return null
+  if (!isSafeTimestamp(packet.createdAt)) return null
+  if (packet.auditTemplateId !== contract.auditTemplateId) return null
+  if (packet.id !== contract.packetIdForRange(packet.rangeStart, packet.rangeEnd)) return null
+  if (packet.certifiedAt !== undefined && !isSafeTimestamp(packet.certifiedAt)) return null
 
   return {
-    ...packet,
-    quantity: safeWholeCount(packet.quantity),
-    rangeStart: safeWholeCount(packet.rangeStart),
-    rangeEnd: safeWholeCount(packet.rangeEnd),
+    id: packet.id,
+    metricType: packet.metricType,
+    source: packet.source,
+    quantity: packet.quantity,
+    status: packet.status,
+    createdAt: packet.createdAt,
+    ...(packet.certifiedAt === undefined ? {} : { certifiedAt: packet.certifiedAt }),
+    auditTemplateId: packet.auditTemplateId,
+    rangeStart: packet.rangeStart,
+    rangeEnd: packet.rangeEnd,
   }
+}
+
+const sanitizeHydratableMetricPackets = (metricPackets, settledSessionCount) => {
+  let nextFidgetRangeStart = null
+
+  return metricPackets.filter((packet) => {
+    if (packet.metricType !== FIDGET_METRIC_TYPE) return true
+    if (
+      packet.quantity !== FIDGET_SESSIONS_PER_PACKET
+      || packet.rangeEnd - packet.rangeStart + 1 !== FIDGET_SESSIONS_PER_PACKET
+      || packet.rangeEnd > settledSessionCount
+    ) return false
+    if (
+      nextFidgetRangeStart !== null
+      && packet.rangeStart !== nextFidgetRangeStart
+    ) return false
+
+    nextFidgetRangeStart = packet.rangeEnd + 1
+    return true
+  })
 }
 
 const sanitizeAuditInstance = (instance) => {
@@ -177,11 +256,17 @@ const sanitizeAuditInstance = (instance) => {
   if (typeof instance.templateId !== 'string' || instance.templateId.length === 0) return null
   if (typeof instance.packetId !== 'string' || instance.packetId.length === 0) return null
   if (!['available', 'draft', 'submitted', 'closed'].includes(instance.status)) return null
-  if (!Number.isFinite(instance.createdAt)) return null
+  if (!isSafeTimestamp(instance.createdAt)) return null
+  if (instance.submittedAt !== undefined && !isSafeTimestamp(instance.submittedAt)) return null
 
   return {
-    ...instance,
+    id: instance.id,
+    templateId: instance.templateId,
+    packetId: instance.packetId,
+    status: instance.status,
     values: isPlainObject(instance.values) ? instance.values : {},
+    createdAt: instance.createdAt,
+    ...(instance.submittedAt === undefined ? {} : { submittedAt: instance.submittedAt }),
   }
 }
 
@@ -304,9 +389,11 @@ export function migrateRuntimeSave(candidate, { progressionDataVersion } = {}) {
       ...candidate,
       schemaVersion: RUNTIME_SAVE_SCHEMA_VERSION,
       progressionDataVersion,
-      runtime: migrateModuleAuthorizationState(
-        migrateLegacyRuntime(candidate.runtime),
-        candidate.savedAt,
+      runtime: migrateFidgetMetricState(
+        migrateModuleAuthorizationState(
+          migrateLegacyRuntime(candidate.runtime),
+          candidate.savedAt,
+        ),
       ),
     }
   }
@@ -318,9 +405,11 @@ export function migrateRuntimeSave(candidate, { progressionDataVersion } = {}) {
       ...candidate,
       schemaVersion: RUNTIME_SAVE_SCHEMA_VERSION,
       progressionDataVersion,
-      runtime: migrateModuleAuthorizationState(
-        migrateDraftV2Runtime(candidate.runtime),
-        candidate.savedAt,
+      runtime: migrateFidgetMetricState(
+        migrateModuleAuthorizationState(
+          migrateDraftV2Runtime(candidate.runtime),
+          candidate.savedAt,
+        ),
       ),
     }
   }
@@ -332,11 +421,79 @@ export function migrateRuntimeSave(candidate, { progressionDataVersion } = {}) {
       ...candidate,
       schemaVersion: RUNTIME_SAVE_SCHEMA_VERSION,
       progressionDataVersion,
-      runtime: migrateModuleAuthorizationState(candidate.runtime, candidate.savedAt),
+      runtime: migrateFidgetMetricState(
+        migrateModuleAuthorizationState(candidate.runtime, candidate.savedAt),
+      ),
+    }
+  }
+
+  if (candidate.schemaVersion === 4) {
+    if (!isPlainObject(candidate.runtime) || !isPlainObject(candidate.runtime.korpState)) return null
+
+    return {
+      ...candidate,
+      schemaVersion: RUNTIME_SAVE_SCHEMA_VERSION,
+      progressionDataVersion,
+      runtime: migrateFidgetMetricState(candidate.runtime),
     }
   }
 
   return candidate
+}
+
+const sanitizeLinkedAuditInstances = (auditInstances, metricPackets) => {
+  const packetById = new Map(metricPackets.map((packet) => [packet.id, packet]))
+  const linkedAuditInstances = sanitizeUniqueObjects(auditInstances, sanitizeAuditInstance)
+    .filter((instance) => {
+      const packet = packetById.get(instance.packetId)
+      if (!packet || packet.auditTemplateId !== instance.templateId) return false
+      if (instance.id !== `${instance.templateId}:${packet.id}`) return false
+
+      if (packet.status === 'pending') {
+        return instance.status === 'available' || instance.status === 'draft'
+      }
+
+      return instance.status === 'submitted' || instance.status === 'closed'
+    })
+  const linkedPacketIds = new Set(linkedAuditInstances.map((instance) => instance.packetId))
+
+  for (const packet of metricPackets) {
+    if (
+      packet.metricType !== FIDGET_METRIC_TYPE
+      || packet.status !== 'pending'
+      || linkedPacketIds.has(packet.id)
+    ) continue
+
+    linkedAuditInstances.push({
+      id: `${FIDGET_AUDIT_TEMPLATE_ID}:${packet.id}`,
+      templateId: FIDGET_AUDIT_TEMPLATE_ID,
+      packetId: packet.id,
+      status: 'available',
+      values: {},
+      createdAt: packet.createdAt,
+    })
+    linkedPacketIds.add(packet.id)
+  }
+
+  return linkedAuditInstances
+}
+
+const sanitizeFidgetSessionBaseline = (value, settledSessionCount, metricPackets) => {
+  if (!isSafeWholeCount(value)) return settledSessionCount
+
+  const packetCursor = metricPackets.reduce((cursor, packet) => (
+    packet.metricType === FIDGET_METRIC_TYPE
+      ? Math.max(cursor, packet.rangeEnd)
+      : cursor
+  ), 0)
+  const candidate = Math.min(
+    settledSessionCount,
+    Math.max(value, packetCursor),
+  )
+
+  return settledSessionCount - candidate >= FIDGET_SESSIONS_PER_PACKET
+    ? settledSessionCount
+    : candidate
 }
 
 export function hydrateRuntimeSave(candidate, {
@@ -364,26 +521,42 @@ export function hydrateRuntimeSave(candidate, {
     clickAuditBatchBaseline,
     clickAuditBootstrapArmed,
     clickAuditBootstrapCompleted,
+    fidgetSessionBatchBaseline,
   } = migrated.runtime
 
   if (!isPlainObject(korpState) || korpState.version !== coreStateVersion) return fallback()
   if (!isPlainObject(korpState.stats) || !isPlainObject(korpState.resources) || !isPlainObject(lifetimeStats)) return fallback()
 
   const bootstrapCompleted = clickAuditBootstrapCompleted === true
+  const settledSessionCount = getRuntimeFidgetSessionCount(migrated.runtime)
+  const sanitizedMetricPackets = sanitizeHydratableMetricPackets(
+    sanitizeUniqueObjects(metricPackets, sanitizeMetricPacket),
+    settledSessionCount,
+  )
+  const sanitizedAuditInstances = sanitizeLinkedAuditInstances(
+    auditInstances,
+    sanitizedMetricPackets,
+  )
 
   return {
     korpState,
     lifetimeStats,
-    submittedFormIds: uniqueStringIds(submittedFormIds),
+    submittedFormIds: uniqueStringIds(submittedFormIds)
+      .filter((formId) => formId !== FIDGET_AUDIT_TEMPLATE_ID),
     ownedUpgradeIds: uniqueStringIds(ownedUpgradeIds),
     unlockedMemoIds: uniqueStringIds(unlockedMemoIds),
     unlockedModuleIds: uniqueStringIds(unlockedModuleIds),
-    metricPackets: sanitizeUniqueObjects(metricPackets, sanitizeMetricPacket),
-    auditInstances: sanitizeUniqueObjects(auditInstances, sanitizeAuditInstance),
+    metricPackets: sanitizedMetricPackets,
+    auditInstances: sanitizedAuditInstances,
     moduleAuthorizations: sanitizeModuleAuthorizations(moduleAuthorizations),
     clickAuditBatchBaseline: safeWholeCount(clickAuditBatchBaseline),
     clickAuditBootstrapArmed: clickAuditBootstrapArmed === true && !bootstrapCompleted,
     clickAuditBootstrapCompleted: bootstrapCompleted,
+    fidgetSessionBatchBaseline: sanitizeFidgetSessionBaseline(
+      fidgetSessionBatchBaseline,
+      settledSessionCount,
+      sanitizedMetricPackets,
+    ),
   }
 }
 

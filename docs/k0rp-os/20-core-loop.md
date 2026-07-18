@@ -113,7 +113,7 @@ Jednorázové formuláře:
 Opakovatelné auditní templates:
 
 - certifikace ClickAudit dávky;
-- ověření Fidget session;
+- Audit 18-S — ověření Fidget stabilization packetu;
 - kontrola delegované aktivity;
 - oprava nesrovnalosti.
 
@@ -335,7 +335,7 @@ Neimplementovat předtím, než playtest prokáže, že auditní backlog skuteč
 
 ## 6. Minimální runtime state
 
-Pragmatický model pro Task 020:
+Pragmatický model rozšířený v Tasku 023:
 
 ```ts
 type MetricPacket = {
@@ -346,6 +346,8 @@ type MetricPacket = {
   status: "pending" | "certified" | "rejected";
   createdAt: number;
   auditTemplateId: string;
+  rangeStart?: number;
+  rangeEnd?: number;
   certifiedAt?: number;
 };
 
@@ -357,6 +359,13 @@ type AuditInstance = {
   values: Record<string, unknown>;
   createdAt: number;
   submittedAt?: number;
+};
+
+type MetricAuditRuntimeState = {
+  metricPackets: MetricPacket[];
+  auditInstances: AuditInstance[];
+  clickBatchBaseline: number;
+  fidgetSessionBatchBaseline: number;
 };
 ```
 
@@ -435,14 +444,14 @@ Jedna Evidence je alokována/spotřebována na autorizaci. Po schválení se ode
 Fidget nevyrábí Evidence přímo.
 
 ```text
-Fidget sessionSettled
-→ raw stabilization record
-→ pending packet
-→ audit
-→ Evidence
+`fidget.sessionSettled` × 3
+→ packet `fidget-sessions-<rangeStart>-<rangeEnd>`
+→ pending repeatable Audit 18-S
+→ platná certifikace právě jednou
+→ Evidence +1
 ```
 
-Tím se prokáže, že core loop není hardcoded jen pro kliky.
+Packet size `3` je fixed provisional/playtestable hodnota Tasku 023. Neúplný zbytek sessions se zachová pro další packet. Raw session a packet creation nemají přímý Evidence reward; vytvoření packetu nikdy samo neotevře okno ani nepřevezme focus. Tím se prokáže, že core loop není hardcoded jen pro kliky.
 
 ## 8. Player-facing UI
 
@@ -454,6 +463,16 @@ EVIDENCE 1
 ```
 
 Raw metriky zůstávají uvnitř příslušných modulů.
+
+Formuláře řadí ClickAudit i Fidget audity do jedné queue. Taskbar `ČEKÁ NA AUDIT` je celkový pending count přes oba metric sources.
+
+Task 023 smí pro debug/playtest zobrazit odvozený provisional Audit Pressure:
+
+```text
+clamp(0, 100, pendingCount * 10 + floor(oldestPendingAgeMinutes / 10) + discrepancyCount * 20)
+```
+
+Tento debug readout není persistentní resource a nesmí se zapisovat do `korpState.resources.auditPressure`.
 
 Audit Pressure, Perceived Productivity, Compliance Integrity a další KPI jsou:
 
@@ -524,7 +543,7 @@ Task 020 — Click packet → Audit 10-A → Evidence
 Task 021 — Evidence authorization contract / Audit 16-C
 Task 022 — asset-backed Fidget integration
 Task 023 — Fidget packet → repeatable audit → backlog
-Task 024 — first-cycle data rebalance
+Task 024 — machine-readable first-cycle balance/data reconciliation
 Task 025 — delegation prototype až po backlog playtestu
 ```
 
@@ -533,6 +552,10 @@ Dokud konkrétní task není dokončen:
 - runtime může dočasně obsahovat starší v0.2 chování;
 - nové feature nesmí dále záviset na přímém `click → currency` modelu;
 - rozdíl musí být v PR výslovně uveden, ne tiše domyšlen.
+
+Schema 4 → 5 migration pro Task 023 zachová existující ClickAudit packet/audit stav, authorization a unlocky, nastaví `fidgetSessionBatchBaseline` na aktuální počet `fidget.sessionSettled` a vytvoří nula retroaktivních Fidget packetů. První packet vznikne až po třech nových settled sessions.
+
+Současný machine-readable `events.json` obsahuje staré přímé yieldy pro `fidget.sessionSettled`, včetně `notionalWorkUnits`. Task 023 runtime tento direct-yield nepoužívá k udělení Evidence; oprava dat a parity patří do Tasku 024.
 
 ## 13. Playtest gate
 
