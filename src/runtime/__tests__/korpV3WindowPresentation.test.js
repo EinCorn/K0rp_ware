@@ -21,15 +21,15 @@ import {
   snapWindowPosition,
 } from '../windowManager.js'
 
-test('pilot families resolve the reviewed @2x dimensions and integer frame geometry', () => {
+test('pilot families render density assets at documented native window geometry', () => {
   assert.deepEqual(KORP_V3_PILOT_WINDOW_IDS, {
     auditEntry: 'form:audit-00-a',
     formsFolder: 'forms-folder',
   })
 
   for (const [family, expected] of [
-    ['audit', { width: 346, height: 328, contentWidth: 314, contentHeight: 256 }],
-    ['folder', { width: 344, height: 310, contentWidth: 312, contentHeight: 238 }],
+    ['audit', { width: 173, height: 164, contentWidth: 157, contentHeight: 128 }],
+    ['folder', { width: 172, height: 155, contentWidth: 156, contentHeight: 119 }],
   ]) {
     const geometry = getKorpV3WindowGeometry(family)
     assert.equal(geometry.width, expected.width)

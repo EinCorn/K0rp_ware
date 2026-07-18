@@ -6,13 +6,12 @@ import {
 } from '../runtime/korpV3WindowPresentation.js'
 import './KorpV3Window.css'
 
-const FRAME_SLICE_KEYS = Object.freeze([
-  'tl', 't', 'tr',
-  'l', 'c', 'r',
-  'bl', 'b', 'br',
-])
-
 const assetUrl = (id) => resolveKorpUiAsset(id)?.runtimeUrl ?? null
+
+// The standalone control exports are authored for the wide standard titlebar.
+// Compact Audit/Folder frames use the same material at half that native size,
+// which lands on the established 18–19px embedded-window control rhythm.
+const compactControlSize = (value) => Math.max(1, Math.round((value ?? 0) / 2))
 
 const cssAssetUrl = (id) => {
   const runtimeUrl = assetUrl(id)
@@ -26,21 +25,18 @@ function KorpV3WindowControl({ action, label, onActivate, disabled = false }) {
       resolveKorpUiAsset(getKorpV3WindowControlAssetId(action, state)),
     ]),
   )
-  const displayWidth = Math.max(
-    ...Object.values(controlAssets).map((asset) => asset?.nativeWidth ?? 0),
-  )
-  const displayHeight = Math.max(
-    ...Object.values(controlAssets).map((asset) => asset?.nativeHeight ?? 0),
-  )
+  const displayWidth = compactControlSize(controlAssets.normal?.nativeWidth)
+  const displayHeight = compactControlSize(controlAssets.normal?.nativeHeight)
+  const displaySize = `${displayWidth}px ${displayHeight}px`
   const style = {
     '--korp-v3-control-normal': cssAssetUrl(controlAssets.normal?.id),
-    '--korp-v3-control-normal-size': `${controlAssets.normal?.nativeWidth ?? 0}px ${controlAssets.normal?.nativeHeight ?? 0}px`,
+    '--korp-v3-control-normal-size': displaySize,
     '--korp-v3-control-hover': cssAssetUrl(controlAssets.hover?.id),
-    '--korp-v3-control-hover-size': `${controlAssets.hover?.nativeWidth ?? 0}px ${controlAssets.hover?.nativeHeight ?? 0}px`,
+    '--korp-v3-control-hover-size': displaySize,
     '--korp-v3-control-pressed': cssAssetUrl(controlAssets.pressed?.id),
-    '--korp-v3-control-pressed-size': `${controlAssets.pressed?.nativeWidth ?? 0}px ${controlAssets.pressed?.nativeHeight ?? 0}px`,
+    '--korp-v3-control-pressed-size': displaySize,
     '--korp-v3-control-disabled': cssAssetUrl(controlAssets.disabled?.id),
-    '--korp-v3-control-disabled-size': `${controlAssets.disabled?.nativeWidth ?? 0}px ${controlAssets.disabled?.nativeHeight ?? 0}px`,
+    '--korp-v3-control-disabled-size': displaySize,
     '--korp-v3-control-width': `${displayWidth}px`,
     '--korp-v3-control-height': `${displayHeight}px`,
   }
@@ -75,8 +71,8 @@ export function KorpV3WindowHeader({
       className={`korp-v3-window-header${isActive ? ' is-active' : ' is-inactive'}`}
       style={{
         '--korp-v3-titlebar': titlebar?.runtimeUrl ? `url("${titlebar.runtimeUrl}")` : 'none',
-        '--korp-v3-titlebar-width': `${titlebar?.intrinsicWidth ?? 0}px`,
-        '--korp-v3-titlebar-height': `${titlebar?.intrinsicHeight ?? 0}px`,
+        '--korp-v3-titlebar-width': `${titlebar?.nativeWidth ?? 0}px`,
+        '--korp-v3-titlebar-height': `${titlebar?.nativeHeight ?? 0}px`,
       }}
       onPointerDown={onPointerDown}
       data-window-drag-region="true"
@@ -120,10 +116,12 @@ export function KorpV3WindowFrame({
     ? 'window.folder.list_surface'
     : `window.${family}.content`
   const surface = resolveKorpUiAsset(surfaceId)
+  const frameId = `window.${family}.frame`
+  const frameUrl = assetUrl(frameId)
 
   return (
     <article
-      className={`korp-v3-window korp-v3-window-${family} ${className}`.trim()}
+      className={`korp-v3-window korp-v3-window-${family} ${isActive ? 'is-active' : 'is-inactive'} ${className}`.trim()}
       style={{
         ...style,
         '--korp-v3-window-width': `${geometry.width}px`,
@@ -132,8 +130,6 @@ export function KorpV3WindowFrame({
         '--korp-v3-content-y': `${geometry.contentRect.y}px`,
         '--korp-v3-content-width': `${geometry.contentRect.width}px`,
         '--korp-v3-content-height': `${geometry.contentRect.height}px`,
-        '--korp-v3-frame-columns': geometry.slices.columns.map((value) => `${value}px`).join(' '),
-        '--korp-v3-frame-rows': geometry.slices.rows.map((value) => `${value}px`).join(' '),
         '--korp-v3-content-surface': surface?.runtimeUrl ? `url("${surface.runtimeUrl}")` : 'none',
       }}
       data-window-id={windowState.id}
@@ -141,23 +137,16 @@ export function KorpV3WindowFrame({
       aria-labelledby={labelledBy}
       onPointerDown={onPointerDown}
     >
-      <div className="korp-v3-window-frame" aria-hidden="true">
-        {FRAME_SLICE_KEYS.map((slice) => {
-          const id = `window.${family}.frame.slice.${slice}`
-          const runtimeUrl = assetUrl(id)
-
-          return runtimeUrl ? (
-            <img
-              key={slice}
-              className={`korp-v3-frame-piece korp-v3-frame-piece-${slice}`}
-              src={runtimeUrl}
-              alt=""
-              draggable="false"
-              data-korp-v3-asset={id}
-            />
-          ) : null
-        })}
-      </div>
+      {frameUrl ? (
+        <img
+          className="korp-v3-window-frame"
+          src={frameUrl}
+          alt=""
+          aria-hidden="true"
+          draggable="false"
+          data-korp-v3-asset={frameId}
+        />
+      ) : null}
       <div className="korp-v3-window-surface">
         {children}
       </div>

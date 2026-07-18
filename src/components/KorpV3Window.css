@@ -3,9 +3,9 @@
   width: var(--korp-v3-window-width);
   height: var(--korp-v3-window-height);
   min-width: 0;
-  overflow: hidden;
+  overflow: visible;
   background: transparent;
-  box-shadow: 6px 7px 0 rgba(16, 17, 14, 0.48);
+  filter: drop-shadow(4px 5px 0 rgba(16, 18, 14, 0.42));
   image-rendering: crisp-edges;
   image-rendering: pixelated;
   pointer-events: auto;
@@ -14,44 +14,19 @@
 .korp-v3-window-frame {
   position: absolute;
   inset: 0;
-  z-index: 0;
-  display: grid;
-  grid-template-columns: var(--korp-v3-frame-columns);
-  grid-template-rows: var(--korp-v3-frame-rows);
-  pointer-events: none;
-}
-
-.korp-v3-frame-piece {
+  z-index: 3;
   width: 100%;
   height: 100%;
-  min-width: 0;
-  min-height: 0;
   display: block;
+  object-fit: fill;
+  pointer-events: none;
   image-rendering: crisp-edges;
   image-rendering: pixelated;
   user-select: none;
 }
 
-.korp-v3-frame-piece-t,
-.korp-v3-frame-piece-b {
-  object-fit: fill;
-}
-
-.korp-v3-frame-piece-l,
-.korp-v3-frame-piece-r {
-  object-fit: fill;
-}
-
-.korp-v3-frame-piece-tl,
-.korp-v3-frame-piece-tr,
-.korp-v3-frame-piece-bl,
-.korp-v3-frame-piece-br {
-  object-fit: none;
-}
-
-.korp-v3-frame-piece:not(.korp-v3-frame-piece-c) {
-  position: relative;
-  z-index: 3;
+.korp-v3-window.is-inactive .korp-v3-window-frame {
+  filter: brightness(0.92) saturate(0.86);
 }
 
 .korp-v3-window-surface {
@@ -68,27 +43,26 @@
   background-image: var(--korp-v3-content-surface);
   background-position: 0 0;
   background-repeat: no-repeat;
-  background-size: var(--korp-v3-content-width) var(--korp-v3-content-height);
+  background-size: 100% 100%;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
 }
 
 .korp-v3-window-header {
   position: absolute;
-  left: var(--korp-v3-content-x);
+  left: 0;
   top: 0;
   z-index: 4;
-  width: var(--korp-v3-content-width);
+  width: 100%;
   height: var(--korp-v3-content-y);
   min-width: 0;
   display: flex;
-  gap: 6px;
   align-items: center;
-  padding: 0 6px 0 9px;
+  padding: 0 44px 0 13px;
   overflow: hidden;
+  isolation: isolate;
   color: #ddd8c5;
-  background-image: var(--korp-v3-titlebar);
-  background-position: center -4px;
-  background-repeat: no-repeat;
-  background-size: var(--korp-v3-titlebar-width) var(--korp-v3-titlebar-height);
+  background: transparent;
   font: var(--os-type-micro)/var(--os-leading-micro) var(--os-mono);
   letter-spacing: var(--os-tracking-micro);
   cursor: grab;
@@ -97,6 +71,30 @@
   touch-action: none;
   user-select: none;
   white-space: nowrap;
+}
+
+/* The family frame owns the corner joins and outer bevel. This clean inner
+   material strip masks baked reference glyphs without laying a second rail
+   over the complete chassis. */
+.korp-v3-window-header::before {
+  content: '';
+  position: absolute;
+  top: 3px;
+  right: 4px;
+  bottom: 3px;
+  left: 8px;
+  z-index: -1;
+  background-image: var(--korp-v3-titlebar);
+  background-position: center -5px;
+  background-repeat: no-repeat;
+  background-size: var(--korp-v3-titlebar-width) var(--korp-v3-titlebar-height);
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+.korp-v3-window-audit .korp-v3-window-header::before {
+  right: 3px;
 }
 
 .korp-v3-window-header:active {
@@ -108,6 +106,8 @@
 }
 
 .korp-v3-window-title {
+  position: relative;
+  z-index: 1;
   min-width: 0;
   margin-right: auto;
   overflow: hidden;
@@ -117,9 +117,13 @@
 }
 
 .korp-v3-window-controls {
+  position: absolute;
+  top: 5px;
+  right: 4px;
+  z-index: 1;
   flex: 0 0 auto;
   display: flex;
-  gap: 2px;
+  gap: 1px;
   align-items: center;
 }
 
@@ -140,22 +144,27 @@
   image-rendering: crisp-edges;
   image-rendering: pixelated;
   touch-action: auto;
+  transition: transform 120ms ease, filter 120ms ease;
 }
 
 .korp-v3-window-control:hover,
 .korp-v3-window-control:focus-visible {
   background-image: var(--korp-v3-control-hover);
   background-size: var(--korp-v3-control-hover-size);
+  transform: translateY(-1px);
+  filter: brightness(1.08);
 }
 
 .korp-v3-window-control:focus-visible {
-  outline: 2px solid var(--os-amber);
-  outline-offset: -2px;
+  outline: 1px solid var(--os-amber);
+  outline-offset: -1px;
 }
 
 .korp-v3-window-control:active {
   background-image: var(--korp-v3-control-pressed);
   background-size: var(--korp-v3-control-pressed-size);
+  transform: translateY(0);
+  filter: brightness(0.96);
 }
 
 .korp-v3-window-control:disabled {

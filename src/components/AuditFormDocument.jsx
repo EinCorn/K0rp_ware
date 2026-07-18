@@ -26,11 +26,11 @@ function CheckboxField({ field, value, onChange, visualVariant }) {
     : null
   const assetStyle = isV3 ? {
     '--korp-v3-checkbox-off': cssAssetUrl(checkboxOff?.id),
-    '--korp-v3-checkbox-off-size': `${checkboxOff?.intrinsicWidth ?? 0}px ${checkboxOff?.intrinsicHeight ?? 0}px`,
+    '--korp-v3-checkbox-off-size': `${checkboxOff?.nativeWidth ?? 0}px ${checkboxOff?.nativeHeight ?? 0}px`,
     '--korp-v3-checkbox-on': cssAssetUrl(checkboxOn?.id),
-    '--korp-v3-checkbox-on-size': `${checkboxOn?.intrinsicWidth ?? 0}px ${checkboxOn?.intrinsicHeight ?? 0}px`,
+    '--korp-v3-checkbox-on-size': `${checkboxOn?.nativeWidth ?? 0}px ${checkboxOn?.nativeHeight ?? 0}px`,
     '--korp-v3-checkbox-disabled': cssAssetUrl(checkboxDisabled?.id),
-    '--korp-v3-checkbox-disabled-size': `${checkboxDisabled?.intrinsicWidth ?? 0}px ${checkboxDisabled?.intrinsicHeight ?? 0}px`,
+    '--korp-v3-checkbox-disabled-size': `${checkboxDisabled?.nativeWidth ?? 0}px ${checkboxDisabled?.nativeHeight ?? 0}px`,
   } : undefined
 
   return (

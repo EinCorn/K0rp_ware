@@ -308,51 +308,53 @@
 .os-audit-document.is-v3-audit {
   width: 100%;
   height: 100%;
-  gap: 8px;
-  padding: 11px 12px 10px;
+  gap: 4px;
+  padding: 5px 6px;
   background: transparent;
 }
 
 .os-audit-document.is-v3-audit .os-audit-document-heading p {
-  margin-bottom: 3px;
+  margin-bottom: 1px;
   color: #4f493c;
+  font-size: 7px;
+  line-height: 8px;
 }
 
 .os-audit-document.is-v3-audit .os-audit-document-heading h1 {
-  font-size: 19px;
-  line-height: 19px;
+  font-size: 11px;
+  line-height: 11px;
 }
 
 .os-audit-document.is-v3-audit .os-audit-document-heading > span {
-  margin-top: 4px;
+  margin-top: 2px;
   color: #4e4a3e;
-  font-size: 11px;
-  line-height: 13px;
+  font-size: 7px;
+  line-height: 8px;
 }
 
 .os-audit-document.is-v3-audit .os-audit-fields {
   align-content: center;
-  gap: 6px;
+  gap: 3px;
   overflow: hidden;
 }
 
 .os-audit-document.is-v3-audit .os-audit-checkbox {
-  min-height: 54px;
-  grid-template-columns: 42px minmax(0, 1fr);
-  gap: 8px;
-  padding: 5px 8px;
+  min-height: 26px;
+  grid-template-columns: 21px minmax(0, 1fr);
+  gap: 4px;
+  padding: 2px 4px;
   border: 0;
   background: rgba(210, 200, 177, 0.38);
   box-shadow: inset 0 0 0 1px rgba(73, 66, 54, 0.42);
 }
 
 .os-audit-document.is-v3-audit .os-audit-checkbox-box {
-  width: 42px;
-  height: 44px;
+  width: 21px;
+  height: 22px;
   border: 0;
   background-color: transparent;
   background-image: var(--korp-v3-checkbox-off);
-  background-position: center;
+  background-position: 0 0;
   background-repeat: no-repeat;
   background-size: var(--korp-v3-checkbox-off-size);
   box-shadow: none;
@@ -376,53 +378,85 @@
 }
 
 .os-audit-document.is-v3-audit .os-audit-checkbox strong {
-  font-size: 19px;
-  line-height: 19px;
+  font-size: 10px;
+  line-height: 10px;
+}
+
+.os-audit-document.is-v3-audit .os-audit-checkbox:focus-within {
+  outline-width: 1px;
+  outline-offset: 1px;
 }
 
 .os-audit-document.is-v3-audit .os-audit-submit-row {
-  gap: 8px;
-  padding-top: 4px;
+  gap: 4px;
+  padding-top: 2px;
   border-top-color: rgba(91, 77, 57, 0.66);
 }
 
+.os-audit-document.is-v3-audit .os-audit-form-status {
+  font-size: 6px;
+  line-height: 7px;
+}
+
 .os-audit-document.is-v3-audit .os-audit-submit {
-  width: 146px;
-  min-width: 146px;
-  height: 52px;
-  padding: 8px 11px;
-  border: 10px solid transparent;
-  border-width: 10px 12px;
-  border-image-source: var(--korp-v3-audit-button-normal);
-  border-image-slice: 10 12 fill;
-  border-image-width: 10px 12px;
-  border-image-repeat: stretch;
-  background: transparent;
+  width: 73px;
+  min-width: 73px;
+  height: 26px;
+  padding: 3px 6px;
+  border: 0;
+  background-color: transparent;
+  background-image: var(--korp-v3-audit-button-normal);
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: 73px 26px;
   box-shadow: none;
   color: #20231d;
+  font-size: 6px;
+  line-height: 7px;
   image-rendering: crisp-edges;
   image-rendering: pixelated;
 }
 
 .os-audit-document.is-v3-audit .os-audit-submit:hover:not(:disabled),
 .os-audit-document.is-v3-audit .os-audit-submit:focus-visible:not(:disabled) {
-  border-image-source: var(--korp-v3-audit-button-hover);
-  background: transparent;
+  background-color: transparent;
+  background-image: var(--korp-v3-audit-button-hover);
+  outline-width: 1px;
+  outline-offset: 0;
 }
 
 .os-audit-document.is-v3-audit .os-audit-submit:active:not(:disabled) {
-  border-image-source: var(--korp-v3-audit-button-pressed);
+  background-image: var(--korp-v3-audit-button-pressed);
 }
 
 .os-audit-document.is-v3-audit .os-audit-submit:disabled {
-  border-image-source: var(--korp-v3-audit-button-disabled);
-  background: transparent;
+  background-color: transparent;
+  background-image: var(--korp-v3-audit-button-disabled);
 }
 
 .os-audit-document.is-v3-audit.is-submitted {
-  gap: 9px;
+  gap: 4px;
 }
 
 .os-audit-document.is-v3-audit .os-audit-completion-stamp {
-  padding: 9px;
+  grid-template-columns: 21px minmax(0, 1fr);
+  gap: 1px 5px;
+  padding: 4px;
+  border-width: 2px;
+}
+
+.os-audit-document.is-v3-audit .os-audit-completion-stamp > span {
+  font-size: 17px;
+  line-height: 17px;
+}
+
+.os-audit-document.is-v3-audit .os-audit-completion-stamp strong {
+  font-size: 9px;
+  line-height: 9px;
+}
+
+.os-audit-document.is-v3-audit .os-audit-completion-stamp small,
+.os-audit-document.is-v3-audit .os-audit-document-note {
+  font-size: 7px;
+  line-height: 8px;
 }

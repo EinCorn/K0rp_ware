@@ -1,31 +1,47 @@
-import { resolveKorpUiWindowFamily } from '../ui/korpUiAssetCatalog.js'
+import {
+  resolveKorpUiAsset,
+  resolveKorpUiWindowFamily,
+} from '../ui/korpUiAssetCatalog.js'
 
 const createGeometry = (familyId) => {
   const family = resolveKorpUiWindowFamily(familyId)
   if (!family) throw new Error(`Missing K0rp V3 window family: ${familyId}`)
 
-  const left = family.contentRect.x
-  const top = family.contentRect.y
-  const right = family.outerWidth - family.contentRect.x - family.contentRect.width
-  const bottom = family.outerHeight - family.contentRect.y - family.contentRect.height
+  const frame = resolveKorpUiAsset(family.frameId)
+  if (!frame) throw new Error(`Missing K0rp V3 frame asset: ${family.frameId}`)
+
+  // The runtime ships nearest-neighbour @2x files, but the source package's
+  // window metrics are expressed at the native 1x CSS size. Rendering the
+  // @2x pixels at their intrinsic bitmap size doubles the material grain and
+  // makes the whole chassis look like an enlarged screenshot.
+  const density = frame.scale || 1
+  const toNative = (value) => value / density
+  const width = toNative(family.outerWidth)
+  const height = toNative(family.outerHeight)
+  const left = toNative(family.contentRect.x)
+  const top = toNative(family.contentRect.y)
+  const contentWidth = toNative(family.contentRect.width)
+  const contentHeight = toNative(family.contentRect.height)
+  const right = width - left - contentWidth
+  const bottom = height - top - contentHeight
 
   return Object.freeze({
-    width: family.outerWidth,
-    height: family.outerHeight,
+    width,
+    height,
     contentRect: Object.freeze({
       x: left,
       y: top,
-      width: family.contentRect.width,
-      height: family.contentRect.height,
+      width: contentWidth,
+      height: contentHeight,
     }),
     slices: Object.freeze({
-      columns: Object.freeze([left, family.contentRect.width, right]),
-      rows: Object.freeze([top, family.contentRect.height, bottom]),
+      columns: Object.freeze([left, contentWidth, right]),
+      rows: Object.freeze([top, contentHeight, bottom]),
     }),
   })
 }
 
-// Inventory window-family metrics at the selected @2x runtime scale.
+// Native source-package geometry; @2x runtime bitmaps are density assets only.
 export const KORP_V3_WINDOW_GEOMETRY = Object.freeze({
   audit: createGeometry('audit'),
   folder: createGeometry('folder'),

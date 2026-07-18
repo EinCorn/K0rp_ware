@@ -549,22 +549,31 @@
 .korp-v3-window-folder .os-folder-body {
   width: 100%;
   height: 100%;
-  padding: 7px;
+  padding: 3px;
   background: transparent;
+  scrollbar-width: none;
+}
+
+.korp-v3-window-folder .os-folder-body::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }
 
 .korp-v3-window-folder .os-folder-path {
-  padding: 3px 5px;
+  padding: 1px 2px;
   border-color: #655e4e;
   color: #c7c0aa;
   background: rgba(13, 16, 15, 0.78);
+  font-size: 6px;
+  line-height: 8px;
+  white-space: nowrap;
 }
 
 .korp-v3-window-folder .os-folder-body h2 {
-  margin: 5px 1px 3px;
+  margin: 2px 1px 1px;
   color: #d8d1ba;
-  font-size: 18px;
-  line-height: 18px;
+  font-size: 10px;
+  line-height: 10px;
 }
 
 .korp-v3-window-folder .os-folder-list {
@@ -618,14 +627,16 @@
 }
 
 .os-folder-entry.is-v3-folder-row {
-  min-height: 48px;
-  padding: 3px 2px;
-  border: 6px solid transparent;
-  border-width: 6px 16px;
+  min-height: 22px;
+  grid-template-columns: 14px minmax(0, 1fr) minmax(34px, auto);
+  gap: 3px;
+  padding: 1px;
+  border: 3px solid transparent;
+  border-width: 3px 8px;
   border-image-source: var(--korp-v3-folder-row);
   border-image-slice: 6 16 fill;
-  border-image-width: 6px 16px;
-  border-image-repeat: stretch;
+  border-image-width: 3px 8px;
+  border-image-repeat: repeat stretch;
   background: transparent;
   image-rendering: crisp-edges;
   image-rendering: pixelated;
@@ -635,13 +646,41 @@
   color: #d4cdb7;
 }
 
+.korp-v3-window-folder .os-folder-entry-copy {
+  gap: 1px;
+}
+
+.korp-v3-window-folder .os-folder-entry-copy strong {
+  font-size: 7px;
+  line-height: 7px;
+}
+
+.korp-v3-window-folder .os-folder-entry-copy small,
+.korp-v3-window-folder .os-folder-entry-status {
+  font-size: 5px;
+  line-height: 6px;
+}
+
+.korp-v3-window-folder .os-folder-entry-status {
+  width: 44px;
+  max-width: 44px;
+}
+
 /* The exported blank row still carries a tiny generic glyph. Mask only that
    material slot so the live canonical KorpIcon remains the single icon. */
 .korp-v3-window-folder .os-folder-entry.is-v3-folder-row .os-file-glyph {
+  width: 14px;
+  height: 14px;
   position: relative;
   z-index: 1;
   background: #111515;
-  box-shadow: 0 0 0 3px #111515;
+  box-shadow: 0 0 0 1px #111515;
+}
+
+.korp-v3-window-folder .os-folder-entry.is-v3-folder-row .os-file-icon-image {
+  width: 15px;
+  height: 15px;
+  margin: 0;
 }
 
 .korp-v3-window-folder .os-folder-entry.is-v3-folder-row .os-folder-entry-copy small,
@@ -670,8 +709,8 @@ button.os-folder-entry:focus-visible {
 button.os-folder-entry.is-v3-folder-row:hover,
 button.os-folder-entry.is-v3-folder-row:focus-visible {
   background: rgba(201, 212, 123, 0.24);
-  outline: 2px solid #6f7c52;
-  outline-offset: -3px;
+  outline: 1px solid #6f7c52;
+  outline-offset: -2px;
 }
 
 .os-folder-entry.is-locked { color: #63563f; }
