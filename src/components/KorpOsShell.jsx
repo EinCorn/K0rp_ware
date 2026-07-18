@@ -13,6 +13,10 @@ import {
 } from '../runtime/fidgetPresentation'
 import { classifyKorpOsIntentionEvent } from '../runtime/osClickTracking'
 import {
+  getKorpV3WindowGeometry,
+  presentKorpV3FolderRow,
+} from '../runtime/korpV3WindowPresentation'
+import {
   KORP_DESKTOP_ICON_IDS,
   KORP_FOLDER_ICON_IDS,
   getKorpModuleIconId,
@@ -36,6 +40,8 @@ import ClickAuditRuntimeModule from './ClickAuditRuntimeModule'
 import { ClickAuditEmbeddedWindow } from './ClickAuditWindow'
 import { FidgetEmbeddedWindow } from './FidgetWindow'
 import KorpIcon from './KorpIcon'
+import { KorpV3WindowFrame } from './KorpV3Window'
+import { resolveKorpUiAsset } from '../ui/korpUiAssetCatalog.js'
 import './KorpOsShell.css'
 
 const initialActivity = (auditEntryForm) => [
@@ -47,8 +53,10 @@ const initialActivity = (auditEntryForm) => [
 const osCanvasWidth = 1520
 const osCanvasHeight = 855
 const osWorkspaceSize = { width: 1514, height: 776 }
+const auditEntryWindowSize = getKorpV3WindowGeometry('audit')
 const formWindowSize = { width: 470, height: 310 }
 const clickAuditWindowSize = { width: 181, height: 181 }
+const formsFolderWindowSize = getKorpV3WindowGeometry('folder')
 const folderWindowSize = { width: 360, height: 268 }
 const dailyReportWindowSize = { width: 392, height: 192 }
 const formDocumentBasePosition = { x: 184, y: 58 }
@@ -76,8 +84,8 @@ const createInitialWindows = (
       kind: 'form',
       title: null,
       taskbarTitle: null,
-      width: formWindowSize.width,
-      height: formWindowSize.height,
+      width: auditEntryWindowSize.width,
+      height: auditEntryWindowSize.height,
       ...formDocumentBasePosition,
       zIndex: 3,
       isMinimized: false,
@@ -115,9 +123,9 @@ const createInitialWindows = (
       kind: 'folder',
       title: 'FORMULÁŘE / SLOŽKA',
       taskbarTitle: 'FORMULÁŘE',
-      width: folderWindowSize.width,
-      height: folderWindowSize.height,
-      ...getCenteredWindowPosition(osWorkspaceSize, folderWindowSize),
+      width: formsFolderWindowSize.width,
+      height: formsFolderWindowSize.height,
+      ...getCenteredWindowPosition(osWorkspaceSize, formsFolderWindowSize),
       zIndex: 0,
       isMinimized: false,
       isOpen: false,
@@ -238,34 +246,61 @@ function DesktopIcon({ title, iconId, status, isLocked = false, onOpen }) {
   return <div className={className} data-clickaudit-profile="desktop-icon">{iconContent}</div>
 }
 
-function FolderEntry({ title, detail, status, iconId, isLocked = false, onOpen }) {
-  const entryClassName = 'os-folder-entry' + (isLocked ? ' is-locked' : '')
+function FolderEntry({
+  title,
+  detail,
+  status,
+  iconId,
+  isLocked = false,
+  visualVariant = 'legacy',
+  onOpen,
+}) {
+  const isV3FolderRow = visualVariant === 'v3-folder'
+  const rowPresentation = isV3FolderRow
+    ? presentKorpV3FolderRow({ title, detail, status, iconId, isLocked, onOpen })
+    : { title, detail, status, iconId, isLocked, onOpen, materialId: null }
+  const rowMaterial = rowPresentation.materialId
+    ? resolveKorpUiAsset(rowPresentation.materialId)
+    : null
+  const entryClassName = 'os-folder-entry'
+    + (rowPresentation.isLocked ? ' is-locked' : '')
+    + (isV3FolderRow ? ' is-v3-folder-row' : '')
+  const entryStyle = rowMaterial?.runtimeUrl ? {
+    '--korp-v3-folder-row': `url("${rowMaterial.runtimeUrl}")`,
+  } : undefined
   const entryContent = (
     <>
       <span className="os-file-glyph" aria-hidden="true">
-        <KorpIcon className="os-file-icon-image" iconId={iconId} slot="folder-entry" />
+        <KorpIcon className="os-file-icon-image" iconId={rowPresentation.iconId} slot="folder-entry" />
       </span>
       <span className="os-folder-entry-copy">
-        <strong>{title}</strong>
-        <small>{detail}</small>
+        <strong>{rowPresentation.title}</strong>
+        <small>{rowPresentation.detail}</small>
       </span>
-      <span className="os-folder-entry-status">{status}</span>
+      <span className="os-folder-entry-status">{rowPresentation.status}</span>
     </>
   )
 
   return (
     <li>
-      {onOpen && !isLocked ? (
+      {rowPresentation.onOpen && !rowPresentation.isLocked ? (
         <button
           type="button"
           className={entryClassName}
-          onClick={onOpen}
+          style={entryStyle}
+          onClick={rowPresentation.onOpen}
           data-clickaudit-profile="folder-entry"
         >
           {entryContent}
         </button>
       ) : (
-        <div className={entryClassName} data-clickaudit-profile="folder-entry">{entryContent}</div>
+        <div
+          className={entryClassName}
+          style={entryStyle}
+          data-clickaudit-profile="folder-entry"
+        >
+          {entryContent}
+        </div>
       )}
     </li>
   )
@@ -778,28 +813,26 @@ function KorpOsShell() {
               onPointerCancel={endWindowDrag}
             >
               {visibleWindowIds.includes(auditEntryWindowId) && (
-                <article
-                  className="os-window os-audit-document-window"
+                <KorpV3WindowFrame
+                  family="audit"
+                  windowState={presentationWindows[auditEntryWindowId]}
+                  isActive={activeWindowId === auditEntryWindowId}
                   style={windowStyle(windows[auditEntryWindowId])}
-                  data-window-id={auditEntryWindowId}
-                  aria-labelledby="audit-title"
+                  labelledBy="audit-title"
                   onPointerDown={() => bringWindowToFront(auditEntryWindowId)}
+                  onClose={closeWindow}
+                  onMinimize={minimizeWindow}
+                  onDragStart={(event) => startWindowDrag(auditEntryWindowId, event)}
                 >
-                  <WindowHeader
-                    window={presentationWindows[auditEntryWindowId]}
-                    variant="audit"
-                    onClose={closeWindow}
-                    onMinimize={minimizeWindow}
-                    onPointerDown={(event) => startWindowDrag(auditEntryWindowId, event)}
-                  />
                   <AuditFormDocument
                     form={auditEntryForm}
                     values={auditEntryValues}
                     submitted={auditEntrySubmitted}
+                    visualVariant="v3-audit"
                     onFieldChange={handleAuditEntryFieldChange}
                     onSubmit={handleAuditEntrySubmit}
                   />
-                </article>
+                </KorpV3WindowFrame>
               )}
 
               {visibleWindowIds.includes(AUTHORIZATION_FORM_WINDOW_ID) && (
@@ -935,19 +968,18 @@ function KorpOsShell() {
               )}
 
               {visibleWindowIds.includes('forms-folder') && (
-                <article
-                  className="os-window os-folder-window os-forms-folder-window"
+                <KorpV3WindowFrame
+                  family="folder"
+                  windowState={presentationWindows['forms-folder']}
+                  isActive={activeWindowId === 'forms-folder'}
+                  className="os-forms-folder-window"
                   style={windowStyle(windows['forms-folder'])}
-                  data-window-id="forms-folder"
-                  aria-labelledby="forms-folder-title"
+                  labelledBy="forms-folder-title"
                   onPointerDown={() => bringWindowToFront('forms-folder')}
+                  onClose={closeWindow}
+                  onMinimize={minimizeWindow}
+                  onDragStart={(event) => startWindowDrag('forms-folder', event)}
                 >
-                  <WindowHeader
-                    window={windows['forms-folder']}
-                    onClose={closeWindow}
-                    onMinimize={minimizeWindow}
-                    onPointerDown={(event) => startWindowDrag('forms-folder', event)}
-                  />
                   <div className="os-folder-body">
                     <p className="os-folder-path">C:\K0RP\FORMULÁŘE\MÍSTNÍ RELACE</p>
                     <h2 id="forms-folder-title">Formuláře</h2>
@@ -959,6 +991,7 @@ function KorpOsShell() {
                           status="ČEKÁ NA DÁVKU"
                           iconId={KORP_FOLDER_ICON_IDS.auditPacket}
                           isLocked
+                          visualVariant="v3-folder"
                         />
                       )}
                       {auditWindowModels.map((model) => (
@@ -970,6 +1003,7 @@ function KorpOsShell() {
                             : 'Dávka bez dostupného packetu'}
                           status={model.fileStatus}
                           iconId={KORP_FOLDER_ICON_IDS.auditPacket}
+                          visualVariant="v3-folder"
                           onOpen={() => openWindow(model.windowId)}
                         />
                       ))}
@@ -981,6 +1015,7 @@ function KorpOsShell() {
                             ? 'AUTORIZOVÁNO / EV −1'
                             : 'PŘIPRAVENO K ALOKACI'}
                           iconId={KORP_FOLDER_ICON_IDS.authorizationForm}
+                          visualVariant="v3-folder"
                           onOpen={() => openWindow(AUTHORIZATION_FORM_WINDOW_ID)}
                         />
                       )}
@@ -989,6 +1024,7 @@ function KorpOsShell() {
                         detail={auditEntryForm?.title ?? 'Kontrola přítomnosti'}
                         status={auditEntrySubmitted ? 'SPLNĚNO / OTEVŘÍT' : 'OTEVŘÍT DOKUMENT'}
                         iconId={KORP_FOLDER_ICON_IDS.auditEntry}
+                        visualVariant="v3-folder"
                         onOpen={() => openWindow(auditEntryWindowId)}
                       />
                       <FolderEntry
@@ -997,10 +1033,11 @@ function KorpOsShell() {
                         status={metricPackets.some((packet) => packet.status === 'certified') ? 'MÍSTNĚ ULOŽENO' : 'ZAMČENO'}
                         iconId={KORP_FOLDER_ICON_IDS.evidenceArchive}
                         isLocked={!metricPackets.some((packet) => packet.status === 'certified')}
+                        visualVariant="v3-folder"
                       />
                     </ul>
                   </div>
-                </article>
+                </KorpV3WindowFrame>
               )}
 
               {visibleWindowIds.includes('inbox-folder') && (

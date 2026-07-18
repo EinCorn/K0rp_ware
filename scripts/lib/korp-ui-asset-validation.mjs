@@ -11,6 +11,7 @@ import {
   KORP_UI_FLAVOR_CATEGORY_PREFIXES,
   KORP_UI_RAW_ROOT,
   KORP_UI_REQUIRED_SOURCE_FILES,
+  KORP_UI_RUNTIME_ASSET_ROOT,
   KORP_UI_RUNTIME_COPY_SCAN_ROOTS,
   KORP_UI_RUNTIME_SCAN_ROOTS,
 } from '../korp-ui-assets-contract.mjs'
@@ -366,7 +367,9 @@ export function validateKorpUiAllowlist(allowlist, manifest, { expectedSourceRoo
   if (allowlist.sourceRoot !== expectedSourceRoot) {
     errors.push(`runtime allowlist sourceRoot must be ${expectedSourceRoot}`)
   }
-  if (allowlist.copyAssets !== false) errors.push('runtime allowlist copyAssets must remain false in Task 022A(2.1)')
+  if (typeof allowlist.copyAssets !== 'boolean') {
+    errors.push('runtime allowlist copyAssets must be a boolean')
+  }
   if (!Array.isArray(allowlist.groups) || allowlist.groups.length === 0) {
     throw new KorpUiAssetValidationError([...errors, 'runtime allowlist groups must be a non-empty array'])
   }
@@ -1014,7 +1017,14 @@ export function scanKorpUiRuntimeCopies({
   repoRoot,
   rawRoot,
   scanRoots = KORP_UI_RUNTIME_COPY_SCAN_ROOTS,
+  allowedCopyRoots = [],
 }) {
+  if (!Array.isArray(allowedCopyRoots)) {
+    throw new KorpUiAssetValidationError(['runtime allowed copy roots must be an array'])
+  }
+  const absoluteAllowedRoots = allowedCopyRoots.map((relativeRoot, index) => (
+    resolveKorpUiPathInside(repoRoot, relativeRoot, `runtime allowed copy roots[${index}]`)
+  ))
   const rawPathsByHash = new Map()
   for (const file of listKorpUiFiles(rawRoot)) {
     const hash = createHash('sha256').update(readFileSync(file.absolutePath)).digest('hex')
@@ -1024,6 +1034,7 @@ export function scanKorpUiRuntimeCopies({
   }
 
   const matches = []
+  const allowedMatches = []
   let filesScanned = 0
   for (const scanRoot of scanRoots) {
     const absoluteRoot = path.resolve(repoRoot, scanRoot)
@@ -1037,21 +1048,27 @@ export function scanKorpUiRuntimeCopies({
       const hash = createHash('sha256').update(readFileSync(filePath)).digest('hex')
       const rawPaths = rawPathsByHash.get(hash)
       if (!rawPaths) continue
-      matches.push({
+      const match = {
         path: path.relative(repoRoot, filePath).replaceAll('\\', '/'),
         rawPaths: [...rawPaths].sort(compareText),
-      })
+      }
+      if (absoluteAllowedRoots.some((allowedRoot) => pathIsInside(allowedRoot, filePath))) {
+        allowedMatches.push(match)
+      } else {
+        matches.push(match)
+      }
     }
   }
 
   matches.sort((left, right) => compareText(left.path, right.path))
+  allowedMatches.sort((left, right) => compareText(left.path, right.path))
   if (matches.length > 0) {
     throw new KorpUiAssetValidationError(matches.map((match) => (
       `raw UI source file was copied into runtime source: ${match.path} `
         + `(matches ${match.rawPaths.join(', ')})`
     )))
   }
-  return { filesScanned, matches }
+  return { allowedMatches, filesScanned, matches }
 }
 
 function getReadiness(asset, pilotIds) {
@@ -1201,7 +1218,7 @@ export function createKorpUiInventory({
       allowlistPath: 'design/ui-runtime/k0rp-v3/runtime-allowlist.json',
       targetTask: allowlist.targetTask,
       selectedAssets: flattenKorpUiAllowlist(allowlist).length,
-      rawAssetsCopied: runtimeCopyScan.matches.length,
+      rawAssetsCopied: runtimeCopyScan.allowedMatches.length,
       detectedRawImports: runtimeScan.matches.length,
     },
     blockingFindings: [],
@@ -1219,7 +1236,11 @@ export function validateKorpUiPack({ rawRoot, repoRoot, manifest, allowlist }) {
     source: readFileSync(path.join(rawRoot, 'SHA256SUMS.txt'), 'utf8'),
   })
   const supplemental = validateKorpUiSupplementalMetadata({ rawRoot, manifest })
-  const runtimeCopyScan = scanKorpUiRuntimeCopies({ repoRoot, rawRoot })
+  const runtimeCopyScan = scanKorpUiRuntimeCopies({
+    repoRoot,
+    rawRoot,
+    allowedCopyRoots: allowlist.copyAssets ? [KORP_UI_RUNTIME_ASSET_ROOT] : [],
+  })
   const runtimeScan = scanKorpUiRuntimeImports({ repoRoot })
 
   const warnings = sortWarnings([

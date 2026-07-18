@@ -3,7 +3,7 @@
   "targetTask": "022A(2.2)",
   "scope": "Audit 00-A and Formulare window-chrome pilot",
   "sourceRoot": "design/ui-source/k0rp-os-ui-assets-v3",
-  "copyAssets": false,
+  "copyAssets": true,
   "groups": [
     {
       "id": "audit-window-family",
@@ -88,7 +88,7 @@
     }
   ],
   "exclusions": [
-    "No raw asset is copied into the Vite graph by this allowlist.",
+    "Only the allowlisted @2x production subset is copied into src/assets/ui/korp-v3.",
     "Canonical icons continue to come only from design/icon-source/k0rp-icons-v2.",
     "Reference screens and baked document templates are not runtime copy.",
     "ClickAudit and Fidget retain their existing canonical module surfaces."

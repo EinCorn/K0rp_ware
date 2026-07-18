@@ -546,6 +546,35 @@
   overflow-y: auto;
 }
 
+.korp-v3-window-folder .os-folder-body {
+  width: 100%;
+  height: 100%;
+  padding: 7px;
+  background: transparent;
+}
+
+.korp-v3-window-folder .os-folder-path {
+  padding: 3px 5px;
+  border-color: #655e4e;
+  color: #c7c0aa;
+  background: rgba(13, 16, 15, 0.78);
+}
+
+.korp-v3-window-folder .os-folder-body h2 {
+  margin: 5px 1px 3px;
+  color: #d8d1ba;
+  font-size: 18px;
+  line-height: 18px;
+}
+
+.korp-v3-window-folder .os-folder-list {
+  border-top: 0;
+}
+
+.korp-v3-window-folder .os-folder-list li + li {
+  border-top: 0;
+}
+
 .os-folder-path {
   margin: 0;
   padding: 5px 6px;
@@ -588,6 +617,44 @@
   text-align: left;
 }
 
+.os-folder-entry.is-v3-folder-row {
+  min-height: 48px;
+  padding: 3px 2px;
+  border: 6px solid transparent;
+  border-width: 6px 16px;
+  border-image-source: var(--korp-v3-folder-row);
+  border-image-slice: 6 16 fill;
+  border-image-width: 6px 16px;
+  border-image-repeat: stretch;
+  background: transparent;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+.korp-v3-window-folder .os-folder-entry.is-v3-folder-row {
+  color: #d4cdb7;
+}
+
+/* The exported blank row still carries a tiny generic glyph. Mask only that
+   material slot so the live canonical KorpIcon remains the single icon. */
+.korp-v3-window-folder .os-folder-entry.is-v3-folder-row .os-file-glyph {
+  position: relative;
+  z-index: 1;
+  background: #111515;
+  box-shadow: 0 0 0 3px #111515;
+}
+
+.korp-v3-window-folder .os-folder-entry.is-v3-folder-row .os-folder-entry-copy small,
+.korp-v3-window-folder .os-folder-entry.is-v3-folder-row .os-folder-entry-status {
+  color: #a9a38f;
+}
+
+.korp-v3-window-folder .os-folder-entry.is-v3-folder-row.is-locked,
+.korp-v3-window-folder .os-folder-entry.is-v3-folder-row.is-locked .os-folder-entry-copy small,
+.korp-v3-window-folder .os-folder-entry.is-v3-folder-row.is-locked .os-folder-entry-status {
+  color: #777567;
+}
+
 button.os-folder-entry {
   cursor: pointer;
 }
@@ -598,6 +665,13 @@ button.os-folder-entry:focus-visible {
   background: rgba(201, 212, 123, 0.55);
   outline: 1px solid #6f7c52;
   outline-offset: -2px;
+}
+
+button.os-folder-entry.is-v3-folder-row:hover,
+button.os-folder-entry.is-v3-folder-row:focus-visible {
+  background: rgba(201, 212, 123, 0.24);
+  outline: 2px solid #6f7c52;
+  outline-offset: -3px;
 }
 
 .os-folder-entry.is-locked { color: #63563f; }

@@ -29,9 +29,9 @@ const allowlistPath = resolveKorpUiPathInside(
   'UI runtime allowlist',
 )
 const inventoryPath = resolveKorpUiPathInside(repoRoot, KORP_UI_INVENTORY_PATH, 'UI inventory')
-const writeOutput = process.argv.includes('--write')
+const isMainModule = process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)
 
-try {
+export function validateKorpUiAssetRepository({ writeOutput = false } = {}) {
   const manifest = parseKorpUiJson(readFileSync(manifestPath, 'utf8'), 'manifest.json')
   const allowlist = parseKorpUiJson(readFileSync(allowlistPath, 'utf8'), 'runtime-allowlist.json')
   const { inventory, summary, warnings } = validateKorpUiPack({
@@ -55,8 +55,33 @@ try {
     ])
   }
 
-  console.log(
-    `K0rp UI assets valid: ${summary.semanticAssets} semantic assets `
+  return { summary, warnings, writeOutput }
+}
+
+export function runKorpUiAssetValidation({
+  writeOutput = process.argv.includes('--write'),
+  validate = () => validateKorpUiAssetRepository({ writeOutput }),
+  stdout = process.stdout,
+  stderr = process.stderr,
+} = {}) {
+  try {
+    const result = validate()
+    writeKorpUiAssetValidationSuccess(result, stdout)
+    return 0
+  } catch (error) {
+    writeKorpUiAssetValidationFailure(error, stderr)
+    return 1
+  }
+}
+
+export function writeKorpUiAssetValidationSuccess({ summary, warnings, writeOutput }, stdout) {
+  const warningCount = warnings.length
+  const status = warningCount === 0
+    ? 'PASS'
+    : `PASS WITH ${warningCount} KNOWN SOURCE WARNING${warningCount === 1 ? '' : 'S'}`
+  writeValidationLine(
+    stdout,
+    `${status}: ${summary.semanticAssets} semantic assets `
       + `(${summary.productionAssets} production, ${summary.referenceAssets} reference), `
       + `${summary.files} files / ${summary.bytes} bytes, `
       + `${summary.nineSliceFamilies} nine-slice families / ${summary.nineSlicePieces} pieces, `
@@ -64,10 +89,22 @@ try {
       + `${summary.windowFamilies} window families, ${summary.pilotAssets} pilot selections `
       + `${writeOutput ? '(inventory written)' : '(inventory clean)'}.`,
   )
-  console.log(`Non-blocking source warnings: ${warnings.length}.`)
-  for (const warning of warnings) console.warn(`- [${warning.code}] ${warning.message}`)
-} catch (error) {
-  if (error instanceof KorpUiAssetValidationError) console.error(error.message)
-  else console.error(error)
-  process.exitCode = 1
+  for (const warning of warnings) {
+    writeValidationLine(stdout, `WARN [${warning.code}]: ${warning.message}`)
+  }
+}
+
+export function writeKorpUiAssetValidationFailure(error, stderr) {
+  const diagnostic = error instanceof KorpUiAssetValidationError
+    ? error.message
+    : error?.stack ?? String(error)
+  writeValidationLine(stderr, `FAIL: ${diagnostic}`)
+}
+
+function writeValidationLine(stream, message) {
+  stream.write(`${message}\n`)
+}
+
+if (isMainModule) {
+  process.exitCode = runKorpUiAssetValidation()
 }

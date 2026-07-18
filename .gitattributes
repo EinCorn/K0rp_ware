@@ -1,3 +1,5 @@
 design/ui-source/k0rp-os-ui-assets-v3/** -text
 design/ui-runtime/k0rp-v3/*.json text eol=lf
+src/assets/ui/korp-v3/** -text
 src/ui/korpIconCatalog.js text eol=lf
+src/ui/korpUiAssetCatalog.js text eol=lf

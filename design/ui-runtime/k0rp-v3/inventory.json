@@ -711,7 +711,7 @@
     "allowlistPath": "design/ui-runtime/k0rp-v3/runtime-allowlist.json",
     "targetTask": "022A(2.2)",
     "selectedAssets": 45,
-    "rawAssetsCopied": 0,
+    "rawAssetsCopied": 45,
     "detectedRawImports": 0
   },
   "blockingFindings": [],

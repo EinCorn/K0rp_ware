@@ -22,8 +22,8 @@ Aktuální stav:
 - Audit 00-A, ClickAudit, společný runtime, lokální persistence, packet queue, repeatable Audit 10-A a Evidence certifikace jsou integrovány;
 - `clickaudit.click` je doslovná raw metrika a sama nepřidává spendable resource;
 - Task 021A window placement, dynamické form windows, cascade a close/minimize semantics jsou dokončené a mergnuté;
-- Task 022 je dokončený a mergnutý v PR #35 a canonical icon integration z Tasku 022A je dokončená v PR #37;
-- aktuální bounded visual pass začíná Taskem 022A(2.1) — V3 UI source ingestion a validator, pokračuje pilotem 022A(2.2) a teprve potom se vrací k Tasku 023 jako dalšímu gameplay kroku.
+- Task 022 je dokončený a mergnutý v PR #35, canonical icon integration z Tasku 022A v PR #37 a V3 source ingestion z Tasku 022A(2.1) v PR #39;
+- aktuální bounded visual pass je Task 022A(2.2) — V3 chrome pilot pouze pro Audit 00-A a Formuláře; Task 023 zůstává odložený do dokončení subtasků 2.2–2.5.
 
 Současné standalone appky ClickAudit, Fidget a Bloom se neruší. Integrace probíhá přes společné module surface, bridge a runtime contracts.
 
@@ -167,7 +167,7 @@ nová hra
 
 Cíl: Uzavřít první celý loop a přidat druhý druh raw metriky.
 
-Status: Task 021A, Task 021B, Task 022 i canonical icon Task 022A jsou dokončené a mergnuté. Aktuální bounded visual pass je Task 022A(2.1); Task 023 zůstává následujícím gameplay krokem po dokončení vizuálních subtasků 2.1–2.5.
+Status: Task 021A, Task 021B, Task 022, canonical icon Task 022A i Task 022A(2.1) jsou dokončené a mergnuté. Aktuálně je implementovaný Task 022A(2.2); Task 023 zůstává následujícím gameplay krokem po dokončení vizuálních subtasků 2.2–2.5.
 
 Pořadí:
 
@@ -175,9 +175,9 @@ Pořadí:
 2. Task 021B — dokončený Evidence authorization contract z PR #33: Audit 16-C, alokace 1 EV a persistentní Fidget authorization;
 3. Task 022 — dokončený sdílený asset-backed Fidget module surface z PR #35;
 4. Task 022A — dokončená canonical icon pack integrace z PR #37;
-5. Task 022A(2.1) — aktuální exact V3 UI source snapshot, normalizovaný inventory, validator a pilot allowlist bez změny renderingu;
-6. Task 022A(2.2) — následující Audit 00-A + Formuláře window-chrome pilot;
-7. Task 022A(2.3–2.5) — zbývající současná standardní okna, top rail/taskbar a controls/status language;
+5. Task 022A(2.1) — dokončený exact V3 UI source snapshot, normalizovaný inventory, validator a pilot allowlist z PR #39;
+6. Task 022A(2.2) — implementovaný Audit 00-A + Formuláře window-chrome pilot s generovaným runtime subsetem;
+7. Task 022A(2.3) — následující Audit 10-A, Audit 16-C, Doručené a Denní výpis; 2.4–2.5 potom řeší top rail/taskbar a controls/status language;
 8. Task 023 — následující gameplay krok: `fidget.sessionSettled`, packet a první skutečný backlog.
 
 Dokončený Task 021A presentation gate:
@@ -226,7 +226,15 @@ design/ui-runtime/k0rp-v3/runtime-allowlist.json ručně omezený pilot 022A(2.2
 npm run validate:korp-ui-assets          offline source, metadata, drift a runtime-boundary gate
 ```
 
-Tento krok nekopíruje V3 assety do `src/assets`, nemění React/CSS a ponechává ClickAudit, Fidget i canonical icon source autoritativní v jejich stávajících surface.
+Task 022A(2.2) nad touto hranicí materializuje jen udržovaný pilot:
+
+```text
+src/assets/ui/korp-v3/                    přesně 45 allowlisted @2x PNG
+src/ui/korpUiAssetCatalog.js              deterministický semantic catalog
+npm run build:korp-ui-runtime             regenerate + byte/dimension/drift check
+```
+
+Audit 00-A používá pevný V3 audit frame 346×328 a Formuláře pevný folder frame 344×310. Dynamic HTML, canonical document icons, window-manager semantics a gameplay zůstávají autoritativní. Audit 10-A, Audit 16-C, Doručené, Denní výpis, ClickAudit a Fidget zatím vizuálně neměníme.
 
 ## Fáze 8 — Second metric, repeatable audits and backlog
 

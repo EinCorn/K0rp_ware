@@ -3,11 +3,38 @@ import {
   isAuditFormComplete,
   updateMultiCheckValue,
 } from '../runtime/auditFormDraft'
+import {
+  getKorpV3AuditButtonAssetId,
+  getKorpV3CheckboxAssetId,
+} from '../runtime/korpV3WindowPresentation'
+import { resolveKorpUiAsset } from '../ui/korpUiAssetCatalog.js'
 import './AuditFormDocument.css'
 
-function CheckboxField({ field, value, onChange }) {
+const cssAssetUrl = (id) => {
+  const runtimeUrl = resolveKorpUiAsset(id)?.runtimeUrl
+  return runtimeUrl ? `url("${runtimeUrl}")` : 'none'
+}
+
+function CheckboxField({ field, value, onChange, visualVariant }) {
+  const isV3 = visualVariant === 'v3-audit'
+  const checkboxOff = isV3 ? resolveKorpUiAsset(getKorpV3CheckboxAssetId()) : null
+  const checkboxOn = isV3
+    ? resolveKorpUiAsset(getKorpV3CheckboxAssetId({ checked: true }))
+    : null
+  const checkboxDisabled = isV3
+    ? resolveKorpUiAsset(getKorpV3CheckboxAssetId({ disabled: true }))
+    : null
+  const assetStyle = isV3 ? {
+    '--korp-v3-checkbox-off': cssAssetUrl(checkboxOff?.id),
+    '--korp-v3-checkbox-off-size': `${checkboxOff?.intrinsicWidth ?? 0}px ${checkboxOff?.intrinsicHeight ?? 0}px`,
+    '--korp-v3-checkbox-on': cssAssetUrl(checkboxOn?.id),
+    '--korp-v3-checkbox-on-size': `${checkboxOn?.intrinsicWidth ?? 0}px ${checkboxOn?.intrinsicHeight ?? 0}px`,
+    '--korp-v3-checkbox-disabled': cssAssetUrl(checkboxDisabled?.id),
+    '--korp-v3-checkbox-disabled-size': `${checkboxDisabled?.intrinsicWidth ?? 0}px ${checkboxDisabled?.intrinsicHeight ?? 0}px`,
+  } : undefined
+
   return (
-    <label className="os-audit-checkbox">
+    <label className="os-audit-checkbox" style={assetStyle}>
       <input
         type="checkbox"
         checked={value === true}
@@ -124,16 +151,19 @@ export default function AuditFormDocument({
   completionTitle = 'PŘÍTOMNOST PŘIJATA',
   completionDetail = 'DOKUMENT SPLNĚN / MÍSTNĚ ULOŽENO',
   completionNote = 'Auditní stopa byla předána modulu ClickAudit. Odpověď již nelze zpětně učinit méně přítomnou.',
+  visualVariant = 'legacy',
   onFieldChange,
   onSubmit,
 }) {
   const fields = form?.fields?.filter((field) => field.type !== 'buttonConfirm') ?? []
   const submitField = getAuditSubmitField(form)
   const complete = isAuditFormComplete(form, values)
+  const isV3 = visualVariant === 'v3-audit'
+  const documentClassName = `os-audit-document${isV3 ? ' is-v3-audit' : ''}`
 
   if (!form) {
     return (
-      <div className="os-audit-document os-audit-document-error">
+      <div className={`${documentClassName} os-audit-document-error`}>
         Auditní dokument nebyl nalezen.
       </div>
     )
@@ -144,7 +174,7 @@ export default function AuditFormDocument({
 
   if (submitted) {
     return (
-      <div className="os-audit-document is-submitted" data-clickaudit-profile="completed-audit-body">
+      <div className={`${documentClassName} is-submitted`} data-clickaudit-profile="completed-audit-body">
         <div className="os-audit-document-heading">
           <p>{closedDocumentLabel}</p>
           <h1 id={headingId}>{form.title}</h1>
@@ -161,7 +191,7 @@ export default function AuditFormDocument({
 
   return (
     <form
-      className="os-audit-document"
+      className={documentClassName}
       data-clickaudit-profile="active-audit-field"
       onSubmit={(event) => {
         event.preventDefault()
@@ -182,6 +212,7 @@ export default function AuditFormDocument({
             field={field}
             value={values?.[field.id]}
             onChange={onFieldChange}
+            visualVariant={visualVariant}
           />
         ))}
       </div>
@@ -190,7 +221,18 @@ export default function AuditFormDocument({
         <span className="os-audit-form-status">
           {complete ? readyStatusText : pendingStatusText}
         </span>
-        <button type="submit" className="os-audit-submit" disabled={!complete}>
+        <button
+          type="submit"
+          className="os-audit-submit"
+          disabled={!complete}
+          style={isV3 ? {
+            '--korp-v3-audit-button-normal': cssAssetUrl(getKorpV3AuditButtonAssetId('normal')),
+            '--korp-v3-audit-button-hover': cssAssetUrl(getKorpV3AuditButtonAssetId('hover')),
+            '--korp-v3-audit-button-pressed': cssAssetUrl(getKorpV3AuditButtonAssetId('pressed')),
+            '--korp-v3-audit-button-disabled': cssAssetUrl(getKorpV3AuditButtonAssetId('disabled')),
+          } : undefined}
+          data-korp-v3-control={isV3 ? 'button.audit' : undefined}
+        >
           {submitField?.label ?? 'ODESLAT AUDIT'}
         </button>
       </div>

@@ -21,6 +21,7 @@ import {
   validateKorpUiAssetFiles,
   validateKorpUiManifest,
 } from '../lib/korp-ui-asset-validation.mjs'
+import { runKorpUiAssetValidation } from '../validate-korp-ui-assets.mjs'
 
 const baseAsset = () => ({
   id: 'window.audit.frame',
@@ -62,12 +63,37 @@ const allowlistFor = (...assetIds) => ({
   groups: [{ id: 'fixture-group', purpose: 'fixture', assetIds }],
 })
 
+const baseValidationSummary = () => ({
+  atlases: 0,
+  atlasFrames: 0,
+  bytes: 1,
+  files: 1,
+  nineSliceFamilies: 0,
+  nineSlicePieces: 0,
+  pilotAssets: 1,
+  productionAssets: 1,
+  referenceAssets: 0,
+  semanticAssets: 1,
+  windowFamilies: 0,
+})
+
 test('valid minimal manifest and runtime selection pass', () => {
   const manifest = baseManifest()
   assert.equal(validateKorpUiManifest(manifest), manifest)
   assert.deepEqual(validateKorpUiAllowlist(allowlistFor('window.audit.frame'), manifest), [
     'window.audit.frame',
   ])
+
+  const copyEnabled = allowlistFor('window.audit.frame')
+  copyEnabled.copyAssets = true
+  assert.deepEqual(validateKorpUiAllowlist(copyEnabled, manifest), ['window.audit.frame'])
+
+  const malformedCopyFlag = allowlistFor('window.audit.frame')
+  malformedCopyFlag.copyAssets = 'yes'
+  assert.throws(
+    () => validateKorpUiAllowlist(malformedCopyFlag, manifest),
+    /runtime allowlist copyAssets must be a boolean/,
+  )
 })
 
 test('malformed required JSON fails with a deterministic diagnostic', () => {
@@ -254,7 +280,12 @@ test('known auxiliary stale checksum paths produce stable warnings', () => {
 
     const first = auditKorpUiChecksums({ rawRoot: fixtureRoot, source: checksumSource })
     const second = auditKorpUiChecksums({ rawRoot: fixtureRoot, source: checksumSource })
+    const windowsLineEndings = auditKorpUiChecksums({
+      rawRoot: fixtureRoot,
+      source: checksumSource.replaceAll('\n', '\r\n'),
+    })
     assert.deepEqual(first.warnings, second.warnings)
+    assert.deepEqual(first.warnings, windowsLineEndings.warnings)
     assert.deepEqual(first.warnings, [{
       code: 'AUX_QA_BOARD_SHEETS_OMITTED',
       severity: 'warning',
@@ -277,6 +308,74 @@ test('known auxiliary stale checksum paths produce stable warnings', () => {
       () => auditKorpUiChecksums({ rawRoot: fixtureRoot, source: caseCollisionSource }),
       /duplicate checksum path \(case-insensitive\): readme\.md/,
     )
+  } finally {
+    rmSync(fixtureRoot, { recursive: true, force: true })
+  }
+})
+
+test('known warning-only validation reports PASS and WARN on stdout without source mutation', () => {
+  const fixtureRoot = mkdtempSync(join(tmpdir(), 'korp-ui-warning-cli-fixture-'))
+  try {
+    const readme = Buffer.from('source fixture must remain byte-identical')
+    writeFixtureFile(fixtureRoot, 'README.md', readme)
+    const checksumSource = [
+      `${createHash('sha256').update(readme).digest('hex')}  README.md`,
+      `${'0'.repeat(64)}  qa/windows.png`,
+      '',
+    ].join('\r\n')
+    const before = readFileSync(join(fixtureRoot, 'README.md'))
+    const capture = createValidationCapture()
+
+    const exitCode = runKorpUiAssetValidation({
+      writeOutput: false,
+      validate: () => ({
+        summary: baseValidationSummary(),
+        warnings: auditKorpUiChecksums({ rawRoot: fixtureRoot, source: checksumSource }).warnings,
+        writeOutput: false,
+      }),
+      stdout: capture.stdout,
+      stderr: capture.stderr,
+    })
+
+    assert.equal(exitCode, 0)
+    assert.match(capture.output.stdout, /^PASS WITH 1 KNOWN SOURCE WARNING:/)
+    assert.match(capture.output.stdout, /WARN \[AUX_QA_BOARD_SHEETS_OMITTED\]:/)
+    assert.equal(capture.output.stderr, '')
+    assert.deepEqual(readFileSync(join(fixtureRoot, 'README.md')), before)
+
+    const cleanCapture = createValidationCapture()
+    assert.equal(runKorpUiAssetValidation({
+      writeOutput: false,
+      validate: () => ({
+        summary: baseValidationSummary(),
+        warnings: [],
+        writeOutput: false,
+      }),
+      stdout: cleanCapture.stdout,
+      stderr: cleanCapture.stderr,
+    }), 0)
+    assert.match(cleanCapture.output.stdout, /^PASS:/)
+    assert.doesNotMatch(cleanCapture.output.stdout, /WARN/)
+    assert.equal(cleanCapture.output.stderr, '')
+  } finally {
+    rmSync(fixtureRoot, { recursive: true, force: true })
+  }
+})
+
+test('missing production fixture reports FAIL on stderr and exits non-zero', () => {
+  const fixtureRoot = mkdtempSync(join(tmpdir(), 'korp-ui-failure-cli-fixture-'))
+  try {
+    const capture = createValidationCapture()
+    const exitCode = runKorpUiAssetValidation({
+      validate: () => validateKorpUiAssetFiles({ rawRoot: fixtureRoot, manifest: baseManifest() }),
+      stdout: capture.stdout,
+      stderr: capture.stderr,
+    })
+
+    assert.equal(exitCode, 1)
+    assert.equal(capture.output.stdout, '')
+    assert.match(capture.output.stderr, /^FAIL: K0rp UI asset validation failed:/)
+    assert.match(capture.output.stderr, /missing production asset for window\.audit\.frame/)
   } finally {
     rmSync(fixtureRoot, { recursive: true, force: true })
   }
@@ -314,6 +413,43 @@ test('byte-identical raw files copied into runtime roots fail a deterministic sc
         scanRoots: ['public'],
       }),
       /raw UI source file was copied into runtime source: public\/dist\/renamed\.bin/,
+    )
+  } finally {
+    rmSync(fixtureRoot, { recursive: true, force: true })
+  }
+})
+
+test('only the sanctioned generated runtime root bypasses the blanket raw-copy rejection', () => {
+  const fixtureRoot = mkdtempSync(join(tmpdir(), 'korp-ui-sanctioned-copy-fixture-'))
+  try {
+    const rawRoot = join(fixtureRoot, 'raw')
+    const rawBytes = Buffer.from('allowlisted generated runtime bytes')
+    writeFixtureFile(rawRoot, 'assets/2x/example@2x.png', rawBytes)
+    writeFixtureFile(fixtureRoot, 'src/assets/ui/korp-v3/example.png', rawBytes)
+
+    const result = scanKorpUiRuntimeCopies({
+      repoRoot: fixtureRoot,
+      rawRoot,
+      scanRoots: ['src', 'public'],
+      allowedCopyRoots: ['src/assets/ui/korp-v3'],
+    })
+    assert.deepEqual(result.matches, [])
+    assert.deepEqual(result.allowedMatches, [{
+      path: 'src/assets/ui/korp-v3/example.png',
+      rawPaths: ['assets/2x/example@2x.png'],
+    }])
+
+    writeFixtureFile(fixtureRoot, 'public/unauthorized-copy.png', rawBytes)
+    assert.throws(
+      () => scanKorpUiRuntimeCopies({
+        repoRoot: fixtureRoot,
+        rawRoot,
+        scanRoots: ['src', 'public'],
+        allowedCopyRoots: ['src/assets/ui/korp-v3'],
+      }),
+      (error) => error.message.includes(
+        'raw UI source file was copied into runtime source: public/unauthorized-copy.png',
+      ) && !error.message.includes('src/assets/ui/korp-v3/example.png'),
     )
   } finally {
     rmSync(fixtureRoot, { recursive: true, force: true })
@@ -401,6 +537,15 @@ function writeFixtureFile(root, relativePath, contents) {
   const filePath = join(root, ...relativePath.split('/'))
   mkdirSync(dirname(filePath), { recursive: true })
   writeFileSync(filePath, contents)
+}
+
+function createValidationCapture() {
+  const output = { stderr: '', stdout: '' }
+  return {
+    output,
+    stderr: { write: (chunk) => { output.stderr += chunk } },
+    stdout: { write: (chunk) => { output.stdout += chunk } },
+  }
 }
 
 function createPngHeader(width, height) {

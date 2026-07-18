@@ -2,6 +2,7 @@ export const KORP_UI_RAW_ROOT = 'design/ui-source/k0rp-os-ui-assets-v3'
 export const KORP_UI_RUNTIME_METADATA_ROOT = 'design/ui-runtime/k0rp-v3'
 export const KORP_UI_INVENTORY_PATH = `${KORP_UI_RUNTIME_METADATA_ROOT}/inventory.json`
 export const KORP_UI_RUNTIME_ALLOWLIST_PATH = `${KORP_UI_RUNTIME_METADATA_ROOT}/runtime-allowlist.json`
+export const KORP_UI_RUNTIME_ASSET_ROOT = 'src/assets/ui/korp-v3'
 
 export const KORP_UI_RUNTIME_SCAN_ROOTS = Object.freeze([
   'src',

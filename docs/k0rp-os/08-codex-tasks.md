@@ -400,7 +400,7 @@ Status: **DONE / MERGED** — canonical source, runtime subset, sémantický kat
 
 ## Task 022A(2.1) — K0rp_OS UI assets V3 source ingestion and validator
 
-Status: **CURRENT / IMPLEMENTOVÁNO** — exact raw snapshot, normalizovaný inventory, offline validator a pilot allowlist jsou připravené bez player-visible změny.
+Status: **DONE / MERGED** — exact raw snapshot, normalizovaný inventory, offline validator a pilot allowlist jsou na `main` v PR #39 bez player-visible změny.
 
 ### Source a validační hranice
 
@@ -428,16 +428,26 @@ Status: **CURRENT / IMPLEMENTOVÁNO** — exact raw snapshot, normalizovaný inv
 
 ### Do not
 
-- neimportovat raw V3 source do React/CSS ani jej nekopírovat do `src/assets`, `public` nebo desktop runtime folders;
+- neimportovat raw V3 source do React/CSS a nevytvářet unmanaged kopie mimo generovaný allowlisted runtime root;
 - neměnit raw pixely nebo metadata kvůli umlčení warningů;
 - negenerovat druhý icon catalog;
 - neměnit současný rendering, gameplay, persistence, window manager ani ClickAudit/Fidget surface.
 
 ## Task 022A(2.2) — Audit 00-A + Formuláře window-chrome pilot
 
-Status: **NEXT VISUAL STEP** — první runtime selection z ověřeného V3 source.
+Status: **CURRENT / IMPLEMENTOVÁNO** — první runtime selection z ověřeného V3 source a V3 pilot pouze pro Audit 00-A + Formuláře.
 
 Pilot je omezený na Audit/Folder frame a content families, jejich explicitní nine-slice pieces, active/inactive titlebar, close/minimize states, blank Audit checkbox/radio/button states a blank folder row. `composite_blank` zůstává alternativou mimo allowlist, baked document templates nejsou runtime copy a canonical icons ani ClickAudit/Fidget app windows se nemění.
+
+- `npm run build:korp-ui-runtime` deterministicky kopíruje přesně 45 allowlisted `@2x` PNG a generuje `src/ui/korpUiAssetCatalog.js`;
+- `npm run validate:korp-ui-assets` rozlišuje `PASS`, `WARN` a `FAIL`, kontroluje source/inventory i exact runtime drift;
+- Audit 00-A používá jen explicitní V3 audit variantu; Audit 10-A a Audit 16-C zůstávají legacy;
+- Formuláře používají V3 folder frame a blank row material, ale zachovávají dynamická data, canonical icon IDs, actionability a scroll;
+- zavření, minimalizace, restore, drag, center/clamp a taskbar semantics zůstávají beze změny.
+
+## Task 022A(2.3) — Remaining current standard windows
+
+Status: **NEXT VISUAL STEP** — Audit 10-A, Audit 16-C, Doručené a Denní výpis. Top rail/taskbar zůstávají pro 2.4 a controls/status language pro 2.5.
 
 ## Task 023 — Fidget metric packet and first real backlog
 
