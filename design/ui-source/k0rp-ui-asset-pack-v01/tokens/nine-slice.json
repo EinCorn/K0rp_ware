@@ -1,0 +1,92 @@
+{
+  "bar.top.nine-slice": {
+    "path": "assets/bars/topbar.nine-slice.png",
+    "margins": {
+      "left": 8,
+      "top": 8,
+      "right": 8,
+      "bottom": 8
+    }
+  },
+  "bar.taskbar.nine-slice": {
+    "path": "assets/bars/taskbar.nine-slice.png",
+    "margins": {
+      "left": 8,
+      "top": 8,
+      "right": 8,
+      "bottom": 8
+    }
+  },
+  "window.module.nine-slice": {
+    "path": "assets/windows/nine_slice/window.module.nine-slice.png",
+    "margins": {
+      "left": 8,
+      "top": 30,
+      "right": 8,
+      "bottom": 8
+    }
+  },
+  "window.audit.nine-slice": {
+    "path": "assets/windows/nine_slice/window.audit.nine-slice.png",
+    "margins": {
+      "left": 8,
+      "top": 30,
+      "right": 8,
+      "bottom": 8
+    }
+  },
+  "window.document.nine-slice": {
+    "path": "assets/windows/nine_slice/window.document.nine-slice.png",
+    "margins": {
+      "left": 8,
+      "top": 30,
+      "right": 8,
+      "bottom": 8
+    }
+  },
+  "window.folder.nine-slice": {
+    "path": "assets/windows/nine_slice/window.folder.nine-slice.png",
+    "margins": {
+      "left": 8,
+      "top": 30,
+      "right": 8,
+      "bottom": 8
+    }
+  },
+  "window.memo.nine-slice": {
+    "path": "assets/windows/nine_slice/window.memo.nine-slice.png",
+    "margins": {
+      "left": 8,
+      "top": 30,
+      "right": 8,
+      "bottom": 8
+    }
+  },
+  "window.terminal.nine-slice": {
+    "path": "assets/windows/nine_slice/window.terminal.nine-slice.png",
+    "margins": {
+      "left": 8,
+      "top": 30,
+      "right": 8,
+      "bottom": 8
+    }
+  },
+  "window.system.nine-slice": {
+    "path": "assets/windows/nine_slice/window.system.nine-slice.png",
+    "margins": {
+      "left": 8,
+      "top": 30,
+      "right": 8,
+      "bottom": 8
+    }
+  },
+  "window.prestige.nine-slice": {
+    "path": "assets/windows/nine_slice/window.prestige.nine-slice.png",
+    "margins": {
+      "left": 8,
+      "top": 30,
+      "right": 8,
+      "bottom": 8
+    }
+  }
+}
