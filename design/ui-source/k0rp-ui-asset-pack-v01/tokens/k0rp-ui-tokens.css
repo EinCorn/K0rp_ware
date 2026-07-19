@@ -1,0 +1,22 @@
+/* K0rp_OS UI asset pack v0.1 — font files intentionally not included. */
+:root {
+  --korp-font-ui: "Pixel Operator", monospace;
+  --korp-font-mono: "Pixel Operator Mono", "Pixel Operator", monospace;
+  --korp-void: #080908;
+  --korp-outline: #0b0c0b;
+  --korp-panel: #2a2823;
+  --korp-metal: #4e473c;
+  --korp-paper: #a8997f;
+  --korp-paper-light: #e0d6b5;
+  --korp-red: #8b3a32;
+  --korp-green: #4f6331;
+  --korp-fluoro: #aebc5c;
+  --korp-amber: #9e752b;
+  --korp-blue: #39586b;
+  --korp-topbar-height: 36px;
+  --korp-taskbar-height: 38px;
+  --korp-window-header-height: 27px;
+  --korp-window-control-width: 18px;
+  --korp-window-control-height: 16px;
+}
+.korp-pixel-asset { image-rendering: pixelated; image-rendering: crisp-edges; }

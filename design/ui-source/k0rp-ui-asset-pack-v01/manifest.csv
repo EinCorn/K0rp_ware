@@ -1,0 +1,287 @@
+﻿id,path,category,width,height,states,nine_slice,accent,usage,source_docs
+dark-panel,assets/surfaces/dark-panel.png,surface-tile,32,32,,,,Dark internal module surface,01-visual-style.md
+graphite-panel,assets/surfaces/graphite-panel.png,surface-tile,32,32,,,,General graphite UI surface,01-visual-style.md
+paper-ruled,assets/surfaces/paper-ruled.png,surface-tile,32,32,,,,Audit/document ruled paper,01-visual-style.md
+paper-light-ruled,assets/surfaces/paper-light-ruled.png,surface-tile,32,32,,,,High-contrast form paper,01-visual-style.md
+manila-folder,assets/surfaces/manila-folder.png,surface-tile,32,32,,,,Folder and archive surface,01-visual-style.md
+crt-screen,assets/surfaces/crt-screen.png,surface-tile,32,32,,,,Terminal/monitor surface,01-visual-style.md
+dirty-glass,assets/surfaces/dirty-glass.png,surface-tile,32,32,,,,Help and system-information surface,01-visual-style.md
+control.close.normal,assets/controls/individual/close.normal.png,window-control,18,16,normal,,red,close control state,01-visual-style.md;06-screen-concepts.md
+control.close.hover,assets/controls/individual/close.hover.png,window-control,18,16,hover,,red,close control state,01-visual-style.md;06-screen-concepts.md
+control.close.pressed,assets/controls/individual/close.pressed.png,window-control,18,16,pressed,,red,close control state,01-visual-style.md;06-screen-concepts.md
+control.close.disabled,assets/controls/individual/close.disabled.png,window-control,18,16,disabled,,red,close control state,01-visual-style.md;06-screen-concepts.md
+control.close.sheet,assets/controls/sheets/close.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,red,close control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.minimize.normal,assets/controls/individual/minimize.normal.png,window-control,18,16,normal,,amber,minimize control state,01-visual-style.md;06-screen-concepts.md
+control.minimize.hover,assets/controls/individual/minimize.hover.png,window-control,18,16,hover,,amber,minimize control state,01-visual-style.md;06-screen-concepts.md
+control.minimize.pressed,assets/controls/individual/minimize.pressed.png,window-control,18,16,pressed,,amber,minimize control state,01-visual-style.md;06-screen-concepts.md
+control.minimize.disabled,assets/controls/individual/minimize.disabled.png,window-control,18,16,disabled,,amber,minimize control state,01-visual-style.md;06-screen-concepts.md
+control.minimize.sheet,assets/controls/sheets/minimize.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,amber,minimize control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.maximize.normal,assets/controls/individual/maximize.normal.png,window-control,18,16,normal,,neutral,maximize control state,01-visual-style.md;06-screen-concepts.md
+control.maximize.hover,assets/controls/individual/maximize.hover.png,window-control,18,16,hover,,neutral,maximize control state,01-visual-style.md;06-screen-concepts.md
+control.maximize.pressed,assets/controls/individual/maximize.pressed.png,window-control,18,16,pressed,,neutral,maximize control state,01-visual-style.md;06-screen-concepts.md
+control.maximize.disabled,assets/controls/individual/maximize.disabled.png,window-control,18,16,disabled,,neutral,maximize control state,01-visual-style.md;06-screen-concepts.md
+control.maximize.sheet,assets/controls/sheets/maximize.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,neutral,maximize control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.restore.normal,assets/controls/individual/restore.normal.png,window-control,18,16,normal,,neutral,restore control state,01-visual-style.md;06-screen-concepts.md
+control.restore.hover,assets/controls/individual/restore.hover.png,window-control,18,16,hover,,neutral,restore control state,01-visual-style.md;06-screen-concepts.md
+control.restore.pressed,assets/controls/individual/restore.pressed.png,window-control,18,16,pressed,,neutral,restore control state,01-visual-style.md;06-screen-concepts.md
+control.restore.disabled,assets/controls/individual/restore.disabled.png,window-control,18,16,disabled,,neutral,restore control state,01-visual-style.md;06-screen-concepts.md
+control.restore.sheet,assets/controls/sheets/restore.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,neutral,restore control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.pin.normal,assets/controls/individual/pin.normal.png,window-control,18,16,normal,,amber,pin control state,01-visual-style.md;06-screen-concepts.md
+control.pin.hover,assets/controls/individual/pin.hover.png,window-control,18,16,hover,,amber,pin control state,01-visual-style.md;06-screen-concepts.md
+control.pin.pressed,assets/controls/individual/pin.pressed.png,window-control,18,16,pressed,,amber,pin control state,01-visual-style.md;06-screen-concepts.md
+control.pin.disabled,assets/controls/individual/pin.disabled.png,window-control,18,16,disabled,,amber,pin control state,01-visual-style.md;06-screen-concepts.md
+control.pin.sheet,assets/controls/sheets/pin.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,amber,pin control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.unpin.normal,assets/controls/individual/unpin.normal.png,window-control,18,16,normal,,amber,unpin control state,01-visual-style.md;06-screen-concepts.md
+control.unpin.hover,assets/controls/individual/unpin.hover.png,window-control,18,16,hover,,amber,unpin control state,01-visual-style.md;06-screen-concepts.md
+control.unpin.pressed,assets/controls/individual/unpin.pressed.png,window-control,18,16,pressed,,amber,unpin control state,01-visual-style.md;06-screen-concepts.md
+control.unpin.disabled,assets/controls/individual/unpin.disabled.png,window-control,18,16,disabled,,amber,unpin control state,01-visual-style.md;06-screen-concepts.md
+control.unpin.sheet,assets/controls/sheets/unpin.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,amber,unpin control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.reset.normal,assets/controls/individual/reset.normal.png,window-control,18,16,normal,,neutral,reset control state,01-visual-style.md;06-screen-concepts.md
+control.reset.hover,assets/controls/individual/reset.hover.png,window-control,18,16,hover,,neutral,reset control state,01-visual-style.md;06-screen-concepts.md
+control.reset.pressed,assets/controls/individual/reset.pressed.png,window-control,18,16,pressed,,neutral,reset control state,01-visual-style.md;06-screen-concepts.md
+control.reset.disabled,assets/controls/individual/reset.disabled.png,window-control,18,16,disabled,,neutral,reset control state,01-visual-style.md;06-screen-concepts.md
+control.reset.sheet,assets/controls/sheets/reset.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,neutral,reset control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.help.normal,assets/controls/individual/help.normal.png,window-control,18,16,normal,,blue,help control state,01-visual-style.md;06-screen-concepts.md
+control.help.hover,assets/controls/individual/help.hover.png,window-control,18,16,hover,,blue,help control state,01-visual-style.md;06-screen-concepts.md
+control.help.pressed,assets/controls/individual/help.pressed.png,window-control,18,16,pressed,,blue,help control state,01-visual-style.md;06-screen-concepts.md
+control.help.disabled,assets/controls/individual/help.disabled.png,window-control,18,16,disabled,,blue,help control state,01-visual-style.md;06-screen-concepts.md
+control.help.sheet,assets/controls/sheets/help.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,blue,help control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.menu.normal,assets/controls/individual/menu.normal.png,window-control,18,16,normal,,neutral,menu control state,01-visual-style.md;06-screen-concepts.md
+control.menu.hover,assets/controls/individual/menu.hover.png,window-control,18,16,hover,,neutral,menu control state,01-visual-style.md;06-screen-concepts.md
+control.menu.pressed,assets/controls/individual/menu.pressed.png,window-control,18,16,pressed,,neutral,menu control state,01-visual-style.md;06-screen-concepts.md
+control.menu.disabled,assets/controls/individual/menu.disabled.png,window-control,18,16,disabled,,neutral,menu control state,01-visual-style.md;06-screen-concepts.md
+control.menu.sheet,assets/controls/sheets/menu.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,neutral,menu control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.back.normal,assets/controls/individual/back.normal.png,window-control,18,16,normal,,neutral,back control state,01-visual-style.md;06-screen-concepts.md
+control.back.hover,assets/controls/individual/back.hover.png,window-control,18,16,hover,,neutral,back control state,01-visual-style.md;06-screen-concepts.md
+control.back.pressed,assets/controls/individual/back.pressed.png,window-control,18,16,pressed,,neutral,back control state,01-visual-style.md;06-screen-concepts.md
+control.back.disabled,assets/controls/individual/back.disabled.png,window-control,18,16,disabled,,neutral,back control state,01-visual-style.md;06-screen-concepts.md
+control.back.sheet,assets/controls/sheets/back.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,neutral,back control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.forward.normal,assets/controls/individual/forward.normal.png,window-control,18,16,normal,,neutral,forward control state,01-visual-style.md;06-screen-concepts.md
+control.forward.hover,assets/controls/individual/forward.hover.png,window-control,18,16,hover,,neutral,forward control state,01-visual-style.md;06-screen-concepts.md
+control.forward.pressed,assets/controls/individual/forward.pressed.png,window-control,18,16,pressed,,neutral,forward control state,01-visual-style.md;06-screen-concepts.md
+control.forward.disabled,assets/controls/individual/forward.disabled.png,window-control,18,16,disabled,,neutral,forward control state,01-visual-style.md;06-screen-concepts.md
+control.forward.sheet,assets/controls/sheets/forward.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,neutral,forward control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.lock.normal,assets/controls/individual/lock.normal.png,window-control,18,16,normal,,red,lock control state,01-visual-style.md;06-screen-concepts.md
+control.lock.hover,assets/controls/individual/lock.hover.png,window-control,18,16,hover,,red,lock control state,01-visual-style.md;06-screen-concepts.md
+control.lock.pressed,assets/controls/individual/lock.pressed.png,window-control,18,16,pressed,,red,lock control state,01-visual-style.md;06-screen-concepts.md
+control.lock.disabled,assets/controls/individual/lock.disabled.png,window-control,18,16,disabled,,red,lock control state,01-visual-style.md;06-screen-concepts.md
+control.lock.sheet,assets/controls/sheets/lock.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,red,lock control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.unlock.normal,assets/controls/individual/unlock.normal.png,window-control,18,16,normal,,green,unlock control state,01-visual-style.md;06-screen-concepts.md
+control.unlock.hover,assets/controls/individual/unlock.hover.png,window-control,18,16,hover,,green,unlock control state,01-visual-style.md;06-screen-concepts.md
+control.unlock.pressed,assets/controls/individual/unlock.pressed.png,window-control,18,16,pressed,,green,unlock control state,01-visual-style.md;06-screen-concepts.md
+control.unlock.disabled,assets/controls/individual/unlock.disabled.png,window-control,18,16,disabled,,green,unlock control state,01-visual-style.md;06-screen-concepts.md
+control.unlock.sheet,assets/controls/sheets/unlock.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,green,unlock control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.settings.normal,assets/controls/individual/settings.normal.png,window-control,18,16,normal,,neutral,settings control state,01-visual-style.md;06-screen-concepts.md
+control.settings.hover,assets/controls/individual/settings.hover.png,window-control,18,16,hover,,neutral,settings control state,01-visual-style.md;06-screen-concepts.md
+control.settings.pressed,assets/controls/individual/settings.pressed.png,window-control,18,16,pressed,,neutral,settings control state,01-visual-style.md;06-screen-concepts.md
+control.settings.disabled,assets/controls/individual/settings.disabled.png,window-control,18,16,disabled,,neutral,settings control state,01-visual-style.md;06-screen-concepts.md
+control.settings.sheet,assets/controls/sheets/settings.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,neutral,settings control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.drag.normal,assets/controls/individual/drag.normal.png,window-control,18,16,normal,,neutral,drag control state,01-visual-style.md;06-screen-concepts.md
+control.drag.hover,assets/controls/individual/drag.hover.png,window-control,18,16,hover,,neutral,drag control state,01-visual-style.md;06-screen-concepts.md
+control.drag.pressed,assets/controls/individual/drag.pressed.png,window-control,18,16,pressed,,neutral,drag control state,01-visual-style.md;06-screen-concepts.md
+control.drag.disabled,assets/controls/individual/drag.disabled.png,window-control,18,16,disabled,,neutral,drag control state,01-visual-style.md;06-screen-concepts.md
+control.drag.sheet,assets/controls/sheets/drag.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,neutral,drag control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.resize.normal,assets/controls/individual/resize.normal.png,window-control,18,16,normal,,neutral,resize control state,01-visual-style.md;06-screen-concepts.md
+control.resize.hover,assets/controls/individual/resize.hover.png,window-control,18,16,hover,,neutral,resize control state,01-visual-style.md;06-screen-concepts.md
+control.resize.pressed,assets/controls/individual/resize.pressed.png,window-control,18,16,pressed,,neutral,resize control state,01-visual-style.md;06-screen-concepts.md
+control.resize.disabled,assets/controls/individual/resize.disabled.png,window-control,18,16,disabled,,neutral,resize control state,01-visual-style.md;06-screen-concepts.md
+control.resize.sheet,assets/controls/sheets/resize.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,neutral,resize control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.detach.normal,assets/controls/individual/detach.normal.png,window-control,18,16,normal,,blue,detach control state,01-visual-style.md;06-screen-concepts.md
+control.detach.hover,assets/controls/individual/detach.hover.png,window-control,18,16,hover,,blue,detach control state,01-visual-style.md;06-screen-concepts.md
+control.detach.pressed,assets/controls/individual/detach.pressed.png,window-control,18,16,pressed,,blue,detach control state,01-visual-style.md;06-screen-concepts.md
+control.detach.disabled,assets/controls/individual/detach.disabled.png,window-control,18,16,disabled,,blue,detach control state,01-visual-style.md;06-screen-concepts.md
+control.detach.sheet,assets/controls/sheets/detach.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,blue,detach control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.collapse.normal,assets/controls/individual/collapse.normal.png,window-control,18,16,normal,,neutral,collapse control state,01-visual-style.md;06-screen-concepts.md
+control.collapse.hover,assets/controls/individual/collapse.hover.png,window-control,18,16,hover,,neutral,collapse control state,01-visual-style.md;06-screen-concepts.md
+control.collapse.pressed,assets/controls/individual/collapse.pressed.png,window-control,18,16,pressed,,neutral,collapse control state,01-visual-style.md;06-screen-concepts.md
+control.collapse.disabled,assets/controls/individual/collapse.disabled.png,window-control,18,16,disabled,,neutral,collapse control state,01-visual-style.md;06-screen-concepts.md
+control.collapse.sheet,assets/controls/sheets/collapse.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,neutral,collapse control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.expand.normal,assets/controls/individual/expand.normal.png,window-control,18,16,normal,,neutral,expand control state,01-visual-style.md;06-screen-concepts.md
+control.expand.hover,assets/controls/individual/expand.hover.png,window-control,18,16,hover,,neutral,expand control state,01-visual-style.md;06-screen-concepts.md
+control.expand.pressed,assets/controls/individual/expand.pressed.png,window-control,18,16,pressed,,neutral,expand control state,01-visual-style.md;06-screen-concepts.md
+control.expand.disabled,assets/controls/individual/expand.disabled.png,window-control,18,16,disabled,,neutral,expand control state,01-visual-style.md;06-screen-concepts.md
+control.expand.sheet,assets/controls/sheets/expand.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,neutral,expand control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.all.sheet,assets/controls/sheets/all-controls.sheet.png,window-control-atlas,72,304,rows=controls;columns=normal|hover|pressed|disabled,,,Complete chrome control atlas,01-visual-style.md;06-screen-concepts.md
+status.lamp.online,assets/status/lamp.online.png,status-lamp,12,12,online,,online,online status lamp,01-visual-style.md
+status.lamp.warning,assets/status/lamp.warning.png,status-lamp,12,12,warning,,warning,warning status lamp,01-visual-style.md
+status.lamp.error,assets/status/lamp.error.png,status-lamp,12,12,error,,error,error status lamp,01-visual-style.md
+status.lamp.offline,assets/status/lamp.offline.png,status-lamp,12,12,offline,,offline,offline status lamp,01-visual-style.md
+status.lamp.sheet,assets/status/lamp.sheet.png,status-lamp-sheet,48,12,online|warning|error|offline,,,Status lamp sprite sheet,01-visual-style.md
+status.badge.pending,assets/status/badge.pending.png,status-badge,112,18,pending,,pending,pending semantic badge,15-unlocks-memos-and-system-mutations.md
+status.badge.ready,assets/status/badge.ready.png,status-badge,112,18,ready,,ready,ready semantic badge,15-unlocks-memos-and-system-mutations.md
+status.badge.certified,assets/status/badge.certified.png,status-badge,112,18,certified,,certified,certified semantic badge,15-unlocks-memos-and-system-mutations.md
+status.badge.warning,assets/status/badge.warning.png,status-badge,112,18,warning,,warning,warning semantic badge,15-unlocks-memos-and-system-mutations.md
+status.badge.error,assets/status/badge.error.png,status-badge,112,18,error,,error,error semantic badge,15-unlocks-memos-and-system-mutations.md
+status.badge.locked,assets/status/badge.locked.png,status-badge,112,18,locked,,locked,locked semantic badge,15-unlocks-memos-and-system-mutations.md
+status.badges.sheet,assets/status/badges.sheet.png,status-badge-sheet,112,108,pending|ready|certified|warning|error|locked,,,Semantic status badges,15-unlocks-memos-and-system-mutations.md
+bar.top.full,assets/bars/topbar.full.1520x36.png,os-bar,1520,36,,"8,8,8,8",,"Canonical top system readout rail, background only",06-screen-concepts.md;KorpOsShell.css
+bar.taskbar.full,assets/bars/taskbar.full.1520x38.png,os-bar,1520,38,,"8,8,8,8",,"Canonical bottom taskbar rail, background only",06-screen-concepts.md;KorpOsShell.css
+bar.topbar.nine-slice,assets/bars/topbar.nine-slice.png,os-bar-nine-slice,64,36,,"8,8,8,8",,Resizable topbar rail,KorpOsShell.css
+bar.taskbar.nine-slice,assets/bars/taskbar.nine-slice.png,os-bar-nine-slice,64,38,,"8,8,8,8",,Resizable taskbar rail,KorpOsShell.css
+bar.start.normal,assets/bars/start.normal.png,taskbar-component,108,26,normal,,green,start taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.start.blank.normal,assets/bars/start.blank.normal.png,taskbar-component-background,108,26,normal,,green,start taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.start.hover,assets/bars/start.hover.png,taskbar-component,108,26,hover,,green,start taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.start.blank.hover,assets/bars/start.blank.hover.png,taskbar-component-background,108,26,hover,,green,start taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.start.pressed,assets/bars/start.pressed.png,taskbar-component,108,26,pressed,,green,start taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.start.blank.pressed,assets/bars/start.blank.pressed.png,taskbar-component-background,108,26,pressed,,green,start taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.start.disabled,assets/bars/start.disabled.png,taskbar-component,108,26,disabled,,green,start taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.start.blank.disabled,assets/bars/start.blank.disabled.png,taskbar-component-background,108,26,disabled,,green,start taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.start.sheet,assets/bars/start.sheet.png,taskbar-component-sheet,432,26,normal|hover|pressed|disabled,,green,start taskbar example state sheet,06-screen-concepts.md;KorpOsShell.css
+bar.start.blank.sheet,assets/bars/start.blank.sheet.png,taskbar-component-background-sheet,432,26,normal|hover|pressed|disabled,,green,start blank state sheet for dynamic runtime text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.task.normal,assets/bars/task.normal.png,taskbar-component,154,26,normal,,neutral,task taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.task.blank.normal,assets/bars/task.blank.normal.png,taskbar-component-background,154,26,normal,,neutral,task taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.task.active,assets/bars/task.active.png,taskbar-component,154,26,active,,neutral,task taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.task.blank.active,assets/bars/task.blank.active.png,taskbar-component-background,154,26,active,,neutral,task taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.task.minimized,assets/bars/task.minimized.png,taskbar-component,154,26,minimized,,neutral,task taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.task.blank.minimized,assets/bars/task.blank.minimized.png,taskbar-component-background,154,26,minimized,,neutral,task taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.task.attention,assets/bars/task.attention.png,taskbar-component,154,26,attention,,neutral,task taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.task.blank.attention,assets/bars/task.blank.attention.png,taskbar-component-background,154,26,attention,,neutral,task taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.task.sheet,assets/bars/task.sheet.png,taskbar-component-sheet,616,26,normal|active|minimized|attention,,neutral,task taskbar example state sheet,06-screen-concepts.md;KorpOsShell.css
+bar.task.blank.sheet,assets/bars/task.blank.sheet.png,taskbar-component-background-sheet,616,26,normal|active|minimized|attention,,neutral,task blank state sheet for dynamic runtime text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.resource.normal,assets/bars/resource.normal.png,taskbar-component,82,24,normal,,green,resource taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.resource.blank.normal,assets/bars/resource.blank.normal.png,taskbar-component-background,82,24,normal,,green,resource taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.resource.active,assets/bars/resource.active.png,taskbar-component,82,24,active,,green,resource taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.resource.blank.active,assets/bars/resource.blank.active.png,taskbar-component-background,82,24,active,,green,resource taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.resource.warning,assets/bars/resource.warning.png,taskbar-component,82,24,warning,,amber,resource taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.resource.blank.warning,assets/bars/resource.blank.warning.png,taskbar-component-background,82,24,warning,,amber,resource taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.resource.disabled,assets/bars/resource.disabled.png,taskbar-component,82,24,disabled,,green,resource taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.resource.blank.disabled,assets/bars/resource.blank.disabled.png,taskbar-component-background,82,24,disabled,,green,resource taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.resource.sheet,assets/bars/resource.sheet.png,taskbar-component-sheet,328,24,normal|active|warning|disabled,,green,resource taskbar example state sheet,06-screen-concepts.md;KorpOsShell.css
+bar.resource.blank.sheet,assets/bars/resource.blank.sheet.png,taskbar-component-background-sheet,328,24,normal|active|warning|disabled,,green,resource blank state sheet for dynamic runtime text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.privacy.normal,assets/bars/privacy.normal.png,taskbar-component,146,24,normal,,green,privacy taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.privacy.blank.normal,assets/bars/privacy.blank.normal.png,taskbar-component-background,146,24,normal,,green,privacy taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.privacy.active,assets/bars/privacy.active.png,taskbar-component,146,24,active,,green,privacy taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.privacy.blank.active,assets/bars/privacy.blank.active.png,taskbar-component-background,146,24,active,,green,privacy taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.privacy.warning,assets/bars/privacy.warning.png,taskbar-component,146,24,warning,,amber,privacy taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.privacy.blank.warning,assets/bars/privacy.blank.warning.png,taskbar-component-background,146,24,warning,,amber,privacy taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.privacy.disabled,assets/bars/privacy.disabled.png,taskbar-component,146,24,disabled,,green,privacy taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.privacy.blank.disabled,assets/bars/privacy.blank.disabled.png,taskbar-component-background,146,24,disabled,,green,privacy taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.privacy.sheet,assets/bars/privacy.sheet.png,taskbar-component-sheet,584,24,normal|active|warning|disabled,,green,privacy taskbar example state sheet,06-screen-concepts.md;KorpOsShell.css
+bar.privacy.blank.sheet,assets/bars/privacy.blank.sheet.png,taskbar-component-background-sheet,584,24,normal|active|warning|disabled,,green,privacy blank state sheet for dynamic runtime text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.clock.normal,assets/bars/clock.normal.png,taskbar-component,116,24,normal,,neutral,clock taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.clock.blank.normal,assets/bars/clock.blank.normal.png,taskbar-component-background,116,24,normal,,neutral,clock taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.clock.active,assets/bars/clock.active.png,taskbar-component,116,24,active,,neutral,clock taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.clock.blank.active,assets/bars/clock.blank.active.png,taskbar-component-background,116,24,active,,neutral,clock taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.clock.minimized,assets/bars/clock.minimized.png,taskbar-component,116,24,minimized,,neutral,clock taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.clock.blank.minimized,assets/bars/clock.blank.minimized.png,taskbar-component-background,116,24,minimized,,neutral,clock taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.clock.disabled,assets/bars/clock.disabled.png,taskbar-component,116,24,disabled,,neutral,clock taskbar component example with raster label,06-screen-concepts.md;KorpOsShell.css
+bar.clock.blank.disabled,assets/bars/clock.blank.disabled.png,taskbar-component-background,116,24,disabled,,neutral,clock taskbar background for runtime HTML/CSS text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.clock.sheet,assets/bars/clock.sheet.png,taskbar-component-sheet,464,24,normal|active|minimized|disabled,,neutral,clock taskbar example state sheet,06-screen-concepts.md;KorpOsShell.css
+bar.clock.blank.sheet,assets/bars/clock.blank.sheet.png,taskbar-component-background-sheet,464,24,normal|active|minimized|disabled,,neutral,clock blank state sheet for dynamic runtime text,06-screen-concepts.md;KorpOsShell.css;11-typography-and-brand.md
+bar.tray.privacy,assets/bars/tray.privacy.png,taskbar-tray-icon,16,16,,,,privacy tray icon,05-privacy-model.md;06-screen-concepts.md
+bar.tray.local,assets/bars/tray.local.png,taskbar-tray-icon,16,16,,,,local tray icon,05-privacy-model.md;06-screen-concepts.md
+bar.tray.audio,assets/bars/tray.audio.png,taskbar-tray-icon,16,16,,,,audio tray icon,05-privacy-model.md;06-screen-concepts.md
+bar.tray.nosync,assets/bars/tray.nosync.png,taskbar-tray-icon,16,16,,,,nosync tray icon,05-privacy-model.md;06-screen-concepts.md
+bar.tray.notice,assets/bars/tray.notice.png,taskbar-tray-icon,16,16,,,,notice tray icon,05-privacy-model.md;06-screen-concepts.md
+bar.tray.sheet,assets/bars/tray.sheet.png,taskbar-tray-sheet,80,16,privacy|local|audio|nosync|notice,,,System tray icon sheet,05-privacy-model.md;06-screen-concepts.md
+window.module.active,assets/windows/shells/window.module.active.320x220.png,window-shell,320,220,active,"8,30,8,8",module,module window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.module.inactive,assets/windows/shells/window.module.inactive.320x220.png,window-shell,320,220,inactive,"8,30,8,8",module,module window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.module.nine-slice,assets/windows/nine_slice/window.module.nine-slice.png,window-nine-slice,64,64,,"8,30,8,8",module,Resizable module window frame,01-visual-style.md;06-screen-concepts.md
+window.audit.active,assets/windows/shells/window.audit.active.320x220.png,window-shell,320,220,active,"8,30,8,8",audit,audit window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.audit.inactive,assets/windows/shells/window.audit.inactive.320x220.png,window-shell,320,220,inactive,"8,30,8,8",audit,audit window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.audit.nine-slice,assets/windows/nine_slice/window.audit.nine-slice.png,window-nine-slice,64,64,,"8,30,8,8",audit,Resizable audit window frame,01-visual-style.md;06-screen-concepts.md
+window.document.active,assets/windows/shells/window.document.active.320x220.png,window-shell,320,220,active,"8,30,8,8",document,document window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.document.inactive,assets/windows/shells/window.document.inactive.320x220.png,window-shell,320,220,inactive,"8,30,8,8",document,document window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.document.nine-slice,assets/windows/nine_slice/window.document.nine-slice.png,window-nine-slice,64,64,,"8,30,8,8",document,Resizable document window frame,01-visual-style.md;06-screen-concepts.md
+window.folder.active,assets/windows/shells/window.folder.active.320x220.png,window-shell,320,220,active,"8,30,8,8",folder,folder window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.folder.inactive,assets/windows/shells/window.folder.inactive.320x220.png,window-shell,320,220,inactive,"8,30,8,8",folder,folder window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.folder.nine-slice,assets/windows/nine_slice/window.folder.nine-slice.png,window-nine-slice,64,64,,"8,30,8,8",folder,Resizable folder window frame,01-visual-style.md;06-screen-concepts.md
+window.memo.active,assets/windows/shells/window.memo.active.320x220.png,window-shell,320,220,active,"8,30,8,8",memo,memo window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.memo.inactive,assets/windows/shells/window.memo.inactive.320x220.png,window-shell,320,220,inactive,"8,30,8,8",memo,memo window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.memo.nine-slice,assets/windows/nine_slice/window.memo.nine-slice.png,window-nine-slice,64,64,,"8,30,8,8",memo,Resizable memo window frame,01-visual-style.md;06-screen-concepts.md
+window.terminal.active,assets/windows/shells/window.terminal.active.320x220.png,window-shell,320,220,active,"8,30,8,8",terminal,terminal window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.terminal.inactive,assets/windows/shells/window.terminal.inactive.320x220.png,window-shell,320,220,inactive,"8,30,8,8",terminal,terminal window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.terminal.nine-slice,assets/windows/nine_slice/window.terminal.nine-slice.png,window-nine-slice,64,64,,"8,30,8,8",terminal,Resizable terminal window frame,01-visual-style.md;06-screen-concepts.md
+window.system.active,assets/windows/shells/window.system.active.320x220.png,window-shell,320,220,active,"8,30,8,8",system,system window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.system.inactive,assets/windows/shells/window.system.inactive.320x220.png,window-shell,320,220,inactive,"8,30,8,8",system,system window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.system.nine-slice,assets/windows/nine_slice/window.system.nine-slice.png,window-nine-slice,64,64,,"8,30,8,8",system,Resizable system window frame,01-visual-style.md;06-screen-concepts.md
+window.prestige.active,assets/windows/shells/window.prestige.active.320x220.png,window-shell,320,220,active,"8,30,8,8",prestige,prestige window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.prestige.inactive,assets/windows/shells/window.prestige.inactive.320x220.png,window-shell,320,220,inactive,"8,30,8,8",prestige,prestige window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.prestige.nine-slice,assets/windows/nine_slice/window.prestige.nine-slice.png,window-nine-slice,64,64,,"8,30,8,8",prestige,Resizable prestige window frame,01-visual-style.md;06-screen-concepts.md
+window.header.module.active,assets/windows/headers/header.module.active.png,window-header,256,27,active,"8,8,8,8",module,module titlebar background,KorpOsShell.css
+window.header.module.inactive,assets/windows/headers/header.module.inactive.png,window-header,256,27,inactive,"8,8,8,8",module,module titlebar background,KorpOsShell.css
+window.header.audit.active,assets/windows/headers/header.audit.active.png,window-header,256,27,active,"8,8,8,8",audit,audit titlebar background,KorpOsShell.css
+window.header.audit.inactive,assets/windows/headers/header.audit.inactive.png,window-header,256,27,inactive,"8,8,8,8",audit,audit titlebar background,KorpOsShell.css
+window.header.document.active,assets/windows/headers/header.document.active.png,window-header,256,27,active,"8,8,8,8",document,document titlebar background,KorpOsShell.css
+window.header.document.inactive,assets/windows/headers/header.document.inactive.png,window-header,256,27,inactive,"8,8,8,8",document,document titlebar background,KorpOsShell.css
+window.header.folder.active,assets/windows/headers/header.folder.active.png,window-header,256,27,active,"8,8,8,8",folder,folder titlebar background,KorpOsShell.css
+window.header.folder.inactive,assets/windows/headers/header.folder.inactive.png,window-header,256,27,inactive,"8,8,8,8",folder,folder titlebar background,KorpOsShell.css
+window.header.memo.active,assets/windows/headers/header.memo.active.png,window-header,256,27,active,"8,8,8,8",memo,memo titlebar background,KorpOsShell.css
+window.header.memo.inactive,assets/windows/headers/header.memo.inactive.png,window-header,256,27,inactive,"8,8,8,8",memo,memo titlebar background,KorpOsShell.css
+window.header.terminal.active,assets/windows/headers/header.terminal.active.png,window-header,256,27,active,"8,8,8,8",terminal,terminal titlebar background,KorpOsShell.css
+window.header.terminal.inactive,assets/windows/headers/header.terminal.inactive.png,window-header,256,27,inactive,"8,8,8,8",terminal,terminal titlebar background,KorpOsShell.css
+window.header.system.active,assets/windows/headers/header.system.active.png,window-header,256,27,active,"8,8,8,8",system,system titlebar background,KorpOsShell.css
+window.header.system.inactive,assets/windows/headers/header.system.inactive.png,window-header,256,27,inactive,"8,8,8,8",system,system titlebar background,KorpOsShell.css
+window.header.prestige.active,assets/windows/headers/header.prestige.active.png,window-header,256,27,active,"8,8,8,8",prestige,prestige titlebar background,KorpOsShell.css
+window.header.prestige.inactive,assets/windows/headers/header.prestige.inactive.png,window-header,256,27,inactive,"8,8,8,8",prestige,prestige titlebar background,KorpOsShell.css
+misc.scrollbar.vertical.sheet,assets/misc/scrollbar.vertical.sheet.png,window-misc,56,80,normal|hover|pressed|disabled,,,Vertical scrollbar states,06-screen-concepts.md
+form.checkbox.empty,assets/forms/checkbox.empty.png,form-control,18,18,empty,,green,checkbox empty state,AuditFormDocument.css
+form.checkbox.hover,assets/forms/checkbox.hover.png,form-control,18,18,hover,,green,checkbox hover state,AuditFormDocument.css
+form.checkbox.checked,assets/forms/checkbox.checked.png,form-control,18,18,checked,,green,checkbox checked state,AuditFormDocument.css
+form.checkbox.disabled,assets/forms/checkbox.disabled.png,form-control,18,18,disabled,,green,checkbox disabled state,AuditFormDocument.css
+form.checkbox.sheet,assets/forms/checkbox.sheet.png,form-control-sheet,72,18,empty|hover|checked|disabled,,green,checkbox state sheet,AuditFormDocument.css
+form.radio.empty,assets/forms/radio.empty.png,form-control,18,18,empty,,green,radio empty state,AuditFormDocument.css
+form.radio.hover,assets/forms/radio.hover.png,form-control,18,18,hover,,green,radio hover state,AuditFormDocument.css
+form.radio.checked,assets/forms/radio.checked.png,form-control,18,18,checked,,green,radio checked state,AuditFormDocument.css
+form.radio.disabled,assets/forms/radio.disabled.png,form-control,18,18,disabled,,green,radio disabled state,AuditFormDocument.css
+form.radio.sheet,assets/forms/radio.sheet.png,form-control-sheet,72,18,empty|hover|checked|disabled,,green,radio state sheet,AuditFormDocument.css
+form.toggle.off,assets/forms/toggle.off.png,form-control,34,18,off,,green,Accessibility/settings toggle,14-sensory-feedback.md
+form.toggle.off-hover,assets/forms/toggle.off-hover.png,form-control,34,18,off-hover,,green,Accessibility/settings toggle,14-sensory-feedback.md
+form.toggle.on,assets/forms/toggle.on.png,form-control,34,18,on,,green,Accessibility/settings toggle,14-sensory-feedback.md
+form.toggle.on-hover,assets/forms/toggle.on-hover.png,form-control,34,18,on-hover,,green,Accessibility/settings toggle,14-sensory-feedback.md
+form.button.primary.normal,assets/forms/button.primary.normal.png,form-button,148,28,normal,,green,primary action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.primary.blank.normal,assets/forms/button.primary.blank.normal.png,form-button-background,148,28,normal,,green,primary button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.primary.hover,assets/forms/button.primary.hover.png,form-button,148,28,hover,,green,primary action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.primary.blank.hover,assets/forms/button.primary.blank.hover.png,form-button-background,148,28,hover,,green,primary button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.primary.pressed,assets/forms/button.primary.pressed.png,form-button,148,28,pressed,,green,primary action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.primary.blank.pressed,assets/forms/button.primary.blank.pressed.png,form-button-background,148,28,pressed,,green,primary button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.primary.disabled,assets/forms/button.primary.disabled.png,form-button,148,28,disabled,,green,primary action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.primary.blank.disabled,assets/forms/button.primary.blank.disabled.png,form-button-background,148,28,disabled,,green,primary button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.primary.sheet,assets/forms/button.primary.sheet.png,form-button-sheet,592,28,normal|hover|pressed|disabled,,green,primary example button state sheet,AuditFormDocument.css
+form.button.primary.blank.sheet,assets/forms/button.primary.blank.sheet.png,form-button-background-sheet,592,28,normal|hover|pressed|disabled,,green,primary blank button sheet for dynamic runtime text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.secondary.normal,assets/forms/button.secondary.normal.png,form-button,148,28,normal,,neutral,secondary action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.secondary.blank.normal,assets/forms/button.secondary.blank.normal.png,form-button-background,148,28,normal,,neutral,secondary button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.secondary.hover,assets/forms/button.secondary.hover.png,form-button,148,28,hover,,neutral,secondary action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.secondary.blank.hover,assets/forms/button.secondary.blank.hover.png,form-button-background,148,28,hover,,neutral,secondary button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.secondary.pressed,assets/forms/button.secondary.pressed.png,form-button,148,28,pressed,,neutral,secondary action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.secondary.blank.pressed,assets/forms/button.secondary.blank.pressed.png,form-button-background,148,28,pressed,,neutral,secondary button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.secondary.disabled,assets/forms/button.secondary.disabled.png,form-button,148,28,disabled,,neutral,secondary action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.secondary.blank.disabled,assets/forms/button.secondary.blank.disabled.png,form-button-background,148,28,disabled,,neutral,secondary button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.secondary.sheet,assets/forms/button.secondary.sheet.png,form-button-sheet,592,28,normal|hover|pressed|disabled,,neutral,secondary example button state sheet,AuditFormDocument.css
+form.button.secondary.blank.sheet,assets/forms/button.secondary.blank.sheet.png,form-button-background-sheet,592,28,normal|hover|pressed|disabled,,neutral,secondary blank button sheet for dynamic runtime text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.danger.normal,assets/forms/button.danger.normal.png,form-button,148,28,normal,,red,danger action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.danger.blank.normal,assets/forms/button.danger.blank.normal.png,form-button-background,148,28,normal,,red,danger button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.danger.hover,assets/forms/button.danger.hover.png,form-button,148,28,hover,,red,danger action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.danger.blank.hover,assets/forms/button.danger.blank.hover.png,form-button-background,148,28,hover,,red,danger button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.danger.pressed,assets/forms/button.danger.pressed.png,form-button,148,28,pressed,,red,danger action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.danger.blank.pressed,assets/forms/button.danger.blank.pressed.png,form-button-background,148,28,pressed,,red,danger button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.danger.disabled,assets/forms/button.danger.disabled.png,form-button,148,28,disabled,,red,danger action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.danger.blank.disabled,assets/forms/button.danger.blank.disabled.png,form-button-background,148,28,disabled,,red,danger button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.danger.sheet,assets/forms/button.danger.sheet.png,form-button-sheet,592,28,normal|hover|pressed|disabled,,red,danger example button state sheet,AuditFormDocument.css
+form.button.danger.blank.sheet,assets/forms/button.danger.blank.sheet.png,form-button-background-sheet,592,28,normal|hover|pressed|disabled,,red,danger blank button sheet for dynamic runtime text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.information.normal,assets/forms/button.information.normal.png,form-button,148,28,normal,,blue,information action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.information.blank.normal,assets/forms/button.information.blank.normal.png,form-button-background,148,28,normal,,blue,information button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.information.hover,assets/forms/button.information.hover.png,form-button,148,28,hover,,blue,information action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.information.blank.hover,assets/forms/button.information.blank.hover.png,form-button-background,148,28,hover,,blue,information button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.information.pressed,assets/forms/button.information.pressed.png,form-button,148,28,pressed,,blue,information action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.information.blank.pressed,assets/forms/button.information.blank.pressed.png,form-button-background,148,28,pressed,,blue,information button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.information.disabled,assets/forms/button.information.disabled.png,form-button,148,28,disabled,,blue,information action button example with raster label,AuditFormDocument.css;14-sensory-feedback.md
+form.button.information.blank.disabled,assets/forms/button.information.blank.disabled.png,form-button-background,148,28,disabled,,blue,information button background for runtime HTML/CSS text,AuditFormDocument.css;11-typography-and-brand.md
+form.button.information.sheet,assets/forms/button.information.sheet.png,form-button-sheet,592,28,normal|hover|pressed|disabled,,blue,information example button state sheet,AuditFormDocument.css
+form.button.information.blank.sheet,assets/forms/button.information.blank.sheet.png,form-button-background-sheet,592,28,normal|hover|pressed|disabled,,blue,information blank button sheet for dynamic runtime text,AuditFormDocument.css;11-typography-and-brand.md
+form.input.normal,assets/forms/input.normal.png,form-control,220,26,normal,,normal,Text/value input example with raster placeholder,06-screen-concepts.md
+form.input.blank.normal,assets/forms/input.blank.normal.png,form-control-background,220,26,normal,,normal,Input background for runtime HTML/CSS value and placeholder,06-screen-concepts.md;11-typography-and-brand.md
+form.input.focus,assets/forms/input.focus.png,form-control,220,26,focus,,amber,Text/value input example with raster placeholder,06-screen-concepts.md
+form.input.blank.focus,assets/forms/input.blank.focus.png,form-control-background,220,26,focus,,amber,Input background for runtime HTML/CSS value and placeholder,06-screen-concepts.md;11-typography-and-brand.md
+form.input.error,assets/forms/input.error.png,form-control,220,26,error,,error,Text/value input example with raster placeholder,06-screen-concepts.md
+form.input.blank.error,assets/forms/input.blank.error.png,form-control-background,220,26,error,,error,Input background for runtime HTML/CSS value and placeholder,06-screen-concepts.md;11-typography-and-brand.md
+form.input.disabled,assets/forms/input.disabled.png,form-control,220,26,disabled,,disabled,Text/value input example with raster placeholder,06-screen-concepts.md
+form.input.blank.disabled,assets/forms/input.blank.disabled.png,form-control-background,220,26,disabled,,disabled,Input background for runtime HTML/CSS value and placeholder,06-screen-concepts.md;11-typography-and-brand.md
+form.scale.normal,assets/forms/scale.normal.png,form-control,220,34,normal,,green,Audit scale field,AuditFormDocument.jsx
+form.scale.focus,assets/forms/scale.focus.png,form-control,220,34,focus,,green,Audit scale field,AuditFormDocument.jsx
+form.scale.disabled,assets/forms/scale.disabled.png,form-control,220,34,disabled,,green,Audit scale field,AuditFormDocument.jsx
+form.progress.000,assets/forms/progress.000.png,form-progress,240,18,0,,green,Installation/procedure progress,15-unlocks-memos-and-system-mutations.md
+form.progress.033,assets/forms/progress.033.png,form-progress,240,18,0.33,,green,Installation/procedure progress,15-unlocks-memos-and-system-mutations.md
+form.progress.066,assets/forms/progress.066.png,form-progress,240,18,0.66,,green,Installation/procedure progress,15-unlocks-memos-and-system-mutations.md
+form.progress.100,assets/forms/progress.100.png,form-progress,240,18,1,,green,Installation/procedure progress,15-unlocks-memos-and-system-mutations.md
+form.progress.sheet,assets/forms/progress.sheet.png,form-progress-sheet,240,72,0|33|66|100,,green,Progress state sheet,15-unlocks-memos-and-system-mutations.md
