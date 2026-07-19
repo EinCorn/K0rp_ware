@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 1,
+  "contractId": "k0rp.window-shell.v01",
+  "sourcePack": {
+    "id": "k0rp_ui_asset_pack_v01",
+    "root": "design/ui-source/k0rp-ui-asset-pack-v01"
+  },
+  "runtimeRoot": "design/ui-runtime/k0rp-ui-v01",
+  "units": "logical-px",
+  "renderingPolicy": {
+    "integerCoordinatesOnly": true,
+    "integerScaleOnly": true,
+    "nearestNeighborWhenScaling": true,
+    "fractionalTransformScaleAllowed": false,
+    "smoothingAllowed": false,
+    "blurOrFilterAllowed": false,
+    "runtimeText": "live-dom",
+    "runtimeFont": "preserve-current",
+    "stateStyling": {
+      "backgroundAssetsIndependent": true,
+      "textColorsIndependent": true
+    }
+  },
+  "compositionPolicy": {
+    "allowedClassifications": [
+      "tile",
+      "nine-slice",
+      "three-slice",
+      "fixed",
+      "reference-only"
+    ],
+    "frame": {
+      "classification": "nine-slice",
+      "capInsetsPx": {
+        "top": 30,
+        "right": 8,
+        "bottom": 8,
+        "left": 8
+      },
+      "stretchCompleteShell": false
+    },
+    "header": {
+      "classification": "three-slice",
+      "axis": "horizontal",
+      "heightPx": 27,
+      "capInsetsPx": {
+        "left": 8,
+        "right": 8
+      }
+    },
+    "surfaceTile": {
+      "classification": "tile",
+      "repeatable": true,
+      "stretchable": false
+    },
+    "controls": {
+      "classification": "fixed",
+      "sizePx": {
+        "width": 18,
+        "height": 16
+      },
+      "layoutPx": {
+        "top": 6,
+        "right": 8,
+        "gap": 2
+      },
+      "states": [
+        "normal",
+        "hover",
+        "pressed",
+        "disabled"
+      ]
+    },
+    "completeShell": {
+      "classification": "reference-only",
+      "runtimeImportAllowed": false,
+      "reason": "The authored 320x220 shell is a composition reference and must never be stretched into a runtime window."
+    }
+  },
+  "geometryPolicy": {
+    "outerSizeFormula": {
+      "width": "content.width + contentInsets.left + contentInsets.right",
+      "height": "content.height + contentInsets.top + contentInsets.bottom"
+    },
+    "contentPreservation": {
+      "shrinkAllowed": false,
+      "cropAllowed": false,
+      "rescaleAllowed": false
+    }
+  },
+  "families": {
+    "module": {
+      "orientation": "content-derived",
+      "controlCount": 3,
+      "controlSlots": [
+        {
+          "id": "pin-toggle",
+          "actions": [
+            "pin",
+            "unpin"
+          ],
+          "assetIdPatterns": [
+            "control.pin.{state}",
+            "control.unpin.{state}"
+          ]
+        },
+        {
+          "id": "minimize",
+          "assetIdPatterns": [
+            "control.minimize.{state}"
+          ]
+        },
+        {
+          "id": "close",
+          "assetIdPatterns": [
+            "control.close.{state}"
+          ]
+        }
+      ],
+      "assets": {
+        "frame": "window.module.nine-slice",
+        "headers": {
+          "active": "window.header.module.active",
+          "inactive": "window.header.module.inactive"
+        },
+        "surface": "dark-panel",
+        "referenceOnlyShells": [
+          "window.module.active",
+          "window.module.inactive"
+        ]
+      },
+      "defaultMetricsPx": {
+        "contentInsets": {
+          "top": 31,
+          "right": 8,
+          "bottom": 25,
+          "left": 8
+        },
+        "content": {
+          "width": 167,
+          "height": 167
+        },
+        "outer": {
+          "width": 183,
+          "height": 223
+        }
+      },
+      "preservedContentInstances": {
+        "clickAudit": {
+          "width": 167,
+          "height": 167
+        },
+        "fidget": {
+          "width": 167,
+          "height": 167
+        }
+      },
+      "resizing": {
+        "composition": "nine-slice-frame-plus-three-slice-header",
+        "axes": [
+          "horizontal",
+          "vertical"
+        ],
+        "contentDrivesOuterSize": true
+      },
+      "pilotEligible": true
+    },
+    "audit": {
+      "orientation": "portrait",
+      "controlCount": 2,
+      "controlSlots": [
+        {
+          "id": "minimize",
+          "assetIdPatterns": [
+            "control.minimize.{state}"
+          ]
+        },
+        {
+          "id": "close",
+          "assetIdPatterns": [
+            "control.close.{state}"
+          ]
+        }
+      ],
+      "assets": {
+        "frame": "window.audit.nine-slice",
+        "headers": {
+          "active": "window.header.audit.active",
+          "inactive": "window.header.audit.inactive"
+        },
+        "surface": "paper-light-ruled",
+        "referenceOnlyShells": [
+          "window.audit.active",
+          "window.audit.inactive"
+        ]
+      },
+      "defaultMetricsPx": {
+        "contentInsets": {
+          "top": 31,
+          "right": 8,
+          "bottom": 8,
+          "left": 8
+        },
+        "content": {
+          "width": 294,
+          "height": 431
+        },
+        "outer": {
+          "width": 310,
+          "height": 470
+        }
+      },
+      "resizing": {
+        "composition": "nine-slice-frame-plus-three-slice-header-plus-tiled-surface",
+        "axes": [
+          "horizontal",
+          "vertical"
+        ],
+        "preferredGrowthAxis": "vertical",
+        "contentDrivesOuterSize": true
+      },
+      "contentContract": {
+        "kind": "live-form",
+        "verticalGrowth": true,
+        "bakedTextAllowed": false
+      },
+      "pilotEligible": false
+    },
+    "folder": {
+      "orientation": "portrait",
+      "controlCount": 2,
+      "controlSlots": [
+        {
+          "id": "minimize",
+          "assetIdPatterns": [
+            "control.minimize.{state}"
+          ]
+        },
+        {
+          "id": "close",
+          "assetIdPatterns": [
+            "control.close.{state}"
+          ]
+        }
+      ],
+      "assets": {
+        "frame": "window.folder.nine-slice",
+        "headers": {
+          "active": "window.header.folder.active",
+          "inactive": "window.header.folder.inactive"
+        },
+        "surface": "manila-folder",
+        "referenceOnlyShells": [
+          "window.folder.active",
+          "window.folder.inactive"
+        ]
+      },
+      "defaultMetricsPx": {
+        "contentInsets": {
+          "top": 31,
+          "right": 8,
+          "bottom": 8,
+          "left": 8
+        },
+        "content": {
+          "width": 252,
+          "height": 321
+        },
+        "outer": {
+          "width": 268,
+          "height": 360
+        }
+      },
+      "resizing": {
+        "composition": "nine-slice-frame-plus-three-slice-header-plus-tiled-surface",
+        "axes": [
+          "horizontal",
+          "vertical"
+        ],
+        "preferredGrowthAxis": "vertical",
+        "contentDrivesOuterSize": true
+      },
+      "contentContract": {
+        "kind": "live-scroll-list",
+        "scrollAxis": "vertical",
+        "bakedRowsAllowed": false,
+        "bakedScrollbarAllowed": false
+      },
+      "pilotEligible": false
+    }
+  }
+}
