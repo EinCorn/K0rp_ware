@@ -1,6 +1,6 @@
 # Integration map — napojení progression dat na K0rp_ware
 
-Verze: `0.3.0 core-loop migration`
+Verze: `0.3.1 / Task 023 core-loop integration`
 
 Tento soubor popisuje doporučený technický postup integrace canonical Metric → Audit → Evidence modelu.
 
@@ -63,6 +63,8 @@ KorpRuntimeProvider potřebuje:
 ```ts
 metricPackets: MetricPacket[];
 auditInstances: AuditInstance[];
+clickAuditBatchBaseline: number;
+fidgetSessionBatchBaseline: number;
 ```
 
 Doporučený pragmatický shape:
@@ -113,7 +115,9 @@ delegation.activityGenerated
 delegation.trainingCompleted
 ```
 
-## 5. ClickAudit flow
+## 5. Metric packet flows
+
+### ClickAudit
 
 ### Raw click
 
@@ -148,6 +152,38 @@ pending ClickAudit packet
 ```
 
 Jedna vůle uživatele smí vytvořit maximálně jeden raw click. Jeden submit smí certifikovat maximálně jeden packet.
+
+### Fidget natural closure
+
+```text
+úmyslný smysluplný spin
+→ přirozený doběh
+→ právě 1 `fidget.sessionSettled`
+→ raw settled-session stat
+```
+
+Pointer moves, animation frames, průběžné physics ticks ani pouhé otevření/zavření okna progression event nevytvářejí. Event nese jen privacy-safe sequence/mode a `source: manual`; sám nepřidává Evidence.
+
+### Fidget packet boundary
+
+```text
+3 nové `fidget.sessionSettled` od `fidgetSessionBatchBaseline`
+→ create `fidget-sessions-<rangeStart>-<rangeEnd>`
+→ create/offer repeatable Audit `audit-18-s`
+→ pending ve společné ClickAudit + Fidget queue
+```
+
+Packet size `3` je fixed provisional/playtestable contract Tasku 023. Neúplný zbytek zůstává v cursoru. Packet creation musí být idempotentní, nikdy samo neotevře auditní okno a nikdy nepřevezme focus.
+
+### Fidget certification
+
+```text
+Audit 18-S valid submit
+→ audit.formSubmitted
+→ audit.evidenceCertified
+→ Fidget packet certified
+→ Evidence +1 právě jednou
+```
 
 ## 6. Audit interaction bridge
 
@@ -189,6 +225,8 @@ KorpRuntimeProvider
 ├─ createMetricPacket()
 ├─ submitAuditInstance()
 ├─ certifyEvidence()
+├─ mixed pending audit count
+├─ debug-only derived audit pressure
 ├─ authorization state
 ├─ unlock/memo queues
 ├─ save/load/reset
@@ -196,6 +234,8 @@ KorpRuntimeProvider
 ```
 
 Window positions, z-index, drag a minimize zůstávají presentation state v KorpOsShell.
+
+Pro Task 023 je debug-only pressure odvozen jako `clamp(0, 100, pendingCount * 10 + floor(oldestPendingAgeMinutes / 10) + discrepancyCount * 20)`. Provider jej nesmí ukládat do `korpState.resources.auditPressure`.
 
 ## 8. Resolver order
 
@@ -267,6 +307,16 @@ auditInstances = []
 
 Důvod: neudělit retroaktivní packets/Evidence za starý prototypový click history.
 
+Při migraci runtime save ze schema 4 na schema 5:
+
+```text
+fidgetSessionBatchBaseline = current `fidget.sessionSettled` count
+nové Fidget metric packets = 0
+nové Audit 18-S instances = 0
+```
+
+Migrace zachová existující ClickAudit packet/audit stav, authorization, unlocky a ostatní validní runtime state. První Fidget packet vznikne až po třech nových settled sessions; stará historie nevytváří retroaktivní packet ani Evidence.
+
 Save ukládá:
 
 ```text
@@ -297,20 +347,22 @@ Asset-backed Fidget surface.
 
 ### Task 023
 
-Fidget packet and shared backlog.
+**ACTIVE** — fixed provisional/playtestable Fidget packet size `3`, IDs `fidget-sessions-<rangeStart>-<rangeEnd>`, repeatable Audit 18-S, smíšená ClickAudit + Fidget queue, total pending count a debug-only backlog pressure. Vytvoření packetu neotevírá okno a nepřebírá focus. Windows manual gate není tímto dokumentem prohlášen za splněný.
 
 ### Task 024
 
 Full reconciliation:
 
 - resources metadata;
-- events;
+- events, včetně odstranění starých přímých yieldů `fidget.sessionSettled` a sjednocení s pravidlem „Evidence pouze z certifikace“;
 - audit forms;
 - upgrades;
 - CSV balance;
 - first-cycle phases;
 - validation;
 - docs/package parity.
+
+Současný `events.json` direct-yield mismatch je vědomě odložený do tohoto tasku. Task 023 runtime nesmí z raw `fidget.sessionSettled` přímo udělit Evidence.
 
 ## 12. What not to implement yet
 
@@ -325,6 +377,8 @@ Full reconciliation:
 - external raw activity telemetry.
 
 ## 13. Validation additions
+
+Task 023 bounded validation musí pokrýt packet ranges/idempotency, exactly-once certifikaci, mixed pending count, zero-retro schema 4 → 5 migration a zákaz auto-open/focus stealu.
 
 Task 024 validation má kontrolovat:
 

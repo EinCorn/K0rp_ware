@@ -4,7 +4,14 @@ import {
   openWindowState,
 } from './windowManager.js'
 
-const bootstrapPacketQuantity = 1
+const isCanonicalClickAuditBootstrapPacket = (packet) => (
+  packet?.metricType === 'clickaudit.click'
+  && packet.auditTemplateId === 'audit-10-a'
+  && packet.quantity === 1
+  && Number.isSafeInteger(packet.rangeStart)
+  && packet.rangeStart > 0
+  && packet.rangeEnd === packet.rangeStart
+)
 
 export function reconcileAuditInstanceWindows({
   windows,
@@ -49,7 +56,8 @@ export function reconcileAuditInstanceWindows({
 
     const packet = packetById.get(auditInstance.packetId)
     const shouldAutoOpen = newlyCreatedInstanceIds.has(auditInstance.id)
-      && packet?.quantity === bootstrapPacketQuantity
+      && auditInstance.templateId === 'audit-10-a'
+      && isCanonicalClickAuditBootstrapPacket(packet)
 
     if (!shouldAutoOpen) continue
 

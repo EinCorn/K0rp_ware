@@ -23,7 +23,9 @@ Aktuální stav:
 - `clickaudit.click` je doslovná raw metrika a sama nepřidává spendable resource;
 - Task 021A window placement, dynamické form windows, cascade a close/minimize semantics jsou dokončené a mergnuté;
 - Task 022 je dokončený a mergnutý v PR #35 a canonical icon integration z Tasku 022A je dokončená v PR #37;
-- aktuální bounded visual pass začíná Taskem 022A(2.1) — V3 UI source ingestion a validator, pokračuje pilotem 022A(2.2) a teprve potom se vrací k Tasku 023 jako dalšímu gameplay kroku.
+- Task 022A(2.1) dokončil V3 UI source ingestion, inventory, allowlist a validator jako infrastrukturu bez player-visible změny;
+- runtime pilot Tasku 022A(2.2) z PR #43 byl po vizuálním review uzavřen bez merge; 022A(2.2–2.5) jsou odložené do revize s curated/redrawn assety;
+- aktivní gameplay krok je Task 023 — Fidget metric packet, repeatable Audit 18-S a první smíšený backlog.
 
 Současné standalone appky ClickAudit, Fidget a Bloom se neruší. Integrace probíhá přes společné module surface, bridge a runtime contracts.
 
@@ -167,7 +169,7 @@ nová hra
 
 Cíl: Uzavřít první celý loop a přidat druhý druh raw metriky.
 
-Status: Task 021A, Task 021B, Task 022 i canonical icon Task 022A jsou dokončené a mergnuté. Aktuální bounded visual pass je Task 022A(2.1); Task 023 zůstává následujícím gameplay krokem po dokončení vizuálních subtasků 2.1–2.5.
+Status: Task 021A, Task 021B, Task 022 i canonical icon Task 022A jsou dokončené a mergnuté. Task 022A(2.1) dokončil pouze V3 source/validation infrastrukturu. PR #43 s pilotem 022A(2.2) byl uzavřen bez merge a 022A(2.2–2.5) čekají na curated/redrawn asset revision. Aktivní je Task 023.
 
 Pořadí:
 
@@ -175,10 +177,10 @@ Pořadí:
 2. Task 021B — dokončený Evidence authorization contract z PR #33: Audit 16-C, alokace 1 EV a persistentní Fidget authorization;
 3. Task 022 — dokončený sdílený asset-backed Fidget module surface z PR #35;
 4. Task 022A — dokončená canonical icon pack integrace z PR #37;
-5. Task 022A(2.1) — aktuální exact V3 UI source snapshot, normalizovaný inventory, validator a pilot allowlist bez změny renderingu;
-6. Task 022A(2.2) — následující Audit 00-A + Formuláře window-chrome pilot;
-7. Task 022A(2.3–2.5) — zbývající současná standardní okna, top rail/taskbar a controls/status language;
-8. Task 023 — následující gameplay krok: `fidget.sessionSettled`, packet a první skutečný backlog.
+5. Task 022A(2.1) — dokončený exact V3 UI source snapshot, normalizovaný inventory, validator a pilot allowlist bez změny renderingu;
+6. Task 022A(2.2) — Audit 00-A + Formuláře window-chrome pilot z PR #43 uzavřen bez merge;
+7. Task 022A(2.2–2.5) — odložené do nové curated/redrawn asset revision; žádný neakceptovaný V3 chrome není runtime standard;
+8. Task 023 — aktivní gameplay krok: `fidget.sessionSettled`, packet po třech sessions, Audit 18-S a první skutečný backlog.
 
 Dokončený Task 021A presentation gate:
 
@@ -200,7 +202,7 @@ EV 1
 → desktop ukazuje AUTORIZOVÁNO / NASAZENO
 → explicitní otevření zobrazí skutečné asset-backed Fidget okno
 → stejné FidgetModule používají standalone i window-only preview
-→ Fidget zatím nevytváří Evidence; session closure a packet patří do Tasku 023
+→ raw Fidget session nevytváří Evidence; Evidence vzniká až certifikací packet auditu v Tasku 023
 ```
 
 Fidget nesmí být odemčen pouze skrytým thresholdem NWU/AP. Musí být autorizován výsledkem auditního procesu.
@@ -228,17 +230,25 @@ npm run validate:korp-ui-assets          offline source, metadata, drift a runti
 
 Tento krok nekopíruje V3 assety do `src/assets`, nemění React/CSS a ponechává ClickAudit, Fidget i canonical icon source autoritativní v jejich stávajících surface.
 
+Runtime chrome pilot nenavázal na tuto infrastrukturu jako přijatý standard: PR #43 byl uzavřen bez merge. Tasky 022A(2.2–2.5) zůstávají odložené, dokud nevznikne curated/redrawn asset revision odpovídající vizuální kvalitě ClickAuditu a Fidgetu.
+
 ## Fáze 8 — Second metric, repeatable audits and backlog
 
 Cíl: Prokázat, že core loop není hardcoded pouze pro ClickAudit.
 
-- Fidget session vytvoří stabilization packet;
-- packet dostane vlastní repeatable audit template;
-- certifikace vytvoří Evidence;
-- Formuláře zobrazí queue a počet čekajících položek;
-- Audit Pressure se začne odvozovat z backlogu, stáří a nesrovnalostí;
+Status: **ACTIVE / TASK 023**. Níže uvedené hodnoty jsou pevný provisional/playtestable contract; jejich finální machine-readable reconciliation patří do Tasku 024.
+
+- každý `fidget.sessionSettled` přidá právě jeden raw stabilization record a nikdy nepřidá Evidence přímo;
+- každé tři nové settled sessions vytvoří právě jeden packet `fidget-sessions-<rangeStart>-<rangeEnd>` se zachovaným neúplným zbytkem;
+- packet dostane repeatable Audit `18-S` a jeho certifikace přidá `EV +1` právě jednou;
+- vytvoření Fidget packetu nikdy automaticky neotevře okno ani nepřevezme focus;
+- Formuláře zobrazí ClickAudit i Fidget audity v jedné queue a taskbar ukáže jejich celkový pending count;
+- debug-only provisional Audit Pressure se odvozuje jako `clamp(0, 100, pendingCount * 10 + floor(oldestPendingAgeMinutes / 10) + discrepancyCount * 20)` a neukládá se do `korpState.resources.auditPressure`;
+- schema 4 → 5 migration nastaví Fidget baseline na současný počet settled sessions a vytvoří nula retroaktivních packetů;
 - hráč musí backlog skutečně pocítit;
 - žádná delegace před playtestem tohoto kroku.
+
+Stávající přímé yieldy `fidget.sessionSettled` v `events.json` jsou známý machine-readable rozpor odložený do Tasku 024. Runtime Tasku 023 je nesmí použít k přímému udělení Evidence.
 
 Completion gate:
 
@@ -246,6 +256,7 @@ Completion gate:
 ClickAudit packet i Fidget packet
 → stejný packet/audit framework
 → různé raw metriky
+→ společná smíšená pending queue bez auto-openu
 → společná Evidence
 ```
 

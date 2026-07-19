@@ -1,28 +1,75 @@
 export const CLICK_AUDIT_PACKET_SIZE = 25
 export const CLICK_AUDIT_TEMPLATE_ID = 'audit-10-a'
+export const CLICK_AUDIT_METRIC_TYPE = 'clickaudit.click'
+export const FIDGET_SESSIONS_PER_PACKET = 3
+export const FIDGET_AUDIT_TEMPLATE_ID = 'audit-18-s'
+export const FIDGET_METRIC_TYPE = 'fidget.sessionSettled'
 
 const safeWholeCount = (value) => (
   Number.isFinite(value) && value > 0 ? Math.floor(value) : 0
+)
+
+const isPositivePacketSize = (value) => (
+  Number.isSafeInteger(value) && value > 0
 )
 
 const appendUnique = (ids, id) => (
   ids.includes(id) ? ids : [...ids, id]
 )
 
-const packetIdForRange = (rangeStart, rangeEnd) => (
+const clickAuditPacketIdForRange = (rangeStart, rangeEnd) => (
   `clickaudit-clicks-${rangeStart}-${rangeEnd}`
 )
 
-const auditInstanceIdForPacket = (packetId) => (
-  `${CLICK_AUDIT_TEMPLATE_ID}:${packetId}`
+const fidgetPacketIdForRange = (rangeStart, rangeEnd) => (
+  `fidget-sessions-${rangeStart}-${rangeEnd}`
 )
 
-export const createInitialMetricAuditState = (clickCount = 0) => ({
+const auditInstanceIdForPacket = (templateId, packetId) => (
+  `${templateId}:${packetId}`
+)
+
+const createMetricPacket = ({
+  id,
+  metricType,
+  quantity,
+  timestamp,
+  auditTemplateId,
+  rangeStart,
+  rangeEnd,
+}) => ({
+  id,
+  metricType,
+  source: 'manual',
+  quantity,
+  status: 'pending',
+  createdAt: timestamp,
+  auditTemplateId,
+  rangeStart,
+  rangeEnd,
+})
+
+const createMetricAuditInstance = (packet, timestamp) => ({
+  id: auditInstanceIdForPacket(packet.auditTemplateId, packet.id),
+  templateId: packet.auditTemplateId,
+  packetId: packet.id,
+  status: 'available',
+  values: {},
+  createdAt: timestamp,
+})
+
+export const isMetricAuditTemplateId = (templateId) => (
+  templateId === CLICK_AUDIT_TEMPLATE_ID
+  || templateId === FIDGET_AUDIT_TEMPLATE_ID
+)
+
+export const createInitialMetricAuditState = (clickCount = 0, fidgetSessionCount = 0) => ({
   metricPackets: [],
   auditInstances: [],
   clickAuditBatchBaseline: safeWholeCount(clickCount),
   clickAuditBootstrapArmed: false,
   clickAuditBootstrapCompleted: false,
+  fidgetSessionBatchBaseline: safeWholeCount(fidgetSessionCount),
 })
 
 export function armClickAuditBootstrap(runtimeState, totalClickCount) {
@@ -44,7 +91,7 @@ export function captureClickAuditBootstrapAfterSubmission(runtimeState, formId) 
 
   return armClickAuditBootstrap(
     runtimeState,
-    runtimeState.korpState?.stats?.eventsByType?.['clickaudit.click'] ?? 0,
+    runtimeState.korpState?.stats?.eventsByType?.[CLICK_AUDIT_METRIC_TYPE] ?? 0,
   )
 }
 
@@ -85,29 +132,20 @@ export function appendClickAuditPackets(runtimeState, totalClickCount, timestamp
   const batchEvents = []
 
   const appendPacket = (rangeStart, rangeEnd, quantity) => {
-    const packetId = packetIdForRange(rangeStart, rangeEnd)
+    const packetId = clickAuditPacketIdForRange(rangeStart, rangeEnd)
 
     if (existingPacketIds.has(packetId)) return
 
-    const packet = {
+    const packet = createMetricPacket({
       id: packetId,
-      metricType: 'clickaudit.click',
-      source: 'manual',
+      metricType: CLICK_AUDIT_METRIC_TYPE,
       quantity,
-      status: 'pending',
-      createdAt: timestamp,
+      timestamp,
       auditTemplateId: CLICK_AUDIT_TEMPLATE_ID,
       rangeStart,
       rangeEnd,
-    }
-    const auditInstance = {
-      id: auditInstanceIdForPacket(packetId),
-      templateId: CLICK_AUDIT_TEMPLATE_ID,
-      packetId,
-      status: 'available',
-      values: {},
-      createdAt: timestamp,
-    }
+    })
+    const auditInstance = createMetricAuditInstance(packet, timestamp)
 
     existingPacketIds.add(packetId)
     metricPackets.push(packet)
@@ -166,6 +204,75 @@ export function appendClickAuditPackets(runtimeState, totalClickCount, timestamp
   }
 }
 
+export function appendFidgetSessionPackets(
+  runtimeState,
+  totalSessionCount,
+  timestamp = Date.now(),
+  packetSize = FIDGET_SESSIONS_PER_PACKET,
+) {
+  if (!isPositivePacketSize(packetSize)) {
+    return {
+      runtimeState,
+      createdPackets: [],
+      createdAuditInstances: [],
+    }
+  }
+
+  const safeTotalSessionCount = safeWholeCount(totalSessionCount)
+  const metricPackets = [...(runtimeState.metricPackets ?? [])]
+  const auditInstances = [...(runtimeState.auditInstances ?? [])]
+  const existingPacketIds = new Set(metricPackets.map((packet) => packet.id))
+  const existingAuditInstanceIds = new Set(auditInstances.map((instance) => instance.id))
+  const createdPackets = []
+  const createdAuditInstances = []
+  let cursor = Math.min(
+    safeWholeCount(runtimeState.fidgetSessionBatchBaseline),
+    safeTotalSessionCount,
+  )
+
+  while (safeTotalSessionCount - cursor >= packetSize) {
+    const rangeStart = cursor + 1
+    const rangeEnd = cursor + packetSize
+    const packetId = fidgetPacketIdForRange(rangeStart, rangeEnd)
+
+    if (!existingPacketIds.has(packetId)) {
+      const packet = createMetricPacket({
+        id: packetId,
+        metricType: FIDGET_METRIC_TYPE,
+        quantity: packetSize,
+        timestamp,
+        auditTemplateId: FIDGET_AUDIT_TEMPLATE_ID,
+        rangeStart,
+        rangeEnd,
+      })
+      const auditInstance = createMetricAuditInstance(packet, timestamp)
+
+      existingPacketIds.add(packetId)
+      metricPackets.push(packet)
+      createdPackets.push(packet)
+
+      if (!existingAuditInstanceIds.has(auditInstance.id)) {
+        existingAuditInstanceIds.add(auditInstance.id)
+        auditInstances.push(auditInstance)
+        createdAuditInstances.push(auditInstance)
+      }
+    }
+
+    cursor = rangeEnd
+  }
+
+  return {
+    runtimeState: {
+      ...runtimeState,
+      metricPackets,
+      auditInstances,
+      fidgetSessionBatchBaseline: cursor,
+    },
+    createdPackets,
+    createdAuditInstances,
+  }
+}
+
 export function updateMetricAuditInstanceField(runtimeState, instanceId, fieldId, value) {
   if (typeof instanceId !== 'string' || typeof fieldId !== 'string') return runtimeState
 
@@ -203,7 +310,12 @@ export function certifyMetricAuditInstance(runtimeState, instanceId, timestamp =
   }
 
   const packet = metricPackets.find((candidate) => candidate.id === auditInstance.packetId)
-  if (!packet || packet.status !== 'pending') {
+  if (
+    !packet
+    || packet.status !== 'pending'
+    || packet.auditTemplateId !== auditInstance.templateId
+    || auditInstance.id !== auditInstanceIdForPacket(auditInstance.templateId, packet.id)
+  ) {
     return { didCertify: false, runtimeState }
   }
 
@@ -217,6 +329,9 @@ export function certifyMetricAuditInstance(runtimeState, instanceId, timestamp =
     status: 'submitted',
     submittedAt: timestamp,
   }
+  const submittedFormIds = submittedAuditInstance.templateId === CLICK_AUDIT_TEMPLATE_ID
+    ? appendUnique(runtimeState.submittedFormIds ?? [], submittedAuditInstance.templateId)
+    : runtimeState.submittedFormIds ?? []
 
   return {
     didCertify: true,
@@ -230,10 +345,7 @@ export function certifyMetricAuditInstance(runtimeState, instanceId, timestamp =
       auditInstances: auditInstances.map((candidate) => (
         candidate.id === submittedAuditInstance.id ? submittedAuditInstance : candidate
       )),
-      submittedFormIds: appendUnique(
-        runtimeState.submittedFormIds ?? [],
-        submittedAuditInstance.templateId,
-      ),
+      submittedFormIds,
     },
   }
 }
@@ -244,6 +356,13 @@ export function resolveMetricAuditCertification(
   formId,
   timestamp = Date.now(),
 ) {
+  const linkedInstance = (runtimeState.auditInstances ?? [])
+    .find((instance) => instance.id === instanceId)
+
+  if (!linkedInstance || linkedInstance.templateId !== formId) {
+    return { didCertify: false, runtimeState, events: [] }
+  }
+
   const certification = certifyMetricAuditInstance(runtimeState, instanceId, timestamp)
 
   if (!certification.didCertify) {
@@ -254,6 +373,7 @@ export function resolveMetricAuditCertification(
     formId,
     auditInstanceId: certification.auditInstance.id,
     packetId: certification.packet.id,
+    metricType: certification.packet.metricType,
   }
 
   return {
@@ -276,10 +396,70 @@ export function resolveMetricAuditCertification(
         tags: ['k0rp-os', 'evidence', 'metric-packet'],
         meta: {
           ...eventMeta,
-          metricType: certification.packet.metricType,
           evidenceAmount: 1,
         },
       },
     ],
+  }
+}
+
+export function getMetricAuditBacklog(runtimeState, {
+  now = 0,
+  discrepancyCount = 0,
+} = {}) {
+  const pendingPackets = getPendingMetricPackets(runtimeState)
+  const safeNow = Number.isFinite(now) ? Math.max(0, now) : 0
+  const safeDiscrepancyCount = safeWholeCount(discrepancyCount)
+  const pendingByMetricType = pendingPackets.reduce((counts, packet) => ({
+    ...counts,
+    [packet.metricType]: (counts[packet.metricType] ?? 0) + 1,
+  }), {})
+  const oldestCreatedAt = pendingPackets.reduce((oldest, packet) => (
+    Number.isFinite(packet.createdAt) && packet.createdAt >= 0
+      ? Math.min(oldest, packet.createdAt)
+      : oldest
+  ), Number.POSITIVE_INFINITY)
+  const oldestPendingAgeMs = Number.isFinite(oldestCreatedAt)
+    ? Math.max(0, safeNow - oldestCreatedAt)
+    : 0
+  const oldestPendingAgeMinutes = oldestPendingAgeMs / 60_000
+  const provisionalAuditPressure = Math.min(100, Math.max(0,
+    pendingPackets.length * 10
+    + Math.floor(oldestPendingAgeMinutes / 10)
+    + safeDiscrepancyCount * 20,
+  ))
+
+  return {
+    pendingCount: pendingPackets.length,
+    oldestPendingAgeMs,
+    pendingByMetricType,
+    provisionalAuditPressure,
+  }
+}
+
+export const getMetricPacketRangeLabel = (packet, sequence = 1) => {
+  if (!packet) return `#${sequence}`
+  if (packet.rangeStart === packet.rangeEnd) return String(packet.rangeStart)
+  return `${packet.rangeStart}–${packet.rangeEnd}`
+}
+
+export function describeMetricAuditPacket(packet, form, sequence = 1) {
+  const rangeLabel = getMetricPacketRangeLabel(packet, sequence)
+  const code = form?.code ?? '?'
+
+  if (packet?.metricType === FIDGET_METRIC_TYPE) {
+    return {
+      rangeLabel,
+      title: `Audit ${code} / ${rangeLabel}`,
+      detail: `${packet.quantity} relace / stabilizační rozsah ${rangeLabel}`,
+    }
+  }
+
+  return {
+    rangeLabel,
+    title: `Audit ${code} / ${rangeLabel}`,
+    detail: packet
+      ? `${packet.quantity} kliků / rozsah ${rangeLabel}`
+      : 'Dávka bez dostupného packetu',
   }
 }

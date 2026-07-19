@@ -2,7 +2,9 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   appendClickAuditPackets,
+  appendFidgetSessionPackets,
   resolveMetricAuditCertification,
+  updateMetricAuditInstanceField,
 } from '../metricAuditFlow.js'
 import {
   RUNTIME_SAVE_KEY,
@@ -14,7 +16,7 @@ import {
   saveRuntimeToStorage,
 } from '../runtimePersistence.js'
 
-const progressionDataVersion = '0.2.1-draft'
+const progressionDataVersion = '0.3.1-draft'
 const coreStateVersion = '0.1.0'
 
 const createFreshRuntime = () => ({
@@ -34,6 +36,7 @@ const createFreshRuntime = () => ({
   clickAuditBatchBaseline: 0,
   clickAuditBootstrapArmed: false,
   clickAuditBootstrapCompleted: false,
+  fidgetSessionBatchBaseline: 0,
 })
 
 const createPacket = ({
@@ -64,6 +67,40 @@ const createAuditInstance = (packet, {
 } = {}) => ({
   id: `audit-10-a:${packet.id}`,
   templateId: 'audit-10-a',
+  packetId: packet.id,
+  status,
+  values,
+  createdAt,
+  ...(submittedAt === undefined ? {} : { submittedAt }),
+})
+
+const createFidgetPacket = ({
+  rangeStart,
+  rangeEnd,
+  status = 'pending',
+  createdAt = 1000,
+  certifiedAt,
+}) => ({
+  id: `fidget-sessions-${rangeStart}-${rangeEnd}`,
+  metricType: 'fidget.sessionSettled',
+  source: 'manual',
+  quantity: rangeEnd - rangeStart + 1,
+  status,
+  createdAt,
+  ...(certifiedAt === undefined ? {} : { certifiedAt }),
+  auditTemplateId: 'audit-18-s',
+  rangeStart,
+  rangeEnd,
+})
+
+const createFidgetAuditInstance = (packet, {
+  status = 'available',
+  values = {},
+  createdAt = packet.createdAt,
+  submittedAt,
+} = {}) => ({
+  id: `audit-18-s:${packet.id}`,
+  templateId: 'audit-18-s',
   packetId: packet.id,
   status,
   values,
@@ -119,6 +156,7 @@ const createProgressedRuntime = () => {
     clickAuditBatchBaseline: 8,
     clickAuditBootstrapArmed: false,
     clickAuditBootstrapCompleted: true,
+    fidgetSessionBatchBaseline: 0,
   }
 }
 
@@ -133,6 +171,13 @@ const createTask021ASave = (runtime) => ({
   schemaVersion: 3,
   progressionDataVersion: '0.2.1-draft',
   savedAt: '2026-07-11T18:00:00.000Z',
+  runtime,
+})
+
+const createTask022A21Save = (runtime) => ({
+  schemaVersion: 4,
+  progressionDataVersion: '0.3.0-draft',
+  savedAt: '2026-07-18T08:00:00.000Z',
   runtime,
 })
 
@@ -155,6 +200,34 @@ const loadOptions = () => ({
 test('runtime save round-trips packets, audit answers and module authorization', () => {
   const storage = createMemoryStorage()
   const runtime = createProgressedRuntime()
+  const certifiedFidgetPacket = createFidgetPacket({
+    rangeStart: 1,
+    rangeEnd: 3,
+    status: 'certified',
+    createdAt: 3000,
+    certifiedAt: 4000,
+  })
+  const pendingFidgetPacket = createFidgetPacket({
+    rangeStart: 4,
+    rangeEnd: 6,
+    createdAt: 5000,
+  })
+
+  runtime.korpState.stats.eventsByType['fidget.sessionSettled'] = 6
+  runtime.lifetimeStats = structuredClone(runtime.korpState.stats)
+  runtime.metricPackets.push(certifiedFidgetPacket, pendingFidgetPacket)
+  runtime.auditInstances.push(
+    createFidgetAuditInstance(certifiedFidgetPacket, {
+      status: 'submitted',
+      values: { naturalClosure: 'Nelze potvrdit' },
+      submittedAt: 4000,
+    }),
+    createFidgetAuditInstance(pendingFidgetPacket, {
+      status: 'draft',
+      values: { naturalClosure: 'Ano' },
+    }),
+  )
+  runtime.fidgetSessionBatchBaseline = 6
   runtime.moduleAuthorizations = [{
     id: 'fidget',
     moduleId: 'fidget',
@@ -178,6 +251,7 @@ test('save envelope records schema and progression versions without definitions'
     'clickAuditBatchBaseline',
     'clickAuditBootstrapArmed',
     'clickAuditBootstrapCompleted',
+    'fidgetSessionBatchBaseline',
     'korpState',
     'lifetimeStats',
     'metricPackets',
@@ -214,6 +288,39 @@ test('Task 021A save migrates without changing runtime progress or Evidence', ()
   assert.equal(migrated.korpState.stats.eventsByType['clickaudit.click'], 8)
   assert.equal(migrated.metricPackets.length, 2)
   assert.equal(migrated.auditInstances.length, 2)
+})
+
+test('Task 022A(2.1) schema-4 save preserves progress and baselines historical Fidget sessions', () => {
+  const runtime = createProgressedRuntime()
+  delete runtime.fidgetSessionBatchBaseline
+  runtime.korpState.resources.notionalWorkUnits = 4
+  runtime.korpState.stats.eventsByType['fidget.sessionSettled'] = 5
+  runtime.lifetimeStats = structuredClone(runtime.korpState.stats)
+  const clickPacketsBefore = structuredClone(runtime.metricPackets)
+  const clickAuditsBefore = structuredClone(runtime.auditInstances)
+
+  const migrated = hydrateRuntimeSave(createTask022A21Save(runtime), loadOptions())
+
+  assert.equal(migrated.korpState.resources.notionalWorkUnits, 4)
+  assert.equal(migrated.korpState.stats.eventsByType['fidget.sessionSettled'], 5)
+  assert.equal(migrated.lifetimeStats.eventsByType['fidget.sessionSettled'], 5)
+  assert.equal(migrated.fidgetSessionBatchBaseline, 5)
+  assert.deepEqual(migrated.metricPackets, clickPacketsBefore)
+  assert.deepEqual(migrated.auditInstances, clickAuditsBefore)
+  assert.equal(
+    migrated.metricPackets.some((packet) => packet.metricType === 'fidget.sessionSettled'),
+    false,
+  )
+
+  const six = appendFidgetSessionPackets(migrated, 6, 6000)
+  const seven = appendFidgetSessionPackets(six.runtimeState, 7, 7000)
+  const eight = appendFidgetSessionPackets(seven.runtimeState, 8, 8000)
+
+  assert.equal(six.createdPackets.length, 0)
+  assert.equal(seven.createdPackets.length, 0)
+  assert.equal(eight.createdPackets.length, 1)
+  assert.equal(eight.createdPackets[0].id, 'fidget-sessions-6-8')
+  assert.equal(eight.createdAuditInstances[0].id, 'audit-18-s:fidget-sessions-6-8')
 })
 
 test('legacy Fidget unlock or permit migrates to at most one free authorization', () => {
@@ -504,6 +611,190 @@ test('loaded ids are unique and completed bootstrap overrides contradictory arme
   }])
   assert.equal(runtime.clickAuditBootstrapArmed, false)
   assert.equal(runtime.clickAuditBootstrapCompleted, true)
+})
+
+test('current saves fail closed when the Fidget cursor is missing or corrupt', () => {
+  for (const invalidBaseline of [undefined, -1, 1.5, '0']) {
+    const runtime = createProgressedRuntime()
+    runtime.korpState.stats.eventsByType['fidget.sessionSettled'] = 5
+    runtime.lifetimeStats = structuredClone(runtime.korpState.stats)
+    const save = createRuntimeSave(runtime, progressionDataVersion)
+
+    if (invalidBaseline === undefined) {
+      delete save.runtime.fidgetSessionBatchBaseline
+    } else {
+      save.runtime.fidgetSessionBatchBaseline = invalidBaseline
+    }
+
+    const hydrated = hydrateRuntimeSave(save, loadOptions())
+    assert.equal(hydrated.fidgetSessionBatchBaseline, 5)
+    assert.equal(appendFidgetSessionPackets(hydrated, 6, 6000).createdPackets.length, 0)
+  }
+
+  const runtimeWithRemainder = createProgressedRuntime()
+  const firstFidgetPacket = createFidgetPacket({ rangeStart: 1, rangeEnd: 3 })
+  runtimeWithRemainder.korpState.stats.eventsByType['fidget.sessionSettled'] = 5
+  runtimeWithRemainder.lifetimeStats = structuredClone(runtimeWithRemainder.korpState.stats)
+  runtimeWithRemainder.metricPackets.push(firstFidgetPacket)
+  runtimeWithRemainder.auditInstances.push(createFidgetAuditInstance(firstFidgetPacket))
+  runtimeWithRemainder.fidgetSessionBatchBaseline = 3
+
+  const hydratedRemainder = hydrateRuntimeSave(
+    createRuntimeSave(runtimeWithRemainder, progressionDataVersion),
+    loadOptions(),
+  )
+  assert.equal(hydratedRemainder.fidgetSessionBatchBaseline, 3)
+  assert.equal(
+    appendFidgetSessionPackets(hydratedRemainder, 6, 6000).createdPackets[0].id,
+    'fidget-sessions-4-6',
+  )
+})
+
+test('packet hydration rejects malformed ranges, identifiers, duplicates and broken links', () => {
+  const runtime = createProgressedRuntime()
+  const fidgetPacket = createFidgetPacket({ rangeStart: 1, rangeEnd: 3 })
+  const fidgetInstance = createFidgetAuditInstance(fidgetPacket, {
+    status: 'draft',
+    values: { naturalClosure: 'Ano' },
+  })
+  runtime.korpState.stats.eventsByType['fidget.sessionSettled'] = 3
+  runtime.lifetimeStats = structuredClone(runtime.korpState.stats)
+  runtime.metricPackets.push(fidgetPacket)
+  runtime.auditInstances.push(fidgetInstance)
+  runtime.fidgetSessionBatchBaseline = 3
+
+  const save = createRuntimeSave(runtime, progressionDataVersion)
+  save.runtime.metricPackets.push(
+    fidgetPacket,
+    { ...fidgetPacket, id: 'fidget-sessions-incorrect' },
+    { ...fidgetPacket, id: 'fidget-sessions-4-6', rangeStart: 4, rangeEnd: 6, quantity: 2 },
+    { ...fidgetPacket, id: 'clickaudit-clicks-4-6', rangeStart: 4, rangeEnd: 6 },
+  )
+  save.runtime.auditInstances.push(
+    fidgetInstance,
+    { ...fidgetInstance, id: 'audit-18-s:missing', packetId: 'missing' },
+    { ...fidgetInstance, id: `audit-10-a:${fidgetPacket.id}`, templateId: 'audit-10-a' },
+  )
+
+  const hydrated = hydrateRuntimeSave(save, loadOptions())
+
+  assert.deepEqual(
+    hydrated.metricPackets.map((packet) => packet.id),
+    ['clickaudit-clicks-8-8', 'fidget-sessions-1-3'],
+  )
+  assert.deepEqual(
+    hydrated.auditInstances.map((instance) => instance.id),
+    ['audit-10-a:clickaudit-clicks-8-8', 'audit-18-s:fidget-sessions-1-3'],
+  )
+  assert.deepEqual(hydrated.auditInstances[1].values, { naturalClosure: 'Ano' })
+})
+
+test('current schema-5 hydration repairs a valid pending Fidget packet with no audit instance', () => {
+  const runtime = createProgressedRuntime()
+  const fidgetPacket = createFidgetPacket({
+    rangeStart: 1,
+    rangeEnd: 3,
+    createdAt: 5000,
+  })
+  runtime.korpState.stats.eventsByType['fidget.sessionSettled'] = 3
+  runtime.lifetimeStats = structuredClone(runtime.korpState.stats)
+  runtime.metricPackets.push(fidgetPacket)
+  runtime.fidgetSessionBatchBaseline = 3
+
+  const save = createRuntimeSave(runtime, progressionDataVersion)
+  assert.equal(save.schemaVersion, RUNTIME_SAVE_SCHEMA_VERSION)
+
+  const hydrated = hydrateRuntimeSave(save, loadOptions())
+  const repairedInstance = createFidgetAuditInstance(fidgetPacket)
+
+  assert.deepEqual(
+    hydrated.auditInstances.find((instance) => instance.packetId === fidgetPacket.id),
+    repairedInstance,
+  )
+  assert.equal(
+    appendFidgetSessionPackets(hydrated, 3, 6000).createdAuditInstances.length,
+    0,
+  )
+
+  const drafted = updateMetricAuditInstanceField(
+    hydrated,
+    repairedInstance.id,
+    'naturalClosure',
+    'Ano',
+  )
+  const certification = resolveMetricAuditCertification(
+    drafted,
+    repairedInstance.id,
+    'audit-18-s',
+    7000,
+  )
+
+  assert.equal(certification.didCertify, true)
+  assert.equal(certification.packet.status, 'certified')
+  assert.equal(certification.events[1].type, 'audit.evidenceCertified')
+  assert.equal(certification.events[1].value, 1)
+})
+
+test('current schema-5 hydration rejects noncanonical or unearned Fidget packet ranges', () => {
+  const runtime = createProgressedRuntime()
+  const validPacket = createFidgetPacket({ rangeStart: 1, rangeEnd: 3, createdAt: 3000 })
+  const undersizedPacket = createFidgetPacket({ rangeStart: 4, rangeEnd: 4, createdAt: 4000 })
+  const overlappingPacket = createFidgetPacket({ rangeStart: 2, rangeEnd: 4, createdAt: 4500 })
+  const nextValidPacket = createFidgetPacket({ rangeStart: 4, rangeEnd: 6, createdAt: 4750 })
+  const futurePacket = createFidgetPacket({ rangeStart: 100, rangeEnd: 102, createdAt: 5000 })
+  runtime.korpState.stats.eventsByType['fidget.sessionSettled'] = 6
+  runtime.lifetimeStats = structuredClone(runtime.korpState.stats)
+  runtime.metricPackets.push(
+    validPacket,
+    undersizedPacket,
+    overlappingPacket,
+    nextValidPacket,
+    futurePacket,
+  )
+  runtime.auditInstances.push(
+    createFidgetAuditInstance(validPacket),
+    createFidgetAuditInstance(undersizedPacket),
+    createFidgetAuditInstance(overlappingPacket),
+    createFidgetAuditInstance(nextValidPacket),
+    createFidgetAuditInstance(futurePacket),
+  )
+  runtime.fidgetSessionBatchBaseline = 102
+
+  const hydrated = hydrateRuntimeSave(
+    createRuntimeSave(runtime, progressionDataVersion),
+    loadOptions(),
+  )
+  const hydratedFidgetPackets = hydrated.metricPackets.filter((packet) => (
+    packet.metricType === 'fidget.sessionSettled'
+  ))
+  const hydratedFidgetInstances = hydrated.auditInstances.filter((instance) => (
+    instance.templateId === 'audit-18-s'
+  ))
+
+  assert.deepEqual(hydratedFidgetPackets, [validPacket, nextValidPacket])
+  assert.deepEqual(hydratedFidgetInstances, [
+    createFidgetAuditInstance(validPacket),
+    createFidgetAuditInstance(nextValidPacket),
+  ])
+  assert.equal(hydrated.fidgetSessionBatchBaseline, 6)
+  assert.equal(resolveMetricAuditCertification(
+    hydrated,
+    createFidgetAuditInstance(undersizedPacket).id,
+    'audit-18-s',
+    6000,
+  ).didCertify, false)
+  assert.equal(resolveMetricAuditCertification(
+    hydrated,
+    createFidgetAuditInstance(overlappingPacket).id,
+    'audit-18-s',
+    6000,
+  ).didCertify, false)
+  assert.equal(resolveMetricAuditCertification(
+    hydrated,
+    createFidgetAuditInstance(futurePacket).id,
+    'audit-18-s',
+    6000,
+  ).didCertify, false)
 })
 
 test('clear removes the persisted runtime save', () => {

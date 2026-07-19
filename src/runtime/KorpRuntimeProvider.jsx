@@ -23,14 +23,16 @@ import {
   saveRuntimeToStorage,
 } from './runtimePersistence'
 import { createClickAuditInteractionEvents } from './clickAuditEvents'
+import { createFidgetSessionSettledEvent } from './fidgetEvents'
 import { formatClickAuditActivity } from './clickAuditActivity'
 import {
-  CLICK_AUDIT_TEMPLATE_ID,
   appendClickAuditPackets,
+  appendFidgetSessionPackets,
   captureClickAuditBootstrapAfterSubmission,
   createInitialMetricAuditState,
   getPendingAuditInstances,
   getPendingMetricPackets,
+  isMetricAuditTemplateId,
   resolveMetricAuditCertification,
   updateMetricAuditInstanceField,
 } from './metricAuditFlow'
@@ -51,12 +53,13 @@ const getRuntimeStorage = () => {
 const createFreshRuntimeState = () => {
   const korpState = createInitialState({ settings: { platform: 'web' } })
   const clickCount = korpState.stats.eventsByType['clickaudit.click'] ?? 0
+  const fidgetSessionCount = korpState.stats.eventsByType['fidget.sessionSettled'] ?? 0
 
   return {
     korpState,
     lifetimeStats: korpState.stats,
     ...createInitialAuditProgressionState(),
-    ...createInitialMetricAuditState(clickCount),
+    ...createInitialMetricAuditState(clickCount, fidgetSessionCount),
     moduleAuthorizations: [],
   }
 }
@@ -108,6 +111,21 @@ function runtimeReducer(runtime, action) {
         lifetimeStats: korpState.stats,
       }
     }
+    case 'recordFidgetSessionSettled': {
+      const sessionKorpState = applyKorpEvent(runtime.korpState, action.event)
+      const totalSessionCount = sessionKorpState.stats.eventsByType['fidget.sessionSettled'] ?? 0
+      const packetResult = appendFidgetSessionPackets({
+        ...runtime,
+        korpState: sessionKorpState,
+        lifetimeStats: sessionKorpState.stats,
+      }, totalSessionCount, action.event.timestamp)
+
+      return {
+        ...packetResult.runtimeState,
+        korpState: sessionKorpState,
+        lifetimeStats: sessionKorpState.stats,
+      }
+    }
     case 'updateMetricAuditInstanceField':
       return updateMetricAuditInstanceField(
         runtime,
@@ -143,7 +161,7 @@ function runtimeReducer(runtime, action) {
       }
     }
     case 'submitAuditForm': {
-      if (action.formId === CLICK_AUDIT_TEMPLATE_ID) return runtime
+      if (isMetricAuditTemplateId(action.formId)) return runtime
 
       const form = getAuditForm(auditForms, action.formId)
       if (form?.authorization) return runtime
@@ -242,6 +260,13 @@ export function KorpRuntimeProvider({ children }) {
     return { count: sequence, event: clickEvent }
   }, [runtime.korpState.stats.eventsByType])
 
+  const recordFidgetSessionSettled = useCallback((payload) => {
+    const event = createFidgetSessionSettledEvent(payload, Date.now())
+
+    dispatch({ type: 'recordFidgetSessionSettled', event })
+    return { event }
+  }, [])
+
   const submitAuditForm = useCallback((formId) => {
     dispatch({ type: 'submitAuditForm', formId, timestamp: Date.now() })
   }, [])
@@ -286,9 +311,8 @@ export function KorpRuntimeProvider({ children }) {
     () => getPendingAuditInstances(runtime),
     [runtime],
   )
-
   const isFormAvailable = useCallback((formId) => {
-    if (formId === CLICK_AUDIT_TEMPLATE_ID) {
+    if (isMetricAuditTemplateId(formId)) {
       return pendingAuditInstances.some((instance) => instance.templateId === formId)
     }
 
@@ -338,6 +362,7 @@ export function KorpRuntimeProvider({ children }) {
     auditForms,
     dispatchKorpEvent,
     recordOsClick,
+    recordFidgetSessionSettled,
     lastClickAuditActivity,
     submitAuditForm,
     submitModuleAuthorization,
@@ -362,6 +387,7 @@ export function KorpRuntimeProvider({ children }) {
     isUpgradeUnlocked,
     pendingAuditInstances,
     pendingMetricPackets,
+    recordFidgetSessionSettled,
     resetRuntime,
     runtime,
     submitAuditForm,

@@ -57,6 +57,10 @@ Audit 00-A
 → Audit 16-C
 → Evidence alokována
 → Fidget
+→ 3 přirozeně ukončené sessions
+→ packet `fidget-sessions-1-3`
+→ Audit 18-S
+→ Evidence +1
 ```
 
 ### Provisional playtest targets
@@ -68,7 +72,7 @@ Audit 00-A
 | První Audit 10-A | 1–3 min | krátká certifikace, ne formulářový román |
 | První Evidence | 5–15 min celkem | vznikne pouze certifikací packetu |
 | Audit 16-C / Fidget permit | 10–25 min celkem | první Evidence rychle otevře nový interaction system |
-| První Fidget packet | bude určeno Taskem 023 | podle skutečné délky session a tactile flow |
+| První Fidget packet | po 3 nových settled sessions | fixed provisional/playtestable threshold Tasku 023 |
 
 Rozsahy jsou playtest targety, ne slib. Důležité je pořadí a význam.
 
@@ -121,6 +125,22 @@ Pro první slice:
 - packet lze certifikovat právě jednou;
 - kliky ve formuláři už tvoří část další raw dávky.
 
+### Audit 18-S
+
+Audit 18-S je repeatable audit template navázaný na konkrétní Fidget stabilization packet.
+
+```text
+Byla zaznamenaná stabilizační relace ukončena přirozeně?
+
+○ Ano
+○ Ne
+○ Nelze potvrdit
+
+[CERTIFIKOVAT STABILIZACI]
+```
+
+Pro Task 023 jsou všechny tři odpovědi administrativně validní. Každá platná certifikace přidá `EV +1`, ale konkrétní packet lze certifikovat právě jednou.
+
 ## 6. Packet balance
 
 ### ClickAudit
@@ -141,15 +161,25 @@ status: pending
 
 Žádný přímý batch reward.
 
-### Future Fidget packet
+### Fidget
 
-Task 023 určí podle playtestu, zda packet vzniká například:
+Fixed provisional/playtestable packet size Tasku 023:
 
-- po jedné kvalitně dokončené session;
-- po více `sessionSettled`;
-- po kombinaci rotací a přirozeného doběhu.
+```text
+3 nové `fidget.sessionSettled`
+```
 
-Číslo se nesmí vybrat pouze proto, že 25 vypadá procesně uspokojivě.
+Packet:
+
+```text
+id: fidget-sessions-<rangeStart>-<rangeEnd>
+quantity: 3
+source: manual
+status: pending
+auditTemplateId: audit-18-s
+```
+
+Neúplný zbytek jedné nebo dvou sessions se zachová pro další packet. Vytvoření packetu samo neotevírá okno ani nepřebírá focus. Raw session ani packet creation nepřidávají Evidence; `EV +1` vzniká až jednorázovou certifikací Audit 18-S.
 
 ## 7. Anti-spam pravidlo ClickAuditu
 
@@ -183,7 +213,7 @@ Fidget permit je první důkaz, že hlavní reward je nový systém.
 
 ## 9. Audit backlog
 
-Backlog se začne počítat, jakmile existuje repeatable packet audit.
+Backlog se počítá ze společné queue ClickAudit i Fidget repeatable packet auditů. Taskbar ukazuje celkový počet všech pending položek, ne oddělený součet pouze jednoho metric source.
 
 Early status:
 
@@ -193,7 +223,16 @@ Early status:
 3+ pending → viditelný auditní backlog
 ```
 
-Přesné pressure thresholds vzniknou až po Tasku 023 playtestu.
+Task 023 používá pouze debug-only provisional tlak:
+
+```text
+clamp(0, 100,
+  pendingCount * 10
+  + floor(oldestPendingAgeMinutes / 10)
+  + discrepancyCount * 20)
+```
+
+Tato hodnota se počítá z mixed backlogu, není canonical balance a nepersistuje se do `korpState.resources.auditPressure`. Finální pressure thresholds a machine-readable formula vzniknou až v Tasku 024 po playtestu Tasku 023.
 
 Delegace se nesmí odemknout pouze časem. Má přijít, až backlog začne být skutečnou rutinní bolestí.
 
@@ -237,6 +276,7 @@ Task 024 musí přepsat:
 
 - `first-cycle.balance.csv`;
 - `first-cycle-phases.json`;
+- přímé event yield assumptions v `events.json`, včetně starého `fidget.sessionSettled → notionalWorkUnits`;
 - upgrade costs;
 - audit requirements;
 - cumulative resource targets;
@@ -293,6 +333,8 @@ Používat:
 ## 15. Machine-readable migration
 
 Do dokončení Tasku 024 nejsou staré v0.2 JSON/CSV hodnoty canonical balance source.
+
+Task 023 proto implementuje pouze runtime packet/audit contract: raw `fidget.sessionSettled` nesmí přímo udělit Evidence, i když současný `events.json` ještě obsahuje starý direct-yield záznam. Schema 4 → 5 migration nastavuje Fidget baseline na aktuální settled-session count a vytváří nula retroaktivních packetů.
 
 Canonical význam určuje:
 

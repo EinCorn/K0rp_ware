@@ -116,6 +116,7 @@ export default function AuditFormDocument({
   values,
   submitted,
   headingId = 'audit-title',
+  controlScopeId,
   documentLabel,
   introText = 'Vyplňte všechna povinná pole. Rozsah auditu byl omezen na minimum, které lze stále nazvat auditem.',
   pendingStatusText = 'ČEKÁ NA POTVRZENÍ PŘÍTOMNOSTI',
@@ -130,6 +131,7 @@ export default function AuditFormDocument({
   const fields = form?.fields?.filter((field) => field.type !== 'buttonConfirm') ?? []
   const submitField = getAuditSubmitField(form)
   const complete = isAuditFormComplete(form, values)
+  const activeControlScopeId = controlScopeId ?? form?.id ?? 'audit-form'
 
   if (!form) {
     return (
@@ -178,7 +180,7 @@ export default function AuditFormDocument({
         {fields.map((field) => (
           <AuditFieldControl
             key={field.id}
-            formId={form.id}
+            formId={activeControlScopeId}
             field={field}
             value={values?.[field.id]}
             onChange={onFieldChange}

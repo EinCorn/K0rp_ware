@@ -400,7 +400,7 @@ Status: **DONE / MERGED** — canonical source, runtime subset, sémantický kat
 
 ## Task 022A(2.1) — K0rp_OS UI assets V3 source ingestion and validator
 
-Status: **CURRENT / IMPLEMENTOVÁNO** — exact raw snapshot, normalizovaný inventory, offline validator a pilot allowlist jsou připravené bez player-visible změny.
+Status: **DONE / INFRASTRUCTURE** — exact raw snapshot, normalizovaný inventory, offline validator a pilot allowlist jsou připravené bez player-visible změny.
 
 ### Source a validační hranice
 
@@ -435,13 +435,13 @@ Status: **CURRENT / IMPLEMENTOVÁNO** — exact raw snapshot, normalizovaný inv
 
 ## Task 022A(2.2) — Audit 00-A + Formuláře window-chrome pilot
 
-Status: **NEXT VISUAL STEP** — první runtime selection z ověřeného V3 source.
+Status: **DEFERRED / CLOSED UNMERGED** — PR #43 byl po vizuálním review uzavřen bez merge. Tasky 022A(2.2–2.5) čekají na curated/redrawn asset revision; současný pilot se nestal canonical runtime chrome.
 
-Pilot je omezený na Audit/Folder frame a content families, jejich explicitní nine-slice pieces, active/inactive titlebar, close/minimize states, blank Audit checkbox/radio/button states a blank folder row. `composite_blank` zůstává alternativou mimo allowlist, baked document templates nejsou runtime copy a canonical icons ani ClickAudit/Fidget app windows se nemění.
+Původní pilot byl omezený na Audit/Folder frame a content families, jejich explicitní nine-slice pieces, active/inactive titlebar, close/minimize states, blank Audit checkbox/radio/button states a blank folder row. Infrastruktura 022A(2.1) zůstává platná, ale další window chrome, top rail/taskbar a controls/status práce nepokračuje bez nové asset revize. Windows visual gate tohoto pilotu není evidován jako splněný.
 
 ## Task 023 — Fidget metric packet and first real backlog
 
-Status: **NEXT GAMEPLAY AFTER BOUNDED VISUAL PASS** — Fidget session closure, packet a první skutečný backlog.
+Status: **ACTIVE** — Fidget session closure, packet a první skutečný smíšený backlog.
 
 ### Cíl
 
@@ -449,21 +449,30 @@ Prokázat reusable packet/audit framework na druhém typu raw metriky.
 
 ### Scope
 
-- `fidget.sessionSettled` vytvoří raw stabilization record;
-- po playtestem určeném počtu sessions vznikne Fidget packet;
+- `fidget.sessionSettled` vytvoří právě jeden raw stabilization record pouze pro smysluplně a přirozeně ukončenou session;
+- fixed provisional/playtestable packet size je `3` nové settled sessions;
+- každý dokončený rozsah vytvoří právě jeden packet `fidget-sessions-<rangeStart>-<rangeEnd>` a neúplný zbytek se zachová pro další session;
 - packet používá stejný state machine jako ClickAudit packet;
-- přidat repeatable audit template pro stabilization packet;
-- certifikace přidá Evidence;
+- packet vytvoří repeatable Audit `18-S`;
+- certifikace Audit 18-S přidá `EV +1` právě jednou; raw Fidget event ani packet creation Evidence přímo nepřidávají;
+- vytvoření packetu nikdy samo neotevře auditní okno ani nepřevezme focus;
 - Formuláře zobrazí ClickAudit i Fidget audity v jedné queue;
 - taskbar ukazuje celkový pending count;
-- Audit Pressure začít odvozovat z backlogu, stáří a discrepancies;
-- přidat lokální debug data pro délku fronty a čas do zpracování.
+- přidat debug-only provisional pressure `clamp(0, 100, pendingCount * 10 + floor(oldestPendingAgeMinutes / 10) + discrepancyCount * 20)`;
+- tento pressure je odvozený debug readout a nesmí se persistovat do `korpState.resources.auditPressure`;
+- schema 4 → 5 migration nastaví Fidget baseline na aktuální settled-session count a vytvoří nula retroaktivních Fidget packetů;
+- zachovat ClickAudit progression, authorization, unlocky a ostatní runtime chování beze změny.
+
+### Machine-readable boundary
+
+Stávající `events.json` stále obsahuje staré přímé yieldy pro `fidget.sessionSettled`, včetně `notionalWorkUnits: 1.5`. Task 023 tento rozpor neopravuje v datech a runtime jej nesmí použít k přímému udělení Evidence. Machine-readable reconciliation zůstává Tasku 024.
 
 ### Do not
 
 - nepřidávat stážistu před playtestem;
 - nedělat generický enterprise workflow engine;
-- nepřidávat Bloom v tomto tasku.
+- nepřidávat Bloom v tomto tasku;
+- neměnit runtime chrome ani pokračovat v 022A(2.2–2.5).
 
 ### Playtest gate
 
@@ -478,7 +487,7 @@ Sjednotit machine-readable progression databázi s novým core loopem.
 ### Scope
 
 - přebalancovat `resources.json` player-facing label na Evidence/EV;
-- upravit `events.json` semantics;
+- upravit `events.json` semantics, včetně odstranění starých přímých yieldů `fidget.sessionSettled` a sjednocení s certifikačním Evidence flow;
 - upravit Audit 10-A a 16-C;
 - odstranit přímé click yield assumptions z upgrade dat;
 - přepsat `first-cycle.balance.csv`;
@@ -496,7 +505,7 @@ Prose docs, JSON, CSV, TypeScript exports a runtime musí popisovat stejnou hru.
 
 ### Prerequisite
 
-Task 023 playtest potvrdil skutečnou potřebu delegace.
+Task 023 playtest musí nejprve potvrdit skutečnou potřebu delegace; tento gate zatím není evidován jako splněný.
 
 ### Cíl
 

@@ -12,23 +12,48 @@ const formWindowSize = { width: 470, height: 310 }
 const formBasePosition = { x: 184, y: 58 }
 const bootstrapInstance = {
   id: 'audit-10-a:clickaudit-clicks-8-8',
+  templateId: 'audit-10-a',
   packetId: 'clickaudit-clicks-8-8',
   status: 'available',
 }
 const normalInstance = {
   id: 'audit-10-a:clickaudit-clicks-9-33',
+  templateId: 'audit-10-a',
   packetId: 'clickaudit-clicks-9-33',
+  status: 'available',
+}
+const fidgetInstance = {
+  id: 'audit-18-s:fidget-sessions-1-1',
+  templateId: 'audit-18-s',
+  packetId: 'fidget-sessions-1-1',
   status: 'available',
 }
 const packetById = new Map([
   [bootstrapInstance.packetId, {
     id: bootstrapInstance.packetId,
+    metricType: 'clickaudit.click',
+    auditTemplateId: 'audit-10-a',
     quantity: 1,
+    rangeStart: 8,
+    rangeEnd: 8,
     status: 'pending',
   }],
   [normalInstance.packetId, {
     id: normalInstance.packetId,
+    metricType: 'clickaudit.click',
+    auditTemplateId: 'audit-10-a',
     quantity: 25,
+    rangeStart: 9,
+    rangeEnd: 33,
+    status: 'pending',
+  }],
+  [fidgetInstance.packetId, {
+    id: fidgetInstance.packetId,
+    metricType: 'fidget.sessionSettled',
+    auditTemplateId: 'audit-18-s',
+    quantity: 1,
+    rangeStart: 1,
+    rangeEnd: 1,
     status: 'pending',
   }],
 ])
@@ -119,6 +144,26 @@ test('a new quantity-25 audit is registered closed without changing focus', () =
   assert.equal(withNormalPacket.windows[bootstrapWindowId].zIndex, 5)
   assert.equal(normalInstance.status, 'available')
   assert.equal(packetById.get(normalInstance.packetId).status, 'pending')
+})
+
+test('an injected quantity-1 Fidget audit is registered closed without stealing focus', () => {
+  const bootstrap = reconcile({ auditInstances: [bootstrapInstance] })
+  const bootstrapWindowId = getFormWindowId(bootstrapInstance.id)
+  const fidgetWindowId = getFormWindowId(fidgetInstance.id)
+  const focusedBefore = bootstrap.windows[bootstrapWindowId]
+  const withFidgetPacket = reconcile({
+    windows: bootstrap.windows,
+    auditInstances: [bootstrapInstance, fidgetInstance],
+    knownInstanceIds: bootstrap.currentInstanceIds,
+  })
+
+  assert.deepEqual(withFidgetPacket.autoOpenedWindowIds, [])
+  assert.equal(withFidgetPacket.windows[fidgetWindowId].isOpen, false)
+  assert.equal(withFidgetPacket.windows[fidgetWindowId].isMinimized, false)
+  assert.equal(withFidgetPacket.windows[fidgetWindowId].hasOpened, false)
+  assert.equal(withFidgetPacket.windows[fidgetWindowId].zIndex, 0)
+  assert.equal(withFidgetPacket.windows[bootstrapWindowId], focusedBefore)
+  assert.equal(withFidgetPacket.windows[bootstrapWindowId].zIndex, 5)
 })
 
 test('manually opening a queued audit uses the form cascade and stable descriptor', () => {

@@ -52,10 +52,10 @@ function FidgetModeControl({ className, mode, onToggle }) {
   )
 }
 
-function FidgetWindowContent({ mode }) {
+function FidgetWindowContent({ mode, onSessionSettled }) {
   return (
     <div className="fidget-window-content">
-      <FidgetModule mode={mode} />
+      <FidgetModule mode={mode} onSessionSettled={onSessionSettled} />
     </div>
   )
 }
@@ -63,6 +63,7 @@ function FidgetWindowContent({ mode }) {
 export function FidgetEmbeddedWindow({
   onDragStart,
   onMinimize,
+  onSessionSettled,
   closeLabel = 'Minimalizovat Fidget',
 }) {
   const [mode, setMode] = useState(FIDGET_MODES.manual)
@@ -95,12 +96,12 @@ export function FidgetEmbeddedWindow({
         data-window-control="true"
         data-clickaudit-profile="window-control"
       />
-      <FidgetWindowContent mode={mode} />
+      <FidgetWindowContent mode={mode} onSessionSettled={onSessionSettled} />
     </div>
   )
 }
 
-export function FidgetStandaloneShell({ onClose }) {
+export function FidgetStandaloneShell({ onClose, onSessionSettled }) {
   const [mode, setMode] = useState(FIDGET_MODES.manual)
   const [pinned, setPinned] = useState(false)
 
@@ -134,7 +135,7 @@ export function FidgetStandaloneShell({ onClose }) {
         className="fidget-window-frame fidget-window-frame-standalone"
         style={{ backgroundImage: `url(${appWindowUrl})` }}
       >
-        <FidgetWindowContent mode={mode} />
+        <FidgetWindowContent mode={mode} onSessionSettled={onSessionSettled} />
       </div>
     </div>
   )
