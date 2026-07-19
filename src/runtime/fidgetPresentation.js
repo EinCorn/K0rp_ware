@@ -1,5 +1,7 @@
+import { KORP_MODULE_WINDOW_SIZE } from './moduleWindowPresentation.js'
+
 export const FIDGET_WINDOW_ID = 'fidget'
-export const FIDGET_WINDOW_SIZE = Object.freeze({ width: 181, height: 181 })
+export const FIDGET_WINDOW_SIZE = KORP_MODULE_WINDOW_SIZE
 
 export const FIDGET_DEPLOYED_DESKTOP_ITEM = Object.freeze({
   id: 'authorized-module:fidget',
@@ -49,13 +51,14 @@ export function reconcileFidgetWindow({
       id: FIDGET_WINDOW_ID,
       kind: 'module',
       surface: 'fidget',
-      title: 'FIDGET / STABILIZAČNÍ MODUL',
+      title: 'Fidget / Místní modul',
       taskbarTitle: 'FIDGET',
       width: windowSize.width,
       height: windowSize.height,
       x: 0,
       y: 0,
       zIndex: 0,
+      isPinned: false,
       isMinimized: false,
       isOpen: false,
       hasOpened: false,

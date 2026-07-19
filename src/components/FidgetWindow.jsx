@@ -4,8 +4,9 @@ import appWindowUrl from '../../desktop/fidget/src/assets/app-window.png?url'
 import closeControlUrl from '../../desktop/fidget/src/assets/korp-ui-close.png?url'
 import pinControlUrl from '../../desktop/fidget/src/assets/korp-ui-pin.png?url'
 import modeControlUrl from '../../desktop/fidget/src/assets/korp-ui-reset.webp?url'
-import { FIDGET_MODES } from '../runtime/fidgetMotion'
+import { FIDGET_MODES, getNextFidgetMode } from '../runtime/fidgetMotion'
 import FidgetModule from './FidgetModule'
+import KorpModuleWindow from './KorpModuleWindow'
 import './FidgetWindow.css'
 
 function AssetButton({
@@ -53,51 +54,41 @@ function FidgetModeControl({ className, mode, onToggle }) {
 }
 
 function FidgetWindowContent({ mode, onSessionSettled }) {
-  return (
-    <div className="fidget-window-content">
-      <FidgetModule mode={mode} onSessionSettled={onSessionSettled} />
-    </div>
-  )
+  return <FidgetModule mode={mode} onSessionSettled={onSessionSettled} />
 }
 
 export function FidgetEmbeddedWindow({
+  title = 'Fidget / Místní modul',
+  isActive = true,
+  isPinned = false,
   onDragStart,
+  onTogglePin,
   onMinimize,
+  onClose,
   onSessionSettled,
-  closeLabel = 'Minimalizovat Fidget',
 }) {
   const [mode, setMode] = useState(FIDGET_MODES.manual)
+  const toggleMode = () => setMode(getNextFidgetMode)
 
   return (
-    <div
-      className="fidget-window-frame fidget-window-frame-embedded"
-      style={{ backgroundImage: `url(${appWindowUrl})` }}
+    <KorpModuleWindow
+      title={title}
+      isActive={isActive}
+      isPinned={isPinned}
+      onDragStart={onDragStart}
+      onTogglePin={onTogglePin}
+      onMinimize={onMinimize}
+      onClose={onClose}
+      footer={(
+        <FidgetModeControl
+          className="fidget-module-footer-mode"
+          mode={mode}
+          onToggle={toggleMode}
+        />
+      )}
     >
-      <button
-        type="button"
-        className="fidget-window-drag-region"
-        aria-label="Přesunout okno Fidget"
-        onPointerDown={onDragStart}
-        data-window-drag-region="true"
-        data-clickaudit-profile="window-drag-handle"
-      />
-      <FidgetModeControl
-        className="fidget-asset-control fidget-window-control-mode"
-        mode={mode}
-        onToggle={() => setMode((currentMode) => (
-          currentMode === FIDGET_MODES.click ? FIDGET_MODES.manual : FIDGET_MODES.click
-        ))}
-      />
-      <AssetButton
-        className="fidget-asset-control fidget-window-control-close"
-        label={closeLabel}
-        assetUrl={closeControlUrl}
-        onClick={onMinimize}
-        data-window-control="true"
-        data-clickaudit-profile="window-control"
-      />
       <FidgetWindowContent mode={mode} onSessionSettled={onSessionSettled} />
-    </div>
+    </KorpModuleWindow>
   )
 }
 
@@ -121,9 +112,7 @@ export function FidgetStandaloneShell({ onClose, onSessionSettled }) {
       <FidgetModeControl
         className="fidget-asset-control fidget-shell-control-mode"
         mode={mode}
-        onToggle={() => setMode((currentMode) => (
-          currentMode === FIDGET_MODES.click ? FIDGET_MODES.manual : FIDGET_MODES.click
-        ))}
+        onToggle={() => setMode(getNextFidgetMode)}
       />
       <AssetButton
         className="fidget-asset-control fidget-shell-control-close"
@@ -135,7 +124,9 @@ export function FidgetStandaloneShell({ onClose, onSessionSettled }) {
         className="fidget-window-frame fidget-window-frame-standalone"
         style={{ backgroundImage: `url(${appWindowUrl})` }}
       >
-        <FidgetWindowContent mode={mode} onSessionSettled={onSessionSettled} />
+        <div className="fidget-window-content">
+          <FidgetWindowContent mode={mode} onSessionSettled={onSessionSettled} />
+        </div>
       </div>
     </div>
   )

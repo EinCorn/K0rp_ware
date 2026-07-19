@@ -45,6 +45,8 @@ test('authorized Fidget reconciles to one closed real module descriptor without 
   assert.deepEqual(Object.keys(once), [FIDGET_WINDOW_ID])
   assert.equal(once[FIDGET_WINDOW_ID].surface, 'fidget')
   assert.equal(once[FIDGET_WINDOW_ID].kind, 'module')
+  assert.equal(once[FIDGET_WINDOW_ID].title, 'Fidget / Místní modul')
+  assert.equal(once[FIDGET_WINDOW_ID].isPinned, false)
   assert.equal(once[FIDGET_WINDOW_ID].isOpen, false)
   assert.equal(once[FIDGET_WINDOW_ID].hasOpened, false)
   assert.equal('placeholder' in once[FIDGET_WINDOW_ID], false)
@@ -59,7 +61,7 @@ test('first open centers Fidget while activation and minimized restore preserve 
 
   assert.deepEqual(
     { x: opened[FIDGET_WINDOW_ID].x, y: opened[FIDGET_WINDOW_ID].y },
-    { x: 667, y: 298 },
+    { x: 666, y: 277 },
   )
   assert.deepEqual(
     { width: opened[FIDGET_WINDOW_ID].width, height: opened[FIDGET_WINDOW_ID].height },

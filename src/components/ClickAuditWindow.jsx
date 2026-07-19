@@ -4,6 +4,7 @@ import appWindowUrl from '../../desktop/click-audit/src/assets/app-window.png?ur
 import closeControlUrl from '../../desktop/click-audit/src/assets/korp-ui-close.png?url'
 import pinControlUrl from '../../desktop/click-audit/src/assets/korp-ui-pin.png?url'
 import resetControlUrl from '../../desktop/click-audit/src/assets/korp-ui-reset.webp?url'
+import KorpModuleWindow from './KorpModuleWindow'
 import './ClickAuditWindow.css'
 
 function AssetButton({ className, label, assetUrl, onClick, disabled = false, pressed, ...rest }) {
@@ -24,32 +25,26 @@ function AssetButton({ className, label, assetUrl, onClick, disabled = false, pr
 
 export function ClickAuditEmbeddedWindow({
   children,
+  title = 'ClickAudit / Místní modul',
+  isActive = true,
+  isPinned = false,
   onDragStart,
+  onTogglePin,
   onMinimize,
+  onClose,
 }) {
   return (
-    <div
-      className="clickaudit-window-frame clickaudit-window-frame-embedded"
-      style={{ backgroundImage: `url(${appWindowUrl})` }}
+    <KorpModuleWindow
+      title={title}
+      isActive={isActive}
+      isPinned={isPinned}
+      onDragStart={onDragStart}
+      onTogglePin={onTogglePin}
+      onMinimize={onMinimize}
+      onClose={onClose}
     >
-      <button
-        type="button"
-        className="clickaudit-window-drag-region"
-        aria-label="Přesunout okno ClickAudit"
-        onPointerDown={onDragStart}
-        data-window-drag-region="true"
-        data-clickaudit-profile="window-drag-handle"
-      />
-      <AssetButton
-        className="clickaudit-window-control clickaudit-window-control-close"
-        label="Minimalizovat ClickAudit"
-        assetUrl={closeControlUrl}
-        onClick={onMinimize}
-        data-window-control="true"
-        data-clickaudit-profile="window-control"
-      />
-      <div className="clickaudit-window-content">{children}</div>
-    </div>
+      {children}
+    </KorpModuleWindow>
   )
 }
 

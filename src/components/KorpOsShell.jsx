@@ -12,6 +12,7 @@ import {
   reconcileFidgetWindow,
 } from '../runtime/fidgetPresentation'
 import { classifyKorpOsIntentionEvent } from '../runtime/osClickTracking'
+import { KORP_MODULE_WINDOW_SIZE } from '../runtime/moduleWindowPresentation'
 import {
   CLICK_AUDIT_METRIC_TYPE,
   FIDGET_METRIC_TYPE,
@@ -32,10 +33,12 @@ import {
   getCenteredCanvasPlacement,
   getCenteredWindowPosition,
   getFormWindowId,
+  getWindowPresentationZIndexes,
   mapClientPointToCanvas,
   minimizeWindowState,
   openWindowState,
   snapWindowPosition,
+  toggleWindowPinnedState,
 } from '../runtime/windowManager'
 import AuditFormDocument from './AuditFormDocument'
 import ClickAuditRuntimeModule from './ClickAuditRuntimeModule'
@@ -54,7 +57,7 @@ const osCanvasWidth = 1520
 const osCanvasHeight = 855
 const osWorkspaceSize = { width: 1514, height: 776 }
 const formWindowSize = { width: 470, height: 310 }
-const clickAuditWindowSize = { width: 181, height: 181 }
+const clickAuditWindowSize = KORP_MODULE_WINDOW_SIZE
 const folderWindowSize = { width: 360, height: 268 }
 const dailyReportWindowSize = { width: 392, height: 192 }
 const formDocumentBasePosition = { x: 184, y: 58 }
@@ -93,12 +96,13 @@ const createInitialWindows = (
     'click-audit': {
       id: 'click-audit',
       kind: 'module',
-      title: 'CLICKAUDIT / MÍSTNÍ MODUL',
+      title: 'ClickAudit / Místní modul',
       taskbarTitle: 'CLICKAUDIT',
       width: clickAuditWindowSize.width,
       height: clickAuditWindowSize.height,
       ...getCenteredWindowPosition(osWorkspaceSize, clickAuditWindowSize),
       zIndex: 2,
+      isPinned: false,
       isMinimized: false,
       isOpen: false,
       hasOpened: false,
@@ -450,6 +454,7 @@ function KorpOsShell() {
   const activeWindowId = visibleWindowIds.reduce((frontmostId, id) => (
     !frontmostId || windows[id].zIndex > windows[frontmostId].zIndex ? id : frontmostId
   ), null)
+  const windowPresentationZIndexes = getWindowPresentationZIndexes(windows, visibleWindowIds)
 
   useEffect(() => {
     const updateCanvasPlacement = () => {
@@ -554,6 +559,10 @@ function KorpOsShell() {
     setWindows((currentWindows) => closeWindowState(currentWindows, id))
   }
 
+  const toggleWindowPin = (id) => {
+    setWindows((currentWindows) => toggleWindowPinnedState(currentWindows, id))
+  }
+
   const openWindow = (id) => {
     const workspaceSize = {
       width: desktopSpaceRef.current?.clientWidth ?? osWorkspaceSize.width,
@@ -634,7 +643,7 @@ function KorpOsShell() {
   const windowStyle = (windowState) => ({
     left: windowState.x,
     top: windowState.y,
-    zIndex: windowState.zIndex,
+    zIndex: windowPresentationZIndexes[windowState.id] ?? windowState.zIndex,
   })
 
   const handleKorpOsPointerDownCapture = (event) => {
@@ -866,8 +875,13 @@ function KorpOsShell() {
                   onPointerDown={() => bringWindowToFront('click-audit')}
                 >
                   <ClickAuditEmbeddedWindow
+                    title={windows['click-audit'].title}
+                    isActive={activeWindowId === 'click-audit'}
+                    isPinned={windows['click-audit'].isPinned}
                     onDragStart={(event) => startWindowDrag('click-audit', event)}
+                    onTogglePin={() => toggleWindowPin('click-audit')}
                     onMinimize={() => minimizeWindow('click-audit')}
+                    onClose={() => closeWindow('click-audit')}
                   >
                     <ClickAuditRuntimeModule centralizedTracking />
                   </ClickAuditEmbeddedWindow>
@@ -883,8 +897,13 @@ function KorpOsShell() {
                   onPointerDown={() => bringWindowToFront(FIDGET_WINDOW_ID)}
                 >
                   <FidgetEmbeddedWindow
+                    title={windows[FIDGET_WINDOW_ID].title}
+                    isActive={activeWindowId === FIDGET_WINDOW_ID}
+                    isPinned={windows[FIDGET_WINDOW_ID].isPinned}
                     onDragStart={(event) => startWindowDrag(FIDGET_WINDOW_ID, event)}
+                    onTogglePin={() => toggleWindowPin(FIDGET_WINDOW_ID)}
                     onMinimize={() => minimizeWindow(FIDGET_WINDOW_ID)}
+                    onClose={() => closeWindow(FIDGET_WINDOW_ID)}
                     onSessionSettled={recordFidgetSessionSettled}
                   />
                 </article>

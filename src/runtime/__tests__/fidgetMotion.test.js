@@ -8,9 +8,16 @@ import {
   classifyFidgetGesture,
   getFidgetClickDirection,
   getFidgetRainbowSpeed,
+  getNextFidgetMode,
   getNormalizedFidgetSpeed,
   normalizeFidgetDegreeDelta,
 } from '../fidgetMotion.js'
+
+test('mode toggle remains a reversible two-state interaction', () => {
+  assert.equal(getNextFidgetMode('manual'), 'click')
+  assert.equal(getNextFidgetMode('click'), 'manual')
+  assert.equal(getNextFidgetMode('unexpected'), 'click')
+})
 
 test('motion contract preserves the canonical standalone constants', () => {
   assert.deepEqual(FIDGET_MOTION, {

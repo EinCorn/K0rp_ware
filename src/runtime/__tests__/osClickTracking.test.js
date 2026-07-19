@@ -55,6 +55,24 @@ test('a Fidget pointer intention stays one centralized ClickAudit event', () => 
   assert.equal(classifyKorpOsIntentionEvent('wheel', target), null)
 })
 
+test('each module chrome control intention stays one centralized ClickAudit event', () => {
+  for (const intention of ['pin', 'minimize', 'close']) {
+    const target = targetWithProfile('window-control')
+    const classification = classifyKorpOsIntentionEvent('pointerdown', target)
+    const events = [createKorpOsClickEvent({
+      timestamp: 1300,
+      sequence: intention.length,
+      profile: classification.profile,
+      tags: [intention],
+    })]
+
+    assert.equal(events.length, 1)
+    assert.equal(events[0].value, 1)
+    assert.equal(events[0].meta.profile, 'window-control')
+    assert.equal(classifyKorpOsIntentionEvent('pointermove', target), null)
+  }
+})
+
 test('K0rp_OS telemetry creates one tagged ClickAudit event without private context', () => {
   const event = createKorpOsClickEvent({
     timestamp: 1000,

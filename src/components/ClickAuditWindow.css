@@ -18,15 +18,9 @@
   overflow: hidden;
 }
 
-/* Values mirror desktop/click-audit/src/k0rp-ui/korp-runtime.css. */
-.clickaudit-window-frame-embedded,
 .clickaudit-window-frame-standalone {
   width: 181px;
   height: 181px;
-}
-
-.clickaudit-window-frame-embedded {
-  filter: drop-shadow(4px 5px 0 rgba(16, 18, 14, 0.42));
 }
 
 .clickaudit-window-content {
@@ -40,24 +34,6 @@
   background: transparent;
 }
 
-.clickaudit-window-drag-region {
-  position: absolute;
-  z-index: 20;
-  left: 0;
-  top: 0;
-  width: calc(100% - 24px);
-  height: 23px;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  cursor: grab;
-  touch-action: none;
-}
-
-.clickaudit-window-drag-region:active { cursor: grabbing; }
-
-.clickaudit-window-control,
 .clickaudit-shell-control {
   position: absolute;
   z-index: 30;
@@ -74,25 +50,14 @@
   transition: transform 120ms ease, filter 120ms ease, opacity 120ms ease;
 }
 
-.clickaudit-window-control:hover:not(:disabled),
-.clickaudit-window-control:focus-visible:not(:disabled),
 .clickaudit-shell-control:hover:not(:disabled),
 .clickaudit-shell-control:focus-visible:not(:disabled) {
   transform: translateY(-1px);
   filter: brightness(1.08);
 }
 
-.clickaudit-window-control:active:not(:disabled),
 .clickaudit-shell-control:active:not(:disabled) { filter: brightness(0.96); }
-.clickaudit-window-control:disabled,
 .clickaudit-shell-control:disabled { cursor: not-allowed; opacity: 0.42; filter: grayscale(0.65); }
-
-.clickaudit-window-control-close {
-  right: 4px;
-  top: 3px;
-  width: 19px;
-  height: 19px;
-}
 
 .clickaudit-standalone-shell {
   width: 230px;
@@ -127,8 +92,8 @@
 
 .os-clickaudit-asset-window {
   position: absolute;
-  width: 181px;
-  height: 181px;
+  width: 183px;
+  height: 223px;
   overflow: visible;
   background: transparent;
   pointer-events: auto;

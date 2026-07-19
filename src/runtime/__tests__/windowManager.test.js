@@ -10,11 +10,14 @@ import {
   getCenteredCanvasPlacement,
   getCenteredWindowPosition,
   getFormWindowId,
+  getWindowPresentationOrder,
+  getWindowPresentationZIndexes,
   mapClientPointToCanvas,
   minimizeWindowState,
   openWindowState,
   restoreWindowState,
   snapWindowPosition,
+  toggleWindowPinnedState,
 } from '../windowManager.js'
 
 const windows = {
@@ -142,8 +145,8 @@ test('first opening centers a non-form window while activation and restore prese
     clickaudit: {
       id: 'clickaudit',
       kind: 'module',
-      width: 181,
-      height: 181,
+      width: 183,
+      height: 223,
       x: 250,
       y: 250,
       zIndex: 0,
@@ -156,7 +159,7 @@ test('first opening centers a non-form window while activation and restore prese
 
   assert.deepEqual(
     { x: firstOpen.clickaudit.x, y: firstOpen.clickaudit.y },
-    { x: 667, y: 298 },
+    { x: 666, y: 277 },
   )
   assert.equal(firstOpen.clickaudit.hasOpened, true)
 
@@ -179,6 +182,99 @@ test('first opening centers a non-form window while activation and restore prese
   assert.equal(restored.clickaudit.isMinimized, false)
 
   assert.equal(openWindowState(closedWindows, 'clickaudit'), closedWindows)
+})
+
+test('pinned modules remain visually above newer non-pinned windows', () => {
+  const stackedWindows = {
+    document: {
+      id: 'document', kind: 'form', zIndex: 999,
+      isOpen: true, isMinimized: false,
+    },
+    alpha: {
+      id: 'alpha', kind: 'module', zIndex: 4, isPinned: true,
+      isOpen: true, isMinimized: false,
+    },
+    beta: {
+      id: 'beta', kind: 'module', zIndex: 4, isPinned: true,
+      isOpen: true, isMinimized: false,
+    },
+    minimized: {
+      id: 'minimized', kind: 'module', zIndex: 2000, isPinned: true,
+      isOpen: true, isMinimized: true,
+    },
+  }
+
+  assert.deepEqual(
+    getWindowPresentationOrder(stackedWindows),
+    ['document', 'alpha', 'beta'],
+  )
+  assert.deepEqual(
+    getWindowPresentationZIndexes(stackedWindows),
+    { document: 1, alpha: 2, beta: 3 },
+  )
+
+  const focusedDocument = bringWindowStateToFront(stackedWindows, 'document')
+  assert.equal(focusedDocument.document.zIndex, 2001)
+  assert.deepEqual(
+    getWindowPresentationOrder(focusedDocument),
+    ['document', 'alpha', 'beta'],
+  )
+})
+
+test('pin toggle is module-only and promotes deterministically inside each tier', () => {
+  const moduleWindows = {
+    clickaudit: {
+      id: 'clickaudit', kind: 'module', zIndex: 2, isPinned: false,
+      isOpen: true, isMinimized: false,
+    },
+    fidget: {
+      id: 'fidget', kind: 'module', zIndex: 3, isPinned: true,
+      isOpen: true, isMinimized: false,
+    },
+    form: {
+      id: 'form', kind: 'form', zIndex: 8,
+      isOpen: true, isMinimized: false,
+    },
+  }
+  const pinned = toggleWindowPinnedState(moduleWindows, 'clickaudit')
+
+  assert.equal(pinned.clickaudit.isPinned, true)
+  assert.equal(pinned.clickaudit.zIndex, 9)
+  assert.deepEqual(getWindowPresentationOrder(pinned), ['form', 'fidget', 'clickaudit'])
+
+  const unpinned = toggleWindowPinnedState(pinned, 'clickaudit')
+  assert.equal(unpinned.clickaudit.isPinned, false)
+  assert.equal(unpinned.clickaudit.zIndex, 10)
+  assert.deepEqual(getWindowPresentationOrder(unpinned), ['form', 'clickaudit', 'fidget'])
+  assert.equal(toggleWindowPinnedState(unpinned, 'form'), unpinned)
+  assert.equal(toggleWindowPinnedState(unpinned, 'missing'), unpinned)
+})
+
+test('minimize, close, restore and shortcut reopen preserve pin and position', () => {
+  const moduleWindows = {
+    clickaudit: {
+      id: 'clickaudit', kind: 'module', width: 183, height: 223,
+      x: 412, y: 206, zIndex: 6, isPinned: true,
+      isOpen: true, isMinimized: false, hasOpened: true,
+    },
+  }
+  const minimized = minimizeWindowState(moduleWindows, 'clickaudit')
+  const restored = restoreWindowState(minimized, 'clickaudit')
+  const closed = closeWindowState(restored, 'clickaudit')
+  const reopened = openWindowState(closed, 'clickaudit', { workspaceSize })
+
+  for (const state of [minimized, restored, closed, reopened]) {
+    assert.equal(state.clickaudit.isPinned, true)
+    assert.deepEqual(
+      { x: state.clickaudit.x, y: state.clickaudit.y },
+      { x: 412, y: 206 },
+    )
+  }
+  assert.equal(minimized.clickaudit.isOpen, true)
+  assert.equal(minimized.clickaudit.isMinimized, true)
+  assert.equal(closed.clickaudit.isOpen, false)
+  assert.equal(reopened.clickaudit.isOpen, true)
+  assert.deepEqual(getWindowPresentationOrder(reopened), ['clickaudit'])
 })
 
 test('form window ids are stable and unique per document instance', () => {
