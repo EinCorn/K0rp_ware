@@ -1,5 +1,60 @@
 # K0rp_OS Docs — Changelog
 
+## v0.4.0
+
+Datum: 2026-07-21
+
+### Přidáno
+
+- `21-activity-spectrum-and-arcade-modules.md` jako strategický RFC pro activity spectrum.
+- Priority Containment — Zadržování priorit jako první schválený future high-intensity standalone greybox.
+- Alignment Rally — Argument Routing jako navazující fyzikální/argumentační experiment.
+- čtyřvrstvý module model: okamžitý pocit → session/build → OS/audit → automation/management.
+- run-local XP jako dočasný session pacing, explicitně oddělený od Evidence.
+- capability versus authorization versus proficiency.
+- desetibodový povinný module contract.
+- action-window family s content-driven geometrií a provisional 320×320 viewportem.
+- future task track 031–038 pro greybox, buildcraft, sensory pass, OS integration a policy automation.
+- academic/source index pro competence/autonomy, challenge/flow, game feel, visual juiciness, audio, haptics a ASMR-adjacent design.
+- official inspiration index pro Vampire Survivors, Brotato, Deep Rock Galactic: Survivor, Balatro, BALL x PIT, Lethal League Blaze a Peglin.
+
+### Změněno
+
+- product vision nyní explicitně definuje K0rp_OS jako activity-spectrum incremental management hru, ne launcher miniher.
+- architecture přidává module-local SessionEngine, action surfaces, local high-frequency state a aggregate RuntimeBridge.
+- event model rozlišuje transient state, raw activation, natural closure, packet, certification, authorization a discrepancy.
+- privacy model přidává action-session aggregate limits, zákaz full replay/free-text telemetry a policy/delegation boundaries.
+- screen concepts přidávají compact, portrait a action window families.
+- roadmap opravuje Task 023 na DONE / PR #45, Task 024 jako next data reconciliation a Task 024A na DONE / PR #47.
+- roadmap odděluje gameplay/data, curated visual a future module R&D workstreams.
+- Codex task pack nahrazuje odložený V3 chrome track curated 024A–024D trackem a vyžaduje PowerShell validation block u každého tasku.
+- module backlog používá raw metric/packet/Evidence contracts a přidává Priority Containment/Alignment Rally.
+- language guide přidává operational/alignment copy a zakazuje fantasy/gamer slang v player-facing UI.
+- progression/economy zavádí čtyři hodnotové vrstvy: raw metric, run XP, Evidence, authorization/proficiency.
+- sensory feedback přidává music, haptics, density management, action readability, wave-break contrast a comparison playtest.
+- unlock docs přidávají capability groups, policy artifacts a pravidlo, že ne každý upgrade potřebuje formulář.
+- playtest checklist přidává backlog-pain gate, launcher-risk test a samostatné greybox/sensory/integration gates.
+- first-cycle balance je sjednocen s quantity-1 bootstrapem a Fidget packetem po třech settled sessions; action modules jsou z Tasku 024 výslovně vyloučené.
+- desktop progression přidává pozdější operational/alignment artifacts a Control Room, ale neodhaluje je na first bootu.
+- typography contract mění Pixel Operator z absolutního věčného locku na current runtime baseline; logo zůstává zamčené a jiný font vyžaduje samostatný readability/license gate.
+- progression package RFC a integration map nyní odpovídají post-Task-023 runtime a drží action candidate IDs mimo Task 024.
+
+### Neimplementováno tímto docs updatem
+
+- Priority Containment runtime;
+- Alignment Rally runtime;
+- action module events/data;
+- run-local XP v core resources;
+- Audit 27-P nebo Audit 31-R;
+- action capability groups;
+- delegated policy engine;
+- Task 024 data reconciliation;
+- Task 024B–024D player-visible window rollout;
+- jakýkoliv nový asset, font file, audio nebo haptic runtime;
+- cloud, overlay nebo external telemetry.
+
+Tento update je pouze docs/progression-package-docs RFC. Nemění React, runtime, save schema, JSON/CSV progression data ani asset catalogs.
+
 ## v0.3.0
 
 Datum: 2026-07-16
