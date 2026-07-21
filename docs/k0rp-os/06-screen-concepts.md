@@ -1,220 +1,383 @@
 # K0rp_OS — Screen Concepts
 
-Verze: 0.2.0 pracovní návrh
+Verze: 0.4.0 pracovní návrh
 
-## 1. Screen: Identity Assignment / Login
+## 1. Identity Assignment / Login
 
-První kontakt s K0rp_OS. Ne klasický login, ale přiřazení identity.
+První kontakt s K0rp_OS není klasický login, ale přiřazení identity.
 
 - logo KØrp_OS;
 - employee id generovaný lokálně;
 - hláška `IDENTITA PŘIŘAZENA. OSOBA VOLITELNÁ.`;
 - tlačítko `PŘIJMOUT PŘÍTOMNOST`;
-- normální privacy vysvětlení.
+- normální, neironické privacy vysvětlení.
 
-## 2. Screen: K0rp_OS Desktop
+## 2. K0rp_OS Desktop
 
-Hlavní plocha hry. Canonical full-game surface není launcher plný modulů.
+Canonical full-game surface není launcher plný modulů.
 
-Při prvním spuštění je téměř prázdná:
+První spuštění:
 
 - tmavý wallpaper;
-- taskbar;
+- top rail a taskbar podle aktuálního shell contractu;
 - Employee ID;
 - clock;
 - privacy indicator;
 - Compliance Bin;
-- otevřený dokument `AUDIT 00-A`.
+- otevřený dokument Audit 00-A.
 
-Po odeslání auditu se objeví ClickAudit shortcut, Doručené a NWU widget.
+Po odeslání auditu se objeví ClickAudit shortcut, Doručené a první vykázané stopy procesu.
 
 ## 3. Module Launcher / Control Desk
 
-Launcher/katalog může zůstat webovým portálem, debug surface nebo pozdější administrativní obrazovkou. V canonical desktop campaign není první obrazovkou a nesmí předem vystavit celý seznam zamčených modulů.
+Launcher nebo katalog smí existovat jako:
 
-## 4. ClickAudit Window
+- web portal;
+- debug surface;
+- pozdější administrativní registry;
+- control-room obrazovka po rozvinutí management vrstvy.
 
-- velký flip counter;
-- liquid progress uvnitř digit cards;
-- milestone message;
-- zdroj kliků podle modulu;
-- ceremonial feedback pro batch/milestone;
-- pin/reset controls.
+Nesmí být první obrazovkou campaign a nesmí předem ukázat celý zamčený module catalog.
 
-## 5. Fidget Window
+## 4. Window family contract
 
+Task 024A zavedl curated UI asset pack v01 a machine-readable shell contract. Důležité principy:
+
+- frame je nine-slice;
+- header je horizontal three-slice;
+- surface texture se tiluje v native resolution;
+- complete shell asset je reference-only a nesmí se roztahovat;
+- runtime text zůstává live DOM;
+- integer coordinates a integer scaling;
+- žádný blur, smoothing ani fractional transform scale.
+
+### Compact module family
+
+Použití:
+
+- ClickAudit;
+- Fidget;
+- případně další desk objects se stejnou geometrií.
+
+Current preserved content:
+
+```text
+167×167 logical px
+```
+
+Chrome obsahuje:
+
+- pin/unpin;
+- minimize;
+- close.
+
+### Portrait document family
+
+Použití:
+
+- Audit 00-A;
+- Audit 10-A;
+- Audit 16-C;
+- Audit 18-S;
+- budoucí packet audits;
+- mema, certifikace a reporty podle jejich document subtype.
+
+Audity a Formuláře se mají dlouhodobě chovat jako portrait documents, ne široké dashboard cards.
+
+### Portrait folder family
+
+Použití:
+
+- Doručené;
+- Formuláře;
+- Wellbeing;
+- Care & Alignment;
+- Čekající potvrzení;
+- Certifikace;
+- Archiv.
+
+Folder row a scrollbar zůstávají live UI, ne baked asset.
+
+### Action module family
+
+Použití:
+
+- Priority Containment;
+- Alignment Rally;
+- případné pozdější incident modules.
+
+Provisional content viewport:
+
+```text
+Priority Containment: 320×320 logical px
+Alignment Rally: nejdřív prototype-determined, očekávaně 320×220 až 320×320
+```
+
+Action module nesmí být zmenšen do compact 167×167 boxu jen proto, že existující shell je menší. Použije stejný compositional language, ale větší content-driven outer size.
+
+Detached 2× mode smí renderovat přesné integer 2×. Fractional scaling je zakázán.
+
+## 5. Window behavior
+
+Všechna skutečná okna podporují podle family:
+
+- open;
+- close;
+- minimize;
+- taskbar state;
+- bring to front;
+- drag;
+- remembered session position;
+- volitelný pin u module windows.
+
+První open ne-document module se centruje v usable workspace. Document windows používají form cascade. Action modules se při prvním open centrují a nesmějí automaticky přebírat focus pouze vznikem packetu.
+
+## 6. ClickAudit Window
+
+- preserved 167×167 content;
+- flip digits;
+- liquid progress;
+- source/profile readout;
+- milestone feedback;
+- pin/minimize/close;
+- analytics až jako pozdější unlock, ne výchozí cockpit.
+
+## 7. Fidget Window
+
+- preserved 167×167 content;
 - spinner;
-- barevná aura pohybu;
 - režimy KLIK / RUČNÍ;
-- rychlostní bar;
-- spin-up, resonance a natural settle;
-- pin control.
+- spin-up, resonance, coast-down a natural settle;
+- pin/minimize/close;
+- session closure neotvírá automaticky auditní okno.
 
-## 6. Bloom Window
+## 8. Bloom Window
 
 - 5×5 board;
 - green/yellow/red stones;
 - score a vlna;
 - material-specific feedback;
 - burst při clearu;
-- red state není pouze hlasitější varianta.
+- module-local state;
+- pozdější packet closure přes waveAdvanced.
 
-## 7. Corner Watch
+## 9. Priority Containment Window
 
-Primárně idle/screensaver modul.
+První high-intensity operational-response module.
 
-- odrážející se KØrp logo;
+### Layout
+
+- square 320×320 gameplay viewport;
+- briefing strip nebo overlay;
+- in-world capacity/status indicators;
+- žádná permanentní globální currency lišta uvnitř arény;
+- upgrade choice jako krátké klidné intermezzo;
+- session summary jako lokální report před případným OS packetem.
+
+### Readability
+
+Musí být čitelné:
+
+- avatar/capacity position;
+- priority archetype;
+- projectile nebo processing trajectory;
+- meeting zones;
+- pickup/closure objects;
+- active build effects;
+- safe space.
+
+### Controls
+
+- movement;
+- jedna active ability;
+- pause;
+- sensory intensity;
+- reduce motion;
+- optional aim assist/manual aim až po prototype gate.
+
+### Closure
+
+Konec session nesmí být jen `YOU DIED`.
+
+```text
+RELACE UZAVŘENA
+nebo
+RELACE UZAVŘENA S VÝHRADOU
+```
+
+Summary ukáže aggregate raw outcomes a případné budoucí audit risk, ne Evidence reward.
+
+## 10. Alignment Rally Window
+
+Fyzikální argumentační module.
+
+### Layout
+
+- claim/state panel;
+- rally field;
+- response paddle s viditelnými zones `EVIDENCE / SCOPE / OWNER / DEPENDENCY`;
+- closure outcome panel;
+- krátký upgrade choice mezi sequences.
+
+Claim text je template content. Globální event log ukládá jen template ID a aggregate outcome, ne volný text hráče.
+
+### Closure outcomes
+
+- ACCEPTED;
+- REJECTED;
+- DEFERRED;
+- OWNER ASSIGNED;
+- SENT OFFLINE;
+- MEETING REQUIRED;
+- NO DECISION RECORDED.
+
+## 11. Corner Watch
+
+Primárně idle/screensaver module.
+
+- odrážející se logo;
 - near-miss cue;
 - corner hit ceremony;
 - `ROHOVÉ POKUSY`;
-- spouštění přes Settings / Screen Saver;
-- hit se archivuje i při nepřítomném pohledu.
+- Settings / Screen Saver integration;
+- hit není povinný rare gate hlavní progression.
 
-## 8. Bublinková Fólie
-
-Post-prestige nový interaction system.
+## 12. Bublinková Fólie
 
 - grid bublinek;
 - full / pressed / popped / defective / rare;
 - press-and-drag;
-- Relief Units;
 - sheet completion;
-- sample variance a density limit.
+- sample variance a density limit;
+- post-prestige new-system reward candidate.
 
-## 9. Button Compliance
+## 13. Button Compliance
 
-- panel fyzických tlačítek a kontrolek;
+- fyzický panel;
+- kontrolky;
 - sequence closure;
-- Approval Units;
 - pending confirmations;
-- false-positive bez trestající reflexní sirény.
+- false-positive bez reflexní trestající sirény;
+- vazba na exceptions a authorization.
 
-## 10. Surface Compliance
+## 14. Surface Compliance
 
 - špinavý panel / sklo / formulář;
 - wipe mask;
 - percentage cleaned;
 - material-specific sound;
-- skryté štítky, dokumenty nebo residue.
+- hidden residue/files;
+- přirozené surface closure.
 
-## 11. Shape Compliance
+## 15. Shape Compliance
 
 - drag / rotate / snap;
 - closure meter;
 - přesná snap tolerance;
-- keyboard alternativa;
+- keyboard alternative;
 - color-independent states.
 
-## 12. Attention Runner
+## 16. Attention Runner
 
-- malý companion strip;
+- companion strip;
 - low-input endless runner;
-- nesmí převzít hlavní ekonomiku ani změnit K0rp_OS v běžný arcade launcher.
+- nesmí převzít hlavní ekonomiku;
+- nesmí změnit desktop v arcade launcher.
 
-## 13. Zenová Zahrádka
+## 17. Zenová Zahrádka
 
 - písečný box;
 - rake strokes;
 - movable stones;
-- Procedural Calm;
-- free mode i procedural mode.
+- free a procedural mode;
+- natural pattern closure.
 
-## 14. Newtonova Kolíbka
+## 18. Newtonova Kolíbka
 
 - controlled/fake physics;
 - pull/release;
-- cycle and impact counter;
-- Momentum;
-- Transferred Responsibility;
-- přirozený konec pohybu.
+- impact/cycle counter;
+- přirozený motion-ended closure;
+- odpovědnost se přenáší vizuálně, ne lore dumpem.
 
-## 15. Internal Memo
+## 19. Internal Memo
 
-Memo je v canonical desktopu především soubor v `Doručené`, ne odměnový popup.
+Memo je soubor v Doručených, ne běžný blocking popup.
 
-Modal použít jen pro identity assignment, certifikaci, prestige a podobně systémově významné události.
+Modal se používá pouze pro identity assignment, zásadní authorization, prestige a skutečně systémové operace.
 
-## 16. Knowledge Base
+## 20. Knowledge Base
 
 - vyhledávání;
 - kategorie podle oddělení/modulů;
-- 50s comics instruktážní vizuály;
+- comics/training vizuály;
 - help i in-universe obsah;
 - žádný explicitní lore dump.
 
-## 17. KPI / Notional Work Board
+## 21. KPI / Notional Work Board
 
-Odemknutelná analytická obrazovka, ne výchozí cockpit.
+Odemknutelná analytická obrazovka.
 
-- viditelné pouze odhalené resources;
-- current vs lifetime hodnoty;
-- next procedural unlock;
-- derived metrics se odhalují memem.
+- pouze odhalené metriky;
+- current vs lifetime;
+- manual/delegated/system split;
+- packet a discrepancy summaries;
+- žádný výchozí cockpit s osmi čísly.
 
-## 18. Overlay Bar
+## 22. Policy / Control Room
 
-Pozdější Windows-first companion surface.
+Pozdější management surface.
 
-- always-on-top;
-- privacy mode stále viditelný;
-- quick launch;
-- K0rp-only aggregate events;
-- žádné app names, URL, text, screenshots ani keylogging.
+Obsahuje:
 
-## 19. First boot — almost empty employee desktop
+- autorizované moduly;
+- operators/stážisty;
+- loadout templates;
+- policy rules;
+- intervention thresholds;
+- supervision cadence;
+- open discrepancies;
+- recent incident summaries.
 
-Viditelné:
+Control Room není early launcher. Odemkne se až ve chvíli, kdy hráč skutečně řídí více automatizovaných procesů.
 
-- wallpaper;
-- taskbar;
-- Employee ID;
-- clock;
-- privacy indicator;
-- Compliance Bin;
-- `AUDIT 00-A`.
+## 23. Desktop artifact progression
 
-Neviditelné:
+Přibližné prezentační pořadí:
 
-- launcher plný modulů;
-- celý KPI board;
-- locked module catalog;
-- všechny resource counters.
+1. Audit 00-A, ClickAudit, Doručené.
+2. Formuláře a repeatable audits.
+3. Fidget, Wellbeing a mixed backlog.
+4. Delegation/personnel artifacts.
+5. Bloom a Care & Alignment.
+6. Corner Watch v Settings.
+7. Button Compliance a Čekající potvrzení.
+8. Certifikace, Knowledge Base a Archiv.
+9. První auditní cyklus a nový interaction system.
+10. Pozdější operational-response module a policy/control-room surfaces.
 
-## 20. Desktop artifact progression
+Každý objekt je stopou konkrétního procesu. Náhodný clutter není progression.
 
-1. ClickAudit + Doručené.
-2. Formuláře + pending 10-A.
-3. Fidget + Wellbeing.
-4. Bloom + Care & Alignment.
-5. Corner Watch v Settings jako screensaver.
-6. Button Compliance + Čekající potvrzení.
-7. Certifikace + Knowledge Base + Archiv.
-8. 42-Z → archivace, reboot, nový wallpaper/build, Bubble Wrap.
+## 24. Prestige presentation
 
-Každý objekt je stopou konkrétního procesu. Náhodný clutter není náhrada progression.
+Uzavření auditního cyklu:
 
-## 21. Window behavior
+- archivuje cycle files;
+- odstraní nebo přesune pending cycle-scoped forms;
+- zachová permanentní documents;
+- uklidí plochu;
+- změní wallpaper/build;
+- krátce rebootuje;
+- nainstaluje nový systém.
 
-Module windows:
+## 25. Závazné vizuální guardrails
 
-- open/close;
-- minimize;
-- taskbar state;
-- bring to front;
-- drag;
-- remembered position;
-- optional pin.
-
-Document windows obsluhují audity, mema, reporty a certifikace. Folder windows zobrazují Doručené, Formuláře, Wellbeing, Care & Alignment, Čekající potvrzení, Certifikace a Archiv.
-
-## 22. Prestige presentation
-
-`UZAVŘENÍ AUDITNÍHO CYKLU` je viditelná systémová operace:
-
-- cycle files se archivují;
-- pending formuláře se odstraní;
-- permanentní dokumenty zůstanou;
-- plocha se uklidí;
-- změní se wallpaper a build;
-- OS krátce rebootuje;
-- objeví se Bublinková Fólie.
+- netahat malé textury přes velké plochy;
+- tilovat material surfaces v native resolution;
+- používat nine-slice/three-slice pro resize;
+- complete shells jsou reference-only;
+- live text se nesmí bakeovat do button assets;
+- hover/pressed state smí měnit background asset i live text color;
+- compact content se nesmí zmenšit kvůli novému chrome;
+- portrait documents se nesmějí vrátit do širokých card layouts;
+- action viewport se nesmí obětovat uniformitě oken.
