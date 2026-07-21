@@ -1,20 +1,18 @@
-# K0rp_OS — Typography & Brand Lock
+# K0rp_OS — Typography & Brand Contract
 
-Verze: 0.1.3 pracovní návrh  
-Status: závazný vizuální detail pro UI implementaci
+Verze: 0.4.0 pracovní návrh  
+Status: logo lock je závazný; fonty jsou current runtime baseline s explicitním future readability gate
 
-## 1. Účel dokumentu
+## 1. Účel
 
-Tento dokument zamyká dva důležité body vizuální identity:
+Tento dokument odděluje dvě věci, které dřív byly zamčené jednou větou:
 
-1. aplikační texty používají `Pixel Operator` / `Pixel Operator Mono`,
-2. logo `KØrp` / `K0rp_ware` je hotový asset a nemá se redesignovat.
+1. **logo `KØrp` / `K0rp_ware` je hotový asset a nemá se redesignovat**;
+2. **Pixel Operator / Pixel Operator Mono jsou současný runtime standard, ale nejsou zákazem samostatného budoucího fontového experimentu**.
 
-Je to malý detail jen zdánlivě. Ve skutečnosti je to jedna z věcí, která drží K0rp_OS pohromadě: bez správného fontu se z toho snadno stane generic pixel UI s korporátním skinem.
+To chrání identitu a současně připouští realitu: malý text musí být čitelný. Stylizace, která při normálním rozlišení vypadá rozmazaně nebo mikroskopicky, není vítězství značky.
 
-## 2. Fontový standard
-
-Canonical aplikační fonty:
+## 2. Current runtime font baseline
 
 ```text
 Pixel Operator
@@ -23,99 +21,188 @@ Pixel Operator Mono
 
 ### Pixel Operator
 
-Použití:
+Current použití:
 
-- názvy modulů,
-- tlačítka,
-- běžné popisky,
-- tooltips,
-- krátká systémová hlášení,
-- interní memo nadpisy,
-- menu položky,
-- taskbar a launcher texty.
+- module/window titles;
+- buttons;
+- běžné labels;
+- tooltips;
+- krátké system messages;
+- memo headings;
+- menu rows;
+- taskbar text.
 
 ### Pixel Operator Mono
 
-Použití:
+Current použití:
 
-- čísla,
-- resources,
-- event log,
-- registry,
-- terminal-like prvky,
-- debug/status hodnoty,
-- employee ID,
-- build/version labels,
-- `v0.3 DÍLNA`, `SYSTÉM ONLINE`, `KONTEXT IGNOROVÁN` apod.
+- numbers;
+- resource/readout values;
+- event logs;
+- registries;
+- terminal-like text;
+- employee ID;
+- build/version labels;
+- packet/audit IDs.
 
-## 3. Logo lock
+## 3. Co je skutečně zamčené
 
-Logo `KØrp`, `K0rp_ware` a příbuzné značkové varianty jsou považované za rozhodnuté.
+### Logo lock
 
 Zakázané bez explicitního zadání:
 
-- redesign loga,
-- nahrazení `Ø` jiným symbolem,
-- změna proporcí wordmarku,
-- generování nového loga podle promptu,
-- převod loga do běžného fontového nápisu,
+- redesign loga;
+- nahrazení `Ø`;
+- změna wordmark proportions;
+- generování nového loga;
+- převod loga do běžného fontu;
 - „modernizace“ značky.
 
 Povolené:
 
-- použití existujícího assetu,
-- export ve vhodné velikosti,
-- technická optimalizace souboru,
-- barevné varianty pouze pokud vycházejí z již schváleného vizuálního směru.
+- použití existujícího assetu;
+- export ve vhodné velikosti;
+- lossless/technická optimalizace;
+- schválená barevná varianta;
+- integer-size placement.
 
-## 4. Implementační pravidlo
+### Typography token contract
 
-Doporučené CSS tokeny:
+UI má používat semantic font tokens. Komponenty nesmějí hardcodovat náhodné font family řetězce.
 
 ```css
 :root {
   --korp-font-ui: "Pixel Operator", monospace;
   --korp-font-mono: "Pixel Operator Mono", "Pixel Operator", monospace;
 }
-
-.korp-ui-text {
-  font-family: var(--korp-font-ui);
-}
-
-.korp-system-text,
-.korp-number,
-.korp-event-log {
-  font-family: var(--korp-font-mono);
-}
 ```
 
-Fallback je technická nouzovka, ne designový směr.
+Pokud se future font změní, mění se token/catalog, ne stovky izolovaných komponent.
 
-## 5. Licence a distribuce
+## 4. Future font-readability experiment
 
-Tento docs pack neobsahuje fontové soubory.
+Font se smí změnit pouze samostatným taskem s comparison gate.
 
-Před release buildem je nutné:
+Candidate může být:
 
-- ověřit licenci fontu,
-- rozhodnout, zda se font smí bundlovat v desktop/web aplikaci,
-- uložit rozhodnutí do docs,
-- nepřidávat font files do repa bez ověřeného právního/licenčního důvodu.
+- OCR A Extended nebo podobný industrial/terminal face;
+- jiná bitmap/pixel family;
+- custom pixel treatment;
+- kombinace display font + čitelnější body font.
 
-## 6. Codex / AI guardrail
+Candidate není canonical jen proto, že v Malování vypadá správně rozpixelovaně.
 
-Při zadávání úkolů Codexu nebo jinému implementačnímu agentovi přidat do promptu:
+## 5. Povinný font gate
+
+Porovnat current a candidate minimálně na:
+
+- 1600×900 logical canvas;
+- reálném browser viewportu;
+- Windows Chrome/Edge;
+- fullscreen i běžném okně;
+- 100 % a relevantním OS scaling;
+- active/inactive titlebars;
+- small metadata;
+- body memo copy;
+- audit fields;
+- buttons;
+- taskbar;
+- EV/PENDING readouts;
+- Czech diacritics;
+- Latin uppercase/lowercase;
+- digits/IDs;
+- action-module moving HUD.
+
+Kritéria:
+
+- small body text je čitelnější nebo nejméně stejně čitelný;
+- title fit se nezhorší;
+- pixel edges zůstávají sharp;
+- line-height/kerning nepůsobí rozpadle;
+- česká diakritika je kompletní;
+- font funguje jako live DOM text;
+- nevyžaduje baked button labels;
+- licence dovoluje plánovanou distribuci.
+
+## 6. Rasterization and pixel clarity
+
+Font může být vektorový, pokud se při cílové velikosti vykresluje dobře. „Pixel look“ neznamená, že text musí být bitmapový asset.
+
+Pravidla:
+
+- integer font sizes tam, kde to sedí layoutu;
+- žádný fractional transform scale na text layer;
+- žádný blur/filter/CRT overlay přes body text;
+- text zůstává live;
+- browser font smoothing nelze vždy úplně vypnout — design se testuje v reálném runtime;
+- nekompenzovat slabý font extrémně malou velikostí;
+- metadata raději zkrátit než zmenšit pod čitelnost;
+- action HUD musí být čitelný za pohybu, ne jen na screenshotu.
+
+## 7. Role-based typography
+
+Dlouhodobě může systém používat více rolí:
 
 ```text
-Use Pixel Operator / Pixel Operator Mono as the UI font direction. Do not redesign or replace the K0rp/K0rp_ware logo. Treat the logo as an existing fixed asset. Do not add font files unless explicitly provided and license-cleared.
+BRAND / LOGO
+→ fixed asset
+
+DISPLAY / TITLE
+→ výrazný industrial/pixel face
+
+BODY / FORM
+→ čitelný UI face
+
+MONO / DATA
+→ čísla, IDs, registry
 ```
 
-## 7. Kritérium přijetí
+Jedna rodina pro vše je výhoda pouze tehdy, když vše zůstává čitelné.
 
-UI změna je fontově přijatelná, pokud:
+## 8. Live text and assets
 
-- běžné UI texty vypadají konzistentně s Pixel Operator stylem,
-- systémové/číselné texty používají mono variantu nebo odpovídající token,
-- logo zůstalo beze změny,
-- fallback se neobjevuje jako viditelný finální stav,
-- text je čitelný v runtime velikostech.
+- button background je asset nebo CSS composition;
+- button label je live text;
+- hover/pressed state smí měnit background asset i text color;
+- titlebar je three-slice asset + live label;
+- folder row je background/icon + live metadata;
+- žádný lokalizovatelný nebo dynamický text se bakeuje do runtime PNG bez explicitního důvodu.
+
+## 9. Licence a distribuce
+
+Docs pack nepřikládá font files.
+
+Před release:
+
+- ověřit licenci;
+- dokumentovat source/license;
+- rozhodnout bundling/local loading;
+- nepřidávat font file bez explicitního license clearance;
+- neexportovat proprietary font jen proto, že byl lokálně nainstalovaný.
+
+## 10. Codex / AI guardrail
+
+Current task prompt:
+
+```text
+Preserve the current Pixel Operator / Pixel Operator Mono runtime tokens unless the task is explicitly a typography readability experiment. Do not redesign or replace the K0rp/K0rp_ware logo. Keep labels as live text. Do not add font files unless explicitly provided and license-cleared.
+```
+
+Font experiment prompt musí navíc požadovat screenshot comparison a nesmí současně měnit window chrome, layout, content density a font — jinak nebude jasné, co čitelnost zlepšilo nebo zhoršilo.
+
+## 11. Acceptance
+
+Běžná UI změna je přijatelná, pokud:
+
+- používá current semantic tokens;
+- logo zůstalo beze změny;
+- fallback není final visible state;
+- text je čitelný v runtime velikostech;
+- nedochází k fractional scalingu;
+- live text zůstává oddělený od assets.
+
+Font change je přijatelný pouze po samostatném comparison/readability/license gate.
+
+## 12. Důležité pravidlo
+
+> Logo je zamčené. Font není posvátná relikvie. Je to pracovní nástroj identity a čitelnosti — a pokud neunese malý formulář ani pohyblivý HUD, systém potřebuje lepší nástroj, ne menší text.
