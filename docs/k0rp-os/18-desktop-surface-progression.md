@@ -1,217 +1,431 @@
 # K0rp_OS — Desktop Surface Progression
 
-Verze: `0.2.0 pracovní RFC`
+Verze: `0.4.0 pracovní RFC`
 
-## Výsledek kontroly
+## 0. Účel
 
-Původní progression flow je kompatibilní s vizí falešného operačního systému. Ekonomiku, pořadí modulů, první audit ani první prestige není nutné měnit.
-
-V původním packu ale byla vizuální a desktopová progrese převážně implicitní. Tento addendum ji zapisuje jako samostatnou prezentační vrstvu.
+Tento dokument popisuje, jak se herní postup projeví na pracovní ploše zaměstnance.
 
 ```text
-progression database = proč a kdy se něco odemkne
-surface database     = jak se to projeví na ploše zaměstnance
-module implementation = co se děje uvnitř konkrétní appky
-product mode          = kde může stejná logika běžet
+progression data
+= proč a kdy se něco odemkne
+
+surface progression
+= jak se to projeví v OS
+
+module implementation
+= co se děje uvnitř appky
+
+product mode
+= kde může stejná logika běžet
 ```
 
-Tyto čtyři vrstvy se nesmějí slít do jednoho reduceru.
+Tyto vrstvy se nesmějí slít do jednoho reduceru.
 
 ## 1. Canonical fantasy
 
 K0rp_OS desktop je hlavní hra.
 
-Hráč po přidělení identity nevidí launcher plný karet. Vidí skoro prázdnou pracovní plochu:
+Po přidělení identity hráč nevidí katalog zamčených karet. Vidí téměř prázdnou pracovní stanici:
 
-- tmavý K0rp wallpaper,
-- spodní taskbar,
-- Employee ID,
-- hodiny,
-- čitelný privacy status,
-- Compliance Bin,
-- automaticky otevřené okno auditu 00-A.
+- dark K0rp wallpaper;
+- top rail a taskbar;
+- Employee ID;
+- clock;
+- jasný privacy status;
+- Compliance Bin;
+- otevřený Audit 00-A.
 
-Audit je dokument otevřený startup procedurou. Teprve jeho dokončením se na ploše objeví první skutečná aplikace: ClickAudit.
+Audit je document spuštěný startup procedurou. Teprve jeho dokončení zpřístupní první skutečnou aplikaci: ClickAudit.
 
-## 2. Jak se plocha zaplňuje
+## 2. Aktuální canonical surface flow
 
-### 0–12 minut
+### Start
 
 Viditelné:
 
-- Compliance Bin,
-- taskbar,
-- Audit 00-A.
+- Audit 00-A;
+- Compliance Bin;
+- shell/status basics.
 
-Po dokončení:
+Neviditelné:
 
-- ClickAudit shortcut,
-- Doručené,
-- NWU counter,
-- uložený schválený audit.
+- full module catalog;
+- KPI board;
+- locked app wall;
+- všechny resources;
+- Control Room.
 
-### 12–35 minut
-
-Přibude:
-
-- složka Formuláře,
-- soubor 10-A,
-- první auditní záznamy,
-- procedurální část Start menu.
-
-### 35–65 minut
+### Po Audit 00-A
 
 Přibude:
 
-- Fidget,
-- složka Wellbeing,
-- Stabilization widget.
+- ClickAudit shortcut;
+- Doručené;
+- první memo;
+- uložený completed Audit 00-A;
+- raw ClickAudit counter uvnitř module window.
 
-Fidget se otevře jako normální interní application window. Není to karta na dashboardu.
+Samotný submit nevynutí otevření ClickAuditu ani dalšího auditu.
 
-### 65–110 minut
+### Bootstrap packet
+
+První pozdější K0rp_OS click:
+
+- vytvoří quantity-1 packet;
+- auto-openne právě jednu Audit 10-A instance;
+- používá current document cascade;
+- nepůsobí jako reward popup.
+
+### Pozdější ClickAudit packets
+
+Každých dalších 25 clicks:
+
+- vytvoří další audit instance;
+- přidá row ve Formulářích;
+- neotevře automaticky nové okno;
+- neukradne focus;
+- explicitní open použije vlastní stable window ID a cascade.
+
+### První Evidence
+
+Přibude nebo se odhalí:
+
+- EV readout;
+- Audit 16-C;
+- authorization memo/document trail.
+
+### Fidget authorization
+
+Po Audit 16-C:
+
+- EV je alokována;
+- Fidget shortcut se nainstaluje;
+- Fidget se neotevře bez hráčovy explicitní akce;
+- authorization přežije refresh.
+
+### Fidget metric packets
+
+Po třech nových settled sessions:
+
+- vznikne Audit 18-S row ve Formulářích;
+- mixed pending count se změní;
+- packet creation neotevře okno;
+- ClickAudit a Fidget rows používají jednu queue.
+
+## 3. Pacing není surface contract
+
+Starší dokumenty používaly přesná okna typu `0–12 minut`, `35–65 minut` a podobně. Tyto hodnoty jsou historické/provisional balance assumptions.
+
+Surface contract určuje pořadí a význam, ne fixní minutu:
+
+```text
+presence
+→ raw ClickAudit
+→ Evidence
+→ Fidget authorization
+→ mixed backlog
+→ delegation
+→ další moduly
+```
+
+Přesný pacing se aktualizuje po Tasku 024 a playtest harnessu.
+
+## 4. First-cycle surface expansion
+
+Po ověření current loopu:
+
+### Delegation
 
 Přibude:
 
-- Bloom,
-- složka Care & Alignment,
-- první soubory, jejichž obsah vzniká hraním modulů.
+- Personnel/Intern artifact;
+- assignment document;
+- training status;
+- delegated source indicator;
+- control sample/discrepancy row;
+- později samostatná personnel folder nebo panel.
 
-V této fázi má plocha poprvé působit jako skutečná pracovní stanice s více nástroji.
+Stážista není anonymní multiplier v taskbaru. Má viditelnou provozní stopu.
 
-### 110–145 minut
-
-Corner Watch se primárně instaluje jako:
-
-- screensaver,
-- položka v Settings,
-- idle surface.
-
-Nemusí okamžitě zabrat další desktop ikonu. Hráč si shortcut může později připnout sám.
-
-### 145–195 minut
+### Bloom
 
 Přibude:
 
-- Button Compliance,
-- složka Čekající potvrzení,
-- Approval Units v taskbaru.
+- Bloom shortcut;
+- Care & Alignment folder;
+- Bloom-generated files;
+- vlastní packet/audit rows;
+- případně module-local integrity readout uvnitř appky.
 
-Moduly začnou vytvářet úkoly a soubory jeden pro druhý.
+### Corner Watch
 
-### 195–250 minut
+Primárně:
+
+- Settings / Screen Saver page;
+- idle report file;
+- volitelný user-pinned shortcut;
+- žádná povinná nová desktop icon.
+
+### Button Compliance
 
 Přibude:
 
-- Certifikace,
-- Knowledge Base,
-- Archiv,
-- pending 42-Z,
-- větší množství dočasných formulářů a reportů.
+- shortcut;
+- Čekající potvrzení;
+- approval/exception documents;
+- relevantní late readout až tehdy, kdy má player-facing význam.
 
-Desktop je zaplněný, ale ne náhodným lootem. Každý objekt je stopa konkrétního procesu.
+### Certifications and closure
 
-### 250–275 minut
+Přibude:
 
-Uzavření auditního cyklu se projeví jako:
+- Certifikace;
+- Knowledge Base;
+- Archiv;
+- pending 42-Z;
+- cycle reports;
+- více temporary forms.
 
-- archivace cycle-scoped souborů,
-- vznik složky `Audit Cycle 01`,
-- vyčištění části plochy,
-- změna wallpaperu,
-- zvýšení build number K0rp_OS,
-- krátký reboot,
-- instalace Bublinkové Fólie.
+Desktop je zaplněný stopami konkrétních procesů, ne náhodným lootem.
 
-Prestige je tedy reorganizace pracovní stanice. Ekonomický reset zůstává stejný.
+## 5. First audit-cycle closure
 
-## 3. Window model
+Uzavření se projeví jako:
 
-### Module windows
+- archivace cycle-scoped files;
+- vznik `Audit Cycle 01`;
+- odstranění nebo přesun temporary forms;
+- zachování permanentních mem/certification artifacts;
+- částečný desktop cleanup;
+- wallpaper/build mutation;
+- krátký reboot;
+- instalace nového interaction systemu, provisional Bubble Wrap.
 
-ClickAudit, Fidget, Bloom a další moduly běží jako skutečná okna na fiktivní ploše.
+Prestige je reorganizace pracovní stanice, ne pouze reset čísla.
 
-Potřebují:
+## 6. Window families
 
-- open/close,
-- minimize,
-- taskbar state,
-- bring-to-front,
-- drag,
-- uložení poslední pozice,
-- volitelný pin.
+### Compact module windows
 
-### Document windows
+Current preserved module contents:
 
-Audity, mema, reporty, certifikace a knowledge base se otevírají jako dokumenty.
+```text
+ClickAudit 167×167
+Fidget    167×167
+```
 
-### Folder windows
+Chrome nesmí content zmenšit, cropnout nebo rescalovat.
 
-Složky nejsou dekorace. Jsou čitelný stav hry:
+### Portrait document windows
 
-- Doručené,
-- Formuláře,
-- Wellbeing,
-- Care & Alignment,
-- Čekající potvrzení,
-- Certifikace,
-- Archiv,
-- Knowledge Base.
+Audity, mema, reports a certifications používají portrait-oriented live documents.
 
-## 4. Standalone, web a overlay
+- minimize;
+- close;
+- form cascade;
+- live fields/text;
+- short forms bez zbytečného inner scrollu;
+- dlouhé content scrolluje uvnitř document surface.
 
-Tyto režimy nejsou další stupně první herní kampaně. Jsou to produktové surfaces.
+### Portrait folder windows
+
+Folder je live list:
+
+- Doručené;
+- Formuláře;
+- Wellbeing;
+- Care & Alignment;
+- Čekající potvrzení;
+- Certifikace;
+- Archiv;
+- Knowledge Base;
+- later Personnel/Policy/Incidents.
+
+Rows a scrollbars nejsou baked assets.
+
+### Action module windows
+
+Priority Containment a Alignment Rally používají větší content-driven geometry.
+
+Priority provisional:
+
+```text
+320×320 logical gameplay viewport
+```
+
+Action window:
+
+- se při first open centruje;
+- má module controls;
+- zachová integer logical coordinates;
+- nesmí být natlačen do compact family;
+- detached mode může použít přesné integer 2×;
+- resize/chrome nesmí měnit game simulation coordinates.
+
+## 7. Curated window-shell progression
+
+Task 024A vytvořil v01 composition contract bez visible runtime změny.
+
+Před player-facing rolloutem:
+
+1. 024B — compact ClickAudit/Fidget pilot;
+2. 024C — portrait Audit/Formuláře pilot;
+3. 024D — top rail/taskbar/status controls.
+
+V3 pilot PR #43 nebyl přijat. Jeho visuals nejsou surface history ani progression reward.
+
+Asset rules:
+
+- frame nine-slice;
+- header three-slice;
+- materials tiled native resolution;
+- complete shells reference-only;
+- live text;
+- integer rendering;
+- no blur/fractional scale.
+
+## 8. Later operational-response surface
+
+Priority Containment se na desktopu objeví až po:
+
+- standalone greybox gate;
+- authorization design;
+- accepted action-window contract;
+- OS integration task.
+
+Surface candidate:
+
+```text
+Operational authorization memo
+→ Operational Response folder/procedure
+→ Priority Containment shortcut
+→ larger action window
+→ session closure reports
+→ Audit 27-P rows
+```
+
+Nesmí se objevit jako náhodná odemčená hra jen proto, že hráč dosáhl vysokého EV.
+
+## 9. Later alignment surface
+
+Alignment Rally vzniká až po vlastní prototype gate.
+
+Candidate:
+
+```text
+disputed closure nebo alignment requirement
+→ authorization
+→ Alignment Rally shortcut
+→ argument template files
+→ Audit 31-R
+→ Alignment Templates capability groups
+```
+
+Template claim text je fictional content. Nesmí být external telemetry.
+
+## 10. Control Room progression
+
+Control Room není module launcher.
+
+Odemkne se až ve chvíli, kdy existuje:
+
+- více autorizovaných modulů;
+- alespoň jeden delegated operator;
+- policy;
+- discrepancies;
+- potřeba intervention.
+
+Obsah:
+
+- operator assignments;
+- loadout templates;
+- target weights;
+- risk tolerance;
+- supervision cadence;
+- open discrepancies;
+- recent incident summaries;
+- module status.
+
+Control Room je důsledek managementu, ne jeho maketa od první minuty.
+
+## 11. Taskbar progression
+
+Early:
+
+```text
+EV
+PENDING
+privacy
+clock
+open windows
+```
+
+Later, pouze pokud odemknuto:
+
+- source split indicator;
+- delegation warning;
+- discrepancy count;
+- policy intervention;
+- cycle status.
+
+Raw clicks, spin count, run XP, wave score a claim rally zůstávají v module windows.
+
+Taskbar nemá skončit jako cockpit rozbitého logistického centra dřív, než hráč ví, co čísla znamenají.
+
+## 12. Standalone, web and overlay
 
 ### Desktop
 
-- canonical full game;
-- nejsilnější fiction;
-- plná desktopová progrese;
-- společný save a core.
+- canonical campaign;
+- full surface progression;
+- shared save/core;
+- strongest fiction.
 
 ### Web
 
-- fallback full game v browseru;
-- může simulovat stejnou plochu;
+- fake desktop fallback;
 - local browser save;
-- stejné eventy a unlocky;
-- bez skutečného overlay a OS-native window behavior.
+- stejné IDs/events;
+- žádné native window/overlay assumptions;
+- action viewport zachová logical scale.
 
-### Standalone appky
+### Standalone modules
 
-- jednotlivé moduly fungují samostatně bez K0rp_OS;
-- zachovávají původní prokrastinační smyčku;
-- bez napojení vedou jen module-local progress;
-- při připojení ke K0rp_OS posílají aggregate events;
-- global campaign přijímá eventy jen z modulů autorizovaných v daném save.
+- fungují bez campaign save;
+- zachovávají tactile/action loop;
+- unlinked progress je module-local;
+- linked mode posílá aggregate events;
+- campaign přijímá pouze authorized module events.
 
 ### Overlay
 
 - pozdější companion surface;
-- není podmínkou prvního prestige;
-- používá stejné module contracts;
-- smí posílat jen K0rp-only nebo výslovně povolené agregované eventy;
-- privacy režim musí být stále viditelný.
+- není first-cycle requirement;
+- K0rp-only aggregate events;
+- privacy status viditelný;
+- high-intensity action module není automaticky overlay-compatible.
 
-## 5. Architektonické pravidlo
+## 13. Architecture source
 
 ```text
 korp-core          = ekonomika a význam eventů
-korp-progression   = thresholds, forms, upgrades, memos, prestige
-korp-surface       = desktop artifacts, windows, folders, files, mutations
-korp-modules       = jednotlivé appky a jejich contracts
-korp-ui            = vykreslení OS a oken
+korp-progression   = thresholds, forms, authorizations, prestige
+korp-surface       = artifacts, windows, folders, mutations
+korp-modules       = module/session contracts
+korp-ui            = OS/window rendering
 ```
 
-Surface vrstva má poslouchat stejné progression ID. Nesmí duplikovat balance.
+Surface vrstva poslouchá progression IDs. Nedubluje balance.
 
-## 6. Závěr
+## 14. Závěr
 
-> Nový modul se neobjeví jako odemčená položka v abstraktním menu. Je autorizován, nainstalován a jeho shortcut se fyzicky objeví na ploše zaměstnance.
+> Nový modul se neobjeví jako odemčená karta. Je autorizován, nainstalován a jeho shortcut se fyzicky objeví na ploše zaměstnance.
 
-Memo není popup reward, ale soubor v Doručených. Certifikace není badge v profilu, ale dokument. Prestige není pouze reset, ale archivace, úklid, změna buildu a instalace dalšího nesmyslně potřebného nástroje.
+> Pozdější horda priorit nesmí pohltit plochu. Musí na ní zanechat report, audit, policy a problém, který bude potřeba přidělit někomu dalšímu.
 
-## Machine-readable source
+## 15. Machine-readable source
 
-- `packages/korp-progression/data/surface-progression.json`
-- `packages/korp-progression/src/surface-progression.database.ts`
+- `packages/korp-progression/data/surface-progression.json`;
+- `packages/korp-progression/src/surface-progression.database.ts`;
+- future action-module surface IDs až po Tasks 035/038.
