@@ -1,159 +1,310 @@
 # K0rp_OS — Visual Style Guide
 
-Verze: 0.1.3 pracovní návrh  
+Verze: 0.4.0 pracovní návrh  
 Status: interní vizuální směr
-![K0rp_OS concepts](./assets/concepts/)
 
 ## 1. Základní estetika
 
-Cíl: **pixelart s nádechem komiksů 50. let, starého interního softwaru, špinavých průmyslových panelů a liminální kancelářské tísně.**
+Cíl:
 
-K0rp_OS nesmí působit jako čistý moderní produkt. Má působit jako rozhraní, které bylo původně navrženo pro něco velmi nudného, ale časem se v něm usadila osobnost.
+> **Pixelart s nádechem komiksů 50. let, starého interního softwaru, špinavých průmyslových panelů a liminální kancelářské tísně.**
+
+K0rp_OS nemá působit jako čistý moderní produkt. Má vypadat jako rozhraní původně navržené pro něco velmi nudného, ve kterém se postupně usadila osobnost, provozní historie a příliš mnoho procedur.
 
 Klíčová slova:
 
-- pixelart,
-- 8–16 bit feeling,
-- CRT/terminal patina,
-- špinavý kancelářský hardware,
-- retro industrial panel,
-- golden-age comics linka,
-- 50s corporate optimism po lobotomii,
-- liminální chodby,
-- utilitární UI,
-- signage,
-- vnitřní rozhlas,
-- tabulky, štítky, varování, oddělení,
-- manažerské desk objects, které vypadají uklidňující jen do chvíle, než je systém začne měřit.
+- pixelart;
+- 8–16bit feeling;
+- CRT/terminal patina;
+- špinavý kancelářský hardware;
+- retro industrial panel;
+- golden-age comics linka;
+- 50s corporate optimism po lobotomii;
+- liminální chodby;
+- signage;
+- formuláře, štítky, razítka a varování;
+- manažerské desk objects;
+- uklidňující zařízení, která systém začal měřit;
+- operational chaos přeložený do přehledných procedur.
 
-## 2. Vizuální reference z aktuální práce
+## 2. Vizuální vrstvy produktu
 
-### K0rp_ware dashboard
+K0rp_OS kombinuje několik materiálových jazyků, které musí působit jako jedna instituce:
 
-Aktuální dashboard už dobře drží směr: robustní rámy, černé panely, špinavé kovové povrchy, barevně odlišené moduly, pixelová typografie a in-universe texty typu „vše, co nezaznamenáme, neexistuje“.
+```text
+OS SHELL
+→ top rail, taskbar, wallpaper, system status
 
-Zachovat:
+WINDOW CHROME
+→ frame, header, controls, focus state
 
-- těžké panely,
-- modulární karty,
-- zvýraznění červená/žlutá/zelená,
-- horní status bar,
-- pocit starého interního portálu,
-- elevator / hallway vignette jako živý kus budovy.
+DOCUMENTS
+→ paper, forms, folders, memos, reports
 
-Rozšířit:
+MODULE DEVICES
+→ ClickAudit, Fidget, Bloom, desk objects
 
-- víc falešných systémových prvků,
-- interní memo prvky,
-- stav zaměstnance,
-- fake taskbar,
-- chybová hlášení a upozornění,
-- locked module placeholders,
-- desk object shelf / wellness section.
+ACTION SYSTEMS
+→ Priority Containment, Alignment Rally
 
-### Shared app shell
+MANAGEMENT
+→ policy, personnel, discrepancies, control room
+```
 
-Současný shell je základní vizuální jazyk widgetů.
+Jednotu nedělá stejný rozměr každého okna. Dělá ji materiál, typografie, state language, controls a způsob, jak systém věci autorizuje.
 
-Zachovat:
+## 3. Current visual anchors
 
-- venkovní kovový rámeček,
-- app-window jako vnitřní pracovní plocha,
-- close/pin/reset/mode controls,
-- transparentní okno bez nativního titlebaru,
-- tmavou patinu,
-- pocit, že každá appka je fyzický kus interního zařízení.
+### Hallway desktop
+
+- liminální kancelářská chodba;
+- tmavé okraje a centrální provozní prostor;
+- levý sloupec artifactů;
+- top rail/taskbar;
+- okna jako fyzické objekty položené na scéně.
 
 ### ClickAudit
 
-Silné prvky:
-
-- flip-card digit look,
-- liquid progress uvnitř číslic,
-- hvězdičky jako absurdní odměna,
-- zdroj kliků jako falešný analytický panel.
-
-Směr:
-
-- počítadlo má působit jako starý mechanický stroj,
-- liquid nemá být moderní gradient, ale pixelová hmota / interní kapalina,
-- hvězdičky mají být trochu příliš slavnostní na banální klikání.
+- mechanické flip digits;
+- liquid jako interní pixelová hmota;
+- přehnaně formální/slavnostní milestone;
+- kompaktní `167×167` content;
+- vysoká pixel clarity.
 
 ### Fidget
 
-Silné prvky:
-
-- velký fyzický spinner,
-- barevná aura pohybu,
-- levé ovládání režimu,
-- přepínače KLIK/RUČNÍ.
-
-Směr:
-
-- fidget má působit hmatově,
-- spinner může být skoro objekt moci,
-- pohybové trail efekty držet v červené/žluté/zelené,
-- nezahlcovat: Fidget je stabilizační, ne cirkus.
+- fyzický spinner;
+- hmotnost, stín a natural settle;
+- klidnější feedback než action module;
+- kompaktní `167×167` content.
 
 ### Bloom
 
-Silné prvky:
+- stones/status sedimenty;
+- green/yellow/red jako stav, ne pouhá good/bad barva;
+- dry procedural clear;
+- board jako pracovní zahrádka.
 
-- květina / kameny / drobné lístky,
-- green/yellow/red status,
-- compliance garden pocit,
-- „Nechte je růst“ jako jemně znepokojivá věta.
+Tyto moduly nejsou povinností všech budoucích oken vypadat stejně velké. Jsou quality baseline pro pixel sharpness a materiálovou soudržnost.
 
-Směr:
+## 4. Curated window-shell contract
 
-- puzzle stones mají vypadat jako drobné pracovní myšlenky / úkolové sedimenty,
-- red stones nemají být jen „bad“, ale spíš infikované / přetížené,
-- burst efekt by měl být spíš suchý procedurální rozpad než ohňostroj.
+Task 024A zavedl curated pack v01.
 
-### Hlas z chodby thumbnails
+Závazné:
 
-Důležitý inspirační směr: liminální chodba, kancelářský prostor, figurína / objekt člověka, strohé označení místnosti, staré světlo, absurdní předmět s klidnou kompozicí.
+- frame se skládá nine-slice;
+- header horizontal three-slice;
+- material surface se tiluje v native resolution;
+- complete shell asset je reference-only;
+- controls jsou fixed-size assets;
+- labels jsou live DOM text;
+- integer logical coordinates;
+- integer scaling;
+- nearest-neighbor pouze při nutném integer scale;
+- žádný fractional transform, smoothing, blur nebo filter;
+- compact content se nesmí zmenšit kvůli chrome.
 
-Použít pro K0rp_OS:
+Window family:
 
-- backgroundy plochy,
-- loading screens,
-- help / knowledge base,
-- interní školení,
-- onboarding,
-- „screenshoty“ oddělení,
-- idle hallway screens.
+```text
+compact module
+portrait audit/document
+portrait folder
+action module
+system modal/toast
+```
 
-## 3. Barevný systém
+Action window používá stejný jazyk, ale větší content-driven geometry.
 
-### Primární tmavé materiály
+## 5. Pixel clarity
 
-- uhlová černá,
-- špinavá grafitová,
-- tmavý kov,
-- starý beton,
-- zažloutlá šedá,
-- vybledlá kancelářská béžová.
+Pixelart nesmí být výmluva pro rozmazání.
+
+Zakázané:
+
+- roztahování malého frame assetu přes celé okno;
+- roztahování 32×32 material texture na velkou plochu;
+- fractional `transform: scale(...)` uvnitř logical canvas;
+- browser filtering;
+- blurred pseudo-CRT na textu;
+- změna content scale jen proto, aby se vešel nový titlebar;
+- baked text v tlačítku, pokud má být dynamický.
+
+Používat:
+
+- native tiles;
+- nine-slice/three-slice;
+- integer layout;
+- explicit content insets;
+- nearest-neighbor při integer 2×;
+- oddělenou live text layer;
+- screenshot comparison na cílovém rozlišení.
+
+## 6. Window families
+
+### Compact module
+
+- ClickAudit a Fidget preserved content `167×167`;
+- pin/unpin, minimize, close;
+- active/inactive header;
+- dark panel tile;
+- žádné zmenšení content.
+
+### Portrait documents
+
+- Audit 00-A, packet audits, mema, certifications;
+- text a fields čitelné;
+- krátký audit bez zbytečného scrollu;
+- dlouhý content scrolluje uvnitř;
+- paper/material není roztažený jeden bitmapový obrázek.
+
+### Portrait folders
+
+- live rows;
+- live scrollbar;
+- document icons;
+- vertically oriented list;
+- status/metadata nejsou bakeované do row assetu.
+
+### Action modules
+
+Priority Containment provisional:
+
+```text
+320×320 logical viewport
+```
+
+Alignment Rally: prototype-determined `320×220` až `320×320`.
+
+Pravidla:
+
+- gameplay readability má přednost před uniformní velikostí;
+- frame/chrome se skládá stejným systémem;
+- HUD má působit jako interní operational surface;
+- žádný moderní esports overlay;
+- detached mode může použít přesné 2×;
+- resize nesmí změnit logical coordinates.
+
+## 7. Barevný systém
+
+### Primární materiály
+
+- uhlová černá;
+- špinavá grafitová;
+- tmavý kov;
+- starý beton;
+- zažloutlá šedá;
+- kancelářská béžová;
+- unavený papír;
+- tmavý plast.
 
 ### Akcenty
 
-- červená: audit, chyba, výstraha, ClickAudit,
-- žlutá: fidget, pozornost, nestabilní pomoc,
-- zelená: Bloom, růst, compliance, falešná bezpečnost,
-- modrá: help, knowledge base, systémová informace,
-- oranžová: cleaning, warning, procedural care,
-- fialová/tmavá duha: vzácné nebo toxicky uklidňující eventy,
-- šedobílá: text, starý štítek, prach.
+- červená: audit, chyba, urgent state;
+- žlutá: pozornost, warning, nestabilní pomoc;
+- zelená: compliance, closure, falešná bezpečnost;
+- modrá: informace, system, Evidence/utility podle surface;
+- oranžová: care/cleaning/procedural maintenance;
+- fialová/tmavá duha: rare, toxicky uklidňující nebo interpretive state;
+- šedobílá: labels, data, prach.
 
-### Rainbow / liquid
+Barva nikdy není jediný nositel state.
 
-Rainbow kapalina může existovat, ale musí být špinavá, pixelová, skoro toxická. Ne čistý pride gradient / moderní candy UI. Má působit jako interní spektrální náplň systému.
+## 8. Action-module visual language
 
-## 4. Typografie
+### Priority Containment
 
-### 4.1 Canonical UI font
+Objekty nejsou fantasy monstra. Jsou procesní artefakty:
 
-Primární font pro texty, popisky, tlačítka, panely, tooltipy, interní hlášky a běžné UI texty je:
+- Quick Ask — malý, rychlý, papírový/plastový;
+- Meeting Invite — zóna/panel blokující prostor;
+- Ownerless Blocker — těžký objekt s prázdným ownership slotem;
+- Duplicate Ticket — rozdělující se dokument;
+- P0 Escalation — urgent state čitelný tvarem/zvukem, ne jen červenou;
+- Executive Priority — objekt měnící pravidla arény.
+
+Processing effects:
+
+- return to sender;
+- routing line;
+- department slot;
+- archive extraction;
+- duplicate merge;
+- follow-up trail.
+
+Nechceme:
+
+- krev;
+- zbraně jako vojenské fantasy;
+- bullet-hell neon;
+- sci-fi HUD nesouvisející s OS;
+- particle cloud zakrývající prostor.
+
+### Alignment Rally
+
+Claim je fyzický dokument/objekt se stavem.
+
+Response zones:
+
+```text
+EVIDENCE / SCOPE / OWNER / DEPENDENCY
+```
+
+Každá zone má:
+
+- live label;
+- distinct shape/pattern;
+- consistent color family;
+- impact cue;
+- čitelnou změnu claim state.
+
+Rally escalation může měnit:
+
+- motion lines;
+- header/status pressure;
+- stakeholder markers;
+- field geometry;
+- pace.
+
+Nesmí skončit jako čistý Pong skin s textem nalepeným nahoře.
+
+## 9. Visual intensity spectrum
+
+### Low intensity
+
+- menší amplituda;
+- pomalé návraty;
+- detail materiálu;
+- více negativního prostoru;
+- tlumená ceremony.
+
+### Medium intensity
+
+- jasný chain/state change;
+- omezené particles;
+- rytmus;
+- čitelné anticipation.
+
+### High intensity
+
+- hierarchy hráč → hrozba → safe space → elite → decorations;
+- density budgets;
+- aggregate effects;
+- wave break/de-escalation;
+- screen shake optional/off;
+- žádný permanentní climax.
+
+### Management
+
+- diagrams, rows, policies a incident cards;
+- stále fyzický/industrial look;
+- ne moderní analytics SaaS;
+- information density odemykaná postupně.
+
+## 10. Typografie
+
+### Current runtime baseline
 
 ```text
 Pixel Operator
@@ -162,170 +313,166 @@ Pixel Operator Mono
 
 Použití:
 
-- `Pixel Operator` = běžné UI texty, popisky, titulky modulů, tlačítka, krátké hlášky.
-- `Pixel Operator Mono` = systémové texty, čísla, event log, debug/status panely, registry, faux terminal, hodnoty resources.
+- Pixel Operator: labels, titles, buttons, short copy;
+- Pixel Operator Mono: numbers, registry, event log, IDs, status.
 
-Tohle není volitelná estetická preference, ale součást identity K0rp_OS. Texty samotné aplikace mají být v tomto fontovém směru, protože současný vizuální jazyk app shellu, dashboardu a pixelového corporate UI na něm stojí.
+Toto je současný runtime standard, ne zákaz budoucího testu jiné čitelné bitmap/pixel treatment.
 
-### 4.2 Logo
+Případná změna OS fontu:
 
-Logo `KØrp` / `K0rp_ware` je už rozhodnuté a nemá se redesignovat v rámci běžného UI polish nebo refactoru.
+- samostatný design/readability task;
+- porovnání na 1× logical canvas;
+- česká diakritika;
+- small body readability;
+- button/title fit;
+- active/inactive contrast;
+- žádná změna jako vedlejší efekt asset tasku.
 
-Pravidlo:
+OCR A Extended nebo jiný font může být candidate pouze po license/readability/pixel-rendering gate. Nemá se bakeovat do assetů jako náhrada live textu.
+
+### Čitelnost
+
+- krátké labels velké a kontrastní;
+- body copy dostatečný line-height;
+- žádný subpixelově malý text;
+- status metadata zkracovat, ne mikroskopicky zmenšovat;
+- high-intensity HUD musí být čitelný během pohybu;
+- readable-text accessibility mode je legitimní.
+
+## 11. Logo
+
+`KØrp` / `K0rp_ware` značka se nemění v běžném UI polish tasku.
 
 ```text
-Logo je asset / značka.
-UI text je Pixel Operator / Pixel Operator Mono.
+Logo = asset.
+UI copy = live text.
 ```
 
-Codex ani jiný implementační agent nemá navrhovat nové logo, měnit tvar `Ø`, nahrazovat značku generickým wordmarkem nebo „vylepšovat“ logo bez explicitního zadání.
-
-### 4.3 Fallbacky
-
-Pokud font není dostupný, UI může dočasně použít fallback pouze jako technickou nouzovku:
-
-```css
-font-family: "Pixel Operator", "Pixel Operator Mono", monospace;
-```
-
-Fallback nesmí změnit vizuální směr produktu. Pro release build má být fontová dostupnost řešená vědomě a testovaná.
-
-### 4.4 Čitelnost
-
-Text musí být čitelný, i když je stylizovaný. Pixelart nesmí být výmluva pro nečitelný bordel.
-
-Doporučení:
-
-- krátké UI labely držet velké a kontrastní,
-- delší memo texty dávat do panelů s dostatečným line-height,
-- čísla a statistiky preferovat v mono variantě,
-- nepoužívat subpixelově malé texty jen proto, že „vypadají retro“.
-
-### 4.5 Font files a licence
-
-Dokumentace definuje fontový směr, ale nepřikládá fontové soubory. Před distribucí desktop/web buildu je nutné ověřit licenční podmínky zvolených fontů a rozhodnout, zda se font bundluje, načítá lokálně, nebo se použije licenčně bezpečná náhrada.
-
-## 5. UI materiály
+## 12. UI materials
 
 Používat:
 
-- kovové rámy,
-- šrouby,
-- rýhy,
-- staré plastové tlačítko,
-- štítky,
-- nalepené papírky,
-- CRT glow,
-- scanlines jemně,
-- vnitřní stíny,
-- patinu,
-- prach,
-- mřížku,
-- mechanické hinges,
-- drobné analogové objekty: fólie, kolíbka, písek, kuličky, hrábě, bubliny, tlačítka.
+- kovové rámy;
+- šrouby;
+- rýhy;
+- starý plast;
+- štítky;
+- papírky;
+- jemné scanlines mimo body text;
+- patinu;
+- prach;
+- mřížku;
+- mechanické hinges;
+- liquid;
+- sand;
+- bubble sheet;
+- ticket paper;
+- relay lights.
 
-Nepoužívat moc:
+Omezit:
 
-- čistý glassmorphism,
-- moderní gradients bez pixelové patiny,
-- neumorphism,
-- příliš neonový cyberpunk,
-- příliš veselý cartoon,
-- sterilní mobile-game UI.
+- clean glassmorphism;
+- moderní gradients bez patiny;
+- neumorphism;
+- neon cyberpunk;
+- sterilní mobile-game UI;
+- generické fantasy particles;
+- stock office iconography bez K0rp treatment.
 
-## 6. Komiks 50. let — jak přesně
+## 13. Komiks 50. let
 
-Neznamená to „superhrdina v plášti“. Znamená to:
+Ne superhrdina v plášti.
 
-- omezené palety,
-- silnější ink linku,
-- halftone pocit,
-- lehce přepálené plakátové pózy,
-- staré firemní instruktážní materiály,
-- optimistické layouty s depresivním obsahem,
-- nápisy jako z manuálu, který tvrdí, že všechno bude v pořádku.
+Používat:
 
-Příklad použití:
+- omezené palety;
+- silnější ink line;
+- halftone feeling;
+- přepálené instruktážní pózy;
+- optimistický layout s depresivním obsahem;
+- fake training posters;
+- procedurální cutaways;
+- objects with labels and arrows.
 
-- školící obrazovka: „SPRÁVNÉ DRŽENÍ KLIKU“;
-- interní plakát: „ÚSMĚV JE VOLITELNÝ, PŘÍTOMNOST POVINNÁ“;
-- help screen: figurína ukazuje na panel a má přes obličej post-it;
-- wellness plakát: „RELAXATION SHEET — schválená forma neodpočinku“.
+Hodí se pro:
 
-## 7. K0rp_OS plocha
+- Knowledge Base;
+- authorization/training;
+- operator instruction;
+- discrepancy explanation;
+- loading/briefing screen;
+- Hlas z chodby adjacent artifacts.
 
-Desktop má působit jako pracovní stanice ve firmě, která interně vyvinula vlastní OS, protože běžné systémy byly příliš lidské.
+## 14. Desktop rules
 
-Základní prvky:
+Canonical desktop:
 
-- tmavý/šedý wallpaper s logem KØrp,
-- levý sloupec ikon,
-- spodní taskbar,
-- employee id,
-- systémový čas,
-- notional work counter,
-- interní status / shift / oddělení,
-- Recycle / Compliance Bin,
-- locked modules jako šedé ikony s razítkem „PENDING“.
+- tmavý hallway wallpaper;
+- left artifact column;
+- top rail;
+- bottom taskbar;
+- employee/status/privacy;
+- windows jako fyzické panely;
+- žádný předem vystavený katalog locked modules.
 
-## 8. Vizuální směr nových modulů
+Locked capabilities se projevují nepřímo:
 
-### Corner Watch
+- chybějícím artifactem;
+- request formem;
+- memo;
+- unavailable procedure;
+- empty folder slot až po kontextovém odhalení.
 
-- černá/tmavá obrazovka,
-- malé KØrp logo nebo module icon odrážející se od hran,
-- screen-saver patina,
-- corner hit jako přehnaně slavnostní mikro-event.
+## 15. Accessibility
 
-### Bublinková Fólie
+- color-independent status shapes/patterns;
+- reduce motion;
+- flash off;
+- screen shake off;
+- sensory intensity;
+- high-frequency reduction;
+- readable text mode;
+- keyboard alternatives;
+- remappable action input;
+- larger snap tolerance;
+- pause;
+- action assist podle modulu;
+- anomaly/random visual toggle.
 
-- červená nebo špinavě růžová fólie jako fake wellness produkt,
-- malé bubliny s mechanickým pixel pop efektem,
-- občasné vadné / extra tvrdé bubliny,
-- obal jako certified corporate relaxation sheet.
+## 16. Asset production rules
 
-### Button Compliance
+Každý runtime asset deklaruje:
 
-- panel tlačítek, páček, kontrolek,
-- jasný tactile push feeling,
-- červené/žluté/šedé stavy,
-- texty jako „CONFIRMATION READY“ / „POTVRZENÍ ČEKÁ NA POTVRZENÍ“.
+- semantic ID;
+- source pack;
+- classification: tile/nine-slice/three-slice/fixed/reference-only;
+- authored dimensions;
+- content/cap insets;
+- allowed states;
+- runtime import path;
+- whether live text overlays it.
 
-### Surface Compliance
+Raw design snapshot není runtime import root.
 
-- špinavý panel, sklo, monitor nebo formulář,
-- myší se stírá vrstva prachu / kafe / toneru,
-- pod špínou se občas objeví štítek, memo, číslo místnosti, nebo drobný nesoulad,
-- cleaning brush/wipe cursor.
+## 17. Review gates
 
-### Shape Compliance
+Visual task není hotový pouze proto, že používá nový asset.
 
-- tvary a díry jako mechanické compliance puzzle,
-- uspokojivé snapnutí,
-- ozubená kola, razítka, šanony, kabely, spirály,
-- po dokončení žádný reálný výstup, jen pocit closure.
+Kontrolovat:
 
-### Attention Runner
+- pixel sharpness;
+- family coherence;
+- titlebar/frame integration;
+- text readability;
+- content size preservation;
+- active/inactive state;
+- hover/pressed state;
+- browser scale;
+- Windows rendering;
+- comparison s accepted ClickAudit/Fidget baseline;
+- action peak-density readability;
+- no stretched materials.
 
-- malý běžec / vozík / clipboard v nekonečné chodbě,
-- překážky: meetingy, kabely, kužely, otevřené tickety,
-- vizuálně spíš mini conveyor než barevný mobilní runner,
-- má fungovat jako druhá půlka obrazovky pro rozbitou pozornost.
+## 18. Důležité pravidlo
 
-### Zenová Zahrádka
-
-- malý písečný box na manažerském stole,
-- hrábě kreslí čáry do pixelového písku,
-- kameny jako drobné tmavé objekty,
-- klidná animace, ale textově podezřelá.
-
-### Newtonova Kolíbka
-
-- kovové kuličky na tmavém stole,
-- hypnotický swing,
-- mechanický pixel highlight,
-- těžítko pro přenos hybnosti, odpovědnosti a nicoty.
-
-## 9. Důležité pravidlo
-
-> Každý modul musí na první pohled vypadat jako hračka, na druhý jako pracovní nástroj a na třetí jako důkaz, že někdo utratil budget za špatné oddělení.
+> K0rp_OS má vypadat jako jeden operační systém, ne jako sada stejných obdélníků. Jednota vzniká z materiálu, typografie, procesu a state language — ne z toho, že každé okno násilím nacpeme do stejné velikosti.
