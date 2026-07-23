@@ -37,6 +37,15 @@ function numericLeaves(value) {
   return Object.values(value).flatMap(numericLeaves)
 }
 
+function readCssBlock(css, selector) {
+  const selectorStart = css.lastIndexOf(`${selector} {`)
+  assert.notEqual(selectorStart, -1, `Missing CSS selector: ${selector}`)
+  const blockStart = css.indexOf('{', selectorStart) + 1
+  const blockEnd = css.indexOf('}', blockStart)
+  assert.notEqual(blockEnd, -1, `Unclosed CSS selector: ${selector}`)
+  return css.slice(blockStart, blockEnd)
+}
+
 test('module window geometry stays aligned with the generated v01 contract', () => {
   const contractMetrics = shellContract.families.module.defaultMetricsPx
 
@@ -67,14 +76,27 @@ test('module shell regions form an exact outer-coordinate partition', () => {
 
   assert.deepEqual(metrics.outerRect, { x: 0, y: 0, width: 183, height: 223 })
   assert.deepEqual(metrics.headerRect, { x: 0, y: 0, width: 183, height: 31 })
-  assert.deepEqual(metrics.headerAssetRect, { x: 0, y: 0, width: 183, height: 27 })
-  assert.deepEqual(metrics.headerViewportRect, { x: 4, y: 0, width: 175, height: 27 })
+  assert.deepEqual(metrics.headerAssetRect, { x: 0, y: 1, width: 183, height: 27 })
+  assert.deepEqual(metrics.headerViewportRect, { x: 4, y: 1, width: 175, height: 27 })
+  assert.deepEqual(metrics.headerBodyRect, { x: 4, y: 1, width: 175, height: 24 })
+  assert.deepEqual(metrics.headerRuleRect, { x: 4, y: 25, width: 175, height: 3 })
+  assert.deepEqual(metrics.headerChromeRect, { x: 0, y: 0, width: 183, height: 31 })
   assert.deepEqual(metrics.contentRect, { x: 8, y: 31, width: 167, height: 167 })
   assert.deepEqual(metrics.footerRect, { x: 8, y: 198, width: 167, height: 17 })
   assert.deepEqual(metrics.bottomFrameRect, { x: 0, y: 215, width: 183, height: 8 })
   assert.deepEqual(metrics.controlsRect, { x: 117, y: 6, width: 58, height: 16 })
+  assert.deepEqual(metrics.frameChromeRects, {
+    topRailRect: { x: 0, y: 0, width: 183, height: 6 },
+    leftRailRect: { x: 0, y: 0, width: 8, height: 223 },
+    rightRailRect: { x: 175, y: 0, width: 8, height: 223 },
+    headerSeamRect: { x: 0, y: 28, width: 183, height: 3 },
+    bottomRailRect: { x: 0, y: 215, width: 183, height: 8 },
+  })
 
   assert.equal(rectBottom(metrics.headerRect), metrics.contentRect.y)
+  assert.equal(rectBottom(metrics.headerBodyRect), metrics.headerRuleRect.y)
+  assert.equal(rectBottom(metrics.headerRuleRect), rectBottom(metrics.headerAssetRect))
+  assert.equal(rectBottom(metrics.headerChromeRect), metrics.contentRect.y)
   assert.equal(rectBottom(metrics.contentRect), metrics.footerRect.y)
   assert.equal(rectBottom(metrics.footerRect), metrics.bottomFrameRect.y)
   assert.equal(rectBottom(metrics.bottomFrameRect), rectBottom(metrics.outerRect))
@@ -90,6 +112,10 @@ test('module shell regions form an exact outer-coordinate partition', () => {
       headerRect: metrics.headerRect,
       headerAssetRect: metrics.headerAssetRect,
       headerViewportRect: metrics.headerViewportRect,
+      headerBodyRect: metrics.headerBodyRect,
+      headerRuleRect: metrics.headerRuleRect,
+      headerChromeRect: metrics.headerChromeRect,
+      frameChromeRects: metrics.frameChromeRects,
       contentRect: metrics.contentRect,
       footerRect: metrics.footerRect,
       bottomFrameRect: metrics.bottomFrameRect,
@@ -162,6 +188,79 @@ test('ClickAudit basin owns the full content floor immediately above the footer'
 test('focused and unfocused module windows select deterministic authored header states', () => {
   assert.equal(getModuleWindowHeaderState(true), 'active')
   assert.equal(getModuleWindowHeaderState(false), 'inactive')
+
+  const metrics = KORP_MODULE_WINDOW_METRICS
+  const active = metrics.header.states.active
+  const inactive = metrics.header.states.inactive
+  const headerAssets = runtimeCatalog.assets.filter(
+    (asset) => asset.id === active.bodyAssetId || asset.id === inactive.bodyAssetId,
+  )
+
+  assert.notEqual(active.bodyAssetId, inactive.bodyAssetId)
+  assert.notEqual(active.ruleAssetId, inactive.ruleAssetId)
+  assert.equal(headerAssets.length, 2)
+  assert.equal(
+    headerAssets.every(
+      (asset) => asset.dimensions.width === 256 && asset.dimensions.height === 27,
+    ),
+    true,
+  )
+  assert.equal(metrics.header.bodyHeight + metrics.header.ruleHeight, metrics.header.height)
+})
+
+test('module shell layer topology keeps authored chrome above surfaces and below controls', () => {
+  const source = readProjectFile('src/components/KorpModuleWindow.jsx')
+  const css = readProjectFile('src/components/KorpModuleWindow.css')
+  const metrics = KORP_MODULE_WINDOW_METRICS
+
+  assert.deepEqual(metrics.layers, {
+    opaqueBacking: 0,
+    shellBackgrounds: 1,
+    liveContent: 2,
+    frameChrome: 3,
+    stateRule: 4,
+    interactiveChrome: 5,
+  })
+  assert.equal(numericLeaves(metrics.layers).every(Number.isInteger), true)
+  assert.equal(metrics.layers.opaqueBacking < metrics.layers.shellBackgrounds, true)
+  assert.equal(metrics.layers.shellBackgrounds < metrics.layers.liveContent, true)
+  assert.equal(metrics.layers.liveContent < metrics.layers.frameChrome, true)
+  assert.equal(metrics.layers.frameChrome < metrics.layers.stateRule, true)
+  assert.equal(metrics.layers.stateRule < metrics.layers.interactiveChrome, true)
+
+  for (const layer of [
+    'header-body',
+    'content-surface',
+    'footer-body',
+    'live-content',
+    'frame-chrome',
+    'header-state-rule',
+    'interactive-header',
+    'footer-controls',
+  ]) {
+    assert.match(source, new RegExp(`data-korp-module-layer="${layer}"`))
+  }
+
+  assert.match(
+    readCssBlock(css, '.korp-module-window-frame'),
+    /z-index:\s*var\(--korp-module-layer-frame-chrome\)/,
+  )
+  assert.match(
+    readCssBlock(css, '.korp-module-window-frame'),
+    /pointer-events:\s*none/,
+  )
+  const frameArtCss = readCssBlock(css, '.korp-module-window-frame-art')
+  assert.match(frameArtCss, /border-image-source:\s*var\(--korp-module-frame\)/)
+  assert.doesNotMatch(frameArtCss, /\bfill\b/)
+  assert.match(
+    readCssBlock(css, '.korp-module-window-header-rule-viewport'),
+    /z-index:\s*var\(--korp-module-layer-state-rule\)/,
+  )
+  assert.doesNotMatch(
+    readCssBlock(css, '.korp-module-window-header-interactions'),
+    /z-index\s*:/,
+  )
+  assert.doesNotMatch(css, /\[data-header-state(?:=|\])/)
 })
 
 test('window-only previews center the odd-sized shell on integer coordinates', () => {
@@ -194,7 +293,10 @@ test('shared module chrome imports only the curated v01 runtime subset', () => {
   assert.match(css, /border-image-source:\s*var\(--korp-module-frame\)/)
   assert.match(css, /border-image-source:\s*var\(--korp-module-header\)/)
   assert.match(css, /\.korp-module-window\s*\{[\s\S]*overflow:\s*hidden/)
-  assert.match(css, /\.korp-module-window-header-viewport\s*\{[\s\S]*overflow:\s*hidden/)
+  assert.match(
+    css,
+    /\.korp-module-window-header-body-viewport,[\s\S]*\.korp-module-window-header-rule-viewport\s*\{[\s\S]*overflow:\s*hidden/,
+  )
   assert.match(css, /\.korp-module-window-controls\s*\{[\s\S]*left:\s*var\(--korp-module-controls-left\)/)
   assert.equal(KORP_MODULE_WINDOW_METRICS.surface.hasOpaqueBacking, true)
   assert.match(KORP_MODULE_WINDOW_METRICS.surface.backingColor, /^#[\da-f]{6}$/i)
@@ -203,13 +305,21 @@ test('shared module chrome imports only the curated v01 runtime subset', () => {
     KORP_MODULE_WINDOW_METRICS.surface.tile,
     { width: 32, height: 32, repeat: true },
   )
-  assert.match(
-    css,
-    /\.korp-module-window-content\s*\{[\s\S]*background-color:\s*var\(--korp-module-backing-color\);[\s\S]*background-repeat:\s*repeat;/,
+  assert.deepEqual(
+    KORP_MODULE_WINDOW_METRICS.surface.textureRegions,
+    { content: 'dark-panel', footer: null },
   )
-  assert.match(
-    css,
-    /\.korp-module-window-footer\s*\{[\s\S]*background-color:\s*var\(--korp-module-footer-backing-color\);[\s\S]*background-repeat:\s*no-repeat,\s*repeat;/,
+  const contentSurfaceCss = readCssBlock(css, '.korp-module-window-content-surface')
+  const footerSurfaceCss = readCssBlock(css, '.korp-module-window-footer-surface')
+  assert.equal((css.match(/var\(--korp-module-surface\)/g) ?? []).length, 1)
+  assert.match(contentSurfaceCss, /background-color:\s*var\(--korp-module-backing-color\)/)
+  assert.match(contentSurfaceCss, /background-image:\s*var\(--korp-module-surface\)/)
+  assert.match(contentSurfaceCss, /background-repeat:\s*repeat/)
+  assert.match(footerSurfaceCss, /background-color:\s*var\(--korp-module-footer-backing-color\)/)
+  assert.match(footerSurfaceCss, /background-repeat:\s*no-repeat/)
+  assert.doesNotMatch(
+    footerSurfaceCss,
+    /var\(--korp-module-surface\)|background-repeat:\s*(?:repeat|[^;]*,\s*repeat)/,
   )
 })
 

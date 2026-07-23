@@ -53,6 +53,14 @@ const controlAssets = Object.freeze({
   }),
 })
 
+const frameChromePieceEntries = Object.freeze([
+  Object.freeze(['top-rail', 'topRailRect']),
+  Object.freeze(['left-rail', 'leftRailRect']),
+  Object.freeze(['right-rail', 'rightRailRect']),
+  Object.freeze(['header-seam', 'headerSeamRect']),
+  Object.freeze(['bottom-rail', 'bottomRailRect']),
+])
+
 const readPreviewPosition = () => getIntegerModuleWindowPreviewPosition({
   width: window.innerWidth,
   height: window.innerHeight,
@@ -113,8 +121,10 @@ export default function KorpModuleWindow({
     ? moduleHeaderActiveUrl
     : moduleHeaderInactiveUrl
   const metrics = KORP_MODULE_WINDOW_METRICS
-  const headerArtLeft = metrics.headerAssetRect.x - metrics.headerViewportRect.x
-  const headerArtTop = metrics.headerAssetRect.y - metrics.headerViewportRect.y
+  const headerBodyArtLeft = metrics.headerAssetRect.x - metrics.headerBodyRect.x
+  const headerBodyArtTop = metrics.headerAssetRect.y - metrics.headerBodyRect.y
+  const headerRuleArtLeft = metrics.headerAssetRect.x - metrics.headerRuleRect.x
+  const headerRuleArtTop = metrics.headerAssetRect.y - metrics.headerRuleRect.y
 
   return (
     <div
@@ -137,12 +147,18 @@ export default function KorpModuleWindow({
         '--korp-module-header-top': `${metrics.headerRect.y}px`,
         '--korp-module-header-width': `${metrics.headerRect.width}px`,
         '--korp-module-header-height': `${metrics.headerRect.height}px`,
-        '--korp-module-header-viewport-left': `${metrics.headerViewportRect.x}px`,
-        '--korp-module-header-viewport-top': `${metrics.headerViewportRect.y}px`,
-        '--korp-module-header-viewport-width': `${metrics.headerViewportRect.width}px`,
-        '--korp-module-header-viewport-height': `${metrics.headerViewportRect.height}px`,
-        '--korp-module-header-art-left': `${headerArtLeft}px`,
-        '--korp-module-header-art-top': `${headerArtTop}px`,
+        '--korp-module-header-body-left': `${metrics.headerBodyRect.x}px`,
+        '--korp-module-header-body-top': `${metrics.headerBodyRect.y}px`,
+        '--korp-module-header-body-width': `${metrics.headerBodyRect.width}px`,
+        '--korp-module-header-body-height': `${metrics.headerBodyRect.height}px`,
+        '--korp-module-header-body-art-left': `${headerBodyArtLeft}px`,
+        '--korp-module-header-body-art-top': `${headerBodyArtTop}px`,
+        '--korp-module-header-rule-left': `${metrics.headerRuleRect.x}px`,
+        '--korp-module-header-rule-top': `${metrics.headerRuleRect.y}px`,
+        '--korp-module-header-rule-width': `${metrics.headerRuleRect.width}px`,
+        '--korp-module-header-rule-height': `${metrics.headerRuleRect.height}px`,
+        '--korp-module-header-rule-art-left': `${headerRuleArtLeft}px`,
+        '--korp-module-header-rule-art-top': `${headerRuleArtTop}px`,
         '--korp-module-header-art-width': `${metrics.headerAssetRect.width}px`,
         '--korp-module-header-art-height': `${metrics.headerAssetRect.height}px`,
         '--korp-module-header-cap-left': metrics.header.capInsets.left,
@@ -170,6 +186,12 @@ export default function KorpModuleWindow({
         '--korp-module-outline-color': metrics.surface.outlineColor,
         '--korp-module-rail-color': metrics.surface.railColor,
         '--korp-module-metal-color': metrics.surface.metalColor,
+        '--korp-module-layer-opaque-backing': metrics.layers.opaqueBacking,
+        '--korp-module-layer-shell-backgrounds': metrics.layers.shellBackgrounds,
+        '--korp-module-layer-live-content': metrics.layers.liveContent,
+        '--korp-module-layer-frame-chrome': metrics.layers.frameChrome,
+        '--korp-module-layer-state-rule': metrics.layers.stateRule,
+        '--korp-module-layer-interactive-chrome': metrics.layers.interactiveChrome,
       }}
     >
       <div
@@ -178,14 +200,68 @@ export default function KorpModuleWindow({
         aria-hidden="true"
       />
       <div
-        className="korp-module-window-frame"
-        data-korp-module-layer="nine-slice-frame"
+        className="korp-module-window-header-body-viewport"
+        data-korp-module-layer="header-body"
+        aria-hidden="true"
+      >
+        <div className="korp-module-window-header-art" />
+      </div>
+      <div
+        className="korp-module-window-content-surface"
+        data-korp-module-layer="content-surface"
         aria-hidden="true"
       />
-      <div className="korp-module-window-header" data-korp-module-region="header">
-        <div className="korp-module-window-header-viewport" aria-hidden="true">
-          <div className="korp-module-window-header-art" />
-        </div>
+      <div
+        className="korp-module-window-footer-surface"
+        data-korp-module-layer="footer-body"
+        aria-hidden="true"
+      />
+      <div
+        className="korp-module-window-content"
+        data-korp-module-region="content"
+        data-korp-module-layer="live-content"
+      >
+        {children}
+      </div>
+      <div
+        className="korp-module-window-frame"
+        data-korp-module-layer="frame-chrome"
+        aria-hidden="true"
+      >
+        {frameChromePieceEntries.map(([pieceName, rectName]) => {
+          const rect = metrics.frameChromeRects[rectName]
+
+          return (
+            <div
+              key={pieceName}
+              className={`korp-module-window-frame-viewport is-${pieceName}`}
+              data-frame-chrome-piece={pieceName}
+              style={{
+                '--korp-module-frame-piece-left': `${rect.x}px`,
+                '--korp-module-frame-piece-top': `${rect.y}px`,
+                '--korp-module-frame-piece-width': `${rect.width}px`,
+                '--korp-module-frame-piece-height': `${rect.height}px`,
+                '--korp-module-frame-art-left': `${-rect.x}px`,
+                '--korp-module-frame-art-top': `${-rect.y}px`,
+              }}
+            >
+              <div className="korp-module-window-frame-art" />
+            </div>
+          )
+        })}
+      </div>
+      <div
+        className="korp-module-window-header-rule-viewport"
+        data-korp-module-layer="header-state-rule"
+        aria-hidden="true"
+      >
+        <div className="korp-module-window-header-art" />
+      </div>
+      <div
+        className="korp-module-window-header-interactions"
+        data-korp-module-region="header"
+        data-korp-module-layer="interactive-header"
+      >
         <button
           type="button"
           className="korp-module-window-drag-region"
@@ -215,14 +291,9 @@ export default function KorpModuleWindow({
         </div>
       </div>
       <div
-        className="korp-module-window-content"
-        data-korp-module-region="content"
-      >
-        {children}
-      </div>
-      <div
-        className="korp-module-window-footer"
+        className="korp-module-window-footer-content"
         data-korp-module-region="footer"
+        data-korp-module-layer="footer-controls"
         data-footer-content={footer == null ? 'empty' : 'present'}
       >
         {footer}

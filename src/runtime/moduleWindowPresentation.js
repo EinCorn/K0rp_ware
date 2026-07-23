@@ -16,11 +16,26 @@ const outer = Object.freeze({
 })
 const header = Object.freeze({
   height: 27,
+  assetTop: 1,
+  bodyHeight: 24,
+  ruleHeight: 3,
   capInsets: Object.freeze({ left: 8, right: 8 }),
   opticalClipInsets: Object.freeze({ left: 4, right: 4 }),
+  states: Object.freeze({
+    active: Object.freeze({
+      bodyAssetId: 'window.header.module.active',
+      ruleAssetId: 'window.header.module.active',
+    }),
+    inactive: Object.freeze({
+      bodyAssetId: 'window.header.module.inactive',
+      ruleAssetId: 'window.header.module.inactive',
+    }),
+  }),
 })
 const frame = Object.freeze({
   capInsets: Object.freeze({ top: 30, right: 8, bottom: 8, left: 8 }),
+  topRailHeight: 6,
+  headerSeamTop: 28,
 })
 const controls = Object.freeze({
   count: 3,
@@ -59,6 +74,63 @@ const controlsRect = freezeRect(
 )
 const titleLeft = contentInsets.left + 9
 const titleControlsGap = 4
+const outerRect = freezeRect(0, 0, outer.width, outer.height)
+const headerRect = freezeRect(0, 0, outer.width, contentRect.y)
+const headerAssetRect = freezeRect(
+  0,
+  header.assetTop,
+  outer.width,
+  header.height,
+)
+const headerViewportRect = freezeRect(
+  header.opticalClipInsets.left,
+  headerAssetRect.y,
+  outer.width - header.opticalClipInsets.left - header.opticalClipInsets.right,
+  headerAssetRect.height,
+)
+const headerBodyRect = freezeRect(
+  headerViewportRect.x,
+  headerAssetRect.y,
+  headerViewportRect.width,
+  header.bodyHeight,
+)
+const headerRuleRect = freezeRect(
+  headerViewportRect.x,
+  headerBodyRect.y + headerBodyRect.height,
+  headerViewportRect.width,
+  header.ruleHeight,
+)
+const headerChromeRect = freezeRect(
+  headerRect.x,
+  headerRect.y,
+  headerRect.width,
+  headerRect.height,
+)
+const frameChromeRects = Object.freeze({
+  topRailRect: freezeRect(0, 0, outer.width, frame.topRailHeight),
+  leftRailRect: freezeRect(0, 0, frame.capInsets.left, outer.height),
+  rightRailRect: freezeRect(
+    outer.width - frame.capInsets.right,
+    0,
+    frame.capInsets.right,
+    outer.height,
+  ),
+  headerSeamRect: freezeRect(
+    0,
+    frame.headerSeamTop,
+    outer.width,
+    contentRect.y - frame.headerSeamTop,
+  ),
+  bottomRailRect: bottomFrameRect,
+})
+const layers = Object.freeze({
+  opaqueBacking: 0,
+  shellBackgrounds: 1,
+  liveContent: 2,
+  frameChrome: 3,
+  stateRule: 4,
+  interactiveChrome: 5,
+})
 
 export const KORP_MODULE_WINDOW_METRICS = Object.freeze({
   contentInsets,
@@ -67,15 +139,15 @@ export const KORP_MODULE_WINDOW_METRICS = Object.freeze({
   header,
   frame,
   controls,
-  outerRect: freezeRect(0, 0, outer.width, outer.height),
-  headerRect: freezeRect(0, 0, outer.width, contentRect.y),
-  headerAssetRect: freezeRect(0, 0, outer.width, header.height),
-  headerViewportRect: freezeRect(
-    header.opticalClipInsets.left,
-    0,
-    outer.width - header.opticalClipInsets.left - header.opticalClipInsets.right,
-    header.height,
-  ),
+  layers,
+  outerRect,
+  headerRect,
+  headerAssetRect,
+  headerViewportRect,
+  headerBodyRect,
+  headerRuleRect,
+  headerChromeRect,
+  frameChromeRects,
   contentRect,
   footerRect,
   bottomFrameRect,
@@ -100,6 +172,10 @@ export const KORP_MODULE_WINDOW_METRICS = Object.freeze({
     railColor: '#36332d',
     metalColor: '#4e473c',
     tile: Object.freeze({ width: 32, height: 32, repeat: true }),
+    textureRegions: Object.freeze({
+      content: 'dark-panel',
+      footer: null,
+    }),
   }),
 })
 
