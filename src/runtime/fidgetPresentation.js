@@ -1,7 +1,17 @@
-import { KORP_MODULE_WINDOW_SIZE } from './moduleWindowPresentation.js'
+import {
+  KORP_MODULE_WINDOW_METRICS,
+  KORP_MODULE_WINDOW_SIZE,
+} from './moduleWindowPresentation.js'
 
 export const FIDGET_WINDOW_ID = 'fidget'
 export const FIDGET_WINDOW_SIZE = KORP_MODULE_WINDOW_SIZE
+const FIDGET_MODULE_FOOTER_CONTROL_SIZE = 16
+export const FIDGET_MODULE_FOOTER_CONTROL_RECT = Object.freeze({
+  x: 0,
+  y: KORP_MODULE_WINDOW_METRICS.footerRect.height - FIDGET_MODULE_FOOTER_CONTROL_SIZE,
+  width: FIDGET_MODULE_FOOTER_CONTROL_SIZE,
+  height: FIDGET_MODULE_FOOTER_CONTROL_SIZE,
+})
 
 export const FIDGET_DEPLOYED_DESKTOP_ITEM = Object.freeze({
   id: 'authorized-module:fidget',

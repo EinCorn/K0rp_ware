@@ -5,6 +5,7 @@ import closeControlUrl from '../../desktop/fidget/src/assets/korp-ui-close.png?u
 import pinControlUrl from '../../desktop/fidget/src/assets/korp-ui-pin.png?url'
 import modeControlUrl from '../../desktop/fidget/src/assets/korp-ui-reset.webp?url'
 import { FIDGET_MODES, getNextFidgetMode } from '../runtime/fidgetMotion'
+import { FIDGET_MODULE_FOOTER_CONTROL_RECT } from '../runtime/fidgetPresentation'
 import FidgetModule from './FidgetModule'
 import KorpModuleWindow from './KorpModuleWindow'
 import './FidgetWindow.css'
@@ -16,6 +17,7 @@ function AssetButton({
   assetUrl,
   onClick,
   pressed,
+  style,
   ...rest
 }) {
   return (
@@ -27,13 +29,13 @@ function AssetButton({
       title={title}
       onPointerDown={(event) => event.stopPropagation()}
       onClick={onClick}
-      style={{ backgroundImage: `url(${assetUrl})` }}
+      style={{ backgroundImage: `url(${assetUrl})`, ...style }}
       {...rest}
     />
   )
 }
 
-function FidgetModeControl({ className, mode, onToggle }) {
+function FidgetModeControl({ className, mode, onToggle, style }) {
   const isClickMode = mode === FIDGET_MODES.click
   const label = isClickMode ? 'Klikací režim otáčení' : 'Ruční režim otáčení'
   const title = isClickMode
@@ -49,6 +51,7 @@ function FidgetModeControl({ className, mode, onToggle }) {
       pressed={isClickMode}
       onClick={onToggle}
       data-clickaudit-profile="fidget-module"
+      style={style}
     />
   )
 }
@@ -84,6 +87,12 @@ export function FidgetEmbeddedWindow({
           className="fidget-module-footer-mode"
           mode={mode}
           onToggle={toggleMode}
+          style={{
+            '--fidget-footer-control-left': `${FIDGET_MODULE_FOOTER_CONTROL_RECT.x}px`,
+            '--fidget-footer-control-top': `${FIDGET_MODULE_FOOTER_CONTROL_RECT.y}px`,
+            '--fidget-footer-control-width': `${FIDGET_MODULE_FOOTER_CONTROL_RECT.width}px`,
+            '--fidget-footer-control-height': `${FIDGET_MODULE_FOOTER_CONTROL_RECT.height}px`,
+          }}
         />
       )}
     >

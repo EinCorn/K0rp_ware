@@ -116,10 +116,10 @@
 
 .fidget-module-footer-mode {
   position: absolute;
-  left: 0;
-  top: 1px;
-  width: 16px;
-  height: 16px;
+  left: var(--fidget-footer-control-left);
+  top: var(--fidget-footer-control-top);
+  width: var(--fidget-footer-control-width);
+  height: var(--fidget-footer-control-height);
   padding: 0;
   border: 0;
   outline: 0;

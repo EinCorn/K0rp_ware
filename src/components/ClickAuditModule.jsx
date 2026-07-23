@@ -3,6 +3,7 @@ import liquidSheetUrl from '../../desktop/click-audit/src/assets/liquid/liquid-w
 import liquidAnimation from '../../desktop/click-audit/src/assets/liquid/liquid-water-36f-clean.json'
 import { CLICK_AUDIT_DIGIT_SHEET_BYTES } from '../../desktop/click-audit/src/digit-sheet-bytes'
 import {
+  CLICK_AUDIT_BASIN_RECT,
   CLICK_AUDIT_PROGRESS_TARGET,
   getClickAuditDeckSize,
   getClickAuditDigits,
@@ -127,7 +128,13 @@ export default function ClickAuditModule({
       className="clickaudit-module"
       aria-label="ClickAudit module"
       data-clickaudit-profile="clickaudit-module"
-      style={{ '--clickaudit-progress': `${(progress * 100).toFixed(2)}%` }}
+      style={{
+        '--clickaudit-progress': `${(progress * 100).toFixed(2)}%`,
+        '--clickaudit-basin-left': `${CLICK_AUDIT_BASIN_RECT.x}px`,
+        '--clickaudit-basin-top': `${CLICK_AUDIT_BASIN_RECT.y}px`,
+        '--clickaudit-basin-width': `${CLICK_AUDIT_BASIN_RECT.width}px`,
+        '--clickaudit-basin-height': `${CLICK_AUDIT_BASIN_RECT.height}px`,
+      }}
     >
       <button
         type="button"
@@ -136,7 +143,11 @@ export default function ClickAuditModule({
         onClick={recordClick}
         disabled={!interactive}
       >
-        <span className="clickaudit-liquid" aria-hidden="true">
+        <span
+          className="clickaudit-liquid clickaudit-basin"
+          data-clickaudit-basin="content-floor"
+          aria-hidden="true"
+        >
           <span className="clickaudit-liquid-fill">
             <span
               className="clickaudit-liquid-sprite"

@@ -2,6 +2,11 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import test from 'node:test'
 import {
+  CLICK_AUDIT_BASIN_FLOOR_Y,
+  CLICK_AUDIT_BASIN_RECT,
+} from '../clickAuditPresentation.js'
+import { FIDGET_MODULE_FOOTER_CONTROL_RECT } from '../fidgetPresentation.js'
+import {
   KORP_MODULE_WINDOW_METRICS,
   KORP_MODULE_WINDOW_SIZE,
   getIntegerModuleWindowPreviewPosition,
@@ -16,6 +21,21 @@ const readProjectFile = (relativePath) => readFileSync(
 const shellContract = JSON.parse(readProjectFile(
   'design/ui-runtime/k0rp-ui-v01/window-shell-contract.json',
 ))
+const runtimeAllowlist = JSON.parse(readProjectFile(
+  'design/ui-runtime/k0rp-ui-v01/runtime-allowlist.json',
+))
+const runtimeCatalog = JSON.parse(readProjectFile(
+  'design/ui-runtime/k0rp-ui-v01/catalog.json',
+))
+
+const rectRight = (rect) => rect.x + rect.width
+const rectBottom = (rect) => rect.y + rect.height
+
+function numericLeaves(value) {
+  if (typeof value === 'number') return [value]
+  if (value === null || typeof value !== 'object') return []
+  return Object.values(value).flatMap(numericLeaves)
+}
 
 test('module window geometry stays aligned with the generated v01 contract', () => {
   const contractMetrics = shellContract.families.module.defaultMetricsPx
@@ -37,12 +57,106 @@ test('module window geometry stays aligned with the generated v01 contract', () 
     KORP_MODULE_WINDOW_METRICS.outer.height,
   )
   assert.equal(
-    Object.values(KORP_MODULE_WINDOW_METRICS)
-      .flatMap((value) => Object.values(value))
-      .filter((value) => typeof value === 'number')
-      .every(Number.isInteger),
+    numericLeaves(KORP_MODULE_WINDOW_METRICS).every(Number.isInteger),
     true,
   )
+})
+
+test('module shell regions form an exact outer-coordinate partition', () => {
+  const metrics = KORP_MODULE_WINDOW_METRICS
+
+  assert.deepEqual(metrics.outerRect, { x: 0, y: 0, width: 183, height: 223 })
+  assert.deepEqual(metrics.headerRect, { x: 0, y: 0, width: 183, height: 31 })
+  assert.deepEqual(metrics.headerAssetRect, { x: 0, y: 0, width: 183, height: 27 })
+  assert.deepEqual(metrics.headerViewportRect, { x: 4, y: 0, width: 175, height: 27 })
+  assert.deepEqual(metrics.contentRect, { x: 8, y: 31, width: 167, height: 167 })
+  assert.deepEqual(metrics.footerRect, { x: 8, y: 198, width: 167, height: 17 })
+  assert.deepEqual(metrics.bottomFrameRect, { x: 0, y: 215, width: 183, height: 8 })
+  assert.deepEqual(metrics.controlsRect, { x: 117, y: 6, width: 58, height: 16 })
+
+  assert.equal(rectBottom(metrics.headerRect), metrics.contentRect.y)
+  assert.equal(rectBottom(metrics.contentRect), metrics.footerRect.y)
+  assert.equal(rectBottom(metrics.footerRect), metrics.bottomFrameRect.y)
+  assert.equal(rectBottom(metrics.bottomFrameRect), rectBottom(metrics.outerRect))
+  assert.equal(metrics.contentRect.x, metrics.contentInsets.left)
+  assert.equal(rectRight(metrics.contentRect), metrics.outer.width - metrics.contentInsets.right)
+  assert.equal(metrics.footerRect.x, metrics.contentRect.x)
+  assert.equal(rectRight(metrics.footerRect), rectRight(metrics.contentRect))
+  assert.equal(metrics.headerRect.x, metrics.outerRect.x)
+  assert.equal(rectRight(metrics.headerRect), rectRight(metrics.outerRect))
+  assert.equal(
+    numericLeaves({
+      outerRect: metrics.outerRect,
+      headerRect: metrics.headerRect,
+      headerAssetRect: metrics.headerAssetRect,
+      headerViewportRect: metrics.headerViewportRect,
+      contentRect: metrics.contentRect,
+      footerRect: metrics.footerRect,
+      bottomFrameRect: metrics.bottomFrameRect,
+      controlsRect: metrics.controlsRect,
+    }).every(Number.isInteger),
+    true,
+  )
+})
+
+test('both pilot modules preserve the authored content slot and local controls stay contained', () => {
+  const metrics = KORP_MODULE_WINDOW_METRICS
+  const preserved = shellContract.families.module.preservedContentInstances
+
+  assert.deepEqual(preserved.clickAudit, {
+    width: metrics.contentRect.width,
+    height: metrics.contentRect.height,
+  })
+  assert.deepEqual(preserved.fidget, {
+    width: metrics.contentRect.width,
+    height: metrics.contentRect.height,
+  })
+
+  const fidgetControlOuterRect = {
+    x: metrics.footerRect.x + FIDGET_MODULE_FOOTER_CONTROL_RECT.x,
+    y: metrics.footerRect.y + FIDGET_MODULE_FOOTER_CONTROL_RECT.y,
+    width: FIDGET_MODULE_FOOTER_CONTROL_RECT.width,
+    height: FIDGET_MODULE_FOOTER_CONTROL_RECT.height,
+  }
+
+  assert.deepEqual(FIDGET_MODULE_FOOTER_CONTROL_RECT, {
+    x: 0,
+    y: 1,
+    width: 16,
+    height: 16,
+  })
+  assert.equal(fidgetControlOuterRect.x >= metrics.footerRect.x, true)
+  assert.equal(fidgetControlOuterRect.y >= metrics.footerRect.y, true)
+  assert.equal(rectRight(fidgetControlOuterRect) <= rectRight(metrics.footerRect), true)
+  assert.equal(rectBottom(fidgetControlOuterRect) <= rectBottom(metrics.footerRect), true)
+})
+
+test('ClickAudit basin owns the full content floor immediately above the footer', () => {
+  const metrics = KORP_MODULE_WINDOW_METRICS
+
+  assert.deepEqual(CLICK_AUDIT_BASIN_RECT, {
+    x: 0,
+    y: 0,
+    width: metrics.contentRect.width,
+    height: metrics.contentRect.height,
+  })
+  assert.equal(CLICK_AUDIT_BASIN_FLOOR_Y, metrics.contentRect.height)
+  assert.equal(
+    metrics.contentRect.y + CLICK_AUDIT_BASIN_FLOOR_Y,
+    metrics.footerRect.y,
+  )
+  assert.equal(
+    metrics.contentRect.y + CLICK_AUDIT_BASIN_FLOOR_Y < metrics.bottomFrameRect.y,
+    true,
+  )
+
+  const source = readProjectFile('src/components/ClickAuditModule.jsx')
+  const css = readProjectFile('src/components/ClickAuditModule.css')
+
+  assert.match(source, /data-clickaudit-basin="content-floor"/)
+  assert.match(source, /--clickaudit-basin-height/)
+  assert.match(css, /\.clickaudit-basin\s*\{[\s\S]*height:\s*var\(--clickaudit-basin-height\)/)
+  assert.match(css, /\.clickaudit-liquid-fill\s*\{[\s\S]*inset:\s*auto 0 0;/)
 })
 
 test('focused and unfocused module windows select deterministic authored header states', () => {
@@ -67,26 +181,51 @@ test('shared module chrome imports only the curated v01 runtime subset', () => {
   const runtimeAssetImports = [...source.matchAll(
     /design\/ui-runtime\/k0rp-ui-v01\/assets\/([^'?]+)[?]url/g,
   )].map((match) => match[1])
+  const catalogById = new Map(runtimeCatalog.assets.map((asset) => [asset.id, asset]))
+  const allowlistedAssetPaths = runtimeAllowlist.groups
+    .flatMap((group) => group.assetIds)
+    .map((assetId) => catalogById.get(assetId).sourcePath.replace(/^assets\//, ''))
 
   assert.equal(runtimeAssetImports.length, 20)
   assert.equal(new Set(runtimeAssetImports).size, 20)
+  assert.deepEqual(runtimeAssetImports.toSorted(), allowlistedAssetPaths.toSorted())
   assert.doesNotMatch(source, /design\/ui-source|k0rp-v3|window\.module\.(?:active|inactive)\.png/)
   assert.doesNotMatch(css, /background-size\s*:\s*100%\s+100%|filter\s*:|blur\(|transform\s*:/)
   assert.match(css, /border-image-source:\s*var\(--korp-module-frame\)/)
   assert.match(css, /border-image-source:\s*var\(--korp-module-header\)/)
-  assert.match(css, /background-repeat:\s*repeat/)
-  assert.match(css, /\.korp-module-window\s*\{[\s\S]*overflow:\s*visible/)
-  assert.match(css, /\.korp-module-window-controls\s*\{[\s\S]*top:\s*6px;[\s\S]*right:\s*0;/)
+  assert.match(css, /\.korp-module-window\s*\{[\s\S]*overflow:\s*hidden/)
+  assert.match(css, /\.korp-module-window-header-viewport\s*\{[\s\S]*overflow:\s*hidden/)
+  assert.match(css, /\.korp-module-window-controls\s*\{[\s\S]*left:\s*var\(--korp-module-controls-left\)/)
+  assert.equal(KORP_MODULE_WINDOW_METRICS.surface.hasOpaqueBacking, true)
+  assert.match(KORP_MODULE_WINDOW_METRICS.surface.backingColor, /^#[\da-f]{6}$/i)
+  assert.match(KORP_MODULE_WINDOW_METRICS.surface.footerBackingColor, /^#[\da-f]{6}$/i)
+  assert.deepEqual(
+    KORP_MODULE_WINDOW_METRICS.surface.tile,
+    { width: 32, height: 32, repeat: true },
+  )
+  assert.match(
+    css,
+    /\.korp-module-window-content\s*\{[\s\S]*background-color:\s*var\(--korp-module-backing-color\);[\s\S]*background-repeat:\s*repeat;/,
+  )
+  assert.match(
+    css,
+    /\.korp-module-window-footer\s*\{[\s\S]*background-color:\s*var\(--korp-module-footer-backing-color\);[\s\S]*background-repeat:\s*no-repeat,\s*repeat;/,
+  )
 })
 
-test('Fidget mode toggle lives in the footer while content and standalone shell stay preserved', () => {
+test('shared footer always exists while Fidget content and standalone shell stay preserved', () => {
+  const sharedSource = readProjectFile('src/components/KorpModuleWindow.jsx')
   const source = readProjectFile('src/components/FidgetWindow.jsx')
   const css = readProjectFile('src/components/FidgetWindow.css')
   const moduleCss = readProjectFile('src/components/FidgetModule.css')
 
+  assert.match(sharedSource, /data-korp-module-region="footer"/)
+  assert.match(sharedSource, /data-footer-content=\{footer == null \? 'empty' : 'present'\}/)
+  assert.doesNotMatch(sharedSource, /\{footer\s*&&/)
   assert.match(source, /footer=\{\([\s\S]*className="fidget-module-footer-mode"/)
+  assert.match(source, /FIDGET_MODULE_FOOTER_CONTROL_RECT/)
   assert.doesNotMatch(source, /fidget-window-control-mode/)
-  assert.match(css, /\.fidget-module-footer-mode\s*\{[\s\S]*width:\s*16px;[\s\S]*height:\s*16px;/)
+  assert.match(css, /\.fidget-module-footer-mode\s*\{[\s\S]*left:\s*var\(--fidget-footer-control-left\)/)
   assert.match(css, /\.fidget-standalone-shell\s*\{[\s\S]*width:\s*230px;[\s\S]*height:\s*230px;/)
   assert.match(moduleCss, /\.fidget-module-spinner\s*\{[\s\S]*width:\s*132px;[\s\S]*height:\s*132px;/)
 })

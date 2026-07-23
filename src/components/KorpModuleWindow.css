@@ -15,37 +15,101 @@
   position: relative;
   width: var(--korp-module-outer-width);
   height: var(--korp-module-outer-height);
-  overflow: visible;
-  border-style: solid;
-  border-width: 30px 8px 8px;
-  border-image-source: var(--korp-module-frame);
-  border-image-slice: 30 8 8 8 fill;
-  border-image-width: 30px 8px 8px 8px;
-  border-image-repeat: stretch;
-  background-image: var(--korp-module-surface);
-  background-position: 0 0;
-  background-repeat: repeat;
+  overflow: hidden;
+  background: transparent;
   image-rendering: crisp-edges;
   image-rendering: pixelated;
   isolation: isolate;
 }
 
-.korp-module-window-header {
+.korp-module-window-backing,
+.korp-module-window-frame {
   position: absolute;
-  z-index: 3;
-  left: -8px;
-  top: -30px;
+  inset: 0;
   width: var(--korp-module-outer-width);
-  height: 27px;
-  overflow: hidden;
+  height: var(--korp-module-outer-height);
+  pointer-events: none;
+}
+
+.korp-module-window-backing {
+  z-index: 0;
+  background-color: var(--korp-module-backing-color);
+}
+
+.korp-module-window-frame {
+  z-index: 1;
   border-style: solid;
-  border-width: 0 8px;
-  border-image-source: var(--korp-module-header);
-  border-image-slice: 0 8 0 8 fill;
-  border-image-width: 0 8px;
+  border-width:
+    calc(var(--korp-module-frame-top) * 1px)
+    calc(var(--korp-module-frame-right) * 1px)
+    calc(var(--korp-module-frame-bottom) * 1px)
+    calc(var(--korp-module-frame-left) * 1px);
+  border-image-source: var(--korp-module-frame);
+  border-image-slice:
+    var(--korp-module-frame-top)
+    var(--korp-module-frame-right)
+    var(--korp-module-frame-bottom)
+    var(--korp-module-frame-left)
+    fill;
+  border-image-width:
+    calc(var(--korp-module-frame-top) * 1px)
+    calc(var(--korp-module-frame-right) * 1px)
+    calc(var(--korp-module-frame-bottom) * 1px)
+    calc(var(--korp-module-frame-left) * 1px);
   border-image-repeat: stretch;
   image-rendering: crisp-edges;
   image-rendering: pixelated;
+}
+
+.korp-module-window-header {
+  position: absolute;
+  z-index: 4;
+  left: var(--korp-module-header-left);
+  top: var(--korp-module-header-top);
+  width: var(--korp-module-header-width);
+  height: var(--korp-module-header-height);
+  overflow: hidden;
+}
+
+.korp-module-window-header-viewport {
+  position: absolute;
+  z-index: 0;
+  left: var(--korp-module-header-viewport-left);
+  top: var(--korp-module-header-viewport-top);
+  width: var(--korp-module-header-viewport-width);
+  height: var(--korp-module-header-viewport-height);
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.korp-module-window-header-art {
+  position: absolute;
+  left: var(--korp-module-header-art-left);
+  top: var(--korp-module-header-art-top);
+  width: var(--korp-module-header-art-width);
+  height: var(--korp-module-header-art-height);
+  border-style: solid;
+  border-width:
+    0
+    calc(var(--korp-module-header-cap-right) * 1px)
+    0
+    calc(var(--korp-module-header-cap-left) * 1px);
+  border-image-source: var(--korp-module-header);
+  border-image-slice:
+    0
+    var(--korp-module-header-cap-right)
+    0
+    var(--korp-module-header-cap-left)
+    fill;
+  border-image-width:
+    0
+    calc(var(--korp-module-header-cap-right) * 1px)
+    0
+    calc(var(--korp-module-header-cap-left) * 1px);
+  border-image-repeat: stretch;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  pointer-events: none;
 }
 
 .korp-module-window-drag-region {
@@ -69,9 +133,10 @@
 .korp-module-window-title {
   position: absolute;
   z-index: 1;
-  left: 9px;
-  right: 62px;
-  top: 6px;
+  left: var(--korp-module-title-left);
+  top: var(--korp-module-title-top);
+  width: var(--korp-module-title-width);
+  height: var(--korp-module-title-height);
   overflow: hidden;
   color: #e7e2c9;
   font: 8px/16px var(--os-mono, var(--korp-font-mono, monospace));
@@ -85,18 +150,18 @@
 .korp-module-window-controls {
   position: absolute;
   z-index: 2;
-  top: 6px;
-  right: 0;
+  left: var(--korp-module-controls-left);
+  top: var(--korp-module-controls-top);
   display: flex;
-  gap: 2px;
-  width: 58px;
-  height: 16px;
+  gap: var(--korp-module-control-gap);
+  width: var(--korp-module-controls-width);
+  height: var(--korp-module-controls-height);
 }
 
 .korp-module-window-control {
-  flex: 0 0 18px;
-  width: 18px;
-  height: 16px;
+  flex: 0 0 var(--korp-module-control-width);
+  width: var(--korp-module-control-width);
+  height: var(--korp-module-controls-height);
   padding: 0;
   border: 0;
   outline: 0;
@@ -125,12 +190,13 @@
 
 .korp-module-window-content {
   position: absolute;
-  z-index: 2;
-  left: 0;
-  top: 1px;
+  z-index: 3;
+  left: var(--korp-module-content-left);
+  top: var(--korp-module-content-top);
   width: var(--korp-module-content-width);
   height: var(--korp-module-content-height);
   overflow: hidden;
+  background-color: var(--korp-module-backing-color);
   background-image: var(--korp-module-surface);
   background-position: 0 0;
   background-repeat: repeat;
@@ -138,10 +204,30 @@
 
 .korp-module-window-footer {
   position: absolute;
-  z-index: 2;
-  left: 0;
-  top: calc(1px + var(--korp-module-content-height));
-  width: var(--korp-module-content-width);
+  z-index: 3;
+  left: var(--korp-module-footer-left);
+  top: var(--korp-module-footer-top);
+  width: var(--korp-module-footer-width);
   height: var(--korp-module-footer-height);
   overflow: hidden;
+  background-color: var(--korp-module-footer-backing-color);
+  background-image:
+    linear-gradient(
+      to bottom,
+      var(--korp-module-outline-color) 0,
+      var(--korp-module-outline-color) 1px,
+      var(--korp-module-rail-color) 1px,
+      var(--korp-module-rail-color) 2px,
+      var(--korp-module-outline-color) 2px,
+      var(--korp-module-outline-color) 3px,
+      var(--korp-module-metal-color) 3px,
+      var(--korp-module-metal-color) 4px,
+      transparent 4px,
+      transparent 100%
+    ),
+    var(--korp-module-surface);
+  background-position: 0 0, 0 0;
+  background-repeat: no-repeat, repeat;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
 }
