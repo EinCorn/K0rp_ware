@@ -478,6 +478,19 @@ Stávající `events.json` stále obsahuje staré přímé yieldy pro `fidget.se
 
 Hráč musí vnímat, že ruční audity začínají být otravné, ale ještě zvládnutelné. Pokud backlog není cítit, delegace nemá co řešit.
 
+## Window-family chrome contract (Task 024B)
+
+Status: **ACTIVE / PILOT CONTRACT** — Task 024B freezes the family boundary; it does not implement future Audit/Document or Folder shells.
+
+```text
+shared window manager behavior
+├─ module family: 3 controls (pin/minimize/close), compact shell, 167×167 content, structural footer, optional local footer control
+├─ audit/document family: 2 controls (minimize/close), portrait geometry, its own family shell
+└─ folder family: 2 controls (minimize/close), portrait list geometry, its own family shell
+```
+
+Each family may own a distinct authored shell and geometry. Every instance within one family must use the same chrome component and metrics, and app content may not modify the outer family chrome.
+
 ## Task 024 — First-cycle data rebalance and migration
 
 ### Cíl

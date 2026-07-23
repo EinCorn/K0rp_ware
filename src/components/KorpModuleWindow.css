@@ -33,45 +33,15 @@
   background-color: var(--korp-module-interior-backing-color);
 }
 
-.korp-module-window-header-rule-viewport {
+.korp-module-window-state-strip {
   position: absolute;
-  overflow: hidden;
   pointer-events: none;
-  z-index: var(--korp-module-layer-state-rule);
-  left: var(--korp-module-header-rule-left);
-  top: var(--korp-module-header-rule-top);
-  width: var(--korp-module-header-rule-width);
-  height: var(--korp-module-header-rule-height);
-}
-
-.korp-module-window-header-rule-art {
-  position: absolute;
-  left: var(--korp-module-header-rule-art-left);
-  top: var(--korp-module-header-rule-art-top);
-  width: var(--korp-module-header-rule-art-width);
-  height: var(--korp-module-header-rule-art-height);
-  border-style: solid;
-  border-width:
-    0
-    calc(var(--korp-module-header-rule-cap-right) * 1px)
-    0
-    calc(var(--korp-module-header-rule-cap-left) * 1px);
-  border-image-source: var(--korp-module-state-rule);
-  border-image-slice:
-    0
-    var(--korp-module-header-rule-cap-right)
-    0
-    var(--korp-module-header-rule-cap-left)
-    fill;
-  border-image-width:
-    0
-    calc(var(--korp-module-header-rule-cap-right) * 1px)
-    0
-    calc(var(--korp-module-header-rule-cap-left) * 1px);
-  border-image-repeat: stretch;
-  image-rendering: crisp-edges;
-  image-rendering: pixelated;
-  pointer-events: none;
+  z-index: var(--korp-module-layer-state-strip);
+  left: var(--korp-module-state-strip-left);
+  top: var(--korp-module-state-strip-top);
+  width: var(--korp-module-state-strip-width);
+  height: var(--korp-module-state-strip-height);
+  background-color: var(--korp-module-state-strip-fill);
 }
 
 .korp-module-window-frame {
@@ -80,16 +50,6 @@
   inset: 0;
   width: var(--korp-module-outer-width);
   height: var(--korp-module-outer-height);
-  pointer-events: none;
-}
-
-.korp-module-window-frame-viewport {
-  position: absolute;
-  left: var(--korp-module-frame-viewport-left);
-  top: var(--korp-module-frame-viewport-top);
-  width: var(--korp-module-frame-viewport-width);
-  height: var(--korp-module-frame-viewport-height);
-  overflow: hidden;
   pointer-events: none;
 }
 
@@ -105,8 +65,7 @@
 
 .korp-module-window-frame-art {
   position: absolute;
-  left: var(--korp-module-frame-art-left);
-  top: var(--korp-module-frame-art-top);
+  inset: 0;
   width: var(--korp-module-outer-width);
   height: var(--korp-module-outer-height);
   border-style: solid;

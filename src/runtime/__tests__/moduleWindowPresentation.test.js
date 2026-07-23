@@ -92,27 +92,21 @@ test('module shell regions form an exact outer-coordinate partition', () => {
 
   assert.deepEqual(metrics.outerRect, { x: 0, y: 0, width: 183, height: 223 })
   assert.deepEqual(metrics.headerRect, { x: 0, y: 0, width: 183, height: 31 })
-  assert.deepEqual(metrics.headerRuleAssetRect, { x: 0, y: 1, width: 183, height: 27 })
-  assert.deepEqual(metrics.headerRuleRect, { x: 4, y: 25, width: 175, height: 3 })
+  assert.deepEqual(metrics.stateStripRect, { x: 4, y: 25, width: 175, height: 3 })
   assert.deepEqual(metrics.headerSeamRect, { x: 8, y: 30, width: 167, height: 1 })
   assert.deepEqual(metrics.contentRect, { x: 8, y: 31, width: 167, height: 167 })
   assert.deepEqual(metrics.footerRect, { x: 8, y: 198, width: 167, height: 17 })
   assert.deepEqual(metrics.footerSafeRect, { x: 8, y: 199, width: 167, height: 16 })
-  assert.deepEqual(metrics.footerControlRect, { x: 84, y: 199, width: 16, height: 16 })
+  assert.deepEqual(metrics.footerControlRect, { x: 12, y: 199, width: 16, height: 16 })
   assert.deepEqual(metrics.bottomFrameRect, { x: 0, y: 215, width: 183, height: 8 })
   assert.deepEqual(metrics.controlsRect, { x: 117, y: 6, width: 58, height: 16 })
   assert.deepEqual(metrics.frameOpticalCropInsets, {
-    top: 2,
-    right: 3,
-    bottom: 3,
-    left: 3,
+    top: 0,
+    right: 0,
+    bottom: 0,
+    left: 0,
   })
-  assert.deepEqual(metrics.frameViewportRect, {
-    x: 3,
-    y: 2,
-    width: 177,
-    height: 218,
-  })
+  assert.deepEqual(metrics.frameViewportRect, metrics.outerRect)
   assert.deepEqual(metrics.interiorBackingRect, {
     x: 8,
     y: 6,
@@ -120,14 +114,14 @@ test('module shell regions form an exact outer-coordinate partition', () => {
     height: 209,
   })
   assert.deepEqual(metrics.frameRailRects, {
-    topRailRect: { x: 3, y: 2, width: 177, height: 4 },
-    leftRailRect: { x: 3, y: 2, width: 5, height: 218 },
-    rightRailRect: { x: 175, y: 2, width: 5, height: 218 },
-    bottomRailRect: { x: 3, y: 215, width: 177, height: 5 },
+    topRailRect: { x: 0, y: 0, width: 183, height: 6 },
+    leftRailRect: { x: 0, y: 0, width: 8, height: 223 },
+    rightRailRect: { x: 175, y: 0, width: 8, height: 223 },
+    bottomRailRect: { x: 0, y: 215, width: 183, height: 8 },
   })
 
   assert.equal(rectBottom(metrics.headerRect), metrics.contentRect.y)
-  assert.equal(rectBottom(metrics.headerRuleRect), 28)
+  assert.equal(rectBottom(metrics.stateStripRect), 28)
   assert.equal(rectBottom(metrics.headerSeamRect), metrics.contentRect.y)
   assert.equal(rectBottom(metrics.contentRect), metrics.footerRect.y)
   assert.equal(rectBottom(metrics.footerRect), metrics.bottomFrameRect.y)
@@ -138,21 +132,10 @@ test('module shell regions form an exact outer-coordinate partition', () => {
   assert.equal(rectRight(metrics.footerRect), rectRight(metrics.contentRect))
   assert.equal(metrics.headerRect.x, metrics.outerRect.x)
   assert.equal(rectRight(metrics.headerRect), rectRight(metrics.outerRect))
+  assert.deepEqual(metrics.frameViewportRect, metrics.outerRect)
   assert.equal(
-    metrics.frameViewportRect.x,
-    metrics.outerRect.x + metrics.frameOpticalCropInsets.left,
-  )
-  assert.equal(
-    metrics.frameViewportRect.y,
-    metrics.outerRect.y + metrics.frameOpticalCropInsets.top,
-  )
-  assert.equal(
-    rectRight(metrics.frameViewportRect),
-    rectRight(metrics.outerRect) - metrics.frameOpticalCropInsets.right,
-  )
-  assert.equal(
-    rectBottom(metrics.frameViewportRect),
-    rectBottom(metrics.outerRect) - metrics.frameOpticalCropInsets.bottom,
+    Object.values(metrics.frameOpticalCropInsets).every((inset) => inset === 0),
+    true,
   )
   assert.equal(rectContains(metrics.outerRect, metrics.frameViewportRect), true)
   assert.equal(rectContains(metrics.outerRect, metrics.interiorBackingRect), true)
@@ -178,8 +161,7 @@ test('module shell regions form an exact outer-coordinate partition', () => {
     numericLeaves({
       outerRect: metrics.outerRect,
       headerRect: metrics.headerRect,
-      headerRuleAssetRect: metrics.headerRuleAssetRect,
-      headerRuleRect: metrics.headerRuleRect,
+      stateStripRect: metrics.stateStripRect,
       headerSeamRect: metrics.headerSeamRect,
       frameOpticalCropInsets: metrics.frameOpticalCropInsets,
       frameViewportRect: metrics.frameViewportRect,
@@ -217,13 +199,21 @@ test('both pilot modules preserve the authored content slot and local controls s
   }
 
   assert.deepEqual(FIDGET_MODULE_FOOTER_CONTROL_RECT, {
-    x: 76,
+    x: 4,
     y: 1,
     width: 16,
     height: 16,
   })
   assert.deepEqual(fidgetControlOuterRect, metrics.footerControlRect)
   assert.equal(rectContains(metrics.footerSafeRect, fidgetControlOuterRect), true)
+  assert.equal(fidgetControlOuterRect.x - rectRight(metrics.frameRailRects.leftRailRect), 4)
+  assert.equal(fidgetControlOuterRect.x - metrics.footerSafeRect.x, 4)
+  assert.notEqual(
+    fidgetControlOuterRect.x,
+    metrics.footerSafeRect.x
+      + Math.round((metrics.footerSafeRect.width - fidgetControlOuterRect.width) / 2),
+  )
+  assert.equal(fidgetControlOuterRect.y > metrics.footerRect.y, true)
   assert.equal(rectsIntersect(fidgetControlOuterRect, metrics.contentRect), false)
   assert.equal(
     rectsIntersect(fidgetControlOuterRect, metrics.frameRailRects.leftRailRect),
@@ -264,33 +254,30 @@ test('ClickAudit basin owns the full content floor immediately above the footer'
   assert.match(css, /\.clickaudit-liquid-fill\s*\{[\s\S]*inset:\s*auto 0 0;/)
 })
 
-test('focused and unfocused module windows change only the narrow authored state rule', () => {
+test('focused and unfocused module windows share one exact authored state-strip rect', () => {
   assert.equal(getModuleWindowHeaderState(true), 'active')
   assert.equal(getModuleWindowHeaderState(false), 'inactive')
 
   const metrics = KORP_MODULE_WINDOW_METRICS
   const active = metrics.header.states.active
   const inactive = metrics.header.states.inactive
-  const headerAssets = runtimeCatalog.assets.filter(
-    (asset) => asset.id === active.ruleAssetId || asset.id === inactive.ruleAssetId,
-  )
 
-  assert.notEqual(active.ruleAssetId, inactive.ruleAssetId)
+  assert.deepEqual(active, { mode: 'authored' })
+  assert.deepEqual(inactive, {
+    mode: 'replacement',
+    fillColor: '#4e473c',
+  })
+  assert.equal('fillColor' in active, false)
+  assert.match(inactive.fillColor, /^#[\da-f]{6}$/i)
   assert.equal('bodyAssetId' in active, false)
   assert.equal('bodyAssetId' in inactive, false)
   assert.deepEqual(numericLeaves(active), [])
   assert.deepEqual(numericLeaves(inactive), [])
-  assert.equal(headerAssets.length, 2)
-  assert.equal(
-    headerAssets.every(
-      (asset) => asset.dimensions.width === 256 && asset.dimensions.height === 27,
-    ),
-    true,
-  )
-  assert.equal(metrics.header.rule.height >= 1 && metrics.header.rule.height <= 3, true)
-  assert.deepEqual(metrics.headerRuleRect, { x: 4, y: 25, width: 175, height: 3 })
-  assert.equal(rectContains(metrics.headerRect, metrics.headerRuleRect), true)
-  assert.equal(rectsIntersect(metrics.headerRuleRect, metrics.controlsRect), false)
+  assert.deepEqual(metrics.stateStripRect, { x: 4, y: 25, width: 175, height: 3 })
+  assert.equal(rectContains(metrics.headerRect, metrics.stateStripRect), true)
+  assert.equal(rectsIntersect(metrics.stateStripRect, metrics.controlsRect), false)
+  assert.equal(metrics.stateStripRect.x, 4)
+  assert.equal(rectRight(metrics.stateStripRect), metrics.outerRect.width - 4)
 })
 
 test('module shell layer topology keeps authored chrome above surfaces and below controls', () => {
@@ -303,15 +290,15 @@ test('module shell layer topology keeps authored chrome above surfaces and below
     shellBackgrounds: 1,
     liveContent: 2,
     frameChrome: 3,
-    stateRule: 4,
+    stateStrip: 4,
     interactiveChrome: 5,
   })
   assert.equal(numericLeaves(metrics.layers).every(Number.isInteger), true)
   assert.equal(metrics.layers.opaqueBacking < metrics.layers.shellBackgrounds, true)
   assert.equal(metrics.layers.shellBackgrounds < metrics.layers.liveContent, true)
   assert.equal(metrics.layers.liveContent < metrics.layers.frameChrome, true)
-  assert.equal(metrics.layers.frameChrome < metrics.layers.stateRule, true)
-  assert.equal(metrics.layers.stateRule < metrics.layers.interactiveChrome, true)
+  assert.equal(metrics.layers.frameChrome < metrics.layers.stateStrip, true)
+  assert.equal(metrics.layers.stateStrip < metrics.layers.interactiveChrome, true)
 
   for (const layer of [
     'opaque-backing',
@@ -319,7 +306,7 @@ test('module shell layer topology keeps authored chrome above surfaces and below
     'footer-body',
     'live-content',
     'frame-chrome',
-    'header-state-rule',
+    'state-strip',
     'interactive-header',
     'footer-controls',
   ]) {
@@ -327,10 +314,7 @@ test('module shell layer topology keeps authored chrome above surfaces and below
   }
   assert.doesNotMatch(source, /header-body|headerBody|bodyAssetId/)
   assert.doesNotMatch(source, /frameChromePieceEntries|data-frame-chrome-piece/)
-  assert.equal(
-    (source.match(/className="korp-module-window-frame-viewport"/g) ?? []).length,
-    1,
-  )
+  assert.doesNotMatch(source, /korp-module-window-frame-viewport/)
   assert.match(source, /<span className="korp-module-window-title">\{title\}<\/span>/)
   assert.match(source, /kind=\{isPinned \? 'unpin' : 'pin'\}/)
   assert.match(source, /kind="minimize"/)
@@ -350,27 +334,27 @@ test('module shell layer topology keeps authored chrome above surfaces and below
   assert.match(backingCss, /width:\s*var\(--korp-module-backing-width\)/)
   assert.match(backingCss, /height:\s*var\(--korp-module-backing-height\)/)
   assert.doesNotMatch(backingCss, /\binset\s*:\s*0/)
-  const frameViewportCss = readCssBlock(css, '.korp-module-window-frame-viewport')
-  assert.match(frameViewportCss, /left:\s*var\(--korp-module-frame-viewport-left\)/)
-  assert.match(frameViewportCss, /top:\s*var\(--korp-module-frame-viewport-top\)/)
-  assert.match(frameViewportCss, /overflow:\s*hidden/)
-  assert.match(frameViewportCss, /pointer-events:\s*none/)
   const frameArtCss = readCssBlock(css, '.korp-module-window-frame-art')
   assert.match(frameArtCss, /border-image-source:\s*var\(--korp-module-frame\)/)
   assert.doesNotMatch(frameArtCss, /\bfill\b/)
-  assert.match(frameArtCss, /left:\s*var\(--korp-module-frame-art-left\)/)
-  assert.match(frameArtCss, /top:\s*var\(--korp-module-frame-art-top\)/)
+  assert.match(frameArtCss, /inset:\s*0/)
+  assert.doesNotMatch(frameArtCss, /\bleft\s*:|\btop\s*:/)
   const seamCss = readCssBlock(css, '.korp-module-window-header-seam')
   assert.match(seamCss, /background-color:\s*var\(--korp-module-shell-outline-color\)/)
   assert.match(
-    readCssBlock(css, '.korp-module-window-header-rule-viewport'),
-    /z-index:\s*var\(--korp-module-layer-state-rule\)/,
+    readCssBlock(css, '.korp-module-window-state-strip'),
+    /z-index:\s*var\(--korp-module-layer-state-strip\)/,
+  )
+  assert.match(
+    readCssBlock(css, '.korp-module-window-state-strip'),
+    /background-color:\s*var\(--korp-module-state-strip-fill\)/,
   )
   assert.doesNotMatch(
     readCssBlock(css, '.korp-module-window-header-interactions'),
     /z-index\s*:/,
   )
   assert.doesNotMatch(css, /\[data-header-state(?:=|\])[^{}]*\{[^}]*(?:left|top|width|height)\s*:/)
+  assert.doesNotMatch(css, /mask(?:-image)?\s*:|clip-path\s*:|transform\s*:/)
 })
 
 test('window-only previews center the odd-sized shell on integer coordinates', () => {
@@ -403,15 +387,17 @@ test('shared module chrome imports only the curated v01 runtime subset', () => {
 
   assert.equal(new Set(runtimeAssetImports).size, runtimeAssetImports.length)
   assert.equal(runtimeAssetImports.every((assetPath) => allowlistedAssetPathSet.has(assetPath)), true)
-  assert.match(source, /moduleStateRuleActiveUrl/)
-  assert.match(source, /moduleStateRuleInactiveUrl/)
+  assert.doesNotMatch(source, /moduleStateRule|header\.module\.(?:active|inactive)/)
   assert.doesNotMatch(source, /moduleHeader|header-body|headerBody|bodyAssetId/)
   assert.doesNotMatch(source, /design\/ui-source|k0rp-v3|window\.module\.(?:active|inactive)\.png/)
-  assert.doesNotMatch(css, /background-size\s*:\s*100%\s+100%|filter\s*:|blur\(|transform\s*:/)
+  assert.doesNotMatch(
+    css,
+    /background-size\s*:\s*100%\s+100%|filter\s*:|blur\(|transform\s*:|clip-path\s*:|mask(?:-image)?\s*:/,
+  )
   assert.match(css, /border-image-source:\s*var\(--korp-module-frame\)/)
-  assert.match(css, /border-image-source:\s*var\(--korp-module-state-rule\)/)
+  assert.equal((css.match(/border-image-source:/g) ?? []).length, 1)
   assert.match(css, /\.korp-module-window\s*\{[\s\S]*overflow:\s*hidden/)
-  assert.match(css, /\.korp-module-window-header-rule-viewport\s*\{[\s\S]*overflow:\s*hidden/)
+  assert.doesNotMatch(css, /korp-module-window-frame-viewport/)
   assert.match(css, /\.korp-module-window-controls\s*\{[\s\S]*left:\s*var\(--korp-module-controls-left\)/)
   assert.equal(frameAsset.sourcePath, 'assets/windows/nine_slice/window.module.nine-slice.png')
   assert.equal(
@@ -461,6 +447,18 @@ test('shared footer always exists while Fidget content and standalone shell stay
   )
   const footerControlCss = readCssBlock(css, '.fidget-module-footer-mode')
 
+  assert.equal(
+    (clickAuditEmbeddedSource.match(/<KorpModuleWindow\b/g) ?? []).length,
+    1,
+  )
+  assert.equal(
+    (fidgetEmbeddedSource.match(/<KorpModuleWindow\b/g) ?? []).length,
+    1,
+  )
+  assert.doesNotMatch(
+    `${clickAuditEmbeddedSource}\n${fidgetEmbeddedSource}`,
+    /moduleFrame|header\.module|frameOpticalCrop|frameRail|bottomRail/,
+  )
   assert.match(sharedSource, /data-korp-module-region="footer"/)
   assert.match(sharedSource, /data-footer-content=\{footer == null \? 'empty' : 'present'\}/)
   assert.doesNotMatch(sharedSource, /\{footer\s*&&/)
@@ -482,4 +480,46 @@ test('shared footer always exists while Fidget content and standalone shell stay
   )
   assert.match(css, /\.fidget-standalone-shell\s*\{[\s\S]*width:\s*230px;[\s\S]*height:\s*230px;/)
   assert.match(moduleCss, /\.fidget-module-spinner\s*\{[\s\S]*width:\s*132px;[\s\S]*height:\s*132px;/)
+})
+
+test('ClickAudit and Fidget consume one module-family chrome contract', () => {
+  const clickAuditPresentation = readProjectFile('src/runtime/clickAuditPresentation.js')
+  const fidgetPresentation = readProjectFile('src/runtime/fidgetPresentation.js')
+  const clickAuditWindow = readProjectFile('src/components/ClickAuditWindow.jsx')
+  const fidgetWindow = readProjectFile('src/components/FidgetWindow.jsx')
+  const sharedWindow = readProjectFile('src/components/KorpModuleWindow.jsx')
+  const windowFamilyDoc = readProjectFile('docs/k0rp-os/08-codex-tasks.md')
+  const metrics = KORP_MODULE_WINDOW_METRICS
+
+  assert.match(clickAuditPresentation, /KORP_MODULE_WINDOW_METRICS/)
+  assert.match(fidgetPresentation, /KORP_MODULE_WINDOW_METRICS/)
+  assert.match(fidgetPresentation, /KORP_MODULE_WINDOW_SIZE/)
+  assert.match(clickAuditWindow, /import KorpModuleWindow from '\.\/KorpModuleWindow'/)
+  assert.match(fidgetWindow, /import KorpModuleWindow from '\.\/KorpModuleWindow'/)
+  assert.match(sharedWindow, /data-korp-module-window="v01"/)
+  assert.match(sharedWindow, /data-korp-module-layout="compact"/)
+  assert.match(windowFamilyDoc, /shared window manager behavior/)
+  assert.match(windowFamilyDoc, /module family: 3 controls \(pin\/minimize\/close\)/)
+  assert.match(windowFamilyDoc, /audit\/document family: 2 controls \(minimize\/close\)/)
+  assert.match(windowFamilyDoc, /folder family: 2 controls \(minimize\/close\)/)
+  assert.match(windowFamilyDoc, /app content may not modify the outer family chrome/)
+
+  const sharedGeometry = {
+    outerRect: metrics.outerRect,
+    headerRect: metrics.headerRect,
+    stateStripRect: metrics.stateStripRect,
+    contentRect: metrics.contentRect,
+    footerRect: metrics.footerRect,
+    bottomFrameRect: metrics.bottomFrameRect,
+    controlsRect: metrics.controlsRect,
+  }
+  assert.deepEqual(sharedGeometry, {
+    outerRect: { x: 0, y: 0, width: 183, height: 223 },
+    headerRect: { x: 0, y: 0, width: 183, height: 31 },
+    stateStripRect: { x: 4, y: 25, width: 175, height: 3 },
+    contentRect: { x: 8, y: 31, width: 167, height: 167 },
+    footerRect: { x: 8, y: 198, width: 167, height: 17 },
+    bottomFrameRect: { x: 0, y: 215, width: 183, height: 8 },
+    controlsRect: { x: 117, y: 6, width: 58, height: 16 },
+  })
 })

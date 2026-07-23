@@ -15,28 +15,21 @@ const outer = Object.freeze({
   height: content.height + contentInsets.top + contentInsets.bottom,
 })
 const header = Object.freeze({
-  rule: Object.freeze({
-    top: 25,
-    height: 3,
-    assetTop: 1,
-    assetHeight: 27,
-    capInsets: Object.freeze({ left: 8, right: 8 }),
-    opticalInsets: Object.freeze({ left: 4, right: 4 }),
-  }),
   states: Object.freeze({
     active: Object.freeze({
-      ruleAssetId: 'window.header.module.active',
+      mode: 'authored',
     }),
     inactive: Object.freeze({
-      ruleAssetId: 'window.header.module.inactive',
+      mode: 'replacement',
+      fillColor: '#4e473c',
     }),
   }),
 })
 const frameOpticalCropInsets = Object.freeze({
-  top: 2,
-  right: 3,
-  bottom: 3,
-  left: 3,
+  top: 0,
+  right: 0,
+  bottom: 0,
+  left: 0,
 })
 const frame = Object.freeze({
   assetId: 'window.module.nine-slice',
@@ -83,55 +76,38 @@ const titleLeft = contentInsets.left + 9
 const titleControlsGap = 4
 const outerRect = freezeRect(0, 0, outer.width, outer.height)
 const headerRect = freezeRect(0, 0, outer.width, contentRect.y)
-const headerRuleAssetRect = freezeRect(
-  0,
-  header.rule.assetTop,
-  outer.width,
-  header.rule.assetHeight,
-)
-const headerRuleRect = freezeRect(
-  header.rule.opticalInsets.left,
-  header.rule.top,
-  outer.width - header.rule.opticalInsets.left - header.rule.opticalInsets.right,
-  header.rule.height,
-)
+const stateStripRect = freezeRect(4, 25, 175, 3)
 const headerSeamRect = freezeRect(
   contentRect.x,
   frame.capInsets.top,
   contentRect.width,
   contentRect.y - frame.capInsets.top,
 )
-const frameViewportRect = freezeRect(
-  frame.opticalCropInsets.left,
-  frame.opticalCropInsets.top,
-  outer.width - frame.opticalCropInsets.left - frame.opticalCropInsets.right,
-  outer.height - frame.opticalCropInsets.top - frame.opticalCropInsets.bottom,
-)
+const frameViewportRect = outerRect
 const frameRailRects = Object.freeze({
   topRailRect: freezeRect(
-    frameViewportRect.x,
-    frameViewportRect.y,
-    frameViewportRect.width,
-    frame.topRailHeight - frameViewportRect.y,
+    outerRect.x,
+    outerRect.y,
+    outerRect.width,
+    frame.topRailHeight,
   ),
   leftRailRect: freezeRect(
-    frameViewportRect.x,
-    frameViewportRect.y,
-    contentRect.x - frameViewportRect.x,
-    frameViewportRect.height,
+    outerRect.x,
+    outerRect.y,
+    frame.capInsets.left,
+    outerRect.height,
   ),
   rightRailRect: freezeRect(
     contentRect.x + contentRect.width,
-    frameViewportRect.y,
-    frameViewportRect.x + frameViewportRect.width
-      - contentRect.x - contentRect.width,
-    frameViewportRect.height,
+    outerRect.y,
+    frame.capInsets.right,
+    outerRect.height,
   ),
   bottomRailRect: freezeRect(
-    frameViewportRect.x,
+    outerRect.x,
     bottomFrameRect.y,
-    frameViewportRect.width,
-    frameViewportRect.y + frameViewportRect.height - bottomFrameRect.y,
+    outerRect.width,
+    frame.capInsets.bottom,
   ),
 })
 const interiorBackingRect = freezeRect(
@@ -147,8 +123,9 @@ const footerSafeRect = freezeRect(
   footerRect.height - 1,
 )
 const footerControlSize = 16
+const footerControlLeftInset = 4
 const footerControlRect = freezeRect(
-  footerSafeRect.x + Math.round((footerSafeRect.width - footerControlSize) / 2),
+  footerSafeRect.x + footerControlLeftInset,
   footerSafeRect.y,
   footerControlSize,
   footerControlSize,
@@ -158,7 +135,7 @@ const layers = Object.freeze({
   shellBackgrounds: 1,
   liveContent: 2,
   frameChrome: 3,
-  stateRule: 4,
+  stateStrip: 4,
   interactiveChrome: 5,
 })
 
@@ -172,8 +149,7 @@ export const KORP_MODULE_WINDOW_METRICS = Object.freeze({
   layers,
   outerRect,
   headerRect,
-  headerRuleAssetRect,
-  headerRuleRect,
+  stateStripRect,
   headerSeamRect,
   frameOpticalCropInsets,
   frameViewportRect,
