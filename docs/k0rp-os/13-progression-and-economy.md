@@ -1,24 +1,26 @@
 # K0rp_OS — Progression and Economy
 
-Verze: 0.3.0 pracovní RFC
+Verze: 0.4.0 pracovní RFC
 
 ## 1. Záměr
 
 K0rp_OS není jeden velký clicker. Je to federovaný incremental management systém:
 
-- každý modul má vlastní hmatovou mikro-smyčku;
+- každý modul má vlastní hmatovou nebo prostorovou mikro-smyčku;
 - modul vytváří doslovnou raw metriku;
-- OS metriku balí do auditovatelných packetů;
+- některé moduly mají krátkou session a dočasný build;
+- OS raw closures balí do auditovatelných packetů;
 - audit z packetu vytvoří Evidence;
-- Evidence autorizuje další systém;
-- nový systém vytváří další metriku, audity a později potřebu delegace;
-- hlavní růst je byrokratická hustota, ne pouze velikost čísla.
+- Evidence autorizuje další systém nebo capability group;
+- nový systém vytváří další metriku, audity a backlog;
+- delegace převezme rutinu, ale vytvoří dohled a výjimky;
+- hlavním spektáklem je byrokratická hustota, ne pouze velikost čísla.
 
-Canonical kontrakt je v `20-core-loop.md`.
+Canonical kontrakt je v `20-core-loop.md`. Activity spectrum a action-module návrhy jsou v `21-activity-spectrum-and-arcade-modules.md`.
 
 ## 2. Audit-first onboarding
 
-První interakcí je `AUDIT 00-A`.
+První interakcí je Audit 00-A.
 
 ```text
 audit field activation
@@ -31,22 +33,22 @@ Po submitu:
 - hráč je přijat do relace;
 - odemkne se ClickAudit;
 - objeví se Doručené a první memo;
-- nevzniká automaticky Evidence pouze za potvrzení existence.
+- nevzniká Evidence pouze za potvrzení existence.
 
-Audit 00-A je iniciační rituál a privacy onboarding, ne první currency faucet.
+Audit 00-A je iniciační rituál a privacy onboarding, ne currency faucet.
 
-## 3. Ekonomické vrstvy
+## 3. Čtyři druhy hodnoty
 
-### 3.1 Raw metriky
+### 3.1 Raw metrika
 
-Raw metrika je doslovná aktivita uvnitř modulu.
+Doslovná aktivita uvnitř modulu:
 
 ```text
-ClickAudit       → manual click count
-Fidget           → rotations / sessionSettled
-Bloom            → status changes / waveAdvanced
-Button Compliance→ presses / sequenceCompleted
-Corner Watch     → observation session / near misses
+ClickAudit           → manual clicks
+Fidget               → settled sessions
+Bloom                → status changes / waves
+Priority Containment → operational session closures
+Alignment Rally      → alignment session closures
 ```
 
 Raw metriky:
@@ -54,23 +56,34 @@ Raw metriky:
 - nejsou spendable;
 - samy neodemknou modul;
 - nesmějí být násobeny tak, aby falšovaly fyzickou činnost;
-- mohou tvořit packet, zdrojový breakdown a milestone.
+- mohou být klasifikovány, agregovány, batchovány a auditovány.
 
-### 3.2 Metric packets
+### 3.2 Run-local XP a session state
 
-Packet je ohraničená dávka raw metriky čekající na audit.
+High-intensity nebo build-based modul smí mít dočasné XP:
 
 ```text
-raw metric threshold nebo natural closure
-→ packet
-→ pending audit
+raw action uvnitř session
+→ run XP
+→ level-up volba
+→ dočasný build
+→ closure
+→ run XP zanikne
 ```
 
-Packet má source, quantity, status a audit template. Packet sám nic nevyplácí.
+Run-local XP:
+
+- nepatří do global `KorpState.resources`;
+- není Evidence;
+- není synchronizovaná globální peněženka;
+- nemůže sama autorizovat modul;
+- slouží pouze rytmu, buildcraftu a pocitu síly během konkrétní session.
+
+Module-local score, combo, wave a build jsou stejná vrstva.
 
 ### 3.3 Evidence
 
-Pro první migraci se používá stávající technický resource:
+Pro první migraci se používá technical resource ID:
 
 ```text
 notionalWorkUnits
@@ -83,9 +96,7 @@ Evidence
 EV
 ```
 
-Evidence znamená množství aktivity, kterou systém uznal jako vykazatelnou.
-
-Evidence vzniká jen certifikací packetu:
+Evidence znamená aktivitu, kterou systém uznal jako vykazatelnou.
 
 ```text
 pending packet
@@ -94,17 +105,41 @@ pending packet
 → Evidence
 ```
 
-Evidence je spendable/alokovatelná na:
+Evidence je jediná hlavní early global spendable currency.
+
+Použití:
 
 - module permits;
 - procedures;
 - equipment requisitions;
+- capability groups;
 - delegation slots;
-- pozdější systémové autorizace.
+- pozdější policy/system authorizations.
 
-### 3.4 Meters
+### 3.4 Authorization, capability a proficiency
 
-Meters nejsou currency.
+Nejsou měny.
+
+```text
+authorization
+= systém dovolil modul nebo procedure používat
+
+capability
+= hráč nebo jednotka prokázala, že funkci umí vykonat
+
+proficiency
+= persistentní zkušenost/znalost uvnitř autorizovaného systému
+```
+
+Důležitý invariant:
+
+> Capability není authorization.
+
+Hráč může capability objevit v session, ale do persistentního draft poolu se dostane až po schválené authorization group.
+
+## 4. Meters a skryté telemetry
+
+Meters nejsou currency:
 
 - Audit Pressure;
 - Entropy;
@@ -112,67 +147,69 @@ Meters nejsou currency.
 - Compliance Integrity;
 - System Order.
 
-Audit Pressure se nemá zvyšovat mechanicky za každý klik. Má postupně odrážet:
+Audit Pressure se odvozuje z:
 
-- počet pending auditů;
+- pending auditů;
 - stáří backlogu;
-- počet discrepancies;
-- neověřenou delegovanou aktivitu;
-- neuzavřené odpovědnosti.
+- discrepancies;
+- neověřené delegated activity;
+- neuzavřených odpovědností.
 
-### 3.5 Derived a hidden telemetry
+Nemá růst za každý projectile impact nebo klik.
+
+Derived telemetry:
 
 - Perceived Productivity;
 - Perceived Control;
 - Krypto-management Score;
-- další interní interpretace.
+- throughput interpretations;
+- confidence;
+- administrative density.
 
-Neutrácejí se. Mohou se odhalit dashboardem, memem nebo incidentem.
+Neutrácejí se. Odhalují se dashboardem, memem, incidentem nebo reportem.
 
-### 3.6 Module-local resources
-
-Bloom Integrity, Idle Faith, Relief Units, Cleanliness, Alignment, Momentum a další zůstávají uvnitř modulu nebo jeho dokumentace.
-
-### 3.7 Prestige
-
-Audit Findings zůstávají permanentní prestige měnou, ale první prestige balance se nesmí finalizovat před ověřením Metric → Audit → Evidence loopu.
-
-## 4. Canonical core loop
+## 5. Canonical core loop
 
 ```text
-hmatatelná akce
+hmatatelná nebo prostorová akce
 → okamžitá odezva
 → raw metrika
-→ přirozené closure nebo threshold
+→ natural closure / threshold
 → pending packet
 → auditní instance
 → certifikace
 → Evidence
-→ autorizace
-→ nový modul / pravidlo / surface
+→ authorization
+→ nový modul / capability / surface
+→ více raw metrik
+→ backlog
+→ delegace
+→ discrepancy
 ```
 
-Bez auditu může existovat aktivita, ale ne uznaná Evidence.
+Bez auditu může existovat aktivita, score, build i closure. Nemůže vzniknout uznaná Evidence.
 
-## 5. První ekonomický slice
+## 6. Current first economic slice
 
 ```text
 Audit 00-A
 → ClickAudit
-→ 25 raw kliků
-→ pending ClickAudit packet
+→ bootstrap packet quantity 1
 → Audit 10-A
 → Evidence +1
 → Audit 16-C
 → Evidence alokována
 → Fidget
+→ 3 settled sessions
+→ Fidget packet
+→ Audit 18-S
+→ Evidence +1
+→ mixed backlog
 ```
 
-První Evidence má rychle otevřít nový způsob interakce. Nemá být uložena do abstraktního shopu s deseti procentními upgrady.
+Task 023 tento druhý metric source technicky dokončil. Task 024 sjednotí machine-readable data.
 
-## 6. ClickAudit integrity
-
-ClickAudit raw counter je doslovný.
+## 7. ClickAudit integrity
 
 ```text
 1 úmyslný fyzický klik = 1 manual click
@@ -180,52 +217,112 @@ ClickAudit raw counter je doslovný.
 
 Povolené upgrady:
 
-- nové vizualizace;
-- liquid variants;
-- digit cards;
+- digit/liquid/material variants;
 - source breakdown;
-- audit batch rules;
-- dashboardy;
-- interpretace a milestone copy;
-- odemykání dalších auditních templates.
+- audit batch procedures;
+- dashboards;
+- interpretace;
+- milestone copy;
+- nové audit templates;
+- capability kategorie.
 
-Zakázané jako canonical raw count:
+Zakázané:
 
-- `1 click = 50 clicks`;
-- pasivní relay započítaný jako manuální klik;
-- retroaktivní přidání falešných fyzických kliků;
-- Evidence přímo za každý klik.
+- `1 click = 50 manual clicks`;
+- passive relay započítaný jako manual;
+- retroaktivní falešné kliky;
+- Evidence přímo za klik;
+- auto-generated click vydávaný za přítomnost člověka.
 
-## 7. Anti-spam bez měnového nasycení kliků
+## 8. Packet economics
 
-Starý v0.2 model s přímým NWU multiplierem pro jednotlivé kliky se ruší jako cílový design.
+Packet je administrativní povinnost.
 
-Anti-spam vzniká přirozeně:
+```text
+raw metric boundary
+→ packet
+→ pending audit
+```
 
-- raw klik se vždy počítá;
-- pouze uzavřená dávka vytváří packet;
-- packet vyžaduje audit;
-- backlog omezuje čisté spamování;
-- Evidence vzniká z certifikace, ne z rychlosti klikání;
-- později může systém vyžadovat různorodost zdrojů nebo kontrolní vzorek.
+Packet má:
 
-Hráč není trestán za klikání. Jen nezískává spendable hodnotu bez administrativního uznání.
+- stable ID;
+- source;
+- quantity/range;
+- status;
+- audit template;
+- timestamps;
+- případně confidence/outcome class.
 
-## 8. Authorization místo klasického shopu
+Packet sám nic nevyplácí.
 
-Zásadní systémová změna má preferovat tento tok:
+Pro action modules se packet threshold nesmí vymyslet před playtestem. Candidate values z design RFC nejsou machine-readable balance source.
+
+## 9. Authorization místo klasického shopu
+
+Zásadní systémová změna preferuje:
 
 ```text
 splněná podmínka
 → dostupný formulář
 → alokace Evidence
-→ autorizace
-→ surface mutation / shortcut / permission
+→ authorization
+→ surface mutation
 ```
 
-Ne každý kosmetický nebo drobný procedure upgrade potřebuje celý formulář. Nový modul, oddělení, delegace nebo významná změna pravidel ano.
+Ne každý drobný upgrade potřebuje formulář.
 
-## 9. Automation and delegation
+Autorizují se smysluplné skupiny:
+
+```text
+Routing Procedures I
+→ Return to Sender
+→ Owner Assignment
+→ Reprioritize
+
+Alignment Templates I
+→ Need More Data
+→ Scope Reduction
+→ Parking Lot
+```
+
+Uvnitř jedné session se jednotlivé autorizované capability mohou draftovat přes run-local XP.
+
+## 10. Permanent versus temporary progression
+
+### Temporary
+
+- run XP;
+- současný level;
+- vybrané upgrades;
+- combo;
+- wave modifiers;
+- temporary score;
+- momentální incident state.
+
+### Persistent module-local
+
+- discovered capability;
+- proficiency;
+- known loadout template;
+- cosmetic/material variants;
+- best local reports;
+- accessibility settings.
+
+### Persistent global
+
+- Evidence balance;
+- authorizations;
+- module unlocks;
+- audit/certification history;
+- mema;
+- policies;
+- operator training;
+- prestige state.
+
+Každá hodnota musí mít explicitní reset scope.
+
+## 11. Automation and delegation
 
 Automatizace nesmí odstranit hračku ani falšovat manual metrics.
 
@@ -233,12 +330,11 @@ Automatizace nesmí odstranit hračku ani falšovat manual metrics.
 manual operation
 → assistant handles routine
 → player handles exceptions
-→ audit of assistant
-→ orchestration across modules
-→ audit of orchestration
+→ policy manages assistant
+→ player audits policy
 ```
 
-Minimální source categories:
+Source categories:
 
 ```text
 manual
@@ -249,50 +345,164 @@ system-generated
 Delegovaná aktivita:
 
 - může vytvářet packet;
-- má vlastní error/discrepancy rate;
+- má vlastní confidence/error rate;
 - vyžaduje supervision;
-- nemůže sama finálně certifikovat Evidence;
-- nesmí se slít s manuální raw metrikou.
+- nemůže finálně certifikovat Evidence;
+- nesmí se slít s manual raw metric.
 
-## 10. Audit backlog jako progression pressure
+Action-module automation navíc používá:
 
-Backlog je důležitý přechod mezi active a idle/management vrstvou.
+- loadout template;
+- target weights;
+- risk tolerance;
+- allowed exceptions;
+- supervision cadence;
+- intervention threshold.
 
-Hráč musí nejdřív pocítit, že audity začínají překážet. Teprve potom se odemyká delegace.
+Automatizace mění hráčské sloveso. Nezapíná pouze pasivní video.
 
-Příliš brzká automatizace by odstranila problém dřív, než se stal herní zkušeností.
+## 12. Backlog jako progression pressure
 
-## 11. First-cycle pacing
+Hráč musí nejdřív pocítit rutinu, kterou má delegace řešit.
 
-Přesný 4–5hodinový balance pass z v0.2 je provisional a bude přepočítán po Tasks 020–024.
+Příliš brzká automatizace odstraní problém dřív, než se stal herní zkušeností.
 
-Nejdřív se playtestuje:
+Backlog nesmí být:
+
+- FOMO badge;
+- offline trest;
+- permanentní blokace příjemných modulů;
+- tak pomalý, že management nemá smysl;
+- tak rychlý, že hráč nestihne nic kromě formulářů.
+
+## 13. Activity spectrum v ekonomice
+
+Různé intensity používají stejný global loop, ale jiný lokální rytmus.
+
+### Low intensity
 
 ```text
-Audit 00-A
-→ první ClickAudit packet
-→ první Evidence
-→ Fidget authorization
-→ první Fidget packet
-→ první skutečný auditní backlog
+jedna hmatová akce
+→ natural settle / sheet / pattern closure
+→ packet po několika closures
 ```
 
-Až potom se finalizují Bloom, Button, Corner, certifikace a první prestige.
+### Medium intensity
 
-## 12. Prestige
+```text
+krátká sekvence / wave / rally
+→ jasný stavový closure
+→ packet
+```
 
-První prestige zůstává:
+### High intensity
+
+```text
+4–6 minute session
+→ lokální build a run XP
+→ aggregate session closure
+→ packet až po schváleném threshold
+```
+
+Vysoká intenzita není ospravedlnění pro vyšší Evidence yield. Balance se odvíjí od času, kognitivní náročnosti, backlogu a role modulu v progression, ne od množství částic.
+
+## 14. Priority Containment economy boundary
+
+Design candidate:
+
+```text
+Priority session
+→ local run XP/build
+→ priority.sessionClosed
+→ provisional packet po 2 closures
+→ Audit 27-P
+→ Evidence +1
+```
+
+Závazné už nyní:
+
+- kill/deflection nedává EV;
+- run XP není EV;
+- session fail může vytvořit `closed-with-reservation`, ne ztrátu EV;
+- packet threshold se finalizuje až po greybox playtestu;
+- authorization může odemykat capability groups, ne procentní damage shop.
+
+## 15. Alignment Rally economy boundary
+
+Design candidate:
+
+```text
+Alignment session
+→ local response/build state
+→ alignment.sessionClosed
+→ provisional packet po 3 closures
+→ Audit 31-R
+→ Evidence +1
+```
+
+Závazné:
+
+- každý odraz nevydělává EV;
+- closure outcome může měnit interpretation/discrepancy, ne základní existence Evidence bez auditu;
+- custom text claimu se nepoužívá jako economic input;
+- authorization groups odemykají response templates.
+
+## 16. Cross-module progression
+
+Preferované vztahy:
+
+- Fidget poskytne nový typ closure;
+- Bloom poskytne prostorový/statusový packet;
+- Button Compliance obslouží authorization/exceptions;
+- Corner Watch vytvoří idle report;
+- ClickAudit interpretuje source breakdown;
+- Priority Containment vytvoří operational discrepancies;
+- Alignment Rally může vzniknout jako reakce na disputed closure;
+- stážista obslouží modul, ale vytvoří kontrolní vzorek.
+
+Cross-module bonusy až po stabilitě jednotlivých loops. Hráč nemá neustále přepínat okna jako operátor rozbitého dispečinku.
+
+## 17. First-cycle boundary
+
+First-cycle balance zůstává zaměřený na:
+
+```text
+presence
+→ ClickAudit
+→ Evidence
+→ Fidget
+→ mixed backlog
+→ delegation
+→ Bloom / first-cycle content
+→ closure/prestige
+```
+
+Priority Containment a Alignment Rally nejsou součástí Tasku 024 first-cycle rebalance. Jsou pozdější module R&D a vyžadují vlastní greybox gates.
+
+## 18. Prestige
+
+První prestige:
 
 ```text
 UZAVŘENÍ AUDITNÍHO CYKLU
 FORMULÁŘ 42-Z
 ```
 
-Resetuje cycle state a zachovává identity, mema, certifikace, lifetime stats, permanent upgrades a Audit Findings.
+Resetuje cycle state a zachovává:
 
-Hlavní odměnou má být nový systém, nikoliv pouze násobitel. Bublinková Fólie zůstává kandidát na post-prestige interaction system.
+- identity;
+- settings;
+- mema;
+- lifetime stats;
+- certifications;
+- permanent authorizations;
+- cosmetics;
+- permanent procedures;
+- Audit Findings.
 
-## 13. Player-facing complexity
+Hlavní odměnou je nový interaction system a rychlejší/odlišný návrat, ne pouze multiplier.
+
+## 19. Player-facing complexity
 
 Early taskbar:
 
@@ -301,45 +511,59 @@ EV 1
 PENDING 2
 ```
 
-Raw metriky patří do module windows. Skryté KPI se odemykají později.
+Raw metrics zůstávají uvnitř modulů. Run XP uvnitř session. Hidden KPI se odemykají později.
 
-Na začátku nemá hráč sledovat osm globálních čísel. Složitost se má odemknout jako obsah a administrativní zátěž.
+Na začátku nemá hráč osm globálních čísel. Složitost se odemyká jako systém, ne jako cockpit.
 
-## 14. Ethical retention
+## 20. Ethical retention
 
 Zakázané jako core requirement:
 
 - daily streak;
-- propadající odměna;
+- propadající reward;
 - energie;
 - povinný rare event;
 - trest za offline;
 - agresivní notification badge;
+- skryté odds;
+- časově omezený upgrade draft;
+- monetizované rerolly;
 - monetizace čekání.
 
 Používat:
 
+- jasná session closure;
+- voluntary return;
 - uzavření směny;
 - archive report;
-- voluntary return;
-- přirozené closure points;
+- pause;
+- transparentní random pool;
 - nový systém jako odměnu;
 - offline report bez trestu.
 
-## 15. Current migration status
+## 21. Current migration status
 
-Po Tasku 019 runtime stále částečně přidává resources přímo z `clickaudit.click` a machine-readable balance obsahuje staré NWU výnosy.
+Runtime po Tasku 023 už používá:
 
-Tasks 020–024 musí sjednotit:
+- ClickAudit packets;
+- Fidget packets;
+- repeatable audits;
+- Evidence certification;
+- mixed backlog;
+- authorization.
 
-- korp-core reducer semantics;
-- runtime packet/audit state;
-- save schema;
-- audit forms;
+Task 024 musí sjednotit:
+
 - resources metadata;
 - events data;
-- upgrade catalog;
+- audit forms/templates;
+- upgrade assumptions;
 - first-cycle CSV/JSON;
-- player-facing UI.
+- TypeScript exports;
+- runtime/prose parity.
 
-Dokud migrace není dokončena, nové feature nesmějí dále rozšiřovat přímý `raw action → currency` model.
+Action-module candidate data se do této migrace nezahrnují.
+
+## 22. Důležité pravidlo
+
+> K0rp_OS může mít uvnitř modulu score, level, build a exploze. Globálně je stále rozhodující to, co systém uznal, autorizoval a následně musel auditovat.

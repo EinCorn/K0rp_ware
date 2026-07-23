@@ -1,254 +1,253 @@
 # K0rp_OS — Product Modes
 
-Verze: 0.2.0 pracovní návrh
+Verze: 0.4.0 pracovní návrh
 
-## 1. Přehled
+## 1. Dvě osy, které se nesmějí míchat
 
-K0rp_OS nemá být jeden rigidní runtime. Má mít více režimů, které používají stejné jádro, stejný module contract a stejný jazyk progressu.
+### Herní progression
 
-Produktové režimy:
-
-1. Web portal
-2. Standalone appky
-3. K0rp_OS desktop hra
-4. Overlay lišta
-5. Account / sync režim
-
-Důležité: moduly musí být navržené tak, aby mohly žít na více surfaces bez přepsání logiky.
-
-## 2. Web portal
-
-Web je veřejný vstup do K0rp_ware / K0rp_OS.
-
-Funkce:
-
-- landing / dashboard,
-- webové verze modulů,
-- download standalone appek,
-- preview K0rp_OS,
-- knowledge base,
-- později account login.
-
-Web může běžet i bez accountu a bez cloudu. Lokální progress je validní režim.
-
-## 3. Standalone appky
-
-Každý modul může existovat jako samostatná malá appka.
-
-Příklady:
-
-- ClickAudit,
-- Fidget,
-- Bloom,
-- Corner Watch,
-- Bublinková Fólie,
-- Button Compliance,
-- Surface Compliance.
-
-Standalone režim:
-
-- funguje lokálně,
-- může mít vlastní malé okno,
-- může sledovat jen vlastní interakce,
-- může volitelně posílat aggregate eventy do K0rp Core,
-- nesmí vyžadovat hlavní K0rp_OS.
-
-## 4. K0rp_OS desktop hra
-
-Hlavní režim.
-
-K0rp_OS desktop hra obsahuje:
-
-- fake desktop,
-- taskbar,
-- module windows,
-- global resources,
-- unlocky,
-- interní mema,
-- knowledge base,
-- fake settings,
-- module registry,
-- local save/load.
-
-Tady má být nejsilnější incremental loop.
-
-## 5. Overlay lišta
-
-Overlay je pozdější režim, který běží nad běžnou prací.
-
-První pravidlo: overlay nesmí být šmírovací nástroj.
-
-Overlay může:
-
-- zobrazovat K0rp status,
-- spouštět malé moduly,
-- přijímat K0rp-only events,
-- v privacy režimu počítat jen agregovanou aktivitu,
-- fungovat jako drobná satirická přítomnost na monitoru.
-
-Overlay nesmí bez explicitního režimu:
-
-- číst URL,
-- číst názvy oken,
-- číst text,
-- pořizovat screenshoty,
-- logovat klávesy,
-- posílat raw aktivitu do cloudu.
-
-## 6. Account / sync
-
-Account je volitelný.
-
-Syncovat lze:
-
-- global progress,
-- unlocks,
-- settings,
-- cosmetics,
-- fake employee id,
-- export/import state.
-
-Nesyncovat:
-
-- raw click log,
-- názvy aplikací,
-- URL,
-- text,
-- screenshoty,
-- pracovní obsah.
-
-## 7. Privacy režimy
-
-### OFF
-
-Nesleduje nic mimo explicitní modul.
-
-### K0rp-only
-
-Sleduje pouze interakce uvnitř K0rp modulů.
-
-### Privacy Work Blob
-
-Sleduje pouze agregovanou aktivitu mimo K0rp bez detailu:
-
-- uživatel byl aktivní,
-- uživatel byl idle,
-- došlo k anonymnímu external work pulsu.
-
-Nezná aplikaci, URL, obsah ani kontext.
-
-### Local Full Mode
-
-Experimentální režim pro osobní počítač. Pouze lokálně. Pouze explicitně. Není součást MVP.
-
-## 8. Module surfaces
-
-Každý modul v manifestu deklaruje, kde může běžet.
-
-Možné surfaces:
-
-```ts
-export type KorpSurface =
-  | "webCard"
-  | "standaloneWindow"
-  | "osWindow"
-  | "overlayMini"
-  | "idleScreen"
-  | "backgroundService";
+```text
+Audit 00-A
+→ ClickAudit
+→ Evidence
+→ Fidget
+→ mixed backlog
+→ delegation
+→ další moduly
+→ audit cycle closure
+→ pozdější action/management systems
 ```
 
-Příklad:
+### Product surfaces
 
-```ts
-const cornerWatchSurfaces = ["standaloneWindow", "osWindow", "idleScreen", "overlayMini"];
-const attentionRunnerSurfaces = ["osWindow", "webCard"];
+```text
+K0rp_OS desktop
+↔ web fallback
+↔ standalone modules
+→ později Windows overlay
+→ volitelně account/sync
 ```
 
-## 9. Module maturity
+Standalone release není campaign unlock. Produktový mode určuje, kde modul běží. Progression určuje, zda a jak je modul v konkrétním save autorizovaný.
 
-Moduly mohou mít maturity stav:
+## 2. Canonical desktop mode
 
-```ts
-export type KorpModuleMaturity =
-  | "idea"
-  | "spec"
-  | "prototype"
-  | "workshop"
-  | "playable"
-  | "released"
-  | "retired";
+Hlavní produkt a nejsilnější fiction.
+
+Obsah:
+
+- fake desktop;
+- taskbar/top rail;
+- windows;
+- folders/documents;
+- module shortcuts;
+- packet/audit queue;
+- Evidence/authorization;
+- surface mutations;
+- delegation a později Control Room;
+- local save.
+
+Desktop je hlavní hra. Modul není karta v launcheru, ale nainstalovaná procedura na pracovní stanici.
+
+## 3. Web fallback
+
+Účel:
+
+- dostupná browser verze;
+- rychlé testování;
+- local browser save;
+- stejná core/progression IDs;
+- žádné native Tauri assumptions.
+
+Omezení:
+
+- žádné true transparent detached windows;
+- žádný OS overlay;
+- některé platform behavior se simuluje;
+- integer logical canvas se stále zachovává;
+- action module používá stejné logical coordinates jako desktop.
+
+Web není „lite ekonomika“. Herní význam eventů zůstává stejný.
+
+## 4. Standalone module mode
+
+Každý vhodný modul může existovat jako samostatná appka.
+
+Standalone musí:
+
+- zachovat hlavní tactile/action loop;
+- fungovat bez campaign save;
+- mít vlastní local settings;
+- umět čistě skončit;
+- nepředstírat globální Evidence;
+- používat stejný module engine jako OS window, pokud to architektura dovoluje.
+
+### Unlinked mode
+
+- žádný campaign reward;
+- module-local stats/progress;
+- žádný account nutný;
+- žádný raw external telemetry.
+
+### Linked mode
+
+- explicitní spojení s K0rp_OS;
+- pouze aggregate K0rp events;
+- campaign přijímá progression-bearing events jen pro autorizovaný modul;
+- manual/delegated/system source se zachová;
+- žádný raw pointer stream, screenshot, external app context nebo free text.
+
+## 5. Standalone action prototype mode
+
+Priority Containment a Alignment Rally se nejdřív testují standalone jako greybox.
+
+Důvod:
+
+- ověřit hlavní verb bez podpory Evidence;
+- ověřit session length a buildcraft;
+- zabránit tomu, aby auditní ekonomika maskovala slabou hru;
+- profilovat výkon a logical viewport;
+- testovat accessibility/intensity.
+
+Prototype mode:
+
+- nemá OS packet;
+- nemá Evidence;
+- nemá campaign authorization;
+- může mít run-local XP;
+- ukládá pouze explicitně definované local settings/results;
+- není automaticky public standalone release.
+
+Po accepted gate může stejný module engine získat OS adapter.
+
+## 6. Compact versus action standalone geometry
+
+### Compact modules
+
+Current:
+
+```text
+ClickAudit 167×167 content
+Fidget    167×167 content
 ```
 
-Současný stav:
+Standalone shell/chrome nesmí content zmenšit.
 
-- ClickAudit — workshop/playable,
-- Fidget — workshop/playable,
-- Bloom — workshop/playable,
-- nové moduly — idea/spec.
+### Action modules
 
-## 10. Důležité pravidlo
+Priority provisional:
 
-> Režimy se mohou lišit. Core význam eventů musí zůstat společný.
+```text
+320×320 logical viewport
+```
 
-## Platform priority
+Allowed:
 
-K0rp_OS má více surfaces, ale primární desktop target je **Windows**.
+- exact 1×;
+- exact integer 2× detached presentation;
+- větší window family.
 
-Mac je podporované a užitečné dev/test prostředí, hlavně pro Couch Mode, design, docs, asset work a rychlé smoke testy. Windows je ale rozhodující platforma pro:
+Zakázané:
 
-- desktop app behavior,
-- overlay bar,
-- window transparency,
-- always-on-top behavior,
-- installer/release,
-- finální pocit „pracovního počítače“.
+- fractional simulation scaling;
+- natlačení do 167×167;
+- jiná event semantics jen kvůli větší surface.
 
-Každý product mode by měl být označený podle toho, zda jde o cross-platform feature, web-only feature, nebo Windows-required feature.
+## 7. Overlay mode
 
-## 11. Canonical hierarchy surfaces
+Pozdější Windows-first companion.
 
-### K0rp_OS desktop
+Scope candidate:
 
-Canonical full game. Vlastní globální progression, desktop artifacts, složky, soubory, window manager, screensaver, mema, lokální save a prestige.
+- always-on-top strip;
+- quick launch;
+- privacy status;
+- small K0rp-only widgets;
+- optional compact modules;
+- aggregate events;
+- no external activity spying.
 
-### Web desktop
+High-intensity action module není automaticky overlay-compatible. Priority Containment může být dostupný jako explicitně otevřené větší detached window, ne jako malý overlay strip.
 
-Fallback full-game surface v browseru. Simuluje stejnou pracovní plochu a používá stejné progression ID. Může mít lokální browser save. Neumí pravý OS overlay ani všechny native window funkce.
+## 8. Account/sync mode
 
-### Standalone module
+Až po stabilním local-first systému.
 
-Samostatná prokrastinační appka. Musí fungovat bez hlavního K0rp_OS.
+Povolené:
 
-- nepřipojený režim: pouze module-local session/progress;
-- připojený režim: aggregate K0rp events mohou být předány do aktivního K0rp_OS runtime;
-- global campaign přijímá rewards pouze z modulu, který je v daném save autorizovaný;
-- modulová logika nesmí mít separátní přepsanou variantu pro OS, web a standalone.
+- progress;
+- settings;
+- authorizations;
+- cosmetics;
+- policy IDs/templates, pokud jsou bezpečné;
+- export/delete.
 
-### Overlay
+Zakázané:
 
-Pozdější companion surface. Není podmínkou prvního auditního cyklu.
+- raw pointer history;
+- external app names;
+- URL;
+- screenshots;
+- free-text claims;
+- full action replay;
+- povinný login pro single-player/standalone.
 
-- quick launch,
-- malé module surfaces,
-- privacy indicator,
-- K0rp-only events,
-- případně explicitní Privacy Work Blob.
+## 9. Bridge contract
 
-## 12. Product mode není progression unlock
+```text
+standalone module
+→ local runtime
+→ optional explicit bridge
+→ aggregate KorpEvent
+→ K0rp_OS validates authorization/source
+→ core/progression resolver
+```
 
-Release pořadí produktu a herní pořadí unlocků jsou dvě různé osy.
+Bridge nesmí:
 
-Například Corner Watch se v kampani odemkne jako screensaver, ale jeho standalone build může být veřejně dostupný od začátku. To nepřeskakuje campaign progression, dokud standalone není připojený k autorizovanému save.
+- změnit raw metric cardinality;
+- přidat EV přímo;
+- obejít packet/audit;
+- vydávat delegated/system output za manual;
+- poslat každé physics tick/collision;
+- otevřít cloud telemetry zadními vrátky.
 
-## 13. Surface contract
+## 10. Surface parity
 
-Každý modul musí používat:
+Stejný modul napříč surfaces zachovává:
 
-- stejné event names,
-- stejný module ID,
-- stejný význam resource effects,
-- stejnou privacy klasifikaci,
-- oddělený lokální UI/session state,
-- volitelný bridge do společného runtime.
+- module ID;
+- raw event semantics;
+- natural closure;
+- source classification;
+- accessibility settings semantics;
+- module-local mechanics;
+- privacy contract.
 
-Rozdíl surface smí měnit presentation a window behavior, ne význam kliknutí, spinu, wave nebo completed sheetu.
+Může se lišit:
+
+- chrome;
+- placement;
+- window size;
+- input adapter;
+- bridge availability;
+- presentation detail;
+- campaign authorization status.
+
+## 11. Release order
+
+```text
+1. canonical desktop + web fallback
+2. current standalone modules hardening
+3. local aggregate bridge
+4. action standalone greybox prototypes
+5. accepted action OS integration
+6. Windows overlay
+7. optional account/sync
+```
+
+Action prototype nemusí čekat na overlay/cloud. Nesmí ale přeskočit vlastní playtest gate.
+
+## 12. Důležité pravidlo
+
+> K0rp_OS je hlavní hra. Standalone modul je legitimní produkt i testovací surface. Nesmí se ale stát lepší hrou, která používá K0rp_OS jen jako nepříjemný účetní formulář mezi runy.

@@ -1,32 +1,36 @@
 # K0rp_OS — Event Model
 
-Verze: 0.3.0 pracovní návrh
+Verze: 0.4.0 pracovní návrh
 
 ## 1. Účel
 
-Event model je způsob, jak K0rp_OS promění mikrointerakce v herní význam, aniž by zaměnil samotnou činnost za uznaný výsledek.
+Event model proměňuje mikrointerakce a uzavřené module sessions v herní význam, aniž by zaměnil samotnou činnost za institucionálně uznaný výsledek.
 
-Klik, rotace, vyčištěný flek, dokončená vlna nebo potvrzený formulář nejsou stejný druh věci. Event model je rozděluje na:
+Klik, natural settle, dokončená vlna, uzavřený incident, kvalifikovaný claim a potvrzený formulář nejsou stejný druh věci.
 
 ```text
 raw activation
-→ metric closure
+→ module-local state / run-local XP
+→ natural closure
 → packet creation
 → audit submit
 → evidence certification
-→ unlock / surface mutation
+→ authorization / surface mutation
+→ delegation / discrepancy
 ```
 
-Canonical ekonomický kontrakt je v `20-core-loop.md`.
+Canonical ekonomický kontrakt je v `20-core-loop.md`. Action-module strategie je v `21-activity-spectrum-and-arcade-modules.md`.
 
 ## 2. Základní principy
 
-- Každý modul emituje eventy.
+- Každý modul emituje eventy přes stabilní namespace.
 - UI akce nemá sama přímo měnit globální progress.
-- Raw event zvyšuje doslovnou metriku nebo module-local stav.
+- Raw event mění doslovnou metriku nebo module-local stav.
+- Run-local XP smí měnit pouze současnou session.
 - Spendable Evidence vzniká až certifikací packetu.
 - Jeden uživatelský záměr smí vytvořit maximálně jeden odpovídající raw activation event.
-- Pointer movement, render tick a animační frame nejsou gameplay eventy.
+- Pointer movement, render tick, animační frame a průběžný physics tick nejsou globální gameplay eventy.
+- High-density modul může micro-events agregovat lokálně a do core emitovat pouze raw summary nebo closure.
 - Event nesmí obsahovat citlivý externí kontext.
 
 ## 3. Základní typ eventu
@@ -45,23 +49,37 @@ export type KorpEvent = {
 
 ## 4. Semantic layers
 
-### 4.1 Raw activation
+### 4.1 Transient local state
 
-Doslovný úmyslný vstup:
+Není persistovaný jako globální progression event:
+
+- pointer coordinates;
+- každý frame spinneru;
+- každý projectile tick;
+- každý nepřátelský pathfinding tick;
+- průběžné velocity;
+- každý pixel wipe tahu;
+- dočasný run-local XP bar.
+
+### 4.2 Raw activation
+
+Doslovný úmyslný vstup nebo lokálně agregovatelná akce:
 
 ```text
 clickaudit.click
 bloom.tileClicked
 button.pressed
+priority.deflected
+argument.responseLogged
 ```
 
 Raw activation:
 
-- zvyšuje raw stat;
-- může měnit lokální stav modulu;
+- zvyšuje raw stat nebo mění module-local state;
+- může přidat run-local XP uvnitř stejné session;
 - nepřidává přímo Evidence.
 
-### 4.2 Natural closure / metric milestone
+### 4.3 Natural closure / metric milestone
 
 Ohraničený konec smysluplné lokální činnosti:
 
@@ -70,11 +88,13 @@ fidget.sessionSettled
 bloom.waveAdvanced
 button.sequenceCompleted
 corner.sessionCompleted
+priority.sessionClosed
+alignment.sessionClosed
 ```
 
-Natural closure může vytvořit auditovatelný packet, ale sama nemusí být spendable reward.
+Natural closure může vytvořit auditovatelný packet podle packet definition nebo baseline/cursor pravidla. Sama není spendable reward.
 
-### 4.3 Packet creation
+### 4.4 Packet creation
 
 Packet je persistovaný záznam raw metriky čekající na audit.
 
@@ -84,23 +104,23 @@ První module-specific event:
 clickaudit.batchCompleted
 ```
 
-Budoucí obecný event, až existuje více packet sources:
+Obecný event, pokud je používán:
 
 ```text
 metric.packetCreated
 ```
 
-Jeden packet smí vzniknout právě jednou. Module-specific a generic event se nesmějí pro stejnou dávku zdvojit.
+Jeden packet smí vzniknout právě jednou. Module-specific a generic event se pro stejnou dávku nesmějí zdvojit.
 
-### 4.4 Audit submit
+### 4.5 Audit submit
 
 ```text
 audit.formSubmitted
 ```
 
-Potvrzuje, že formulář byl podán. U packet auditu musí být navázán na konkrétní audit instance a packet.
+Potvrzuje, že konkrétní formulář nebo audit instance byl podán. U packet auditu musí existovat vazba na konkrétní packet.
 
-### 4.5 Evidence certification
+### 4.6 Evidence certification
 
 ```text
 audit.evidenceCertified
@@ -119,28 +139,34 @@ Minimální metadata:
 
 Teprve tento event přidává player-facing Evidence.
 
-### 4.6 Discrepancy and delegation
-
-Budoucí events:
+### 4.7 Authorization
 
 ```text
-audit.discrepancyRaised
+authorization.granted
+authorization.capabilityGroupGranted
+```
+
+Authorization:
+
+- spotřebuje nebo alokuje Evidence podle declarative effectu;
+- přidá persistentní flag;
+- může spustit surface mutation;
+- nesmí být zaměněna za module-local proficiency.
+
+### 4.8 Delegation and discrepancy
+
+```text
 delegation.activityGenerated
 delegation.trainingCompleted
+audit.discrepancyRaised
+policy.interventionRequested
 ```
 
-Delegovaná aktivita musí mít jiný source než manual activity.
+Delegovaná aktivita má jiný source než manual activity a vlastní confidence/error contract.
 
-## 5. Základní state layers
+## 5. State layers
 
-Current `KorpState` může zůstat postupně rozšiřovaný, ale core loop potřebuje vedle resources/stats také:
-
-```ts
-metricPackets: MetricPacket[];
-auditInstances: AuditInstance[];
-```
-
-Pragmatický shape:
+Core loop potřebuje vedle resources/stats:
 
 ```ts
 type MetricPacket = {
@@ -151,6 +177,8 @@ type MetricPacket = {
   status: "pending" | "certified" | "rejected";
   createdAt: number;
   auditTemplateId: string;
+  rangeStart?: number;
+  rangeEnd?: number;
   certifiedAt?: number;
 };
 
@@ -165,23 +193,45 @@ type AuditInstance = {
 };
 ```
 
-Definice templates se neukládají do save, pouze jejich ID a runtime state.
+Action modules smějí mít samostatný local/session shape:
 
-## 6. Resources
+```ts
+type ModuleSessionState = {
+  moduleId: string;
+  sessionId: string;
+  status: "briefing" | "active" | "choice" | "closing" | "closed";
+  startedAt: number;
+  runXp: number;
+  selectedUpgradeIds: string[];
+  localCounters: Record<string, number>;
+};
+```
 
-Globální resources zahrnují technical `notionalWorkUnits`, Audit Pressure, Stabilization, Compliance Integrity, Entropy, Perceived Productivity, System Order a Approval Units.
+`ModuleSessionState` není automaticky global save. Modul deklaruje, co se při zavření relace zahodí, co se uloží lokálně a jaký closure event odešle do core.
 
-Pro player-facing early game:
+Definice templates a upgrade katalogů se do save nekopírují; ukládají se ID a stav.
+
+## 6. Resources and values
+
+Globální early player-facing currency:
 
 ```text
 notionalWorkUnits → Evidence / EV
 ```
 
-Evidence vzniká z `audit.evidenceCertified`, ne z raw clicku.
+Evidence vzniká z `audit.evidenceCertified`, ne z raw eventu, run XP ani packet creation.
 
-Audit Pressure má postupně vycházet z backlogu, stáří packetů, discrepancies a neověřené delegované aktivity, nikoliv z každého kliknutí.
+Meters:
 
-Ne všechny resources musí být viditelné hned. Viditelnost je progression reward.
+- Audit Pressure;
+- Entropy;
+- Stabilization;
+- Compliance Integrity;
+- System Order.
+
+Run-local XP je session pacing value, ne resource v `KorpState.resources`.
+
+Audit Pressure má vycházet z backlogu, stáří packetů, discrepancies a neověřené delegované aktivity, nikoliv z každého kliknutí nebo každého projectile impactu.
 
 ## 7. Current module events
 
@@ -194,8 +244,6 @@ clickaudit.sourceUpdated
 clickaudit.reset
 clickaudit.batchCompleted
 ```
-
-Canonical význam:
 
 - `clickaudit.click` = doslovný raw click;
 - `clickaudit.batchCompleted` = packet boundary, ne currency reward.
@@ -211,7 +259,7 @@ fidget.speedThresholdReached
 fidget.sessionSettled
 ```
 
-`spinTick`, pointer moves, animation frames a průběžné physics změny jsou transient/local a nesmějí vytvářet progression eventy. `fidget.sessionSettled` vzniká právě jednou až po úmyslném smysluplném pohybu a jeho přirozeném doběhu. Nese jen privacy-safe metadata potřebná pro auditovatelný pořádek relací: sequence, mode a `source: manual`. Raw closure mění event/stat count, ale sama nepřidává Evidence ani jiný přímý currency reward.
+`spinTick`, pointer moves, frames a průběžné physics změny jsou transient/local. `fidget.sessionSettled` vzniká právě jednou po úmyslném pohybu a přirozeném doběhu. Sám nepřidává Evidence.
 
 ### Bloom
 
@@ -308,39 +356,94 @@ cradle.motionEnded
 cradle.responsibilityTransferred
 ```
 
-## 9. Resource and metric mapping
+### Priority Containment
+
+Global candidate events:
+
+```text
+priority.deflected
+priority.rerouted
+priority.duplicateMerged
+priority.escalationContained
+priority.sessionClosed
+priority.sessionExceeded
+```
+
+Implementation rule:
+
+- každý collision nebo projectile tick zůstává local;
+- core event se emituje jen pro player-meaningful raw activation, aggregate milestone nebo closure;
+- `priority.sessionClosed` nese pouze aggregate privacy-safe summary;
+- session local XP nesmí zvýšit Evidence.
+
+Provisional packet candidate:
+
+```text
+2 priority.sessionClosed
+→ priority-containment packet
+→ Audit 27-P
+→ Evidence +1 po certifikaci
+```
+
+Tento threshold není machine-readable contract, dokud greybox neprojde playtestem.
+
+### Alignment Rally
+
+```text
+argument.responseLogged
+argument.qualifierAttached
+argument.claimSplit
+argument.commitmentCreated
+alignment.sessionClosed
+alignment.sentOffline
+```
+
+Provisional packet candidate:
+
+```text
+3 alignment.sessionClosed
+→ alignment packet
+→ Audit 31-R
+→ Evidence +1 po certifikaci
+```
+
+Text claimu se nesmí ukládat do globální telemetry. Event používá pouze interní template/claim ID a aggregate outcome.
+
+## 9. Metric mapping
 
 ```text
 ClickAudit
-→ manual click raw metric
-→ click packets
-→ audit
+→ manual clicks
+→ ClickAudit packets
+→ Audit 10-A
 → Evidence
 
 Fidget
-→ `fidget.sessionSettled` raw metric
-→ každé 3 nové closures vytvoří `fidget-sessions-<rangeStart>-<rangeEnd>`
-→ repeatable Audit 18-S
-→ certifikace právě jednou
-→ Evidence +1
+→ sessionSettled
+→ packet po 3 closures
+→ Audit 18-S
+→ Evidence
 
 Bloom
-→ status changes / waveAdvanced raw metric
-→ compliance packets
+→ waveAdvanced
+→ Bloom packet
 → audit
 → Evidence
 
-Button Compliance
-→ presses / sequence raw metric
-→ approval-local state
-→ audit or authorization
+Priority Containment
+→ sessionClosed / aggregate operational outcomes
+→ packet až po prototype gate
+→ Audit 27-P
+→ Evidence
 
-Corner Watch
-→ observation session raw metric
-→ optional packet / idle report
+Alignment Rally
+→ sessionClosed / closure outcome
+→ packet až po prototype gate
+→ Audit 31-R
+→ Evidence
 ```
 
-Module-local resources zůstávají možné. Globální spendable Evidence ale nevzniká přímo ze základní akce.
+Module-local score, run XP, combo, build level a cosmetic unlock nejsou globální Evidence.
 
 ## 10. Event privacy
 
@@ -348,9 +451,13 @@ Povolené:
 
 ```json
 {
-  "type": "clickaudit.click",
+  "type": "priority.sessionClosed",
   "value": 1,
-  "meta": { "profile": "window-drag-handle" }
+  "meta": {
+    "source": "manual",
+    "outcome": "closed-with-reservation",
+    "waveCount": 5
+  }
 }
 ```
 
@@ -363,112 +470,75 @@ Zakázané:
 - viditelný text;
 - screenshots;
 - raw klávesy;
-- external active-window data.
+- external active-window data;
+- plný input replay;
+- custom text claimu zadaný hráčem.
 
 > Event je pracovní záznam absurdity. Nesmí se z něj stát pracovní záznam člověka.
 
-## 11. Persistence levels
+## 11. Audit interaction bridge
 
-### Transient
-
-Pouze UI/session:
-
-- pointer movement;
-- animační frame;
-- fyzikální tick;
-- průběžná rotace spinneru;
-- každý pixel wipe tahu.
-
-### Raw gameplay
-
-Doslovná agregovatelná aktivita:
-
-- `clickaudit.click`;
-- `bloom.tileClicked`;
-- `button.pressed`;
-- další úmyslné activations.
-
-### Metric closure
-
-- `clickaudit.batchCompleted`;
-- `fidget.sessionSettled` — raw natural closure; každé tři nové closures tvoří packet boundary a neúplný zbytek zůstává v baseline/cursoru;
-- `bloom.waveAdvanced`;
-- `corner.sessionCompleted`;
-- `button.sequenceCompleted`.
-
-### Audit milestone
-
-- `audit.formSubmitted`;
-- `audit.evidenceCertified`;
-- `audit.discrepancyRaised`;
-- `system.memoAcknowledged`;
-- `system.shiftClosed`;
-- `system.auditCycleClosed`.
-
-## 12. Audit interaction bridge
-
-Každá úmyslná field activation vytvoří právě jeden auditovaný raw click a změní lokální field state.
+Aktivní field:
 
 ```text
-audit checkbox changed
-→ clickaudit.click(profile: active-audit-field)
-→ audit local field state updated
+audit field change
+→ právě 1 clickaudit.click(profile: active-audit-field)
+→ local field state
 ```
 
-Klik do hotového dokumentu může vytvořit `clickaudit.click(profile: completed-audit-body)`, ale nesmí znovu měnit auditní data.
-
-Drag titlebaru:
+Hotový audit:
 
 ```text
-pointer down na drag handle
+click in completed document
+→ clickaudit.click(profile: completed-audit-body)
+→ no data mutation
+```
+
+Drag handle:
+
+```text
+pointer down
 → právě 1 clickaudit.click(profile: window-drag-handle)
-→ libovolný pointer move
-→ 0 dalších click events
+→ pointer move does not generate click events
 ```
 
-## 13. Metric packet flows
+## 12. Current packet flows
 
 ### ClickAudit
 
 ```text
-25 nových raw ClickAudit clicks od batch baseline
+25 nových raw clicks od baseline
 → clickaudit.batchCompleted
-→ create packet
-→ status pending
-→ create/offer Audit 10-A instance
-→ audit.formSubmitted
+→ pending packet
+→ Audit 10-A
 → audit.evidenceCertified
-→ packet status certified
 → Evidence +1
 ```
 
 ### Fidget
 
 ```text
-3 nové `fidget.sessionSettled` od Fidget baseline/cursoru
-→ create packet `fidget-sessions-<rangeStart>-<rangeEnd>`
-→ status pending
-→ create/offer repeatable Audit 18-S instance
-→ audit.formSubmitted
+3 nové fidget.sessionSettled
+→ fidget-sessions-<rangeStart>-<rangeEnd>
+→ pending Audit 18-S
 → audit.evidenceCertified
-→ packet status certified
-→ Evidence +1 právě jednou
+→ Evidence +1
 ```
 
-Vytvoření Fidget packetu je queue mutation. Nikdy samo neotevře auditní okno a nikdy nepřevezme focus. ClickAudit a Fidget packet audity sdílejí jednu pending queue; taskbar zobrazuje jejich celkový pending count.
+Vytvoření packetu neotevírá okno ani nepřebírá focus. ClickAudit a Fidget používají jednu pending queue.
 
-Idempotency guards musí zabránit:
+## 13. Idempotency guards
 
-- dvojitému packetu za stejný ClickAudit nebo Fidget rozsah;
+Musí zabránit:
+
+- dvojitému packetu za stejný range;
 - dvojité certifikaci;
-- retroaktivnímu vytvoření packetů po save migration;
-- double-countingu capture a explicit handleru.
-
-Schema 4 → 5 migration nastaví Fidget baseline na aktuální počet `fidget.sessionSettled` a nevytvoří žádný retroaktivní Fidget packet.
+- retroaktivnímu packetu po migration;
+- double-countingu capture a explicit handleru;
+- opakovanému closure eventu za stejnou module session;
+- dvojitému Evidence rewardu z module-specific i generic packet eventu.
 
 ## 14. Delegation source contract
-
-Budoucí source categories:
 
 ```text
 manual
@@ -476,9 +546,15 @@ delegated
 system-generated
 ```
 
-`delegated` nebo `system-generated` event nesmí zvyšovat `manualClicks`.
+`delegated` ani `system-generated` event nesmí zvyšovat manual counters.
 
-Dashboard může později agregovat všechny kategorie, ale musí je umět oddělit.
+Action-module policy může vytvořit delegated session, ale musí zachovat:
+
+- source;
+- confidence;
+- applied policy ID;
+- outcome;
+- případnou discrepancy vazbu.
 
 ## 15. Surface mutation flow
 
@@ -486,13 +562,14 @@ Dashboard může později agregovat všechny kategorie, ale musí je umět oddě
 certification / authorization milestone
 → progression unlock
 → surface mutation
-→ nový shortcut / folder / file / setting / screensaver
+→ nový shortcut / folder / file / policy surface / screensaver
 ```
 
-Surface mutation reprezentuje výsledek ekonomiky. Sama nesmí obcházet audit nebo autorizaci.
+Surface mutation reprezentuje výsledek ekonomiky. Nesmí obcházet audit nebo autorizaci.
 
-## 16. Migration status
+## 16. Implementation status
 
-Task 023 aktivně přidává druhý metric source s pevným provisional/playtestable packet size `3`, Audit 18-S a smíšeným backlogem. Runtime musí zachovat pravidlo, že `fidget.sessionSettled` Evidence přímo neuděluje.
-
-Machine-readable `events.json` stále obsahuje staré přímé Fidget yieldy, včetně `notionalWorkUnits`. Tento známý rozpor se v Tasku 023 nepoužívá jako runtime Evidence flow a jeho reconciliation spolu s balance/data parity zůstává Tasku 024.
+- Task 023 dokončil druhý metric source a mixed backlog.
+- Task 024 zůstává data/rebalance reconciliation.
+- Priority Containment a Alignment Rally jsou pouze design/prototype candidates.
+- Jejich event IDs se nesmějí přidat do machine-readable progression dat před samostatným greybox gate a schváleným integration taskem.

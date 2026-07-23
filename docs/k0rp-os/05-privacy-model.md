@@ -1,121 +1,124 @@
 # K0rp_OS — Privacy Model
 
-Verze: 0.1.3 pracovní návrh
+Verze: 0.4.0 pracovní návrh
 
 ## 1. Základní pravidlo
 
 K0rp_OS si může dělat srandu z kontroly. **Nesmí se stát kontrolou.**
 
-Produkt je satira na pseudo-produktivitu, krypto-management, měření ne-výkonu a korporátní rituály. Proto musí být privacy model čistý, čitelný a lokální-first.
+Produkt je satira na pseudo-produktivitu, krypto-management, měření ne-výkonu a korporátní rituály. Privacy model proto musí být:
 
-## 2. Co smíme sledovat bez rizika
+- local-first;
+- čitelný;
+- explicitní;
+- minimální;
+- oddělený od doublespeaku;
+- bezpečný i po přidání action modules, delegation a policy.
 
-Uvnitř K0rp modulů lze sledovat:
+## 2. Co smíme sledovat uvnitř K0rp
 
-- kliky v ClickAudit,
-- spiny ve Fidget,
-- tahy v Bloom,
-- prasklé bubliny,
-- stisky tlačítek,
-- vyčištěnou plochu,
-- zapadnuté tvary,
-- odrazy loga,
-- hrabání písku,
-- cykly Newtonovy kolíbky,
-- interní K0rp progress,
-- unlocky,
-- settings.
+Explicitní interakce s hrou:
 
-To jsou explicitní interakce s hrou / modulem.
+- clicks;
+- audit field changes;
+- Fidget settled sessions;
+- Bloom state changes/waves;
+- bubble pops/sheets;
+- button sequences;
+- cleaned surfaces;
+- snapped shapes;
+- corner/observation closures;
+- Zen patterns;
+- cradle motion closures;
+- Priority Containment aggregate outcomes/session closure;
+- Alignment Rally template-safe outcomes/session closure;
+- K0rp unlocks, authorizations, packets, audits, policies a settings.
 
-## 3. Co nesmíme sledovat defaultně
+## 3. Co není automaticky globální event
 
-K0rp_OS nesmí defaultně sledovat:
+Následující zůstává transient/module-local, pokud není výslovně agregováno:
 
-- názvy aplikací,
-- názvy oken,
-- URL,
-- text,
-- clipboard,
-- screenshoty,
-- klávesy,
-- obsah dokumentů,
-- pracovní soubory,
-- procesy,
-- konkrétní weby,
-- identitu třetích stran.
+- pointer coordinates;
+- every animation/physics tick;
+- every projectile collision;
+- exact enemy trajectory history;
+- full input replay;
+- frame-by-frame spinner state;
+- temporary run XP;
+- temporary particles;
+- raw controller motion;
+- precise claim trajectory log.
 
-## 4. Privacy režimy
+High-intensity module může lokálně použít data pro simulation. Do core/save/bridge posílá pouze potřebné aggregate records.
+
+## 4. Co nesmíme sledovat defaultně
+
+- external app names;
+- external window titles;
+- URL;
+- visible text;
+- clipboard;
+- screenshots;
+- raw keys;
+- document contents;
+- work files;
+- process list;
+- third-party identity;
+- free-text claims;
+- voice/audio recording;
+- full action replay;
+- exact pointer heatmap;
+- biometric data.
+
+## 5. Privacy modes
 
 ### OFF
 
-Nesleduje nic mimo explicitní modul.
+Žádný tracking mimo explicitní local module state nutný pro běh appky.
 
 ### K0rp-only
 
-Sleduje jen interakce uvnitř K0rp modulů.
+Pouze interakce uvnitř K0rp modules/surfaces.
 
-Příklad:
+Příklady:
 
 ```text
-bubble.popped
 clickaudit.click
-fidget.spinTick
+fidget.sessionSettled
+bloom.waveAdvanced
+priority.sessionClosed
+alignment.sessionClosed
 ```
 
 ### Privacy Work Blob
 
-Sleduje pouze agregovanou aktivitu mimo K0rp.
-
-Příklad:
+Pouze anonymní aggregate pulse mimo K0rp:
 
 ```text
 system.externalWorkPulse
 system.externalIdlePulse
 ```
 
-Neobsahuje app name, URL, title ani content.
+Bez app name, URL, title, text nebo screenshotu.
+
+Není součást current MVP.
 
 ### Local Full Mode
 
-Experimentální režim pro osobní zařízení.
+Experimentální explicitní opt-in pro osobní zařízení.
 
 Podmínky:
 
-- explicitní opt-in,
-- lokální zpracování,
-- jasný indikátor,
-- žádný cloud raw sync,
-- možnost export/delete.
+- local processing;
+- jasný indicator;
+- no raw cloud sync;
+- export/delete;
+- permission-by-permission review;
+- samostatný implementation/security task.
 
-Není součást MVP.
-
-## 5. Cloud sync
-
-Cloud sync je volitelný a pozdější.
-
-Povolené pro sync:
-
-- fake employee id,
-- progress totals,
-- unlocks,
-- cosmetics,
-- settings,
-- achievement state,
-- language preference.
-
-Nepovolené pro sync:
-
-- raw external activity,
-- URL,
-- app/window names,
-- keyboard data,
-- screenshots,
-- personal content.
+Není součást current roadmap core.
 
 ## 6. Module privacy profile
-
-Každý modul má privacy profile.
 
 ```ts
 export type KorpPrivacyProfile =
@@ -125,28 +128,171 @@ export type KorpPrivacyProfile =
   | "cloudSyncSafe";
 ```
 
-Příklady:
+Current/candidate mapping:
 
 ```text
-ClickAudit          → korpOnly / localAggregate podle režimu
-Fidget              → korpOnly
-Bloom               → korpOnly
-Bublinková Fólie    → korpOnly
-Button Compliance   → korpOnly
-Surface Compliance  → korpOnly
-Shape Compliance    → korpOnly
-Corner Watch        → korpOnly
-Zenová Zahrádka     → korpOnly
-Newtonova Kolíbka   → korpOnly
-Attention Runner    → korpOnly
-Overlay Work Blob   → localAggregate
+ClickAudit           → korpOnly
+Fidget               → korpOnly
+Bloom                → korpOnly
+Bubble Wrap          → korpOnly
+Button Compliance    → korpOnly
+Surface Compliance   → korpOnly
+Shape Compliance     → korpOnly
+Corner Watch         → korpOnly
+Zenová Zahrádka      → korpOnly
+Newtonova Kolíbka    → korpOnly
+Attention Runner     → korpOnly
+Priority Containment → korpOnly; aggregate closure only for bridge
+Alignment Rally      → korpOnly; template ID/outcome, no free text
+Overlay Work Blob    → localAggregate
 ```
 
-## 7. UI pravidla
+## 7. Action-module event limits
 
-Privacy stav musí být viditelný.
+### Priority Containment
 
-Overlay musí mít jasný indikátor:
+Povolený session summary:
+
+```json
+{
+  "type": "priority.sessionClosed",
+  "meta": {
+    "source": "manual",
+    "outcome": "closed-with-reservation",
+    "waveCount": 5,
+    "processedCount": 84,
+    "routedCount": 21
+  }
+}
+```
+
+Zakázané:
+
+- frame-by-frame position;
+- complete collision log;
+- raw input timeline;
+- screen recording;
+- external ticket content;
+- user-entered workplace data.
+
+### Alignment Rally
+
+Povolené:
+
+- fictional template ID;
+- response/qualifier class;
+- closure outcome;
+- aggregate rally count.
+
+Zakázané:
+
+- hráčem vložený skutečný text;
+- pasted email/chat content;
+- names;
+- external document parsing;
+- complete trajectory/input replay.
+
+První prototype používá pouze bundled fictional claims.
+
+## 8. Delegation and policy privacy
+
+Povolené persistent data:
+
+- fictional operator ID;
+- module assignment;
+- capability/authorization IDs;
+- policy IDs;
+- target weights;
+- risk tolerance;
+- allowed exception IDs;
+- supervision cadence;
+- aggregate confidence/outcome;
+- discrepancy IDs.
+
+Zakázané:
+
+- reálná jména kolegů;
+- pracovní účty;
+- external schedules;
+- employer data;
+- real performance evaluation;
+- import reálných tickets/priorities.
+
+K0rp personnel jsou fictional system entities, ne kopie workplace rosteru.
+
+## 9. Local playtest instrumentation
+
+Development mode smí lokálně zaznamenat:
+
+- milestone timestamps;
+- event counts;
+- packet/certification times;
+- unlock order;
+- selected bundled upgrade IDs;
+- action session duration/outcome;
+- aggregate performance metrics;
+- rendering performance;
+- save/load errors.
+
+Musí být:
+
+- off nebo explicitně označený;
+- exportable;
+- deletable;
+- bez cloud uploadu;
+- bez external context.
+
+## 10. Standalone bridge
+
+```text
+standalone module
+→ local state
+→ explicit linked mode
+→ aggregate KorpEvent
+→ authorization/source validation
+→ K0rp_OS core
+```
+
+Bridge nesmí posílat:
+
+- pointer stream;
+- physics frames;
+- screenshots;
+- external app context;
+- free text;
+- full replay.
+
+Unlinked mode funguje bez accountu a bez campaign rewardu.
+
+## 11. Cloud sync
+
+Pozdější a volitelný.
+
+Povolené candidates:
+
+- fake employee ID;
+- progression totals;
+- packets/audit status, pokud je bezpečně serializovaný;
+- authorizations;
+- cosmetics;
+- settings;
+- bundled policy IDs/config;
+- language preference.
+
+Nepovolené:
+
+- raw external activity;
+- URL/app/window names;
+- keyboard/pointer data;
+- screenshots;
+- personal content;
+- free-text claims;
+- full action replay;
+- local debug instrumentation bez výslovného opt-in designu.
+
+## 12. UI pravidla
+
+Privacy state musí být viditelný:
 
 ```text
 K0RP-ONLY
@@ -155,37 +301,38 @@ OFF
 LOCAL FULL MODE
 ```
 
-Consent text musí být normální lidskou řečí, ne in-universe doublespeak.
+Consent text je normální lidskou řečí.
 
 Dobře:
 
-> Režim Privacy Work Blob zaznamenává pouze anonymní pulzy aktivity. Nezaznamenává názvy aplikací, weby, text ani obrazovku.
+> „Tento režim ukládá pouze souhrnné K0rp eventy. Nezaznamenává názvy aplikací, weby, text, obrazovku ani vstupy mimo K0rp.“
 
 Špatně:
 
-> Souhlasíte s optimalizací zážitku.
+> „Souhlasíte s optimalizací pracovního komfortu.“
 
-K0rp může být absurdní, ale privacy consent musí být čitelný.
+K0rp fiction může být absurdní. Privacy consent ne.
 
-## 8. Export / delete
+## 13. Export and delete
 
 Uživatel musí mít možnost:
 
-- exportovat lokální save,
-- smazat lokální save,
-- resetovat fake employee id,
-- vypnout sync,
+- exportovat local save;
+- smazat local save;
+- resetovat fake employee ID;
+- smazat local playtest logs;
+- odpojit standalone bridge;
+- vypnout sync;
 - smazat cloud progress, pokud sync existuje.
 
-## 9. Důležité pravidlo
+## 14. Platform note
 
-> Privacy model není vedlejší feature. Je to součást pointy. Hra o kontrole nesmí sama začít kontrolovat.
+Windows je primary platform pro desktop/overlay behavior. Privacy-sensitive functions musí být ověřené hlavně na Windows.
 
+Mac je dev/design/smoke-test prostředí. Nelze z něj odvodit bezpečnost Windows global hooks.
 
-## Platform privacy note
+Platform bridge je mimo `korp-core`. Core dostává normalizované aggregate events, ne raw OS data.
 
-Windows je primární platforma pro overlay a desktop behavior, takže všechny privacy-sensitive funkce musí být ručně ověřené hlavně na Windows.
+## 15. Důležité pravidlo
 
-Mac může sloužit pro vývoj, návrh a smoke test, ale nesmí se z něj odvodit, že overlay/global activity behavior je bezpečně vyřešený i na Windows.
-
-Platform-specific bridges musí být oddělené od `korp-core`. Core smí dostávat jen normalizované eventy, ne raw OS data.
+> Hra o kontrole nesmí začít kontrolovat. Hra o hromadě priorit nesmí dostat přístup k těm skutečným.

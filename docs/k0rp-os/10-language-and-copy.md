@@ -1,43 +1,49 @@
 # K0rp_OS — Language & Copy Guide
 
-Verze: 0.1.3 pracovní návrh
+Verze: 0.4.0 pracovní návrh
 
 ## 1. Primární jazyk
 
-Primární jazyk K0rp_OS je **čeština**.
+Primární jazyk K0rp_OS je čeština.
 
 Čeština je canonical voice pro:
 
-- UI,
-- interní hlášky,
-- moduly,
-- memo texty,
-- knowledge base,
-- achievementy,
-- error messages,
-- fake corporate onboarding.
+- UI;
+- interní hlášky;
+- audit forms;
+- module labels;
+- mema;
+- Knowledge Base;
+- errors;
+- onboarding;
+- session closure reports;
+- policy a discrepancy surfaces.
 
-Angličtina je plánovaná později, protože se nabízí pro širší publikum i corporate absurditu. Ale první hlas K0rp_OS je český.
+Anglická lokalizace přijde později. Nemá být doslovná, ale funkčně a tónově ekvivalentní.
 
 ## 2. Jaká čeština
 
-Ne čistě spisovná učebnicová čeština. Ne sterilní překlad SaaS produktu.
+Cílový jazyk:
 
-Cílový jazyk je:
+- český základ;
+- korporátní doublespeak;
+- přirozené anglicismy;
+- provozní/business slovník;
+- suchý humor;
+- lehce znepokojivá formalita;
+- věty, které by mohly být reálným interním oznámením, kdyby realita měla horší copywritera.
 
-- český základ,
-- korporátní doublespeak,
-- přirozené anglicismy,
-- provozní/business slovník,
-- suchý humor,
-- lehce znepokojivá formalita,
-- věty, které by mohly být reálné interní oznámení, kdyby realita měla horší copywritera.
+Nechceme:
+
+- sterilní SaaS překlad;
+- fantasy/combat slang;
+- gamer meme voice;
+- přehnaně tajemné lore formulace;
+- stand-up punchline v každém field labelu.
 
 ## 3. Anglicismy
 
-Anglicismy jsou žádoucí.
-
-Používat:
+Používat tam, kde znějí přirozeně pro firemní/provozní prostředí:
 
 ```text
 module
@@ -62,22 +68,28 @@ tracking
 resource
 unlock
 milestone
+owner
+scope
+priority
+capacity
+routing
+alignment
+follow-up
+policy
+exception
+supervision
 ```
 
-Příklad:
-
-> „Button Compliance workflow dokončen. Approval Units byly syncnuty do lokálního progressu.“
-
-Tohle je záměrně trochu odporné. A přesně proto to funguje.
+Anglicismus není sám o sobě vtip. Musí být funkční součástí věty.
 
 ## 4. Doublespeak
-
-K0rp_OS texty mají často znít jako něco pozitivního, co je ve skutečnosti varování.
 
 Vzorec:
 
 ```text
-pozitivní slovo + procesní slovo + nepatrně špatný důsledek
+pozitivní nebo neutrální procesní výraz
++ přesný stav
++ nepatrně špatný důsledek
 ```
 
 Příklady:
@@ -87,57 +99,129 @@ Příklady:
 - „Stabilizace probíhá. Nepleťte si ji s řešením.“
 - „Výkon nebyl detekován. Pocit výkonu je stabilní.“
 - „Souhlas byl přijat. Obsah souhlasu nebyl přiložen.“
+- „Priority byly sníženy změnou jejich označení.“
+- „Shoda nebyla dosažena. Nebyl však zaznamenán nesouhlas.“
 
 ## 5. Míra absurdity
-
-K0rp_OS nemá mluvit jako random meme generátor.
 
 Dobře:
 
 > „Tvar zapadl. Význam nebyl vyžadován.“
 
+> „Kapacita byla překročena v souladu s aktuální prioritou.“
+
 Špatně:
 
-> „LOL tvar šel brrr, compliance goblin happy.“
+> „LOL ticket horde goes brrr.“
 
-Absurdní ano. Infantilní ne.
+> „Zabil jsi executive bosse a získal 500 corporate coins.“
 
-## 6. Typy textů
+K0rp_OS je parodie zevnitř systému. Ne komentátor stojící venku s cedulí, že systém je absurdní.
+
+## 6. Copy layers
 
 ### System status
 
-Krátké, klidné, věcné, lehce špatně.
+Krátké, klidné, věcné:
 
-Příklady:
-
-- „SYSTÉM ONLINE.“
-- „PŘÍTOMNOST DETEKOVÁNA.“
-- „NEČINNOST PROBÍHÁ STANDARDNĚ.“
-- „KONTEXT IGNOROVÁN.“
+- `SYSTÉM ONLINE.`
+- `PŘÍTOMNOST DETEKOVÁNA.`
+- `NEČINNOST PROBÍHÁ STANDARDNĚ.`
+- `KONTEXT IGNOROVÁN.`
+- `RELACE UZAVŘENA.`
+- `RELACE UZAVŘENA S VÝHRADOU.`
 
 ### Module tooltip
 
-Krátký korporátní popis.
-
-Příklady:
+Jedna věta, která vysvětlí účel a zároveň ho mírně poškodí.
 
 - ClickAudit: „Měří kliky. Vyhodnocuje přítomnost. Optimalizuje nic.“
 - Fidget: „Nástroj pro stabilizaci rozptýlením.“
 - Bloom: „Nechte drobné myšlenky růst do měřitelných problémů.“
-- Corner Watch: „Čekejte na roh v souladu s interními hodnotami.“
+- Priority Containment: „Snižuje prioritní zatížení změnou směru jeho pohybu.“
+- Alignment Rally: „Vrací požadavky, dokud nezískají přijatelný administrativní tvar.“
+
+### Audit question
+
+Auditní otázka:
+
+- začíná téměř normálně;
+- je srozumitelná bez lore;
+- odpovědi mohou být absurdní až svou blízkostí;
+- nesmí být pět samostatných gagů v jednom formuláři.
+
+### Closure report
+
+Closure report odděluje module outcome od institucionálního uznání.
+
+Dobře:
+
+```text
+RELACE UZAVŘENA
+ZPRACOVÁNO: 84 POLOŽEK
+VRÁCENO ODESÍLATELI: 12
+VÝSLEDEK: NEOVĚŘEN
+```
+
+Špatně:
+
+```text
+VICTORY!
++1 EVIDENCE
+```
+
+Evidence nevzniká module closure. Vzniká až pozdějším auditem.
+
+### Upgrade copy
+
+Upgrade title může být krátký corporate termín. Description musí jasně říct mechanický účinek.
+
+Dobře:
+
+```text
+RETURN TO SENDER
+Zpracovaný požadavek se jednou odrazí k nejbližší další prioritě.
+```
+
+Špatně:
+
+```text
+RETURN TO SENDER
+Synergie je teď šílená.
+```
+
+Humor nesmí zakrýt pravidlo.
+
+### Policy copy
+
+Policy UI musí být zvlášť přesné, protože hráč rozhoduje o automatizaci.
+
+```text
+PREFEROVAT SKUTEČNÉ P0
+TOLERANCE RIZIKA: STANDARDNÍ
+POVOLENÉ VÝJIMKY: 1
+KONTROLNÍ VZOREK: KAŽDÁ 3. RELACE
+```
+
+### Discrepancy copy
+
+Discrepancy popíše konflikt, ne morální selhání hráče.
+
+```text
+NESROVNALOST
+Položka byla označena jako duplicate před vznikem původní položky.
+Vyžaduje se lokální kontrola.
+```
 
 ### Internal memo
 
-Formální, zdánlivě normální, s jedním absurdním bodem.
-
-Příklad:
+Formální, zdánlivě normální, s jedním přesně umístěným absurdním bodem.
 
 ```text
 OD: Oddělení Přenesené Odpovědnosti
 PŘEDMĚT: Aktualizace hybnosti
 
 Vážení zaměstnanci,
-
 s potěšením oznamujeme, že hybnost byla úspěšně předána dalšímu oddělení.
 Odpovědnost zůstává ve fázi interpretace.
 
@@ -146,26 +230,22 @@ Děkujeme za vaši účast na pohybu.
 
 ### Privacy text
 
-Privacy text **nesmí** být zahalený do doublespeaku.
-
-Musí být jasný, lidský a konkrétní.
+Privacy copy nesmí používat doublespeak.
 
 Dobře:
 
-> „Tento režim nezaznamenává názvy aplikací, weby, text ani obrazovku. Ukládá pouze anonymní pulzy aktivity.“
+> „Tento režim nezaznamenává názvy aplikací, weby, text ani obrazovku. Ukládá pouze anonymní K0rp eventy a souhrnné hodnoty.“
 
 Špatně:
 
 > „Optimalizujeme váš pracovní komfort.“
 
-## 7. Čeština vs angličtina v názvech
-
-Názvy mohou být mix.
+## 7. Názvy modulů
 
 Preferovaný pattern:
 
 ```text
-anglický/korporátní termín + český podtitul
+anglický/korporátní termín + český in-universe podtitul
 ```
 
 Příklady:
@@ -175,38 +255,98 @@ Příklady:
 - `Corner Watch — Rohové Očekávání`
 - `Bublinková Fólie — Certified Relaxation Sheet`
 - `Newtonova Kolíbka — Přenos Odpovědnosti`
+- `Priority Containment — Zadržování priorit`
+- `Alignment Rally — Argument Routing`
 
-## 8. Lokalizace do angličtiny později
+Pracovní názvy v docs nejsou automaticky finální labely ve hře.
 
-Angličtina nebude doslovný překlad.
+## 8. Priority Containment language bank
 
-Čeština může mít lokální provozní hnus, angličtina může mít víc corporate handbook vibe.
+### Enemy/object names
 
-Například:
+Používat objekty/procesy, ne lidi:
 
-CZ:
+- Quick Ask;
+- Meeting Invite;
+- Ownerless Blocker;
+- Duplicate Ticket;
+- P0 Escalation;
+- Executive Priority.
 
-> „Nečistota byla odstraněna. Příčina zůstává v řešení.“
+### Status copy
 
-EN adaptace:
+- „Nová priorita nahradila všechny předchozí priority.“
+- „Owner nebyl nalezen. Položka zůstává přidělena.“
+- „Duplicate byl sloučen s položkou, která dosud nevznikla.“
+- „Kapacita byla rozšířena změnou očekávání.“
+- „Nezpracované priority byly převedeny do následné kontroly.“
 
-> „The residue has been removed. Root cause remains under procedural review.“
+### Audit 27-P draft
 
-Obě verze mají mít stejnou duši, ne stejná slova.
+```text
+OVĚŘENÍ SNÍŽENÍ PRIORITNÍHO ZATÍŽENÍ
 
-## 9. Forbidden copy patterns
+Jakým způsobem byl objem priorit snížen?
 
-Vyhnout se:
+○ Priority byly vyřešeny.
+○ Priority byly přeřazeny.
+○ Priority byly přejmenovány.
+○ Snížení nebylo možné potvrdit.
+```
 
-- příliš přímému lore dumpu,
-- vysvětlování tajné metafyziky,
-- konkrétní parodii jedné reálné firmy,
-- generickému startup/SaaS jazyku,
-- moralizování o produktivitě,
-- čistému meme slangu,
-- dlouhým textům tam, kde stačí jedna věta s nožem pod stolem.
+Tento copy je design draft, ne machine-readable canonical form před Taskem 035.
 
-## 10. Copy examples per new module
+## 9. Alignment Rally language bank
+
+### Claim templates
+
+- „Toto musí být hotové dnes.“
+- „Změna nebude mít dopad.“
+- „Owner je přece jasný.“
+- „Je to jen rychlá úprava.“
+
+Claims jsou fictional templates. Nemají být přímé citace konkrétních lidí nebo firmy.
+
+### Response zones
+
+```text
+EVIDENCE
+SCOPE
+OWNER
+DEPENDENCY
+```
+
+### Closure outcomes
+
+```text
+ACCEPTED
+REJECTED
+DEFERRED
+OWNER ASSIGNED
+SENT OFFLINE
+MEETING REQUIRED
+NO DECISION RECORDED
+```
+
+### Status copy
+
+- „Shoda byla zaznamenána bez potvrzení jejího vzniku.“
+- „Nebyl zaznamenán nesouhlas.“
+- „Další diskuse byla přesunuta mimo auditní stopu.“
+- „Claim získal ownera. Owner nebyl informován.“
+
+### Audit 31-R draft
+
+```text
+BYLO DOSAŽENO SHODY?
+
+○ Shoda byla dosažena.
+○ Shoda byla zaznamenána.
+○ Nebyl zaznamenán nesouhlas.
+○ Další diskuse byla přesunuta mimo auditní stopu.
+```
+
+## 10. Copy examples pro ostatní moduly
 
 ### Corner Watch
 
@@ -256,11 +396,26 @@ Vyhnout se:
 - „Každý náraz posouvá problém na další jednotku.“
 - „Systém zůstává v pohybu. Výstup nebyl detekován.“
 
-## 11. Font jako součást hlasu
+## 11. Forbidden patterns
 
-Texty K0rp_OS nejsou jen obsah. Jsou fyzická vrstva systému.
+Vyhnout se:
 
-Primární aplikační fonty:
+- explicitnímu lore dumpu;
+- vysvětlování skryté meta vrstvy;
+- konkrétní parodii jedné reálné firmy;
+- moralizování o produktivitě;
+- gamer meme slangu;
+- fantasy combat slovníku typu kill, loot, boss chest v player-facing copy;
+- terapeutickým a klinickým slibům;
+- „dopamin hit“ jako faktickému popisu;
+- větám, které skrývají mechanické pravidlo upgradu;
+- generovaným auditům, kde je každý řádek punchline.
+
+## 12. Font a live text
+
+Text je fyzická vrstva systému.
+
+Current runtime font baseline:
 
 ```text
 Pixel Operator
@@ -269,20 +424,15 @@ Pixel Operator Mono
 
 Pravidla:
 
-- běžné UI texty a popisky: `Pixel Operator`,
-- čísla, registry, event logy, statusy a systémové hodnoty: `Pixel Operator Mono`,
-- logo KØrp/K0rp_ware je samostatný hotový asset a nemá se nahrazovat textovým fontem,
-- font má podporovat pocit starého interního softwaru, ne generického retro arcade automatu.
+- labels a body: čitelný application font;
+- registry, event logy a čísla: mono;
+- logo je asset;
+- text nesmí být zapečen do button backgroundů, pokud má být dynamický nebo lokalizovatelný;
+- hover/pressed state může nezávisle měnit background asset i live text color;
+- případná budoucí změna OS fontu musí projít samostatným readability gate, ne být vedlejší efekt asset tasku.
 
-Jazykový styl a font musí pracovat spolu. Věta typu:
+## 13. Důležité pravidlo
 
-> „Souhlas byl přijat. Obsah souhlasu nebyl přiložen.“
+> K0rp_OS může používat češtinu, anglicismy a corporate doublespeak skoro v každé větě, ale pořád musí znít jako produkt, který by mohl existovat.
 
-má být krátká, ostrá, čitelná a zasazená do pixelového UI panelu. Není to meme caption. Je to interní systémová pravda, která měla zůstat v šuplíku.
-
-## 12. Důležité pravidlo
-
-K0rp_OS může používat češtinu, anglicismy a corporate doublespeak skoro v každé větě, ale pořád musí znít jako produkt, který by mohl existovat.
-
-Ne jako parodie zvenku. Jako interní nástroj, který už dávno zapomněl, že je parodií.
-
+> Ne jako parodie zvenku. Jako interní nástroj, který už dávno zapomněl, že je parodií.

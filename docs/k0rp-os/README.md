@@ -1,7 +1,7 @@
 # K0rp_OS Docs Pack
 
-Verze: 0.3.0  
-Status: pracovní RFC pack s canonical core-loop kontraktem
+Verze: 0.4.0  
+Status: pracovní RFC pack s canonical core-loop a activity-spectrum kontraktem
 
 Pracovní dokumentace pro rozšíření K0rp_ware do K0rp_OS.
 
@@ -15,7 +15,10 @@ Herní páteř:
 Appka vytvoří metriku.
 Audit z metriky vytvoří skutečnost.
 Evidence dovolí systému vytvořit další metriku.
+Automatizace vytvoří potřebu dohledu.
 ```
+
+K0rp_OS není launcher oddělených miniher. Moduly smějí mít různou intenzitu — od auditů přes desk objects až po krátké operational-response hry — ale všechny musí používat společný metric/packet/audit/Evidence/authorization kontrakt.
 
 Současné prokrastinační moduly zůstávají samostatnými appkami. Desktop, web, standalone a budoucí overlay sdílejí core a event semantics, ale mají různé presentation surfaces.
 
@@ -36,12 +39,14 @@ Současné prokrastinační moduly zůstávají samostatnými appkami. Desktop, 
 - `12-platform-workflow.md` — Windows-first workflow.
 - `13-progression-and-economy.md` — ekonomika, Evidence, pacing a prestige.
 - `14-sensory-feedback.md` — tactile/audio/visual systém.
-- `15-unlocks-memos-and-system-mutations.md` — artifacts a mutations.
-- `16-playtest-checklist.md` — gates a balance test.
+- `15-unlocks-memos-and-system-mutations.md` — artifacts, capability authorization a mutations.
+- `16-playtest-checklist.md` — core-loop, backlog a module-prototype gates.
 - `17-first-cycle-balance.md` — první vertical slice a provisional first-cycle balance.
-- `18-desktop-surface-progression.md` — postupně se plnící plocha.
+- `18-desktop-surface-progression.md` — postupně se plnící plocha a pozdější control-room stav.
 - `19-research-basis-and-source-index.md` — výzkum, inspirace a source map.
 - `20-core-loop.md` — canonical Metric → Audit → Evidence kontrakt.
+- `21-activity-spectrum-and-arcade-modules.md` — high-intensity module strategie, Priority Containment a Alignment Rally.
+- `22-ui-assets-v3-integration.md` — historický V3 UI asset ingestion/pilot kontext.
 - `CHANGELOG.md` — změny docs packu.
 
 ## Machine-readable design database
@@ -54,17 +59,20 @@ packages/korp-progression/
 
 Obsahuje TypeScript constants, JSON, CSV, validaci a integrační poznámky.
 
-Strojová data na `main` po Tasku 019 stále částečně popisují v0.2 model `raw action → currency`. Tasks 020–024 je budou migrovat na canonical `metric → audit → Evidence` model. Nové feature se nesmějí dál opírat o starou přímou konverzi.
+Runtime po Tasku 023 už používá ClickAudit i Fidget packet/audit flow. Machine-readable first-cycle data ale stále potřebují Task 024 reconciliation, aby odstranila staré direct-yield assumptions a sjednotila prose, JSON, CSV, TypeScript a runtime.
+
+Priority Containment a Alignment Rally jsou zatím design/prototype contracts. Nejsou součástí současné progression databáze a nesmějí do ní být přidány před samostatným greybox a playtest gate.
 
 ## Source-of-truth pořadí uvnitř repa
 
-1. `docs/k0rp-os/20-core-loop.md` pro herní ekonomiku a core loop.
-2. `docs/k0rp-os/07-roadmap.md` pro pořadí implementace.
-3. `docs/k0rp-os/08-codex-tasks.md` pro scope konkrétních tasků.
-4. Ostatní docs `00–19` pro produktové, vizuální, privacy a obsahové kontrakty.
-5. `packages/korp-progression/docs` pro data migration mapu.
-6. `packages/korp-progression/data` a `src` po migraci příslušným taskem.
-7. Implementace po malých vertical slices.
+1. `docs/k0rp-os/20-core-loop.md` pro herní ekonomiku a neměnné invarianty.
+2. `docs/k0rp-os/21-activity-spectrum-and-arcade-modules.md` pro activity spectrum a budoucí action-module contracts.
+3. `docs/k0rp-os/07-roadmap.md` pro pořadí implementace.
+4. `docs/k0rp-os/08-codex-tasks.md` pro scope konkrétních tasků.
+5. Ostatní docs `00–19` pro produktové, vizuální, privacy, balance a obsahové kontrakty.
+6. `packages/korp-progression/docs` pro data migration mapu.
+7. `packages/korp-progression/data` a `src` po migraci příslušným taskem.
+8. Implementace po malých vertical slices a prototype gates.
 
 Pokud se strojová data a prose rozcházejí, změna se nesmí tiše domyslet. Musí být popsána jako známý migration gap a sjednocena v konkrétním docs/data/runtime tasku.
 

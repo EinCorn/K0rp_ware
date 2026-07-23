@@ -1,270 +1,306 @@
 # K0rp_OS — Product Vision
 
-Verze: 0.2.0 pracovní návrh
-Status: interní dokument / RFC  
+Verze: 0.4.0 pracovní návrh  
+Status: interní produktový RFC  
 Projekt: K0rp_ware → K0rp_OS
 
 ## 1. Elevator pitch
 
-**K0rp_OS je falešný operační systém zaměstnance K0rpu.**  
-Tváří se jako pracovní nástroj, ale ve skutečnosti je to hra o práci, která není práce: o klikání, fidgetování, drobných rituálech, měření ne-výkonu, pseudo-produktivitě, krypto-managementu a uklidňovacích objektech, které vypadají jako benefit, ale chovají se jako další proces.
+**K0rp_OS je falešný operační systém zaměstnance K0rpu.**
 
-Uživatel spouští jednotlivé moduly, plní absurdní mikro-úkony, sbírá ne zcela užitečné ukazatele, odemyká další části systému a postupně má pocit, že se účastní pracovního procesu, který je možná jen velmi dobře organizovaná forma prokrastinace.
+Tváří se jako pracovní nástroj, ale ve skutečnosti je to incremental management hra o práci, která není práce: o klikání, fidgetování, drobných rituálech, měření ne-výkonu, pseudo-produktivitě, krypto-managementu, taktilních objektech, krátkých operational-response relacích a automatizaci, která pokaždé vytvoří nový důvod k dohledu.
 
-K0rp_OS má být zároveň:
+Hráč nejdřív vykonává malé úkony. Systém je změří, zabalí do auditovatelné dávky, nechá je certifikovat a teprve potom je uzná jako Evidence. Evidence autorizuje další nástroj. Nástroj vytvoří další metriku, další backlog a později potřebu delegace.
 
-- samostatně spustitelná desktop hra,
-- webový portál s jednotlivými moduly,
-- sada standalone appek / widgetů,
-- později overlay lišta běžící nad běžnou prací,
-- in-universe rozhraní K0rpu,
-- modulární TypeScriptový engine, do kterého lze postupně přidávat další appky, resources, events, unlocks a absurdní features.
+## 2. Canonical product statement
 
-## 2. Co K0rp_OS je
+> K0rp_OS je incremental management hra, ve které aktivita získává hodnotu teprve institucionálním potvrzením a každá automatizace vytváří větší potřebu dohledu.
+
+Ještě kratší verze:
+
+> Hráč nevyrábí práci. Vyrábí důkazy, že proběhla aktivita.
+
+## 3. Co K0rp_OS je
 
 K0rp_OS je:
 
-- incremental / idle / micro-interaction hra,
-- satirický pseudo-produktivní systém,
-- desktop UI simulátor,
-- sada mini appek propojených přes společný progress,
-- estetický objekt a mood machine,
-- bezpečný lokální playground pro „krokrastinaci“,
-- engine-first systém: nejdřív robustní jádro, potom rostoucí knihovna modulů.
+- fake desktop a pracovní stanice zaměstnance;
+- incremental / idle / micro-interaction hra;
+- satirický pseudo-produktivní systém;
+- sada modulů propojených společným progress contractem;
+- estetický objekt a mood machine;
+- local-first playground pro řízenou prokrastinaci;
+- engine-first systém pro postupné přidávání modulů, auditů, events, authorizations a surface mutations;
+- hra se spektrem intenzity od administrativního formuláře po krátkou hordovou operational-response session;
+- management hra, která se z ruční činnosti postupně přesouvá k delegaci, policy a výjimkám.
 
-Důležité: K0rp_OS není jen launcher pro tři malé appky. To je jen první viditelná vrstva. Skutečný produkt je systém, ve kterém každá mikrointerakce získává význam, metriky, vnitřní hlášení a absurdní důsledky.
+K0rp_OS není jen launcher pro ClickAudit, Fidget a Bloom. To je první viditelná vrstva. Skutečný produkt je systém, ve kterém každá smysluplná interakce může získat metriku, dokumentační stopu a absurdní institucionální následek.
 
-## 3. Co K0rp_OS není
+## 4. Co K0rp_OS není
 
 K0rp_OS není:
 
-- skutečný pracovní nástroj,
-- produktivní tracker,
-- time-tracking software,
-- nástroj na kontrolu zaměstnanců,
-- spyware,
-- morální systém pro zlepšení života,
-- korporátní dashboard pro reálnou práci,
-- klasická fullscreen game-engine hra,
-- pevně uzavřený design, který nelze po měsíci přestavět, protože autor dostal lepší, horší nebo nebezpečně chutný nápad.
+- skutečný pracovní nástroj;
+- time tracker;
+- spyware;
+- nástroj na kontrolu zaměstnanců;
+- moralizující systém pro zlepšení života;
+- klasický card-based module catalog;
+- Cookie Clicker s kancelářským skinem;
+- launcher oddělených her, ve kterém je desktop jen vestibul;
+- fullscreen action game, která omylem zapomněla na audity;
+- free-to-play ekonomika s energií, daily streakem a pěti globálními peněženkami;
+- design, který nelze přestavět, protože autor dostal další nebezpečně chutný nápad.
 
 Pokud se K0rp_OS někdy chová jako produktivní nástroj, je to součást vtipu. Pokud by začal být skutečně užitečný, musí to být podezřelé.
 
-## 4. Hlavní fantazie hráče
+## 5. Hlavní hráčská fantazie
 
-Hráč nemá být hrdina, který zachraňuje svět. Hráč je zaměstnanec systému, který obsluhuje drobné rituály a přitom se snaží udržet iluzi, že se něco děje.
-
-Hlavní hráčská fantazie:
+Hráč není hrdina zachraňující svět. Je zaměstnanec systému, který obsluhuje drobné rituály a snaží se udržet iluzi, že se něco děje.
 
 > „Sedím u počítače K0rpu a provádím úkony, které vypadají jako práce, měří se jako práce, odměňují se jako práce, ale v jádru jsou možná jen krásně organizovaná nicota.“
 
 Sekundární fantazie:
 
-> „Mám na monitoru malou rušivou věc, která mě uklidňuje, vyrušuje, zaměstnává a zároveň si ze mě dělá velmi formální srandu.“
+> „Mám na monitoru malou rušivou věc, která mě uklidňuje, zaměstnává a zároveň si ze mě dělá velmi formální srandu.“
 
-## 5. Cílový pocit
+Pozdější fantazie:
+
+> „Nejdřív jsem systém obsluhoval. Teď řídím lidi a automaty, kteří obsluhují moje způsoby, jak systém neobsluhovat.“
+
+## 6. Activity spectrum
+
+K0rp_OS má vědomě pokrývat více úrovní intenzity.
+
+### Administrativa
+
+- Audit 00-A;
+- Audit 10-A;
+- Audit 16-C;
+- repeatable packet audits;
+- backlog a dokumenty.
+
+Pocit: mrtvá vážnost, nízká motorická náročnost, čitelná instituční konverze.
+
+### Taktilní regulace
+
+- Fidget;
+- Bublinková Fólie;
+- Zenová Zahrádka;
+- Newtonova Kolíbka;
+- Surface Compliance.
+
+Pocit: materiál, rytmus, přirozené doběhnutí, ASMR-adjacent satisfakce.
+
+### Focused interaction
+
+- ClickAudit;
+- Bloom;
+- Shape Compliance;
+- Alignment Rally.
+
+Pocit: timing, přesnost, změna stavu, krátké mastery loops.
+
+### Operational response
+
+- Priority Containment;
+- pozdější incident modules.
+
+Pocit: prostorový tlak, buildcraft, power spikes, výrazné uzavření vlny.
+
+### Management
+
+- delegace;
+- policy;
+- supervision;
+- discrepancies;
+- control room.
+
+Pocit: méně přímé činnosti, více odpovědnosti za její provedení.
+
+Detaily jsou v `21-activity-spectrum-and-arcade-modules.md`.
+
+## 7. Cílový pocit
 
 K0rp_OS má působit jako:
 
-- starý interní software, který nikdo nevypnul,
-- pracovní stanice v liminální kanceláři,
-- portál k oddělení, které neexistuje v organizační struktuře,
-- hračka na nervový systém,
-- corporate Tamagotchi,
-- procedurální oltář pro klikání,
-- retro terminal s duší účetního formuláře,
-- manažerský stůl, na kterém se uklidňovací předměty změnily na KPI.
+- starý interní software, který nikdo nevypnul;
+- pracovní stanice v liminální kanceláři;
+- portál k oddělení, které neexistuje v organizační struktuře;
+- hračka na nervový systém;
+- corporate Tamagotchi;
+- procedurální oltář pro klikání;
+- retro terminal s duší účetního formuláře;
+- manažerský stůl, na kterém se uklidňovací předměty změnily na KPI;
+- systém, který dokáže i hordu urgentních ticketů převést na report o kvalitě uzavření.
 
 Tón:
 
-- absurdní,
-- suchý,
-- lehce znepokojivý,
-- korporátně klidný,
-- ne hysterický,
-- ne „haha random“,
-- spíš normální text posunutý o 8 stupňů špatným směrem.
+- absurdní;
+- suchý;
+- lehce znepokojivý;
+- korporátně klidný;
+- ne hysterický;
+- ne „haha random“;
+- normální text posunutý o několik stupňů špatným směrem.
 
-## 6. Jazyk produktu
+## 8. Jazyk produktu
 
-Primární jazyk K0rp_OS je **čeština**.
+Primární jazyk K0rp_OS je čeština infikovaná korporátním doublespeakem, provozními výrazy a přirozenými anglicismy.
 
-To neznamená čistou spisovnou češtinu. Znamená to český produktový základ infikovaný korporátním doublespeakem, provozními termíny a anglicismy.
+Arcade modul nesmí náhle mluvit jako fantasy střílečka. Horda používá jazyk priorit, routingu, ownershipu, capacity a incident closure. Alignment Rally používá scope, evidence, ownera, dependencies a follow-up.
 
-Cílový jazyk:
+Další pravidla jsou v `10-language-and-copy.md`.
 
-- česky jako hlavní UI a in-universe text,
-- anglicismy skoro v každé druhé větě, pokud znějí přirozeně pro korporátní prostředí,
-- výrazy jako module, dashboard, compliance, workflow, ticket, task, status, sync, performance, audit, feedback, focus, update,
-- lokální CZ absurdita + globální corporate řeč,
-- později anglická lokalizace, ale čeština je canonical voice.
-
-Příklad tónu:
-
-> „Surface Compliance dokončen. Povrch je clean. Příčina znečištění zůstává v pending review.“
-
-Další detaily jsou v `10-language-and-copy.md`.
-
-## 7. Stabilní principy K0rp světa pro produkt
+## 9. Stabilní principy světa pro produkt
 
 Používat:
 
-- krypto-management jako interní produktový koncept,
-- memetickou nákazu frázemi, slogany a metrikami,
-- corporate cosmic horror jen přes artefakty, UI, chyby a texty,
-- objekty s větší identitou než lidé,
-- anonymní funkce místo psychologicky rozepsaných postav,
-- suchý humor a provozní jazyk,
+- krypto-management jako interní produktový koncept;
+- memetickou nákazu frázemi, slogany a metrikami;
+- corporate cosmic horror přes artefakty, UI, chyby a texty;
+- objekty s větší identitou než lidé;
+- anonymní funkce místo psychologicky rozepsaných postav;
+- suchý humor a provozní jazyk;
 - produktový jazyk, který zní jako benefit a zároveň jako varování.
 
 Nepoužívat směrem k publiku:
 
-- explicitní vysvětlování meta vrstvy,
-- učebnicový lore dump,
-- „tady je tajná metafyzika světa“,
-- příliš přímou parodii jedné konkrétní firmy,
-- reálné pracovní termíny tam, kde by mohly působit jako konkrétní obvinění.
+- explicitní vysvětlování skryté meta roviny;
+- učebnicový lore dump;
+- příliš přímou parodii jedné konkrétní firmy;
+- reálné pracovní termíny tam, kde by mohly působit jako konkrétní obvinění;
+- vysvětlení, že absurdita je metafora. Mechanika ji musí ukázat sama.
 
-## 8. Current v0.3 modules
+## 10. Současné moduly
 
 ### ClickAudit
 
-Audit klikání a interakcí. Měří, vyhodnocuje, optimalizuje. Klik není akce. Klik je důkaz přítomnosti.
+Audit klikání a interakcí. Jeden úmyslný fyzický klik zůstává jedním raw klikem.
 
-Funkce v systému:
+Funkce:
 
-- generuje Click Events,
-- zvyšuje Audit Pressure,
-- přispívá k Notional Work Units,
-- odemyká milníky a hlášení.
+- doslovná raw click metrika;
+- source/profile klasifikace uvnitř K0rp;
+- packet boundary;
+- pozdější analytics a interpretační vrstva;
+- žádný přímý Evidence yield za klik.
 
 ### Fidget
 
-Nástroj pro rozptýlení. Pomáhá přežít schůzky. Stabilizuje pozornost tím, že ji odvádí.
+Nástroj pro stabilizaci pozornosti tím, že ji odvede.
 
-Funkce v systému:
+Funkce:
 
-- snižuje Entropy,
-- generuje Fidget Stabilization,
-- krátkodobě zvyšuje Perceived Control,
-- může spouštět uklidňující nebo rušivé stavy.
+- přirozeně ukončené settled sessions;
+- druhý raw metric source;
+- packet po session closures;
+- asset-backed module surface;
+- žádný přímý Evidence yield.
 
 ### Bloom
 
-Sběr drobných myšlenek. Nechte je růst. Compliance zahrádka převlečená za puzzle.
+Compliance zahrádka převlečená za status puzzle.
 
-Funkce v systému:
+Funkce:
 
-- generuje Bloom Integrity,
-- pracuje s vlnami,
-- čistí / mutuje stavové kameny,
-- odemyká texty spojené s péčí, růstem a drobným rozpadem.
+- prostorová/statusová raw metrika;
+- wave closure;
+- budoucí třetí packet source;
+- vlastní module-local state a sensory identity.
 
-## 9. Candidate module backlog
+## 11. Candidate module portfolio
 
-První sada rozšíření:
+### Regulation / desk objects
 
-- **Corner Watch** — odrážející se KØrp logo / čekání na roh,
-- **Bublinková Fólie** — praskání bublinek jako certified relaxation sheet,
-- **Button Compliance** — mačkání tlačítek, potvrzování potvrzení,
-- **Surface Compliance** — čištění špinavých ploch,
-- **Shape Compliance** — zapadání tvarů, zarovnání, uspokojivé fitnutí,
-- **Attention Runner** — endless runner pro rozdělení pozornosti,
-- **Zenová Zahrádka** — manažerské hrablání písku pro procedural calm,
-- **Newtonova Kolíbka** — kinetické těžítko pro přenos hybnosti a odpovědnosti.
+- Corner Watch;
+- Bublinková Fólie;
+- Surface Compliance;
+- Shape Compliance;
+- Zenová Zahrádka;
+- Newtonova Kolíbka.
 
-Tyto moduly nejsou jen „další minihry“. Jsou to další oddělení K0rp_OS.
+### Confirmation / administration
 
-Detaily jsou v `09-module-backlog.md`.
+- Button Compliance.
 
-## 10. Produktová osa
+### Attention
 
-1. **K0rp_ware** — web a standalone moduly.
-2. **K0rp Core** — TypeScript engine pro events, resources, progress, unlocks a module registry.
-3. **K0rp_OS** — hlavní desktop hra / falešná pracovní plocha.
-4. **K0rp Overlay** — malá lišta nad skutečnou prací.
-5. **K0rp Account** — volitelný sync progressu, ne sledování práce.
+- Attention Runner.
 
-## 11. MVP definice
+### Operational response
 
-MVP K0rp_OS je funkční, když:
+- Priority Containment — první schválený high-intensity prototype.
 
-- existuje jedna desktop/web aplikace simulující K0rp pracovní plochu,
-- umí otevřít ClickAudit, Fidget a Bloom jako interní moduly,
-- všechny moduly posílají eventy do společného core,
-- progress a unlocky se ukládají lokálně,
-- hráč vidí alespoň základní metriky,
-- existují první interní hlášení / mema,
-- žádný mód nesbírá citlivá data,
-- architektura umožňuje přidat další modul bez přepisování starých modulů.
+### Alignment
 
-## 12. Nejdůležitější designová věta
+- Alignment Rally — druhý schválený arcade prototype po samostatném gate.
 
-> K0rp_OS má být systém, který vypadá jako produktivita, chová se jako hračka a zanechává pocit, že obojí je možná totéž.
+Nový modul není jen další minihra. Musí být současně hračka, proces, raw metric source, auditní problém a budoucí management surface.
 
-## 13. Nejdůležitější technická věta
+## 12. Produktové surfaces
 
-> K0rp_OS má být modular-first engine, ne sbírka izolovaných blbostí v hezkém rámečku.
+K0rp_OS má být zároveň:
 
-## Platform stance
+- canonical desktop hra;
+- web fallback;
+- sada standalone modulů;
+- později Windows-first overlay;
+- volitelně account/sync pro progress a settings.
 
-K0rp_OS je web-native a TypeScript-first, ale primární desktop platforma je Windows.
+Priority Containment a Alignment Rally smějí mít větší standalone/osWindow viewport než ClickAudit nebo Fidget. Stejná window family neznamená stejnou content geometry.
 
-Mac se používá jako pohodlné sekundární vývojové/design/test prostředí. Je důležitý pro domácí workflow, grafiku, docs a cross-platform sanity check. Finální desktop UX a overlay behavior ale musí být ověřené na Windows.
+## 13. Canonical runtime: plocha zaměstnance
 
-Tohle je součást produktové reality: K0rp_OS má být robustní systém, který jde rozvíjet z gauče i od stolu, aniž by jeden režim lhal, že je tím druhým.
-
-## 14. Canonical runtime: plocha zaměstnance
-
-K0rp_OS desktop je canonical full-game surface. Hra se při prvním spuštění netváří jako katalog modulů ani jako dashboard s odemčenými kartami. Po přiřazení identity hráč vstoupí na téměř prázdnou fiktivní pracovní plochu zaměstnance K0rpu.
+Po přiřazení identity hráč vstoupí na téměř prázdnou pracovní plochu.
 
 Výchozí stav:
 
-- tmavý K0rp wallpaper,
-- spodní taskbar,
-- Employee ID,
-- systémový čas,
-- čitelný privacy status,
-- Compliance Bin,
-- automaticky otevřený dokument `AUDIT 00-A`.
+- tmavý K0rp wallpaper;
+- spodní taskbar;
+- Employee ID;
+- systémový čas;
+- čitelný privacy status;
+- Compliance Bin;
+- automaticky otevřený Audit 00-A.
 
-První herní interakcí je vyplnění auditu. Každá úmyslná změna pole současně vytváří auditovatelný `clickaudit.click`. Po odeslání formuláře se teprve objeví shortcut ClickAuditu, složka Doručené a první vykázané metriky.
-
-Důležité:
+První herní interakcí je vyplnění auditu. Po odeslání se objeví ClickAudit, Doručené a první stopa procesu.
 
 > Nový modul se nemá pouze přepnout z `locked` na `available`. Má být autorizován, nainstalován a fyzicky se projevit v operačním systému.
 
-## 15. Progrese plochy
+## 14. Progrese plochy
 
-Dlouhodobý progress se projevuje také materiálně:
+Dlouhodobý progress se projevuje:
 
-- novými shortcuts,
-- složkami,
-- soubory,
-- pending formuláři,
-- certifikáty,
-- taskbar widgets,
-- položkami v Settings,
-- screensavery,
-- změnami wallpaperu,
-- build number,
-- archivací po uzavření auditního cyklu.
+- shortcuts;
+- složkami;
+- soubory;
+- pending formuláři;
+- certifikáty;
+- taskbar widgets;
+- Settings pages;
+- screensavery;
+- změnami wallpaperu a buildu;
+- module capability registries;
+- později control-room a policy surfaces.
 
-Mema jsou soubory v Doručených. Certifikace jsou dokumenty. Corner Watch se primárně odemyká jako spořič obrazovky. Prestige se projevuje jako archivace, úklid pracovní plochy, reboot a instalace nového systému.
+Mema jsou soubory v Doručených. Certifikace jsou dokumenty. Prestige je archivace, úklid, reboot a instalace nového systému.
 
-## 16. Oddělení herní a produktové osy
+## 15. Herní progression a produktové surfaces jsou dvě osy
 
 Herní progression:
 
 ```text
 Audit 00-A
 → ClickAudit
+→ Evidence
 → Fidget
-→ Bloom
-→ Corner Watch
-→ Button Compliance
-→ Uzavření auditního cyklu
-→ Bublinková Fólie
+→ mixed backlog
+→ delegace
+→ Bloom a další moduly
+→ první auditní cyklus
+→ pozdější operational-response a alignment systémy
+→ control room
 ```
 
 Produktové surfaces:
@@ -273,8 +309,38 @@ Produktové surfaces:
 K0rp_OS desktop
 ↔ web fallback
 ↔ standalone moduly
-→ později K0rp Overlay
+→ později overlay
 → volitelně account/sync
 ```
 
-Overlay ani standalone build nejsou hráčské prestige rewards. Jsou to technické/product modes sdílející stejné core, manifests a event semantics.
+Standalone release není campaign unlock. Campaign rewards z připojeného modulu jsou platné jen pro autorizovaný modul v konkrétním save.
+
+## 16. MVP a vertical-slice definice
+
+První core-loop MVP je funkční, když:
+
+- existuje fake desktop;
+- Audit 00-A odemkne ClickAudit;
+- ClickAudit i Fidget používají stejný packet/audit/Evidence framework;
+- lokální progress a authorizations přežijí refresh;
+- backlog je skutečně citelný;
+- žádný raw event přímo nevyrábí spendable Evidence;
+- architektura umožňuje přidat další metric source bez přepisování předchozího.
+
+High-intensity prototype není podmínkou tohoto MVP. Je dalším product-development gate, který se nejdřív testuje standalone jako greybox.
+
+## 17. Nejdůležitější designové věty
+
+> K0rp_OS má být systém, který vypadá jako produktivita, chová se jako hračka a zanechává pocit, že obojí je možná totéž.
+
+> Čím zábavnější je modul používat, tím naléhavější je potřeba přestat ho používat a začít řídit jeho výkon.
+
+## 18. Nejdůležitější technická věta
+
+> K0rp_OS má být modular-first engine, ne sbírka izolovaných blbostí v hezkém rámečku.
+
+## 19. Platform stance
+
+K0rp_OS je web-native a TypeScript-first, ale primární desktop platforma je Windows.
+
+Mac je pohodlné sekundární vývojové/design/test prostředí. Finální desktop UX, transparentní okna, always-on-top a overlay behavior musí být ověřené na Windows.

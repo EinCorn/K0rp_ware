@@ -1,181 +1,291 @@
 # K0rp_OS — Platform & Dev Workflow
 
-Verze: 0.1.3 pracovní návrh
+Verze: 0.4.0 pracovní návrh
 
 ## 1. Platform decision
 
-Primární release/test platforma pro K0rp_OS je **Windows**.
+Primary release/test platform je **Windows**.
 
-Mac je důležité sekundární vývojové a testovací prostředí, ale není primární target. Mac existuje hlavně proto, že Daniel doma často sedí s MacBookem na klíně, používá Apple ekosystém, snadno přenáší soubory, dělá grafiku na tabletu a může tak pokračovat v práci bez toho, aby musel fyzicky přejít ke stolu a zapnout „seriózní vývojářský režim“.
-
-To není slabina workflow. To je realita workflow.
-
-K0rp_OS proto musí být navržen tak, aby šel rozvíjet ve dvou režimech:
+Mac je secondary development, design, docs a smoke-test prostředí.
 
 ```text
 Couch Mode / Mac
-- pohodlné psaní docs
-- design, assety, nápady, review
-- web/dev preview
-- základní cross-platform smoke test
-- práce na TypeScript core logice
+- docs, research, copy, assets
+- TypeScript core/data
+- web preview
+- cross-platform smoke tests
+- quick prototype thinking
 
 Desk Mode / Windows
-- primární desktop testing
-- Tauri desktop behavior
-- overlay behavior
-- window transparency / always-on-top
-- installer/build behavior
-- final UX feel pro hlavní platformu
+- primary desktop UX
+- Tauri window behavior
+- DPI/fullscreen/multimonitor
+- transparent/always-on-top windows
+- action-module input/performance
+- overlay
+- installer/release
 ```
 
-## 2. Why Windows first
+Co může být čistý TypeScript bez OS znalosti, má být čistý TypeScript bez OS znalosti.
 
-Windows je primary target, protože:
-
-- většina reálného „pracovního desktop“ feelingu u cílového použití bude Windows,
-- K0rp_OS má působit jako falešný pracovní systém / corporate desktop / overlay,
-- overlay režim, always-on-top lišty, malé desktop widgety a chování oken je potřeba ladit hlavně tam,
-- Windows verze má být první, která se bude brát jako skutečný release candidate.
-
-Mac build má existovat a měl by být použitelný, ale nemá určovat finální UX rozhodnutí, pokud se chování Windows a macOS liší.
-
-## 2.1 Windows developer setup
-
-Windows je primární platforma pro desktop dev/build a finální ověření Tauri chování.
-
-Pro Tauri desktop vývoj na Windows je potřeba mít nainstalované:
-
-- Rustup / Cargo pro Rust část Tauri aplikací,
-- Visual Studio Build Tools 2022 s workloadem `Desktop development with C++` pro Windows build toolchain.
-
-Pokud build hlásí, že `link.exe` není nalezen, spusť dev/build z **x64 Native Tools Command Prompt for VS 2022**, nebo oprav instalaci Visual Studio Build Tools tak, aby obsahovala C++ workload a Windows SDK.
-
-## 3. Cross-platform principle
-
-K0rp_OS je **TypeScript-first / web-native** systém, takže většina logiky má být platform-independent:
+## 2. Source and branch rule
 
 ```text
-Platform independent:
-- korp-core
-- korp-modules
-- event model
-- resource economy
-- unlock logic
-- copy/content packs
-- most React/web UI
-- web mode
-
-Platform sensitive:
-- Tauri window config
-- transparency
-- drag regions
-- always-on-top behavior
-- overlay hitbox
-- global click/activity bridge
-- installers
-- OS permissions
-- filesystem paths
+main = project source of truth
+feature/docs/agent branch = bounded work surface
+PR = review and merge gate
 ```
 
-Pravidlo:
+Doporučený postup:
 
-> Co může být napsané jako čistý TypeScript bez OS znalosti, musí být napsané jako čistý TypeScript bez OS znalosti.
-
-OS-specific věci patří do úzké vrstvy adaptérů, ne do herního core.
-
-## 4. Two-clone workflow
-
-Repo bude existovat minimálně na dvou strojích:
-
-```text
-Mac clone
-- aktuální pohodlný dev/design clone
-- rychlé změny docs/core/ui
-- test webu a běžných app shell věcí
-
-Windows clone
-- primary platform clone
-- desktop/Tauri test
-- overlay test
-- release/build test
-```
-
-Oba clony musí pracovat s `main` jako source of truth, pokud Daniel explicitně neřekne jinak.
-
-Doporučený začátek práce na libovolném stroji:
-
-```bash
-cd ~/Projects/K0rp_ware   # Mac example
-# nebo Windows cesta podle lokálního umístění
+```powershell
+Set-Location 'C:\Users\danie\Projects\K0rp_ware'
+git fetch origin
 git checkout main
 git pull --ff-only origin main
-npm install
-npm run sync:korp-ui
+git checkout -b agent/task-XXX-description
 ```
 
-Po práci:
+Po merge:
 
-```bash
+```powershell
+Set-Location 'C:\Users\danie\Projects\K0rp_ware'
+git checkout main
+git pull --ff-only origin main
 git status
-npm run build   # pokud dává smysl pro daný typ změny
-git add .
-git commit -m "..."
-git push origin main
 ```
 
-Na druhém stroji vždy nejdřív:
+Main je pravda. Neznamená to, že se velké tasky mají psát přímo do main bez review.
 
-```bash
-git checkout main
-git pull --ff-only origin main
-npm install
-npm run sync:korp-ui
+## 3. Windows toolchain
+
+Pro Tauri/desktop:
+
+- Node/npm;
+- Rustup/Cargo;
+- Visual Studio Build Tools 2022;
+- workload `Desktop development with C++`;
+- Windows SDK.
+
+Pokud chybí `link.exe`, použít x64 Native Tools Command Prompt nebo opravit C++ workload.
+
+## 4. Clean dependency install on Windows
+
+Vite/Rolldown může držet native binding otevřený. Typický symptom:
+
+```text
+EPERM: operation not permitted, unlink
+rolldown-binding.win32-x64-msvc.node
 ```
 
-## 5. Couch Mode vs Desk Mode
+Bezpečný clean install:
 
-### Couch Mode / Mac
+```powershell
+Set-Location 'C:\Users\danie\Projects\K0rp_ware'
+Get-Process -Name node -ErrorAction SilentlyContinue | Stop-Process -Force
+Start-Sleep -Milliseconds 800
 
-Používat pro:
+if (Test-Path -LiteralPath '.\node_modules') {
+  Remove-Item -LiteralPath '.\node_modules' -Recurse -Force
+}
 
-- docs a product vision,
-- module backlog,
-- screen concepts,
-- copywriting,
-- pixelart / asset přípravu,
-- Figma/design review,
-- TypeScript modely,
-- `korp-core`, `korp-modules`, testy,
-- web preview,
-- rychlé „je to vůbec dobrý nápad?“ iterace.
+Remove-Item -LiteralPath '.\dist' -Recurse -Force -ErrorAction SilentlyContinue
+npm ci
 
-Neuzavírat v Couch Mode:
+if (-not (Test-Path -LiteralPath '.\node_modules\.bin\vite.cmd')) {
+  throw 'Root Vite nebyl po npm ci nainstalován. Nepokračuj v testech.'
+}
+```
 
-- že overlay funguje správně,
-- že window behavior je finální,
-- že transparency/hitbox je ready,
-- že Windows installer/release je ok,
-- že desktop appka má finální pocit.
+Tento blok se nepouští mechanicky po každé CSS změně. Použije se při branch checkoutu, dependency driftu nebo EPERM/missing-Vite problému.
 
-### Desk Mode / Windows
+## 5. Validation matrix
 
-Používat pro:
+### Docs-only task
 
-- primární UX test,
-- Tauri desktop appky,
-- overlay lištu,
-- always-on-top a transparentní okna,
-- reálné rozměry a DPI,
-- fullscreen/multimonitor edge cases,
-- release build,
-- final sanity check před tag/release.
+- link/path/source review;
+- status/task consistency;
+- no runtime/data/asset changes;
+- optional Markdown lint, pokud existuje;
+- PR diff review.
 
-Desk Mode je „seriózní směna“. Couch Mode je „vývojové rozjímání pod dekou“. Obě jsou legitimní, jen nesmí předstírat, že jsou totéž.
+### Core/data task
 
-## 6. Platform labels for issues/tasks
+```powershell
+npm run test:runtime
+npm run test:runtime-save
+npm run test:korp-core
+npm run typecheck:korp-core
+npm run test:korp-modules
+npm run typecheck:korp-modules
+npm run typecheck:korp-progression
+npm run validate:korp-progression
+npm run build
+```
 
-Pro budoucí issues/tickets používat jednoduché labely:
+### Icon/UI asset task
+
+Přidat relevantní validators:
+
+```powershell
+npm run validate:korp-icons
+npm run validate:korp-ui-assets
+npm run validate:korp-ui-pack-v01
+```
+
+Použít pouze scripts, které existují v aktuálním `package.json`.
+
+### Visual/window task
+
+- automated runtime/build tests;
+- Windows browser/Tauri smoke test;
+- 1× logical canvas screenshot;
+- normal viewport a fullscreen;
+- active/inactive/minimize/close/drag;
+- DPI scaling;
+- pixel sharpness;
+- content geometry preservation.
+
+### Action-module task
+
+- deterministic/local logic tests;
+- pause/resume/exit;
+- closure exactly once;
+- fixed logical coordinates;
+- integer 1×/2× rendering;
+- keyboard/controller input;
+- peak-density performance;
+- reduce motion/screen shake off;
+- Windows required before integration acceptance.
+
+## 6. Mandatory Codex output
+
+Každý Codex task musí v závěrečném chatu/PR summary vypsat:
+
+1. branch name;
+2. changed files;
+3. tests run agentem;
+4. přesný PowerShell blok pro Danielův local test;
+5. manual test checklist;
+6. known limitations;
+7. merge recommendation nebo explicitní blokér.
+
+Nestačí napsat „tests pass“. Příkazy musí být copy-paste ready.
+
+## 7. Npm script preference
+
+Preferovat repo scripts:
+
+```text
+npm ci
+npm run dev
+npm run build
+npm run test:runtime
+npm run validate:korp-progression
+npm run validate:korp-icons
+npm run validate:korp-ui-assets
+```
+
+Nepsat platform-specific jednorázový shell hack, pokud lze přidat deterministický npm script.
+
+Absolutní cesta může být v user-facing PowerShell příkladu. Nesmí se hardcodovat do runtime, package nebo CI.
+
+## 8. Two-clone discipline
+
+Mac a Windows clone:
+
+- vždy fetch/pull před prací;
+- nekopírovat `node_modules` mezi stroji;
+- negenerovat runtime asset output ručně mimo script;
+- kontrolovat `git status -sb`;
+- necommitovat lokální garbage files;
+- po merge synchronizovat main;
+- používat `.gitattributes` a validators pro binary packs.
+
+Při podivném untracked filename používat Git-safe output a literal paths, ne přepis escaped octal sekvence jako normální PowerShell cestu.
+
+## 9. CI and deploy
+
+CI a Cloudflare deploy jsou oddělené gates.
+
+Běžný PR:
+
+- dependency install;
+- validators;
+- tests/typechecks;
+- build;
+- žádné Cloudflare secrets;
+- žádný automatic production deploy, pokud workflow výslovně neurčuje jinak.
+
+Cloudflare deploy je samostatný manual workflow/explicitní release krok.
+
+## 10. Platform-independent versus sensitive
+
+### Independent
+
+- korp-core;
+- module manifests;
+- progression data;
+- event semantics;
+- packet/audit logic;
+- module-local deterministic session logic;
+- copy;
+- most React/web UI.
+
+### Sensitive
+
+- Tauri window config;
+- transparency;
+- drag regions;
+- always-on-top;
+- overlay hitboxes;
+- global hooks;
+- filesystem paths;
+- installer;
+- DPI/input behavior;
+- action performance under actual Windows/browser/GPU stack.
+
+## 11. Action prototype workflow
+
+Priority Containment/Alignment Rally:
+
+```text
+1. standalone web greybox
+2. local playtest
+3. build/pacing refinement
+4. sensory/readability pass
+5. Windows performance/input gate
+6. teprve potom K0rp_OS packet/audit integration
+```
+
+Greybox nemá čekat na Tauri overlay. Integration nemá začít dřív, než je greybox dobrý bez Evidence.
+
+## 12. Asset workflow
+
+Raw source:
+
+```text
+design/ui-source/
+design/icon-source/
+```
+
+Generated/curated runtime:
+
+```text
+design/ui-runtime/
+src/assets/ podle explicitního build contractu
+```
+
+Pravidla:
+
+- runtime neimportuje raw snapshot;
+- generated output se nevyrábí ručně;
+- complete shell reference se neroztahuje;
+- tile/nine-slice/three-slice metadata se validují;
+- live text zůstává live;
+- binary source se mění samostatným asset taskem.
+
+## 13. Issue labels
 
 ```text
 platform:cross
@@ -187,116 +297,46 @@ area:overlay
 area:core
 area:docs
 area:assets
+area:progression
+area:module
+area:sensory
+area:playtest
 ```
 
-Každý task by měl říct, kde se má testovat:
+Každý issue uvádí:
 
 ```text
-Test target:
-- Mac ok
-- Windows required
-- Web only
-- Cross-platform
+Test target: Cross-platform / Windows required / Web only
+Reason: ...
 ```
 
-Příklad:
+## 14. Release gates
 
-```text
-Task: Add korp-core resource reducer
-Test target: Cross-platform / Mac ok
-Reason: pure TypeScript, no OS behavior.
-```
+- core/runtime tests;
+- progression validation;
+- asset validation;
+- production build;
+- Windows desktop start;
+- window behavior;
+- no obvious privacy leak;
+- no hardcoded Mac-only assumption;
+- local save/migration;
+- action module performance, pokud je součást release;
+- accessibility basics;
+- Mac/web smoke test podle scope.
 
-```text
-Task: Tune overlay hitbox
-Test target: Windows required
-Reason: primary release platform and OS-specific window behavior.
-```
-
-## 7. Path and script conventions
-
-Docs nesmí předpokládat jen jednu absolutní cestu. Uvádět raději:
-
-```text
-repo root
-```
-
-než konkrétní Mac/Windows path, pokud není potřeba.
-
-Když je potřeba příklad:
-
-```bash
-# macOS example
-cd ~/Projects/K0rp_ware
-```
-
-```powershell
-# Windows example
-cd $HOME\Projects\K0rp_ware
-```
-
-Scripts by měly fungovat přes npm package scripts, ne přes platform-specific shell hacky, pokud to jde.
-
-Preferovat:
-
-```bash
-npm run dev
-npm run build
-npm run test
-npm run sync:korp-ui
-```
-
-Až později můžeme doplnit `dev:windows`, `dev:mac`, `build:windows`, `build:mac`, pokud bude potřeba.
-
-## 8. Release policy
-
-První veřejně míněný desktop release má být Windows-first.
-
-Doporučené release gates:
-
-```text
-Web build passes
-Core tests pass
-Windows desktop app starts
-Windows overlay/window behavior manually checked
-No obvious privacy leak
-No hardcoded Mac-only assumptions
-Mac smoke test optional but useful
-```
-
-Mac release může následovat, ale nemá brzdit Windows MVP, pokud není problém ve sdíleném core/UI.
-
-## 8.1 CI a Cloudflare deployment
-
-CI validace a Cloudflare deployment jsou oddělené gates. Běžný push nebo pull request spouští pouze `npm ci`, testy a typecheck pro `korp-core` a `korp-modules` a `npm run build`; nevyžaduje Cloudflare secrets ani nespouští Wrangler.
-
-Cloudflare deploy zůstává dostupný jako ruční GitHub Actions workflow (`workflow_dispatch`) pro pozdější konfiguraci `CLOUDFLARE_ACCOUNT_ID` a `CLOUDFLARE_API_TOKEN`. Úspěšný CI build tak potvrzuje projektovou validaci, ne Cloudflare konfiguraci nebo oprávnění k deployi.
-
-## 9. Codex guardrail
-
-Codex / AI implementační tasky musí respektovat:
+## 15. Codex guardrail
 
 ```text
 Primary platform is Windows.
-Mac is a secondary development/test/design environment.
-Do not implement Mac-only assumptions as default behavior.
+Mac is secondary dev/design/smoke-test.
 Keep TypeScript core platform-independent.
 Put OS-specific behavior behind adapters.
-Mark any Tauri/window/overlay change as requiring Windows testing.
+Do not declare window/overlay/action performance complete without Windows validation.
+Always print exact PowerShell validation commands in the final task response.
+Do not change gameplay, data, assets and visual chrome in one task unless the issue explicitly requires all of them.
 ```
 
-Zakázané defaulty:
+## 16. Důležité pravidlo
 
-```text
-- hardcodovat macOS path jako jedinou možnost,
-- považovat macOS window behavior za finální,
-- ladit overlay pouze podle Macu,
-- přidávat OS-specific logiku do korp-core,
-- měnit primary target na Mac jen proto, že se zrovna pohodlně testuje na MacBooku.
-```
-
-## 10. Summary
-
-K0rp_OS je web-native a modular-first, ale jeho primární tělo je Windows desktop.
-
-Mac je vývojová pohovka, designový stolek a druhé zrcadlo. Windows je hlavní směna.
+> Mac je vývojová pohovka. Windows je hlavní směna. CI je kontrolní brána. A `npm ci` není exorcismus — nejdřív je potřeba přestat držet Rolldown za krk běžícím Vitem.
