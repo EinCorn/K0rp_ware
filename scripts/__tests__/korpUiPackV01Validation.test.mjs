@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict'
+import { createHash } from 'node:crypto'
 import {
   cpSync,
   mkdirSync,
@@ -53,8 +54,8 @@ test('the complete v0.1 source pack, catalog, contract and generated pilot subse
     csvSource,
     nineSliceTokens,
   })
-  assert.equal(rawValidation.assets.length, 286)
-  assert.equal(rawValidation.assetById.size, 286)
+  assert.equal(rawValidation.assets.length, 288)
+  assert.equal(rawValidation.assetById.size, 288)
 
   const expectedCatalog = createKorpUiV01Catalog({ manifest, rawRoot })
   assert.deepEqual(validateKorpUiV01Catalog({ catalog, manifest, rawRoot }), expectedCatalog)
@@ -62,21 +63,21 @@ test('the complete v0.1 source pack, catalog, contract and generated pilot subse
     tile: 7,
     'nine-slice': 10,
     'three-slice': 16,
-    fixed: 144,
+    fixed: 146,
     'reference-only': 109,
   })
 
   assert.equal(validateKorpUiV01WindowContract({ contract, catalog }), contract)
   const selectedIds = validateKorpUiV01Allowlist({ allowlist, catalog })
-  assert.equal(selectedIds.length, 20)
+  assert.equal(selectedIds.length, 19)
   assert.deepEqual(selectedIds, [...EXPECTED_PILOT_IDS].sort())
 
   const runtimeCatalog = createKorpUiV01RuntimeCatalog({ catalog, selectedIds })
-  assert.equal(runtimeCatalog.assets.length, 20)
+  assert.equal(runtimeCatalog.assets.length, 19)
   assert.equal(runtimeCatalog.assets.every((asset) => asset.runtimePath.startsWith(`${KORP_UI_V01_RUNTIME_ROOT}/assets/`)), true)
   assert.equal(
     validateKorpUiV01GeneratedRuntime({ repoRoot, rawRoot, catalog, selectedIds }).length,
-    20,
+    19,
   )
 })
 
@@ -129,6 +130,8 @@ test('asset classification distinguishes tile, nine-slice, three-slice, fixed an
     ['window.module.nine-slice', 'nine-slice'],
     ['window.header.module.active', 'three-slice'],
     ['control.close.normal', 'fixed'],
+    ['window.module.compact.active', 'fixed'],
+    ['window.module.compact.inactive', 'fixed'],
     ['window.module.active', 'reference-only'],
   ])
 
@@ -145,6 +148,14 @@ test('asset classification distinguishes tile, nine-slice, three-slice, fixed an
   const reference = classifyKorpUiV01Asset(findManifestAsset('window.module.active'))
   assert.equal(reference.runtimeEligible, false)
 
+  for (const state of ['active', 'inactive']) {
+    const compact = classifyKorpUiV01Asset(findManifestAsset(`window.module.compact.${state}`))
+    assert.deepEqual(compact.dimensions, { width: 183, height: 223 })
+    assert.deepEqual(compact.states, [state])
+    assert.equal(compact.capInsets, null)
+    assert.equal(compact.runtimeEligible, true)
+  }
+
   const bakedStatus = classifyKorpUiV01Asset(findManifestAsset('status.badge.pending'))
   assert.equal(bakedStatus.textPolicy, 'baked-reference')
   assert.equal(bakedStatus.textureMode, 'reference-only')
@@ -153,6 +164,37 @@ test('asset classification distinguishes tile, nine-slice, three-slice, fixed an
   const blankBackground = catalog.assets.find((asset) => asset.id.includes('.blank.') && asset.runtimeEligible)
   assert.ok(blankBackground)
   assert.equal(blankBackground.textPolicy, 'live-dom')
+})
+
+test('compact module shells are fixed native-size runtime assets with reviewed bytes', () => {
+  const expectations = new Map([
+    ['window.module.compact.active', {
+      path: 'assets/windows/shells/window.module.active.183x223.png',
+      sha256: '099fc8f5299ac3ddec23260696060c9850f1e6cae6adf8139f4f1039f0fff3aa',
+    }],
+    ['window.module.compact.inactive', {
+      path: 'assets/windows/shells/window.module.inactive.183x223.png',
+      sha256: '6268bb831c27bdcef658f9a0c89cad7a7860d14d95209d2186d79bbd5d73e3a2',
+    }],
+  ])
+
+  for (const [id, expected] of expectations) {
+    const sourceAsset = findManifestAsset(id)
+    const catalogAsset = catalog.assets.find((asset) => asset.id === id)
+    const sourceBytes = readFileSync(resolve(rawRoot, ...expected.path.split('/')))
+    const runtimeBytes = readFileSync(resolve(runtimeRoot, ...expected.path.split('/')))
+
+    assert.deepEqual(
+      { width: sourceAsset.width, height: sourceAsset.height },
+      { width: 183, height: 223 },
+    )
+    assert.equal(sourceAsset.path, expected.path)
+    assert.equal(catalogAsset.textureMode, 'fixed')
+    assert.equal(catalogAsset.runtimeEligible, true)
+    assert.equal(catalogAsset.sha256, expected.sha256)
+    assert.equal(createHash('sha256').update(sourceBytes).digest('hex'), expected.sha256)
+    assert.equal(createHash('sha256').update(runtimeBytes).digest('hex'), expected.sha256)
+  }
 })
 
 test('catalog drift is detected even when a catalog remains structurally valid', () => {
@@ -170,6 +212,25 @@ test('window-shell geometry preserves module content and portrait two-control do
 
   assert.deepEqual(contract.families.module.defaultMetricsPx.content, { width: 167, height: 167 })
   assert.deepEqual(contract.families.module.defaultMetricsPx.outer, { width: 183, height: 223 })
+  assert.deepEqual(contract.compositionPolicy.modulePilotShell, {
+    classification: 'fixed',
+    sizePx: { width: 183, height: 223 },
+    nativeScale: 1,
+    runtimeImportAllowed: true,
+    stateSelection: 'whole-shell-asset',
+    assets: {
+      active: 'window.module.compact.active',
+      inactive: 'window.module.compact.inactive',
+    },
+    transparentAperturePx: { x: 5, y: 28, width: 173, height: 173 },
+    binaryAlphaOnly: true,
+    stateAlphaMasksIdentical: true,
+    resizable: false,
+  })
+  assert.equal(contract.families.module.pilotComposition.kind, 'fixed-authored-shell')
+  assert.equal(contract.families.module.resizing.supported, false)
+  assert.equal(contract.families.module.resizing.composition, 'deferred-explicit-authored-export-contract')
+  assert.deepEqual(contract.families.module.resizing.axes, [])
   assert.deepEqual(contract.families.module.preservedContentInstances, {
     clickAudit: { width: 167, height: 167 },
     fidget: { width: 167, height: 167 },
@@ -187,6 +248,8 @@ test('window-shell geometry preserves module content and portrait two-control do
   const invalidContract = structuredClone(contract)
   invalidContract.families.module.defaultMetricsPx.content.width = 166
   invalidContract.geometryPolicy.contentPreservation.shrinkAllowed = true
+  invalidContract.compositionPolicy.modulePilotShell.nativeScale = 2
+  invalidContract.families.module.resizing.supported = true
   invalidContract.families.audit.orientation = 'landscape'
   invalidContract.families.audit.controlCount = 3
   invalidContract.families.audit.assets.frame = 'window.module.nine-slice'
@@ -197,18 +260,26 @@ test('window-shell geometry preserves module content and portrait two-control do
     (error) => error instanceof KorpUiAssetValidationError
       && error.message.includes('module default content size is incorrect')
       && error.message.includes('geometryPolicy must forbid shrinking, cropping and rescaling module content')
+      && error.message.includes('compositionPolicy.modulePilotShell must use the two fixed authored 183x223 assets')
+      && error.message.includes('module resizing must remain deferred for the fixed authored pilot')
       && error.message.includes('audit orientation must be portrait')
       && error.message.includes('audit control slots must be minimize, close')
-      && error.message.includes('audit must reference only its canonical frame, headers, surface and shells')
+      && error.message.includes('audit must reference only its canonical pilot, future and reference assets')
       && error.message.includes('folder default outer size must be portrait'),
   )
 })
 
-test('the runtime allowlist is exactly the 20-asset module pilot and rejects scope creep', () => {
+test('the runtime allowlist is exactly the 19-asset fixed-shell module pilot and rejects scope creep', () => {
   const selectedIds = validateKorpUiV01Allowlist({ allowlist, catalog })
-  assert.equal(allowlist.assetCount, 20)
-  assert.equal(flattenKorpUiV01Allowlist(allowlist).length, 20)
+  assert.equal(allowlist.targetTask, 'Task 024B fixed authored module-shell pilot')
+  assert.equal(allowlist.assetCount, 19)
+  assert.equal(flattenKorpUiV01Allowlist(allowlist).length, 19)
   assert.deepEqual(selectedIds, [...EXPECTED_PILOT_IDS].sort())
+  assert.equal(selectedIds.includes('window.module.compact.active'), true)
+  assert.equal(selectedIds.includes('window.module.compact.inactive'), true)
+  assert.equal(selectedIds.includes('window.module.nine-slice'), false)
+  assert.equal(selectedIds.includes('window.header.module.active'), false)
+  assert.equal(selectedIds.includes('window.header.module.inactive'), false)
 
   const extraAsset = structuredClone(allowlist)
   extraAsset.groups[0].assetIds.push('window.audit.nine-slice')

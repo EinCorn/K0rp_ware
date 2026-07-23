@@ -29,23 +29,48 @@
       "fixed",
       "reference-only"
     ],
-    "frame": {
-      "classification": "nine-slice",
-      "capInsetsPx": {
-        "top": 30,
-        "right": 8,
-        "bottom": 8,
-        "left": 8
+    "modulePilotShell": {
+      "classification": "fixed",
+      "sizePx": {
+        "width": 183,
+        "height": 223
       },
-      "stretchCompleteShell": false
+      "nativeScale": 1,
+      "runtimeImportAllowed": true,
+      "stateSelection": "whole-shell-asset",
+      "assets": {
+        "active": "window.module.compact.active",
+        "inactive": "window.module.compact.inactive"
+      },
+      "transparentAperturePx": {
+        "x": 5,
+        "y": 28,
+        "width": 173,
+        "height": 173
+      },
+      "binaryAlphaOnly": true,
+      "stateAlphaMasksIdentical": true,
+      "resizable": false
     },
-    "header": {
-      "classification": "three-slice",
-      "axis": "horizontal",
-      "heightPx": 27,
-      "capInsetsPx": {
-        "left": 8,
-        "right": 8
+    "futureResizablePieces": {
+      "runtimeUsedByModulePilot": false,
+      "frame": {
+        "classification": "nine-slice",
+        "capInsetsPx": {
+          "top": 30,
+          "right": 8,
+          "bottom": 8,
+          "left": 8
+        }
+      },
+      "header": {
+        "classification": "three-slice",
+        "axis": "horizontal",
+        "heightPx": 27,
+        "capInsetsPx": {
+          "left": 8,
+          "right": 8
+        }
       }
     },
     "surfaceTile": {
@@ -60,8 +85,8 @@
         "height": 16
       },
       "layoutPx": {
-        "top": 6,
-        "right": 8,
+        "top": 5,
+        "right": 5,
         "gap": 2
       },
       "states": [
@@ -71,7 +96,7 @@
         "disabled"
       ]
     },
-    "completeShell": {
+    "historicalCompleteShell": {
       "classification": "reference-only",
       "runtimeImportAllowed": false,
       "reason": "The authored 320x220 shell is a composition reference and must never be stretched into a runtime window."
@@ -118,12 +143,18 @@
         }
       ],
       "assets": {
-        "frame": "window.module.nine-slice",
-        "headers": {
-          "active": "window.header.module.active",
-          "inactive": "window.header.module.inactive"
+        "fixedShells": {
+          "active": "window.module.compact.active",
+          "inactive": "window.module.compact.inactive"
         },
         "surface": "dark-panel",
+        "futureResizablePieces": {
+          "frame": "window.module.nine-slice",
+          "headers": {
+            "active": "window.header.module.active",
+            "inactive": "window.header.module.inactive"
+          }
+        },
         "referenceOnlyShells": [
           "window.module.active",
           "window.module.inactive"
@@ -155,13 +186,21 @@
           "height": 167
         }
       },
+      "pilotComposition": {
+        "kind": "fixed-authored-shell",
+        "nativeSizePx": {
+          "width": 183,
+          "height": 223
+        },
+        "nativeScale": 1,
+        "stateSelection": "whole-shell-asset",
+        "shellOwnsPermanentChrome": true
+      },
       "resizing": {
-        "composition": "nine-slice-frame-plus-three-slice-header",
-        "axes": [
-          "horizontal",
-          "vertical"
-        ],
-        "contentDrivesOuterSize": true
+        "supported": false,
+        "composition": "deferred-explicit-authored-export-contract",
+        "axes": [],
+        "contentDrivesOuterSize": false
       },
       "pilotEligible": true
     },

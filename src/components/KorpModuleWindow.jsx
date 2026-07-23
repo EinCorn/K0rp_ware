@@ -16,11 +16,12 @@ import unpinHoverUrl from '../../design/ui-runtime/k0rp-ui-v01/assets/controls/i
 import unpinNormalUrl from '../../design/ui-runtime/k0rp-ui-v01/assets/controls/individual/unpin.normal.png?url'
 import unpinPressedUrl from '../../design/ui-runtime/k0rp-ui-v01/assets/controls/individual/unpin.pressed.png?url'
 import darkPanelUrl from '../../design/ui-runtime/k0rp-ui-v01/assets/surfaces/dark-panel.png?url'
-import moduleFrameUrl from '../../design/ui-runtime/k0rp-ui-v01/assets/windows/nine_slice/window.module.nine-slice.png?url'
+import moduleActiveShellUrl from '../../design/ui-runtime/k0rp-ui-v01/assets/windows/shells/window.module.active.183x223.png?url'
+import moduleInactiveShellUrl from '../../design/ui-runtime/k0rp-ui-v01/assets/windows/shells/window.module.inactive.183x223.png?url'
 import {
   KORP_MODULE_WINDOW_METRICS,
   getIntegerModuleWindowPreviewPosition,
-  getModuleWindowHeaderState,
+  getModuleWindowShellState,
 } from '../runtime/moduleWindowPresentation'
 import './KorpModuleWindow.css'
 
@@ -49,6 +50,11 @@ const controlAssets = Object.freeze({
     pressed: unpinPressedUrl,
     disabled: unpinDisabledUrl,
   }),
+})
+
+const moduleShellAssets = Object.freeze({
+  active: moduleActiveShellUrl,
+  inactive: moduleInactiveShellUrl,
 })
 
 const readPreviewPosition = () => getIntegerModuleWindowPreviewPosition({
@@ -106,43 +112,29 @@ export default function KorpModuleWindow({
   onMinimize,
   onClose,
 }) {
-  const headerState = getModuleWindowHeaderState(isActive)
+  const shellState = getModuleWindowShellState(isActive)
+  const shellUrl = moduleShellAssets[shellState]
   const metrics = KORP_MODULE_WINDOW_METRICS
-  const stateStripFill = metrics.header.states[headerState].fillColor ?? 'transparent'
 
   return (
     <div
       className="korp-module-window"
       data-korp-module-window="v01"
       data-korp-module-layout="compact"
-      data-header-state={headerState}
+      data-shell-state={shellState}
       data-pinned={isPinned ? 'true' : 'false'}
       style={{
-        '--korp-module-frame': `url(${moduleFrameUrl})`,
-        '--korp-module-state-strip-fill': stateStripFill,
         '--korp-module-surface': `url(${darkPanelUrl})`,
         '--korp-module-outer-width': `${metrics.outerRect.width}px`,
         '--korp-module-outer-height': `${metrics.outerRect.height}px`,
-        '--korp-module-frame-top': metrics.frame.capInsets.top,
-        '--korp-module-frame-right': metrics.frame.capInsets.right,
-        '--korp-module-frame-bottom': metrics.frame.capInsets.bottom,
-        '--korp-module-frame-left': metrics.frame.capInsets.left,
         '--korp-module-header-left': `${metrics.headerRect.x}px`,
         '--korp-module-header-top': `${metrics.headerRect.y}px`,
         '--korp-module-header-width': `${metrics.headerRect.width}px`,
         '--korp-module-header-height': `${metrics.headerRect.height}px`,
-        '--korp-module-state-strip-left': `${metrics.stateStripRect.x}px`,
-        '--korp-module-state-strip-top': `${metrics.stateStripRect.y}px`,
-        '--korp-module-state-strip-width': `${metrics.stateStripRect.width}px`,
-        '--korp-module-state-strip-height': `${metrics.stateStripRect.height}px`,
-        '--korp-module-header-seam-left': `${metrics.headerSeamRect.x}px`,
-        '--korp-module-header-seam-top': `${metrics.headerSeamRect.y}px`,
-        '--korp-module-header-seam-width': `${metrics.headerSeamRect.width}px`,
-        '--korp-module-header-seam-height': `${metrics.headerSeamRect.height}px`,
-        '--korp-module-backing-left': `${metrics.interiorBackingRect.x}px`,
-        '--korp-module-backing-top': `${metrics.interiorBackingRect.y}px`,
-        '--korp-module-backing-width': `${metrics.interiorBackingRect.width}px`,
-        '--korp-module-backing-height': `${metrics.interiorBackingRect.height}px`,
+        '--korp-module-backing-left': `${metrics.apertureBackingRect.x}px`,
+        '--korp-module-backing-top': `${metrics.apertureBackingRect.y}px`,
+        '--korp-module-backing-width': `${metrics.apertureBackingRect.width}px`,
+        '--korp-module-backing-height': `${metrics.apertureBackingRect.height}px`,
         '--korp-module-content-left': `${metrics.contentRect.x}px`,
         '--korp-module-content-top': `${metrics.contentRect.y}px`,
         '--korp-module-content-width': `${metrics.contentRect.width}px`,
@@ -163,13 +155,10 @@ export default function KorpModuleWindow({
         '--korp-module-title-height': `${metrics.titleRect.height}px`,
         '--korp-module-interior-backing-color': metrics.surface.interiorBackingColor,
         '--korp-module-backing-color': metrics.surface.backingColor,
-        '--korp-module-footer-backing-color': metrics.surface.footerBackingColor,
-        '--korp-module-shell-outline-color': metrics.surface.shellOutlineColor,
         '--korp-module-layer-opaque-backing': metrics.layers.opaqueBacking,
         '--korp-module-layer-shell-backgrounds': metrics.layers.shellBackgrounds,
         '--korp-module-layer-live-content': metrics.layers.liveContent,
-        '--korp-module-layer-frame-chrome': metrics.layers.frameChrome,
-        '--korp-module-layer-state-strip': metrics.layers.stateStrip,
+        '--korp-module-layer-fixed-shell': metrics.layers.fixedShell,
         '--korp-module-layer-interactive-chrome': metrics.layers.interactiveChrome,
       }}
     >
@@ -184,28 +173,21 @@ export default function KorpModuleWindow({
         aria-hidden="true"
       />
       <div
-        className="korp-module-window-footer-surface"
-        data-korp-module-layer="footer-body"
-        aria-hidden="true"
-      />
-      <div
         className="korp-module-window-content"
         data-korp-module-region="content"
         data-korp-module-layer="live-content"
       >
         {children}
       </div>
-      <div
-        className="korp-module-window-frame"
-        data-korp-module-layer="frame-chrome"
-        aria-hidden="true"
-      >
-        <div className="korp-module-window-header-seam" />
-        <div className="korp-module-window-frame-art" />
-      </div>
-      <div
-        className="korp-module-window-state-strip"
-        data-korp-module-layer="state-strip"
+      <img
+        className="korp-module-window-shell"
+        src={shellUrl}
+        width={metrics.shellRect.width}
+        height={metrics.shellRect.height}
+        alt=""
+        draggable={false}
+        data-korp-module-shell-state={shellState}
+        data-korp-module-layer="fixed-shell"
         aria-hidden="true"
       />
       <div

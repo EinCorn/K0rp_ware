@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "targetTask": "Task 024A follow-up module-window pilot",
+  "targetTask": "Task 024B fixed authored module-shell pilot",
   "scope": "ClickAudit and Fidget module-window chrome only",
   "sourceRoot": "design/ui-source/k0rp-ui-asset-pack-v01",
   "runtimeRoot": "design/ui-runtime/k0rp-ui-v01",
@@ -8,15 +8,14 @@
   "allowedWindowFamilies": [
     "module"
   ],
-  "assetCount": 20,
+  "assetCount": 19,
   "groups": [
     {
-      "id": "module-window-frame",
-      "purpose": "Resizable module frame and active/inactive three-slice headers",
+      "id": "module-window-shell",
+      "purpose": "Fixed authored 183x223 active and inactive compact module shells",
       "assetIds": [
-        "window.module.nine-slice",
-        "window.header.module.active",
-        "window.header.module.inactive"
+        "window.module.compact.active",
+        "window.module.compact.inactive"
       ]
     },
     {
@@ -52,6 +51,7 @@
   "exclusions": [
     "Audit and folder assets are cataloged but are not part of the first runtime pilot.",
     "Complete 320x220 window shells are reference-only and must not be copied or stretched.",
+    "The legacy module nine-slice and separate module headers remain cataloged for future contract work but are not copied into this fixed-size pilot.",
     "Preview boards, baked reference screens and baked labels are never runtime copy.",
     "Existing ClickAudit and Fidget content dimensions and live content remain authoritative.",
     "Canonical icons continue to come only from design/icon-source/k0rp-icons-v2.",

@@ -491,6 +491,14 @@ shared window manager behavior
 
 Each family may own a distinct authored shell and geometry. Every instance within one family must use the same chrome component and metrics, and app content may not modify the outer family chrome.
 
+The Task 024B module pilot uses `window.module.compact.active` and
+`window.module.compact.inactive` as fixed authored `183×223` shells rendered at 1:1.
+ClickAudit and Fidget select the whole shell by focus state while preserving the shared
+`167×167` live content slot inside the authored `173×173` transparent aperture. The old
+module nine-slice and separate header pieces are not
+part of this runtime pilot; resizable module composition is deferred to a separate
+authored export contract.
+
 ## Task 024 — First-cycle data rebalance and migration
 
 ### Cíl
