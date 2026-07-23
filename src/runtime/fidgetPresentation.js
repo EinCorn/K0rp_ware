@@ -5,12 +5,13 @@ import {
 
 export const FIDGET_WINDOW_ID = 'fidget'
 export const FIDGET_WINDOW_SIZE = KORP_MODULE_WINDOW_SIZE
-const FIDGET_MODULE_FOOTER_CONTROL_SIZE = 16
 export const FIDGET_MODULE_FOOTER_CONTROL_RECT = Object.freeze({
-  x: 0,
-  y: KORP_MODULE_WINDOW_METRICS.footerRect.height - FIDGET_MODULE_FOOTER_CONTROL_SIZE,
-  width: FIDGET_MODULE_FOOTER_CONTROL_SIZE,
-  height: FIDGET_MODULE_FOOTER_CONTROL_SIZE,
+  x: KORP_MODULE_WINDOW_METRICS.footerControlRect.x
+    - KORP_MODULE_WINDOW_METRICS.footerRect.x,
+  y: KORP_MODULE_WINDOW_METRICS.footerControlRect.y
+    - KORP_MODULE_WINDOW_METRICS.footerRect.y,
+  width: KORP_MODULE_WINDOW_METRICS.footerControlRect.width,
+  height: KORP_MODULE_WINDOW_METRICS.footerControlRect.height,
 })
 
 export const FIDGET_DEPLOYED_DESKTOP_ITEM = Object.freeze({
