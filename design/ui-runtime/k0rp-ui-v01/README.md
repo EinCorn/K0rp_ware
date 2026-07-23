@@ -42,8 +42,11 @@ Full shells and 32x32 textures must never be stretched. Fractional transforms, s
 blur and filters are outside the contract.
 
 The future slice-frame cap insets remain 8 px left, 30 px top, 8 px right and 8 px
-bottom. Content insets are measured independently from the authored transparent slot:
-module uses 8/31/8/25 px (left/top/right/bottom), while audit and folder use 8/31/8/8 px.
+bottom. The fixed module viewport uses the measured authored transparent rect directly:
+5/28/5/22 px (left/top/right/bottom), producing a 173x173 content viewport inside the
+183x223 shell. Backing, tiled surface, live content and clipping share that one
+top-left-anchored integer rect; percentage sizing, derived centering and translate-based
+placement are forbidden. Audit and folder continue to use 8/31/8/8 px content insets.
 Compact-module controls are fixed at 18x16 px and align to the authored slots at y=5;
 all labels remain live DOM text using the current runtime font.
 
@@ -51,14 +54,16 @@ Family defaults are:
 
 | Family | Controls | Content | Derived outer | Orientation |
 | --- | ---: | ---: | ---: | --- |
-| Module | pin/unpin, minimize, close | 167x167 | 183x223 | content-derived |
+| Module | pin/unpin, minimize, close | 173x173 | 183x223 | content-derived |
 | Audit | minimize, close | 294x431 | 310x470 | portrait |
 | Folder | minimize, close | 252x321 | 268x360 | portrait |
 
-The 167x167 ClickAudit and Fidget content boxes are preserved exactly. The future module
-chrome wraps those boxes; it may not shrink, crop or rescale them. Audit remains a live
-form that can grow vertically. Folder remains a live vertically scrolling list; rows and
-scrollbars are not baked into its assets.
+The embedded ClickAudit and Fidget viewports both use the exact 173x173 authored cutout.
+Their intrinsic gameplay artwork is not rescaled: the Fidget rotor remains 132x132 and
+ClickAudit keeps its existing digit and effect sizing. The standalone 181px app windows
+retain their existing 167x167 inner boxes. Audit remains a live form that can grow
+vertically. Folder remains a live vertically scrolling list; rows and scrollbars are not
+baked into its assets.
 
 ## Pilot boundary
 

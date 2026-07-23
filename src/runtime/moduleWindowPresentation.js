@@ -1,14 +1,14 @@
 const freezeRect = (x, y, width, height) => Object.freeze({ x, y, width, height })
 
 const contentInsets = Object.freeze({
-  top: 31,
-  right: 8,
-  bottom: 25,
-  left: 8,
+  top: 28,
+  right: 5,
+  bottom: 22,
+  left: 5,
 })
 const content = Object.freeze({
-  width: 167,
-  height: 167,
+  width: 173,
+  height: 173,
 })
 const outer = Object.freeze({
   width: content.width + contentInsets.left + contentInsets.right,
@@ -32,37 +32,24 @@ const controls = Object.freeze({
 })
 const controlsWidth = (controls.count * controls.width)
   + ((controls.count - 1) * controls.gap)
-const bottomChromeHeight = 8
-const footerHeight = contentInsets.bottom - bottomChromeHeight
 const outerRect = freezeRect(0, 0, outer.width, outer.height)
 const shellRect = outerRect
-const headerRect = freezeRect(0, 0, outer.width, contentInsets.top)
-const apertureBackingRect = freezeRect(5, 28, 173, 173)
+const headerRect = freezeRect(0, 0, 183, 31)
 const contentRect = freezeRect(
   contentInsets.left,
   contentInsets.top,
   content.width,
   content.height,
 )
-const footerRect = freezeRect(
-  contentRect.x,
-  contentRect.y + contentRect.height,
-  contentRect.width,
-  footerHeight,
-)
-const bottomFrameRect = freezeRect(
-  0,
-  footerRect.y + footerRect.height,
-  outer.width,
-  bottomChromeHeight,
-)
+const footerRect = freezeRect(8, 198, 167, 17)
+const bottomFrameRect = freezeRect(0, 215, 183, 8)
 const controlsRect = freezeRect(
   outer.width - controls.right - controlsWidth,
   controls.top,
   controlsWidth,
   controls.height,
 )
-const titleLeft = contentInsets.left + 9
+const titleLeft = 17
 const titleTop = 6
 const titleControlsGap = 4
 const footerSafeRect = freezeRect(
@@ -94,14 +81,13 @@ export const KORP_MODULE_WINDOW_METRICS = Object.freeze({
   shell: Object.freeze({
     ...shell,
     rect: shellRect,
-    transparentApertureRect: apertureBackingRect,
+    transparentApertureRect: contentRect,
   }),
   controls,
   layers,
   outerRect,
   shellRect,
   headerRect,
-  apertureBackingRect,
   contentRect,
   footerRect,
   footerSafeRect,

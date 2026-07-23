@@ -22,17 +22,7 @@
   isolation: isolate;
 }
 
-.korp-module-window-backing {
-  position: absolute;
-  left: var(--korp-module-backing-left);
-  top: var(--korp-module-backing-top);
-  width: var(--korp-module-backing-width);
-  height: var(--korp-module-backing-height);
-  pointer-events: none;
-  z-index: var(--korp-module-layer-opaque-backing);
-  background-color: var(--korp-module-interior-backing-color);
-}
-
+.korp-module-window-backing,
 .korp-module-window-content-surface,
 .korp-module-window-content {
   position: absolute;
@@ -41,6 +31,12 @@
   width: var(--korp-module-content-width);
   height: var(--korp-module-content-height);
   overflow: hidden;
+}
+
+.korp-module-window-backing {
+  pointer-events: none;
+  z-index: var(--korp-module-layer-opaque-backing);
+  background-color: var(--korp-module-interior-backing-color);
 }
 
 .korp-module-window-content-surface {

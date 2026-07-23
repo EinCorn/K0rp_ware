@@ -131,10 +131,6 @@ export default function KorpModuleWindow({
         '--korp-module-header-top': `${metrics.headerRect.y}px`,
         '--korp-module-header-width': `${metrics.headerRect.width}px`,
         '--korp-module-header-height': `${metrics.headerRect.height}px`,
-        '--korp-module-backing-left': `${metrics.apertureBackingRect.x}px`,
-        '--korp-module-backing-top': `${metrics.apertureBackingRect.y}px`,
-        '--korp-module-backing-width': `${metrics.apertureBackingRect.width}px`,
-        '--korp-module-backing-height': `${metrics.apertureBackingRect.height}px`,
         '--korp-module-content-left': `${metrics.contentRect.x}px`,
         '--korp-module-content-top': `${metrics.contentRect.y}px`,
         '--korp-module-content-width': `${metrics.contentRect.width}px`,
@@ -175,6 +171,7 @@ export default function KorpModuleWindow({
       <div
         className="korp-module-window-content"
         data-korp-module-region="content"
+        data-korp-module-viewport="authored-content-rect"
         data-korp-module-layer="live-content"
       >
         {children}

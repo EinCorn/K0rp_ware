@@ -48,6 +48,19 @@
         "width": 173,
         "height": 173
       },
+      "contentRectPx": {
+        "x": 5,
+        "y": 28,
+        "width": 173,
+        "height": 173
+      },
+      "contentPlacement": {
+        "anchor": "shell-top-left",
+        "positioning": "absolute-integer-px",
+        "clipToContentRect": true,
+        "derivedOrPercentageLayoutAllowed": false,
+        "translateCenteringAllowed": false
+      },
       "binaryAlphaOnly": true,
       "stateAlphaMasksIdentical": true,
       "resizable": false
@@ -162,14 +175,14 @@
       },
       "defaultMetricsPx": {
         "contentInsets": {
-          "top": 31,
-          "right": 8,
-          "bottom": 25,
-          "left": 8
+          "top": 28,
+          "right": 5,
+          "bottom": 22,
+          "left": 5
         },
         "content": {
-          "width": 167,
-          "height": 167
+          "width": 173,
+          "height": 173
         },
         "outer": {
           "width": 183,
@@ -178,12 +191,12 @@
       },
       "preservedContentInstances": {
         "clickAudit": {
-          "width": 167,
-          "height": 167
+          "width": 173,
+          "height": 173
         },
         "fidget": {
-          "width": 167,
-          "height": 167
+          "width": 173,
+          "height": 173
         }
       },
       "pilotComposition": {
@@ -194,7 +207,15 @@
         },
         "nativeScale": 1,
         "stateSelection": "whole-shell-asset",
-        "shellOwnsPermanentChrome": true
+        "shellOwnsPermanentChrome": true,
+        "contentRectPx": {
+          "x": 5,
+          "y": 28,
+          "width": 173,
+          "height": 173
+        },
+        "contentAnchor": "shell-top-left",
+        "contentClip": "exact-authored-rect"
       },
       "resizing": {
         "supported": false,

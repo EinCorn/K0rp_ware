@@ -2154,7 +2154,7 @@
       "states": "active",
       "nine_slice": "",
       "accent": "module",
-      "usage": "Fixed authored 1x compact module shell with 173x173 transparent aperture around a 167x167 live content slot",
+      "usage": "Fixed authored 1x compact module shell with a 173x173 content viewport at x5 y28",
       "source_docs": "01-visual-style.md;06-screen-concepts.md;KorpOsShell.css"
     },
     {
@@ -2166,7 +2166,7 @@
       "states": "inactive",
       "nine_slice": "",
       "accent": "module",
-      "usage": "Fixed authored 1x compact module shell with 173x173 transparent aperture around a 167x167 live content slot",
+      "usage": "Fixed authored 1x compact module shell with a 173x173 content viewport at x5 y28",
       "source_docs": "01-visual-style.md;06-screen-concepts.md;KorpOsShell.css"
     },
     {

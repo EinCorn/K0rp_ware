@@ -619,18 +619,22 @@ export function validateKorpUiV01WindowContract({ contract, catalog }) {
     JSON.stringify(composition.allowedClassifications) !== JSON.stringify(KORP_UI_V01_TEXTURE_MODES)
   ) errors.push('compositionPolicy.allowedClassifications must match the catalog texture modes')
   const modulePilotShell = composition.modulePilotShell
+  const moduleContentRect = { x: 5, y: 28, width: 173, height: 173 }
   if (
     modulePilotShell?.classification !== 'fixed'
     || !dimensionsEqual(modulePilotShell?.sizePx, { width: 183, height: 223 })
     || modulePilotShell?.nativeScale !== 1
     || modulePilotShell?.runtimeImportAllowed !== true
     || modulePilotShell?.stateSelection !== 'whole-shell-asset'
-    || !dimensionsEqual(modulePilotShell?.transparentAperturePx, {
-      width: 173,
-      height: 173,
-    })
-    || modulePilotShell?.transparentAperturePx?.x !== 5
-    || modulePilotShell?.transparentAperturePx?.y !== 28
+    || JSON.stringify(modulePilotShell?.transparentAperturePx)
+      !== JSON.stringify(moduleContentRect)
+    || JSON.stringify(modulePilotShell?.contentRectPx)
+      !== JSON.stringify(moduleContentRect)
+    || modulePilotShell?.contentPlacement?.anchor !== 'shell-top-left'
+    || modulePilotShell?.contentPlacement?.positioning !== 'absolute-integer-px'
+    || modulePilotShell?.contentPlacement?.clipToContentRect !== true
+    || modulePilotShell?.contentPlacement?.derivedOrPercentageLayoutAllowed !== false
+    || modulePilotShell?.contentPlacement?.translateCenteringAllowed !== false
     || modulePilotShell?.binaryAlphaOnly !== true
     || modulePilotShell?.stateAlphaMasksIdentical !== true
     || modulePilotShell?.resizable !== false
@@ -639,7 +643,7 @@ export function validateKorpUiV01WindowContract({ contract, catalog }) {
       inactive: 'window.module.compact.inactive',
     })
   ) {
-    errors.push('compositionPolicy.modulePilotShell must use the two fixed authored 183x223 assets and measured alpha aperture at native scale')
+    errors.push('compositionPolicy.modulePilotShell must use the measured 173x173 authored content rect with integer top-left placement and clipping')
   }
   const futureResizablePieces = composition.futureResizablePieces
   const frameInsets = { left: 8, top: 30, right: 8, bottom: 8 }
@@ -695,8 +699,8 @@ export function validateKorpUiV01WindowContract({ contract, catalog }) {
     module: {
       orientation: 'content-derived',
       controls: ['pin-toggle', 'minimize', 'close'],
-      contentInsets: { left: 8, top: 31, right: 8, bottom: 25 },
-      content: { width: 167, height: 167 },
+      contentInsets: { left: 5, top: 28, right: 5, bottom: 22 },
+      content: { width: 173, height: 173 },
       outer: { width: 183, height: 223 },
       surface: 'dark-panel',
       resizingComposition: 'deferred-explicit-authored-export-contract',
@@ -798,6 +802,10 @@ export function validateKorpUiV01WindowContract({ contract, catalog }) {
         || family.pilotComposition?.nativeScale !== 1
         || family.pilotComposition?.stateSelection !== 'whole-shell-asset'
         || family.pilotComposition?.shellOwnsPermanentChrome !== true
+        || JSON.stringify(family.pilotComposition?.contentRectPx)
+          !== JSON.stringify(moduleContentRect)
+        || family.pilotComposition?.contentAnchor !== 'shell-top-left'
+        || family.pilotComposition?.contentClip !== 'exact-authored-rect'
       ) errors.push('module pilot composition must use fixed authored whole-shell state assets at native size')
       if (
         family.resizing?.supported !== false
@@ -838,8 +846,8 @@ export function validateKorpUiV01WindowContract({ contract, catalog }) {
   }
   const moduleFamily = families.module
   for (const instanceId of ['clickAudit', 'fidget']) {
-    if (!dimensionsEqual(moduleFamily?.preservedContentInstances?.[instanceId], { width: 167, height: 167 })) {
-      errors.push(`${instanceId} preservation constraint must remain exactly 167x167`)
+    if (!dimensionsEqual(moduleFamily?.preservedContentInstances?.[instanceId], { width: 173, height: 173 })) {
+      errors.push(`${instanceId} viewport constraint must remain exactly 173x173`)
     }
   }
   if (

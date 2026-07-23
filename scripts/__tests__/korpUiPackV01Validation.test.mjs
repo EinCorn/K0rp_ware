@@ -210,7 +210,11 @@ test('catalog drift is detected even when a catalog remains structurally valid',
 test('window-shell geometry preserves module content and portrait two-control document families', () => {
   validateKorpUiV01WindowContract({ contract, catalog })
 
-  assert.deepEqual(contract.families.module.defaultMetricsPx.content, { width: 167, height: 167 })
+  assert.deepEqual(
+    contract.families.module.defaultMetricsPx.contentInsets,
+    { left: 5, top: 28, right: 5, bottom: 22 },
+  )
+  assert.deepEqual(contract.families.module.defaultMetricsPx.content, { width: 173, height: 173 })
   assert.deepEqual(contract.families.module.defaultMetricsPx.outer, { width: 183, height: 223 })
   assert.deepEqual(contract.compositionPolicy.modulePilotShell, {
     classification: 'fixed',
@@ -223,6 +227,14 @@ test('window-shell geometry preserves module content and portrait two-control do
       inactive: 'window.module.compact.inactive',
     },
     transparentAperturePx: { x: 5, y: 28, width: 173, height: 173 },
+    contentRectPx: { x: 5, y: 28, width: 173, height: 173 },
+    contentPlacement: {
+      anchor: 'shell-top-left',
+      positioning: 'absolute-integer-px',
+      clipToContentRect: true,
+      derivedOrPercentageLayoutAllowed: false,
+      translateCenteringAllowed: false,
+    },
     binaryAlphaOnly: true,
     stateAlphaMasksIdentical: true,
     resizable: false,
@@ -232,8 +244,8 @@ test('window-shell geometry preserves module content and portrait two-control do
   assert.equal(contract.families.module.resizing.composition, 'deferred-explicit-authored-export-contract')
   assert.deepEqual(contract.families.module.resizing.axes, [])
   assert.deepEqual(contract.families.module.preservedContentInstances, {
-    clickAudit: { width: 167, height: 167 },
-    fidget: { width: 167, height: 167 },
+    clickAudit: { width: 173, height: 173 },
+    fidget: { width: 173, height: 173 },
   })
 
   for (const familyId of ['audit', 'folder']) {
@@ -246,9 +258,10 @@ test('window-shell geometry preserves module content and portrait two-control do
   }
 
   const invalidContract = structuredClone(contract)
-  invalidContract.families.module.defaultMetricsPx.content.width = 166
+  invalidContract.families.module.defaultMetricsPx.content.width = 172
   invalidContract.geometryPolicy.contentPreservation.shrinkAllowed = true
   invalidContract.compositionPolicy.modulePilotShell.nativeScale = 2
+  invalidContract.compositionPolicy.modulePilotShell.contentRectPx.width = 172
   invalidContract.families.module.resizing.supported = true
   invalidContract.families.audit.orientation = 'landscape'
   invalidContract.families.audit.controlCount = 3
@@ -260,7 +273,7 @@ test('window-shell geometry preserves module content and portrait two-control do
     (error) => error instanceof KorpUiAssetValidationError
       && error.message.includes('module default content size is incorrect')
       && error.message.includes('geometryPolicy must forbid shrinking, cropping and rescaling module content')
-      && error.message.includes('compositionPolicy.modulePilotShell must use the two fixed authored 183x223 assets')
+      && error.message.includes('compositionPolicy.modulePilotShell must use the measured 173x173 authored content rect')
       && error.message.includes('module resizing must remain deferred for the fixed authored pilot')
       && error.message.includes('audit orientation must be portrait')
       && error.message.includes('audit control slots must be minimize, close')

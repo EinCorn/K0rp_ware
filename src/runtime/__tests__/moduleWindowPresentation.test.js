@@ -87,6 +87,15 @@ test('module geometry stays aligned with the fixed authored shell contract', () 
     KORP_MODULE_WINDOW_METRICS.shell.transparentApertureRect,
     contractShell.transparentAperturePx,
   )
+  assert.deepEqual(KORP_MODULE_WINDOW_METRICS.contentRect, contractShell.contentRectPx)
+  assert.deepEqual(contractShell.contentRectPx, contractShell.transparentAperturePx)
+  assert.deepEqual(contractShell.contentPlacement, {
+    anchor: 'shell-top-left',
+    positioning: 'absolute-integer-px',
+    clipToContentRect: true,
+    derivedOrPercentageLayoutAllowed: false,
+    translateCenteringAllowed: false,
+  })
   assert.equal(KORP_MODULE_WINDOW_METRICS.shell.classification, 'fixed')
   assert.equal(KORP_MODULE_WINDOW_METRICS.shell.nativeScale, 1)
   assert.equal(contractShell.resizable, false)
@@ -116,8 +125,8 @@ test('fixed shell, aperture, content, footer and controls use exact authored coo
   assert.deepEqual(metrics.outerRect, { x: 0, y: 0, width: 183, height: 223 })
   assert.deepEqual(metrics.shellRect, metrics.outerRect)
   assert.deepEqual(metrics.headerRect, { x: 0, y: 0, width: 183, height: 31 })
-  assert.deepEqual(metrics.apertureBackingRect, { x: 5, y: 28, width: 173, height: 173 })
-  assert.deepEqual(metrics.contentRect, { x: 8, y: 31, width: 167, height: 167 })
+  assert.deepEqual(metrics.contentRect, { x: 5, y: 28, width: 173, height: 173 })
+  assert.deepEqual(metrics.shell.transparentApertureRect, metrics.contentRect)
   assert.deepEqual(metrics.footerRect, { x: 8, y: 198, width: 167, height: 17 })
   assert.deepEqual(metrics.footerSafeRect, { x: 8, y: 199, width: 167, height: 16 })
   assert.deepEqual(metrics.footerControlRect, { x: 12, y: 199, width: 16, height: 16 })
@@ -125,13 +134,15 @@ test('fixed shell, aperture, content, footer and controls use exact authored coo
   assert.deepEqual(metrics.controlsRect, { x: 120, y: 5, width: 58, height: 16 })
   assert.deepEqual(metrics.titleRect, { x: 17, y: 6, width: 99, height: 16 })
 
-  assert.equal(rectContains(metrics.outerRect, metrics.apertureBackingRect), true)
-  assert.equal(rectContains(metrics.apertureBackingRect, metrics.contentRect), true)
-  assert.equal(metrics.contentRect.x - metrics.apertureBackingRect.x, 3)
-  assert.equal(metrics.contentRect.y - metrics.apertureBackingRect.y, 3)
-  assert.equal(rectRight(metrics.apertureBackingRect) - rectRight(metrics.contentRect), 3)
-  assert.equal(rectBottom(metrics.apertureBackingRect) - rectBottom(metrics.contentRect), 3)
-  assert.equal(rectBottom(metrics.contentRect), metrics.footerRect.y)
+  for (const rect of [metrics.shellRect, metrics.contentRect]) {
+    assert.equal(Object.values(rect).every(Number.isInteger), true)
+  }
+  assert.equal(rectContains(metrics.outerRect, metrics.contentRect), true)
+  assert.equal(metrics.contentRect.x, metrics.contentInsets.left)
+  assert.equal(metrics.contentRect.y, metrics.contentInsets.top)
+  assert.equal(rectRight(metrics.contentRect), metrics.outerRect.width - metrics.contentInsets.right)
+  assert.equal(rectBottom(metrics.contentRect), metrics.outerRect.height - metrics.contentInsets.bottom)
+  assert.equal(rectBottom(metrics.contentRect), 201)
   assert.equal(rectBottom(metrics.footerRect), metrics.bottomFrameRect.y)
   assert.equal(rectBottom(metrics.bottomFrameRect), rectBottom(metrics.outerRect))
   assert.equal(rectRight(metrics.controlsRect), metrics.outerRect.width - 5)
@@ -147,7 +158,7 @@ test('focus selects one native fixed-shell asset without changing geometry', () 
   assert.equal(metrics.shell.assetIds.inactive, 'window.module.compact.inactive')
   assert.notEqual(metrics.shell.assetIds.active, metrics.shell.assetIds.inactive)
   assert.deepEqual(metrics.shell.rect, metrics.outerRect)
-  assert.deepEqual(metrics.shell.transparentApertureRect, metrics.apertureBackingRect)
+  assert.deepEqual(metrics.shell.transparentApertureRect, metrics.contentRect)
 })
 
 test('reviewed fixed-shell runtime assets retain native 183x223 bytes', () => {
@@ -216,6 +227,8 @@ test('shared window renders backing, content, whole shell and live chrome in tha
   assert.match(source, /height=\{metrics\.shellRect\.height\}/)
   assert.match(source, /draggable=\{false\}/)
   assert.match(source, /data-korp-module-shell-state=\{shellState\}/)
+  assert.match(source, /data-korp-module-viewport="authored-content-rect"/)
+  assert.doesNotMatch(source, /--korp-module-backing-(?:left|top|width|height)/)
   assert.match(source, /<span className="korp-module-window-title">\{title\}<\/span>/)
   assert.match(source, /kind=\{isPinned \? 'unpin' : 'pin'\}/)
   assert.match(source, /kind="minimize"/)
@@ -223,7 +236,19 @@ test('shared window renders backing, content, whole shell and live chrome in tha
 
   const backingCss = readCssBlock(css, '.korp-module-window-backing')
   const shellCss = readCssBlock(css, '.korp-module-window-shell')
-  assert.match(backingCss, /left:\s*var\(--korp-module-backing-left\)/)
+  const viewportPlacementStart = css.indexOf('.korp-module-window-backing,')
+  const viewportPlacementEnd = css.indexOf('}', viewportPlacementStart) + 1
+  const viewportPlacementCss = css.slice(viewportPlacementStart, viewportPlacementEnd)
+
+  assert.notEqual(viewportPlacementStart, -1)
+  assert.match(viewportPlacementCss, /\.korp-module-window-content-surface/)
+  assert.match(viewportPlacementCss, /\.korp-module-window-content/)
+  assert.match(viewportPlacementCss, /left:\s*var\(--korp-module-content-left\)/)
+  assert.match(viewportPlacementCss, /top:\s*var\(--korp-module-content-top\)/)
+  assert.match(viewportPlacementCss, /width:\s*var\(--korp-module-content-width\)/)
+  assert.match(viewportPlacementCss, /height:\s*var\(--korp-module-content-height\)/)
+  assert.match(viewportPlacementCss, /overflow:\s*hidden/)
+  assert.doesNotMatch(viewportPlacementCss, /calc\(|%|transform|translate/)
   assert.match(backingCss, /background-color:\s*var\(--korp-module-interior-backing-color\)/)
   assert.match(shellCss, /left:\s*0/)
   assert.match(shellCss, /top:\s*0/)
@@ -297,7 +322,7 @@ test('shared chrome imports exactly the 19 generated pilot assets and no rejecte
   assert.doesNotMatch(css, /\.korp-module-window-footer-surface/)
 })
 
-test('both modules preserve content and Fidget stays in the left footer slot', () => {
+test('both modules share the authored viewport and Fidget stays in the left footer slot', () => {
   const metrics = KORP_MODULE_WINDOW_METRICS
   const preserved = shellContract.families.module.preservedContentInstances
   const fidgetControlOuterRect = {
@@ -307,8 +332,9 @@ test('both modules preserve content and Fidget stays in the left footer slot', (
     height: FIDGET_MODULE_FOOTER_CONTROL_RECT.height,
   }
 
-  assert.deepEqual(preserved.clickAudit, { width: 167, height: 167 })
-  assert.deepEqual(preserved.fidget, { width: 167, height: 167 })
+  assert.deepEqual(preserved.clickAudit, { width: 173, height: 173 })
+  assert.deepEqual(preserved.fidget, { width: 173, height: 173 })
+  assert.deepEqual(metrics.contentRect, metrics.shell.transparentApertureRect)
   assert.deepEqual(FIDGET_MODULE_FOOTER_CONTROL_RECT, {
     x: 4,
     y: 1,
@@ -323,11 +349,11 @@ test('both modules preserve content and Fidget stays in the left footer slot', (
     metrics.footerSafeRect.x
       + Math.round((metrics.footerSafeRect.width - fidgetControlOuterRect.width) / 2),
   )
-  assert.equal(rectsIntersect(fidgetControlOuterRect, metrics.contentRect), false)
+  assert.equal(rectsIntersect(fidgetControlOuterRect, metrics.contentRect), true)
   assert.equal(rectsIntersect(fidgetControlOuterRect, metrics.bottomFrameRect), false)
 })
 
-test('ClickAudit basin still ends at the content floor above authored footer chrome', () => {
+test('ClickAudit basin ends at the authored content floor', () => {
   const metrics = KORP_MODULE_WINDOW_METRICS
   const source = readProjectFile('src/components/ClickAuditModule.jsx')
   const css = readProjectFile('src/components/ClickAuditModule.css')
@@ -339,7 +365,11 @@ test('ClickAudit basin still ends at the content floor above authored footer chr
     height: metrics.contentRect.height,
   })
   assert.equal(CLICK_AUDIT_BASIN_FLOOR_Y, metrics.contentRect.height)
-  assert.equal(metrics.contentRect.y + CLICK_AUDIT_BASIN_FLOOR_Y, metrics.footerRect.y)
+  assert.equal(metrics.contentRect.y + CLICK_AUDIT_BASIN_FLOOR_Y, 201)
+  assert.equal(
+    metrics.contentRect.y + CLICK_AUDIT_BASIN_FLOOR_Y,
+    rectBottom(metrics.contentRect),
+  )
   assert.equal(metrics.footerRect.y < metrics.bottomFrameRect.y, true)
   assert.match(source, /data-clickaudit-basin="content-floor"/)
   assert.match(css, /\.clickaudit-liquid-fill\s*\{[\s\S]*inset:\s*auto 0 0;/)

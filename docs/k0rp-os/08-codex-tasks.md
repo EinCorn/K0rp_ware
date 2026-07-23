@@ -484,7 +484,7 @@ Status: **ACTIVE / PILOT CONTRACT** — Task 024B freezes the family boundary; i
 
 ```text
 shared window manager behavior
-├─ module family: 3 controls (pin/minimize/close), compact shell, 167×167 content, structural footer, optional local footer control
+├─ module family: 3 controls (pin/minimize/close), compact shell, 173×173 authored viewport, structural footer, optional local footer control
 ├─ audit/document family: 2 controls (minimize/close), portrait geometry, its own family shell
 └─ folder family: 2 controls (minimize/close), portrait list geometry, its own family shell
 ```
@@ -494,8 +494,10 @@ Each family may own a distinct authored shell and geometry. Every instance withi
 The Task 024B module pilot uses `window.module.compact.active` and
 `window.module.compact.inactive` as fixed authored `183×223` shells rendered at 1:1.
 ClickAudit and Fidget select the whole shell by focus state while preserving the shared
-`167×167` live content slot inside the authored `173×173` transparent aperture. The old
-module nine-slice and separate header pieces are not
+`173×173` live viewport at `{ x: 5, y: 28 }`, exactly matching the authored transparent
+aperture. Backing, surface, live content and clipping use that one integer rect so the
+viewport cannot drift under fractional desktop scaling. The old module nine-slice and
+separate header pieces are not
 part of this runtime pilot; resizable module composition is deferred to a separate
 authored export contract.
 
