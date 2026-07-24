@@ -526,6 +526,66 @@
       "source_docs": "01-visual-style.md;06-screen-concepts.md"
     },
     {
+      "id": "control.rotation.normal",
+      "path": "assets/controls/individual/rotation.normal.png",
+      "category": "window-control",
+      "width": 14,
+      "height": 13,
+      "states": "normal",
+      "nine_slice": "",
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control state",
+      "source_docs": "01-visual-style.md;06-screen-concepts.md"
+    },
+    {
+      "id": "control.rotation.hover",
+      "path": "assets/controls/individual/rotation.hover.png",
+      "category": "window-control",
+      "width": 14,
+      "height": 13,
+      "states": "hover",
+      "nine_slice": "",
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control state",
+      "source_docs": "01-visual-style.md;06-screen-concepts.md"
+    },
+    {
+      "id": "control.rotation.pressed",
+      "path": "assets/controls/individual/rotation.pressed.png",
+      "category": "window-control",
+      "width": 14,
+      "height": 13,
+      "states": "pressed",
+      "nine_slice": "",
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control state",
+      "source_docs": "01-visual-style.md;06-screen-concepts.md"
+    },
+    {
+      "id": "control.rotation.disabled",
+      "path": "assets/controls/individual/rotation.disabled.png",
+      "category": "window-control",
+      "width": 14,
+      "height": 13,
+      "states": "disabled",
+      "nine_slice": "",
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control state",
+      "source_docs": "01-visual-style.md;06-screen-concepts.md"
+    },
+    {
+      "id": "control.rotation.sheet",
+      "path": "assets/controls/individual/rotation.sheet.png",
+      "category": "window-control-sheet",
+      "width": 56,
+      "height": 13,
+      "states": "normal|hover|pressed|disabled",
+      "nine_slice": "",
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control sprite sheet",
+      "source_docs": "01-visual-style.md;06-screen-concepts.md"
+    },
+    {
       "id": "control.help.normal",
       "path": "assets/controls/individual/help.normal.png",
       "category": "window-control",

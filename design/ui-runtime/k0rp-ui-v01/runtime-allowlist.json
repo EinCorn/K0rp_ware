@@ -8,7 +8,7 @@
   "allowedWindowFamilies": [
     "module"
   ],
-  "assetCount": 19,
+  "assetCount": 23,
   "groups": [
     {
       "id": "module-window-shell",
@@ -45,6 +45,16 @@
         "control.close.hover",
         "control.close.pressed",
         "control.close.disabled"
+      ]
+    },
+    {
+      "id": "fidget-footer-rotation-control",
+      "purpose": "Fidget footer rotation-mode control in every interaction state",
+      "assetIds": [
+        "control.rotation.normal",
+        "control.rotation.hover",
+        "control.rotation.pressed",
+        "control.rotation.disabled"
       ]
     }
   ],

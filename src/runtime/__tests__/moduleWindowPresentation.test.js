@@ -6,7 +6,12 @@ import {
   CLICK_AUDIT_BASIN_FLOOR_Y,
   CLICK_AUDIT_BASIN_RECT,
 } from '../clickAuditPresentation.js'
-import { FIDGET_MODULE_FOOTER_CONTROL_RECT } from '../fidgetPresentation.js'
+import {
+  FIDGET_MODULE_FOOTER_CONTROL_OFFSET,
+  FIDGET_MODULE_FOOTER_CONTROL_RECT,
+  FIDGET_ROTATION_CONTROL_INSETS,
+  FIDGET_ROTATION_CONTROL_SIZE,
+} from '../fidgetPresentation.js'
 import {
   KORP_MODULE_WINDOW_METRICS,
   KORP_MODULE_WINDOW_SIZE,
@@ -337,8 +342,10 @@ test('shared window renders backing, content, whole shell and live chrome in tha
   )
 })
 
-test('shared chrome imports exactly the 19 generated pilot assets and no rejected pieces', () => {
-  const source = readProjectFile('src/components/KorpModuleWindow.jsx')
+test('module surfaces import exactly the 23 generated pilot assets and no rejected pieces', () => {
+  const sharedSource = readProjectFile('src/components/KorpModuleWindow.jsx')
+  const fidgetSource = readProjectFile('src/components/FidgetWindow.jsx')
+  const source = `${sharedSource}\n${fidgetSource}`
   const css = readProjectFile('src/components/KorpModuleWindow.css')
   const catalogById = new Map(runtimeCatalog.assets.map((asset) => [asset.id, asset]))
   const runtimeAssetImports = [...source.matchAll(
@@ -349,7 +356,7 @@ test('shared chrome imports exactly the 19 generated pilot assets and no rejecte
     .map((assetId) => catalogById.get(assetId).sourcePath.replace(/^assets\//, ''))
     .sort()
 
-  assert.equal(runtimeAllowlist.assetCount, 19)
+  assert.equal(runtimeAllowlist.assetCount, 23)
   assert.deepEqual(runtimeAssetImports, allowlistedAssetPaths)
   assert.equal(new Set(runtimeAssetImports).size, runtimeAssetImports.length)
   assert.doesNotMatch(
@@ -407,35 +414,49 @@ test('shared chrome imports exactly the 19 generated pilot assets and no rejecte
   assert.doesNotMatch(css, /\.korp-module-window-footer-surface/)
 })
 
-test('both modules share the authored viewport and Fidget stays in the left footer slot', () => {
+test('both modules share the authored viewport and Fidget rotation uses its exact integer footer rect', () => {
   const metrics = KORP_MODULE_WINDOW_METRICS
   const preserved = shellContract.families.module.preservedContentInstances
-  const fidgetControlOuterRect = {
-    x: metrics.footerRect.x + FIDGET_MODULE_FOOTER_CONTROL_RECT.x,
-    y: metrics.footerRect.y + FIDGET_MODULE_FOOTER_CONTROL_RECT.y,
-    width: FIDGET_MODULE_FOOTER_CONTROL_RECT.width,
-    height: FIDGET_MODULE_FOOTER_CONTROL_RECT.height,
-  }
 
   assert.deepEqual(preserved.clickAudit, { width: 173, height: 173 })
   assert.deepEqual(preserved.fidget, { width: 173, height: 173 })
   assert.deepEqual(metrics.contentRect, metrics.shell.transparentApertureRect)
+  assert.deepEqual(FIDGET_ROTATION_CONTROL_INSETS, { left: 6, bottom: 5 })
+  assert.deepEqual(FIDGET_ROTATION_CONTROL_SIZE, { width: 14, height: 13 })
   assert.deepEqual(FIDGET_MODULE_FOOTER_CONTROL_RECT, {
-    x: 4,
-    y: 1,
-    width: 16,
-    height: 16,
+    x: 6,
+    y: 205,
+    width: 14,
+    height: 13,
   })
-  assert.deepEqual(fidgetControlOuterRect, metrics.footerControlRect)
-  assert.equal(rectContains(metrics.footerSafeRect, fidgetControlOuterRect), true)
-  assert.equal(fidgetControlOuterRect.x - metrics.footerSafeRect.x, 4)
-  assert.notEqual(
-    fidgetControlOuterRect.x,
-    metrics.footerSafeRect.x
-      + Math.round((metrics.footerSafeRect.width - fidgetControlOuterRect.width) / 2),
+  assert.deepEqual(FIDGET_MODULE_FOOTER_CONTROL_OFFSET, {
+    x: -2,
+    y: 7,
+    width: 14,
+    height: 13,
+  })
+  assert.equal(numericLeaves(FIDGET_MODULE_FOOTER_CONTROL_RECT).every(Number.isInteger), true)
+  assert.equal(numericLeaves(FIDGET_MODULE_FOOTER_CONTROL_OFFSET).every(Number.isInteger), true)
+  assert.equal(rectContains(metrics.outerRect, FIDGET_MODULE_FOOTER_CONTROL_RECT), true)
+  assert.equal(FIDGET_MODULE_FOOTER_CONTROL_RECT.x, FIDGET_ROTATION_CONTROL_INSETS.left)
+  assert.equal(
+    metrics.outerRect.height - rectBottom(FIDGET_MODULE_FOOTER_CONTROL_RECT),
+    FIDGET_ROTATION_CONTROL_INSETS.bottom,
   )
-  assert.equal(rectsIntersect(fidgetControlOuterRect, metrics.contentRect), true)
-  assert.equal(rectsIntersect(fidgetControlOuterRect, metrics.bottomFrameRect), false)
+  assert.equal(FIDGET_MODULE_FOOTER_CONTROL_RECT.x + 1, 7)
+  assert.equal(
+    metrics.outerRect.height - rectBottom(FIDGET_MODULE_FOOTER_CONTROL_RECT) + 1,
+    6,
+  )
+  assert.equal(
+    metrics.footerRect.x + FIDGET_MODULE_FOOTER_CONTROL_OFFSET.x,
+    FIDGET_MODULE_FOOTER_CONTROL_RECT.x,
+  )
+  assert.equal(
+    metrics.footerRect.y + FIDGET_MODULE_FOOTER_CONTROL_OFFSET.y,
+    FIDGET_MODULE_FOOTER_CONTROL_RECT.y,
+  )
+  assert.equal(rectsIntersect(FIDGET_MODULE_FOOTER_CONTROL_RECT, metrics.contentRect), false)
 })
 
 test('ClickAudit basin ends at the authored content floor', () => {
@@ -477,6 +498,7 @@ test('ClickAudit and Fidget consume one fixed module-family chrome path', () => 
   const clickAuditWindow = readProjectFile('src/components/ClickAuditWindow.jsx')
   const fidgetWindow = readProjectFile('src/components/FidgetWindow.jsx')
   const sharedWindow = readProjectFile('src/components/KorpModuleWindow.jsx')
+  const osShell = readProjectFile('src/components/KorpOsShell.jsx')
   const fidgetCss = readProjectFile('src/components/FidgetWindow.css')
   const fidgetModuleCss = readProjectFile('src/components/FidgetModule.css')
   const windowFamilyDoc = readProjectFile('docs/k0rp-os/08-codex-tasks.md')
@@ -497,7 +519,36 @@ test('ClickAudit and Fidget consume one fixed module-family chrome path', () => 
   assert.match(sharedWindow, /data-korp-module-region="footer"/)
   assert.match(sharedWindow, /data-footer-content=\{footer == null \? 'empty' : 'present'\}/)
   assert.doesNotMatch(clickAuditWindow, /\bfooter=/)
-  assert.match(fidgetWindow, /footer=\{\([\s\S]*className="fidget-module-footer-mode"/)
+  assert.match(fidgetWindow, /title = 'Fidget'/)
+  assert.match(clickAuditWindow, /title = 'ClickAudit'/)
+  assert.match(osShell, /'click-audit': \{[\s\S]*title: 'ClickAudit'/)
+  assert.doesNotMatch(
+    `${clickAuditWindow}\n${fidgetWindow}\n${osShell}\n${fidgetPresentation}`,
+    /\/ Místní modul/,
+  )
+  assert.match(
+    fidgetWindow,
+    /footer=\{\([\s\S]*assets=\{rotationControlAssets\}[\s\S]*className="fidget-module-footer-rotation"/,
+  )
+  for (const state of ['normal', 'hover', 'pressed', 'disabled']) {
+    assert.match(
+      fidgetWindow,
+      new RegExp(
+        `rotation${state[0].toUpperCase()}${state.slice(1)}Url from '../../design/ui-runtime/k0rp-ui-v01/assets/controls/individual/rotation[.]${state}[.]png[?]url'`,
+      ),
+    )
+    assert.match(fidgetWindow, new RegExp(`--fidget-rotation-${state}`))
+    assert.match(fidgetCss, new RegExp(`var\\(--fidget-rotation-${state}\\)`))
+  }
+  const rotationCss = readCssBlock(fidgetCss, '.fidget-module-footer-rotation')
+  assert.match(rotationCss, /left:\s*var\(--fidget-footer-control-left\)/)
+  assert.match(rotationCss, /top:\s*var\(--fidget-footer-control-top\)/)
+  assert.match(rotationCss, /width:\s*var\(--fidget-footer-control-width\)/)
+  assert.match(rotationCss, /height:\s*var\(--fidget-footer-control-height\)/)
+  assert.match(rotationCss, /background-image:\s*var\(--fidget-rotation-normal\)/)
+  assert.doesNotMatch(rotationCss, /calc\(|%|transform|translate|background-size|content:/)
+  assert.match(fidgetCss, /\.fidget-module-footer-rotation:active\s*\{[\s\S]*--fidget-rotation-pressed/)
+  assert.match(fidgetCss, /\.fidget-module-footer-rotation:disabled\s*\{[\s\S]*--fidget-rotation-disabled/)
   assert.match(fidgetCss, /\.fidget-standalone-shell\s*\{[\s\S]*width:\s*230px;[\s\S]*height:\s*230px;/)
   assert.match(fidgetModuleCss, /\.fidget-module-spinner\s*\{[\s\S]*width:\s*132px;[\s\S]*height:\s*132px;/)
   assert.match(windowFamilyDoc, /window\.module\.compact\.active/)

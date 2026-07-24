@@ -54,8 +54,8 @@ test('the complete v0.1 source pack, catalog, contract and generated pilot subse
     csvSource,
     nineSliceTokens,
   })
-  assert.equal(rawValidation.assets.length, 288)
-  assert.equal(rawValidation.assetById.size, 288)
+  assert.equal(rawValidation.assets.length, 293)
+  assert.equal(rawValidation.assetById.size, 293)
 
   const expectedCatalog = createKorpUiV01Catalog({ manifest, rawRoot })
   assert.deepEqual(validateKorpUiV01Catalog({ catalog, manifest, rawRoot }), expectedCatalog)
@@ -63,21 +63,21 @@ test('the complete v0.1 source pack, catalog, contract and generated pilot subse
     tile: 7,
     'nine-slice': 10,
     'three-slice': 16,
-    fixed: 146,
-    'reference-only': 109,
+    fixed: 150,
+    'reference-only': 110,
   })
 
   assert.equal(validateKorpUiV01WindowContract({ contract, catalog }), contract)
   const selectedIds = validateKorpUiV01Allowlist({ allowlist, catalog })
-  assert.equal(selectedIds.length, 19)
+  assert.equal(selectedIds.length, 23)
   assert.deepEqual(selectedIds, [...EXPECTED_PILOT_IDS].sort())
 
   const runtimeCatalog = createKorpUiV01RuntimeCatalog({ catalog, selectedIds })
-  assert.equal(runtimeCatalog.assets.length, 19)
+  assert.equal(runtimeCatalog.assets.length, 23)
   assert.equal(runtimeCatalog.assets.every((asset) => asset.runtimePath.startsWith(`${KORP_UI_V01_RUNTIME_ROOT}/assets/`)), true)
   assert.equal(
     validateKorpUiV01GeneratedRuntime({ repoRoot, rawRoot, catalog, selectedIds }).length,
-    19,
+    23,
   )
 })
 
@@ -195,6 +195,56 @@ test('compact module shells are fixed native-size runtime assets with reviewed b
     assert.equal(createHash('sha256').update(sourceBytes).digest('hex'), expected.sha256)
     assert.equal(createHash('sha256').update(runtimeBytes).digest('hex'), expected.sha256)
   }
+})
+
+test('Fidget rotation control publishes four fixed runtime states and one reference sheet', () => {
+  const selectedIds = validateKorpUiV01Allowlist({ allowlist, catalog })
+  const reviewedHashes = new Map([
+    ['normal', 'f60858350b9c3218cc9a2e2b0a2c21f2a3805d0e764546ef81b2210945a8d09d'],
+    ['hover', 'f41e644213916f655ca57363f86907b11130746662e973352a0e61955c496610'],
+    ['pressed', '3fb68b72048f9d1b4a34cc3bf9be5d1110c528814b7c5896ef0c0b60d376c42a'],
+    ['disabled', '31bbfde64ff6269b5fddfee2a9c899b7bc3203b254133768fa655439a11117e4'],
+  ])
+
+  for (const [state, reviewedHash] of reviewedHashes) {
+    const id = `control.rotation.${state}`
+    const expectedPath = `assets/controls/individual/rotation.${state}.png`
+    const sourceAsset = findManifestAsset(id)
+    const catalogAsset = catalog.assets.find((asset) => asset.id === id)
+    const sourceBytes = readFileSync(resolve(rawRoot, ...expectedPath.split('/')))
+    const runtimeBytes = readFileSync(resolve(runtimeRoot, ...expectedPath.split('/')))
+
+    assert.equal(sourceAsset.path, expectedPath)
+    assert.equal(sourceAsset.category, 'window-control')
+    assert.deepEqual(
+      { width: sourceAsset.width, height: sourceAsset.height },
+      { width: 14, height: 13 },
+    )
+    assert.equal(sourceAsset.states, state)
+    assert.equal(catalogAsset.textureMode, 'fixed')
+    assert.equal(catalogAsset.runtimeEligible, true)
+    assert.equal(catalogAsset.sha256, reviewedHash)
+    assert.equal(createHash('sha256').update(sourceBytes).digest('hex'), reviewedHash)
+    assert.equal(createHash('sha256').update(runtimeBytes).digest('hex'), reviewedHash)
+    assert.equal(selectedIds.includes(id), true)
+    assert.equal(runtimeBytes.equals(sourceBytes), true)
+  }
+
+  const sheet = findManifestAsset('control.rotation.sheet')
+  const catalogSheet = catalog.assets.find((asset) => asset.id === sheet.id)
+  const sheetBytes = readFileSync(resolve(rawRoot, ...sheet.path.split('/')))
+  assert.equal(sheet.path, 'assets/controls/individual/rotation.sheet.png')
+  assert.equal(sheet.category, 'window-control-sheet')
+  assert.deepEqual({ width: sheet.width, height: sheet.height }, { width: 56, height: 13 })
+  assert.equal(sheet.states, 'normal|hover|pressed|disabled')
+  assert.equal(catalogSheet.textureMode, 'reference-only')
+  assert.equal(catalogSheet.runtimeEligible, false)
+  assert.equal(
+    catalogSheet.sha256,
+    '668f03991f1bb50c3ad4bc5a01fc2598d7ab6398d91ea7595aaa3ba3490e49b0',
+  )
+  assert.equal(createHash('sha256').update(sheetBytes).digest('hex'), catalogSheet.sha256)
+  assert.equal(selectedIds.includes(sheet.id), false)
 })
 
 test('catalog drift is detected even when a catalog remains structurally valid', () => {
@@ -337,17 +387,27 @@ test('module aperture underlay contract rejects fractional, incomplete and escap
   )
 })
 
-test('the runtime allowlist is exactly the 19-asset fixed-shell module pilot and rejects scope creep', () => {
+test('the runtime allowlist is exactly the 23-asset fixed-shell module pilot and rejects scope creep', () => {
   const selectedIds = validateKorpUiV01Allowlist({ allowlist, catalog })
   assert.equal(allowlist.targetTask, 'Task 024B fixed authored module-shell pilot')
-  assert.equal(allowlist.assetCount, 19)
-  assert.equal(flattenKorpUiV01Allowlist(allowlist).length, 19)
+  assert.equal(allowlist.assetCount, 23)
+  assert.equal(flattenKorpUiV01Allowlist(allowlist).length, 23)
   assert.deepEqual(selectedIds, [...EXPECTED_PILOT_IDS].sort())
   assert.equal(selectedIds.includes('window.module.compact.active'), true)
   assert.equal(selectedIds.includes('window.module.compact.inactive'), true)
   assert.equal(selectedIds.includes('window.module.nine-slice'), false)
   assert.equal(selectedIds.includes('window.header.module.active'), false)
   assert.equal(selectedIds.includes('window.header.module.inactive'), false)
+  assert.deepEqual(
+    selectedIds.filter((id) => id.startsWith('control.rotation.')),
+    [
+      'control.rotation.disabled',
+      'control.rotation.hover',
+      'control.rotation.normal',
+      'control.rotation.pressed',
+    ],
+  )
+  assert.equal(selectedIds.includes('control.rotation.sheet'), false)
 
   const extraAsset = structuredClone(allowlist)
   extraAsset.groups[0].assetIds.push('window.audit.nine-slice')

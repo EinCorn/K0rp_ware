@@ -96,7 +96,7 @@ const createInitialWindows = (
     'click-audit': {
       id: 'click-audit',
       kind: 'module',
-      title: 'ClickAudit / Místní modul',
+      title: 'ClickAudit',
       taskbarTitle: 'CLICKAUDIT',
       width: clickAuditWindowSize.width,
       height: clickAuditWindowSize.height,

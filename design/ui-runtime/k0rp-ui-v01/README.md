@@ -24,8 +24,10 @@ Task 024B.
 - `window-shell-contract.json` defines shared pixel-rendering rules and machine-readable
   geometry for module, audit and folder windows.
 - `runtime-allowlist.json` is the only source of assets eligible for the Task 024B
-  module-window pilot. It contains 19 assets: two fixed authored 183x223 module shells,
-  the repeatable dark-panel surface, and four states for pin, unpin, minimize and close.
+  module-window pilot. It contains 23 assets: two fixed authored 183x223 module shells,
+  the repeatable dark-panel surface, four states for pin, unpin, minimize and close,
+  and four authored 14x13 states for the Fidget footer rotation-mode control. Its
+  56x13 sprite sheet remains cataloged as reference-only and is not copied to runtime.
 
 Generated catalogs and copied assets are build output. Do not edit them by hand or add
 unlisted files to the generated runtime subset.

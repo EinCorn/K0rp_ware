@@ -45,7 +45,7 @@ test('authorized Fidget reconciles to one closed real module descriptor without 
   assert.deepEqual(Object.keys(once), [FIDGET_WINDOW_ID])
   assert.equal(once[FIDGET_WINDOW_ID].surface, 'fidget')
   assert.equal(once[FIDGET_WINDOW_ID].kind, 'module')
-  assert.equal(once[FIDGET_WINDOW_ID].title, 'Fidget / Místní modul')
+  assert.equal(once[FIDGET_WINDOW_ID].title, 'Fidget')
   assert.equal(once[FIDGET_WINDOW_ID].isPinned, false)
   assert.equal(once[FIDGET_WINDOW_ID].isOpen, false)
   assert.equal(once[FIDGET_WINDOW_ID].hasOpened, false)

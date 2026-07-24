@@ -164,6 +164,11 @@
   width: var(--korp-module-footer-width);
   height: var(--korp-module-footer-height);
   overflow: hidden;
+  pointer-events: none;
   z-index: var(--korp-module-layer-interactive-chrome);
   background: transparent;
+}
+
+.korp-module-window-footer-content[data-footer-content='present'] {
+  overflow: visible;
 }

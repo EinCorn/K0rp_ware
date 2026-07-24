@@ -25,7 +25,7 @@ function AssetButton({ className, label, assetUrl, onClick, disabled = false, pr
 
 export function ClickAuditEmbeddedWindow({
   children,
-  title = 'ClickAudit / Místní modul',
+  title = 'ClickAudit',
   isActive = true,
   isPinned = false,
   onDragStart,

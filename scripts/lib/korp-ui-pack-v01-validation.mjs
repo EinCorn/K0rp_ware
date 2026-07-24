@@ -31,6 +31,9 @@ const GROUP_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const TEXT_EXTENSIONS = new Set(['.css', '.html', '.js', '.jsx', '.json', '.mjs', '.ts', '.tsx'])
 const CONTROL_STATES = Object.freeze(['normal', 'hover', 'pressed', 'disabled'])
 const PILOT_CONTROL_IDS = Object.freeze(['pin', 'unpin', 'minimize', 'close'])
+const FIDGET_ROTATION_CONTROL_IDS = Object.freeze(
+  CONTROL_STATES.map((state) => `control.rotation.${state}`),
+)
 const WINDOW_FAMILY_SURFACES = Object.freeze({
   module: 'dark-panel',
   audit: 'paper-light-ruled',
@@ -43,6 +46,7 @@ const EXPECTED_PILOT_IDS = Object.freeze([
   ...PILOT_CONTROL_IDS.flatMap((control) => (
     CONTROL_STATES.map((state) => `control.${control}.${state}`)
   )),
+  ...FIDGET_ROTATION_CONTROL_IDS,
 ])
 const RUNTIME_METADATA_FILES = new Set([
   'README.md',
@@ -429,6 +433,33 @@ function validateSemanticFamilies(manifestAssets, errors) {
         errors.push(`module pilot requires 18x16 control asset: ${id}`)
       }
     }
+  }
+  for (const state of CONTROL_STATES) {
+    const id = `control.rotation.${state}`
+    const asset = byId.get(id)
+    if (
+      !asset
+      || asset.path !== `assets/controls/individual/rotation.${state}.png`
+      || asset.category !== 'window-control'
+      || asset.width !== 14
+      || asset.height !== 13
+      || asset.states !== state
+      || asset.nine_slice !== ''
+    ) {
+      errors.push(`Fidget pilot requires authored 14x13 rotation control state: ${id}`)
+    }
+  }
+  const rotationSheet = byId.get('control.rotation.sheet')
+  if (
+    !rotationSheet
+    || rotationSheet.path !== 'assets/controls/individual/rotation.sheet.png'
+    || rotationSheet.category !== 'window-control-sheet'
+    || rotationSheet.width !== 56
+    || rotationSheet.height !== 13
+    || rotationSheet.states !== CONTROL_STATES.join('|')
+    || rotationSheet.nine_slice !== ''
+  ) {
+    errors.push('Fidget pilot requires authored 56x13 rotation control reference sheet: control.rotation.sheet')
   }
 }
 

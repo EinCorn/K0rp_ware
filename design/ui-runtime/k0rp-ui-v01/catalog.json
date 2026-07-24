@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "sourcePack": "K0rp_OS UI Asset Pack v0.1",
   "sourceRoot": "design/ui-source/k0rp-ui-asset-pack-v01",
-  "sourceAssetCount": 288,
+  "sourceAssetCount": 293,
   "pixelPolicy": {
     "sourceScale": "1x-logical-pixel",
     "coordinates": "integer-only",
@@ -20,8 +20,8 @@
     "tile": 7,
     "nine-slice": 10,
     "three-slice": 16,
-    "fixed": 146,
-    "reference-only": 109
+    "fixed": 150,
+    "reference-only": 110
   },
   "references": [
     {
@@ -3972,6 +3972,144 @@
       "runtimeEligible": false,
       "bytes": 506,
       "sha256": "aae256953fec574f77206a6718c8bee8bc32d6e4af553860b34b6e1ea8a1475a"
+    },
+    {
+      "id": "control.rotation.disabled",
+      "sourcePath": "assets/controls/individual/rotation.disabled.png",
+      "category": "window-control",
+      "dimensions": {
+        "width": 14,
+        "height": 13
+      },
+      "states": [
+        "disabled"
+      ],
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control state",
+      "sourceDocs": [
+        "01-visual-style.md",
+        "06-screen-concepts.md"
+      ],
+      "textureMode": "fixed",
+      "capInsets": null,
+      "repeatable": false,
+      "repeat": "none",
+      "stretchable": false,
+      "textPolicy": "none",
+      "runtimeEligible": true,
+      "bytes": 233,
+      "sha256": "31bbfde64ff6269b5fddfee2a9c899b7bc3203b254133768fa655439a11117e4"
+    },
+    {
+      "id": "control.rotation.hover",
+      "sourcePath": "assets/controls/individual/rotation.hover.png",
+      "category": "window-control",
+      "dimensions": {
+        "width": 14,
+        "height": 13
+      },
+      "states": [
+        "hover"
+      ],
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control state",
+      "sourceDocs": [
+        "01-visual-style.md",
+        "06-screen-concepts.md"
+      ],
+      "textureMode": "fixed",
+      "capInsets": null,
+      "repeatable": false,
+      "repeat": "none",
+      "stretchable": false,
+      "textPolicy": "none",
+      "runtimeEligible": true,
+      "bytes": 203,
+      "sha256": "f41e644213916f655ca57363f86907b11130746662e973352a0e61955c496610"
+    },
+    {
+      "id": "control.rotation.normal",
+      "sourcePath": "assets/controls/individual/rotation.normal.png",
+      "category": "window-control",
+      "dimensions": {
+        "width": 14,
+        "height": 13
+      },
+      "states": [
+        "normal"
+      ],
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control state",
+      "sourceDocs": [
+        "01-visual-style.md",
+        "06-screen-concepts.md"
+      ],
+      "textureMode": "fixed",
+      "capInsets": null,
+      "repeatable": false,
+      "repeat": "none",
+      "stretchable": false,
+      "textPolicy": "none",
+      "runtimeEligible": true,
+      "bytes": 222,
+      "sha256": "f60858350b9c3218cc9a2e2b0a2c21f2a3805d0e764546ef81b2210945a8d09d"
+    },
+    {
+      "id": "control.rotation.pressed",
+      "sourcePath": "assets/controls/individual/rotation.pressed.png",
+      "category": "window-control",
+      "dimensions": {
+        "width": 14,
+        "height": 13
+      },
+      "states": [
+        "pressed"
+      ],
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control state",
+      "sourceDocs": [
+        "01-visual-style.md",
+        "06-screen-concepts.md"
+      ],
+      "textureMode": "fixed",
+      "capInsets": null,
+      "repeatable": false,
+      "repeat": "none",
+      "stretchable": false,
+      "textPolicy": "none",
+      "runtimeEligible": true,
+      "bytes": 216,
+      "sha256": "3fb68b72048f9d1b4a34cc3bf9be5d1110c528814b7c5896ef0c0b60d376c42a"
+    },
+    {
+      "id": "control.rotation.sheet",
+      "sourcePath": "assets/controls/individual/rotation.sheet.png",
+      "category": "window-control-sheet",
+      "dimensions": {
+        "width": 56,
+        "height": 13
+      },
+      "states": [
+        "normal",
+        "hover",
+        "pressed",
+        "disabled"
+      ],
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control sprite sheet",
+      "sourceDocs": [
+        "01-visual-style.md",
+        "06-screen-concepts.md"
+      ],
+      "textureMode": "reference-only",
+      "capInsets": null,
+      "repeatable": false,
+      "repeat": "none",
+      "stretchable": false,
+      "textPolicy": "none",
+      "runtimeEligible": false,
+      "bytes": 468,
+      "sha256": "668f03991f1bb50c3ad4bc5a01fc2598d7ab6398d91ea7595aaa3ba3490e49b0"
     },
     {
       "id": "control.settings.disabled",
