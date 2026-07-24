@@ -304,29 +304,33 @@ Status: DONE / MERGED / PR #47.
 - fixed control states;
 - live DOM text;
 - integer coordinates/scaling;
-- compact 167×167 ClickAudit/Fidget content preservation;
+- ClickAudit/Fidget intrinsic gameplay sizing preservation; finální embedded aperture je měřený v Tasku 024B;
 - portrait audit/folder geometry definitions;
 - žádná runtime visual změna.
 
 ## Task 024B — ClickAudit + Fidget module-window chrome pilot
 
-Status: PROPOSED NEXT VISUAL.
+Status: ACTIVE / PILOT CONTRACT / DRAFT PR #49 — implementace je hotová, finální Windows Chrome 100%/150% visual gate čeká na Danielovo potvrzení.
 
 ### Cíl
 
-Ověřit curated v01 compositional contract na dvou hotových modulech bez změny jejich obsahu.
+Použít jeden curated v01 module-family chrome contract pro ClickAudit a Fidget bez změny gameplaye, progression nebo save semantics.
 
-### Scope
+### Implementovaný contract
 
 - pouze ClickAudit a Fidget OS windows;
-- frame z `window.module.nine-slice`;
-- active/inactive three-slice header;
-- tiled `dark-panel` surface;
+- fixed authored `183×223` shells rendered at 1:1: `window.module.compact.active` / `window.module.compact.inactive`, přepínané jako celek podle focus state;
+- exact live viewport `{ x: 5, y: 28, width: 173, height: 173 }`, shodný s authored transparent aperture;
+- background-only opaque/textured underlay `{ x: 4, y: 27, width: 175, height: 175 }`, který shell maskuje pod rails jako ochranu proti device-pixel phase seam při browser zoomu 150%;
+- layer ownership `backing → tiled dark-panel → live content → authored shell → interactive chrome`;
+- app content may not modify the outer family chrome;
 - pin/unpin, minimize a close ve čtyřech stavech;
-- live title text;
-- přesně zachovat 167×167 module content;
+- live title text přesně `ClickAudit` / `Fidget`;
+- authored Fidget rotation control `14×13` ve stavech normal/hover/pressed/disabled na shell rectu `{ x: 6, y: 205, width: 14, height: 13 }`;
+- stejné intrinsic spinner, digits a liquid sizing jako před taskem;
 - first-open/drag/minimize/close/taskbar semantics beze změny;
-- visual comparison screenshot při 1× logical canvas a reálném browser scale.
+- standalone `230×230` shells beze změny;
+- old module nine-slice a separate header pieces zůstávají mimo runtime pilot; resizable composition je deferred.
 
 ### Do not
 
@@ -340,21 +344,30 @@ Ověřit curated v01 compositional contract na dvou hotových modulech bez změn
 
 ### Visual gate
 
-- frame je pixel-sharp vedle vnitřního module assetu;
-- titlebar nevypadá nalepeně;
-- active/inactive state je čitelný;
-- controls mají správné hitboxy a hover/pressed states;
+- authored aperture je flush bez pohyblivé edge gap při Chrome 100% i fullscreen 150%;
+- active/inactive shell geometry je identická;
+- ClickAudit a Fidget používají stejný shell/content placement;
+- frame, titlebar a footer jsou pixel-sharp;
+- title controls i Fidget rotation control mají správné hitboxy a všechny authored states;
 - žádný blur/fractional transform;
-- current module content je stejně velký jako před taskem.
+- current module gameplay art je stejně velký jako před taskem.
 
 ### Validation
 
 ```powershell
-npm run validate:korp-ui-pack-v01
-npm run validate:korp-icons
-npm run test:runtime
-npm run build
-npm run dev -- --host 127.0.0.1 --port 5173 --strictPort
+npm.cmd run validate:korp-ui-pack-v01
+npm.cmd run validate:korp-ui-assets
+npm.cmd run validate:korp-icons
+npm.cmd run test:runtime
+npm.cmd run test:runtime-save
+npm.cmd run test:korp-core
+npm.cmd run typecheck:korp-core
+npm.cmd run test:korp-modules
+npm.cmd run typecheck:korp-modules
+npm.cmd run typecheck:korp-progression
+npm.cmd run validate:korp-progression
+npm.cmd run build
+npm.cmd run dev -- --host=127.0.0.1 --port=5173 --strictPort
 ```
 
 ## Task 024C — Portrait audit and folder chrome pilot

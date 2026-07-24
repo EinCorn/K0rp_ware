@@ -1,0 +1,174 @@
+.korp-module-window,
+.korp-module-window * {
+  box-sizing: border-box;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.korp-module-window-preview-position {
+  position: fixed;
+  width: 183px;
+  height: 223px;
+}
+
+.korp-module-window {
+  position: relative;
+  width: var(--korp-module-outer-width);
+  height: var(--korp-module-outer-height);
+  overflow: hidden;
+  background: transparent;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  isolation: isolate;
+}
+
+.korp-module-window-backing,
+.korp-module-window-content-surface {
+  position: absolute;
+  left: var(--korp-module-underlay-left);
+  top: var(--korp-module-underlay-top);
+  width: var(--korp-module-underlay-width);
+  height: var(--korp-module-underlay-height);
+  overflow: hidden;
+}
+
+.korp-module-window-content {
+  position: absolute;
+  left: var(--korp-module-content-left);
+  top: var(--korp-module-content-top);
+  width: var(--korp-module-content-width);
+  height: var(--korp-module-content-height);
+  overflow: hidden;
+  z-index: var(--korp-module-layer-live-content);
+  background: transparent;
+}
+
+.korp-module-window-backing {
+  pointer-events: none;
+  z-index: var(--korp-module-layer-opaque-backing);
+  background-color: var(--korp-module-interior-backing-color);
+}
+
+.korp-module-window-content-surface {
+  z-index: var(--korp-module-layer-shell-backgrounds);
+  background-color: var(--korp-module-backing-color);
+  background-image: var(--korp-module-surface);
+  background-position:
+    var(--korp-module-surface-origin-x)
+    var(--korp-module-surface-origin-y);
+  background-repeat: repeat;
+}
+
+.korp-module-window-shell {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+  width: var(--korp-module-outer-width);
+  height: var(--korp-module-outer-height);
+  max-width: none;
+  pointer-events: none;
+  z-index: var(--korp-module-layer-fixed-shell);
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+.korp-module-window-header-interactions {
+  position: absolute;
+  left: var(--korp-module-header-left);
+  top: var(--korp-module-header-top);
+  width: var(--korp-module-header-width);
+  height: var(--korp-module-header-height);
+}
+
+.korp-module-window-drag-region {
+  position: absolute;
+  z-index: var(--korp-module-layer-interactive-chrome);
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+}
+
+.korp-module-window-drag-region:active {
+  cursor: grabbing;
+}
+
+.korp-module-window-title {
+  position: absolute;
+  z-index: var(--korp-module-layer-interactive-chrome);
+  left: var(--korp-module-title-left);
+  top: var(--korp-module-title-top);
+  width: var(--korp-module-title-width);
+  height: var(--korp-module-title-height);
+  overflow: hidden;
+  color: #e7e2c9;
+  font: 8px/16px var(--os-mono, var(--korp-font-mono, monospace));
+  letter-spacing: 0.02em;
+  text-overflow: ellipsis;
+  text-shadow: 1px 1px 0 #171912;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.korp-module-window-controls {
+  position: absolute;
+  z-index: var(--korp-module-layer-interactive-chrome);
+  left: var(--korp-module-controls-left);
+  top: var(--korp-module-controls-top);
+  display: flex;
+  gap: var(--korp-module-control-gap);
+  width: var(--korp-module-controls-width);
+  height: var(--korp-module-controls-height);
+}
+
+.korp-module-window-control {
+  flex: 0 0 var(--korp-module-control-width);
+  width: var(--korp-module-control-width);
+  height: var(--korp-module-controls-height);
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background-color: transparent;
+  background-image: var(--korp-control-normal);
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+}
+
+.korp-module-window-control:hover,
+.korp-module-window-control:focus-visible {
+  background-image: var(--korp-control-hover);
+}
+
+.korp-module-window-control:active {
+  background-image: var(--korp-control-pressed);
+}
+
+.korp-module-window-control:disabled {
+  background-image: var(--korp-control-disabled);
+  cursor: not-allowed;
+}
+
+.korp-module-window-footer-content {
+  position: absolute;
+  left: var(--korp-module-footer-left);
+  top: var(--korp-module-footer-top);
+  width: var(--korp-module-footer-width);
+  height: var(--korp-module-footer-height);
+  overflow: hidden;
+  pointer-events: none;
+  z-index: var(--korp-module-layer-interactive-chrome);
+  background: transparent;
+}
+
+.korp-module-window-footer-content[data-footer-content='present'] {
+  overflow: visible;
+}

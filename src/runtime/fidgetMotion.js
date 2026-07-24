@@ -12,6 +12,10 @@ export const FIDGET_MODES = Object.freeze({
   click: 'click',
 })
 
+export function getNextFidgetMode(mode) {
+  return mode === FIDGET_MODES.click ? FIDGET_MODES.manual : FIDGET_MODES.click
+}
+
 export function clampFidgetValue(value, minimum, maximum) {
   return Math.min(Math.max(value, minimum), maximum)
 }

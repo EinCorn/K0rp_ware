@@ -18,14 +18,9 @@
   image-rendering: pixelated;
 }
 
-.fidget-window-frame-embedded,
 .fidget-window-frame-standalone {
   width: 181px;
   height: 181px;
-}
-
-.fidget-window-frame-embedded {
-  filter: drop-shadow(4px 5px 0 rgba(16, 18, 14, 0.42));
 }
 
 .fidget-window-content {
@@ -38,22 +33,6 @@
   border-radius: 6px;
   background: transparent;
 }
-
-.fidget-window-drag-region {
-  position: absolute;
-  z-index: 20;
-  left: 24px;
-  right: 24px;
-  top: 0;
-  height: 23px;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  cursor: grab;
-}
-
-.fidget-window-drag-region:active { cursor: grabbing; }
 
 .fidget-asset-control {
   position: absolute;
@@ -82,17 +61,6 @@
   filter: brightness(0.96);
 }
 
-.fidget-window-control-mode,
-.fidget-window-control-close {
-  top: 3px;
-  width: 19px;
-  height: 19px;
-}
-
-.fidget-window-control-mode { left: 4px; }
-.fidget-window-control-close { right: 4px; }
-
-.fidget-window-control-mode[aria-pressed='true'],
 .fidget-shell-control-mode[aria-pressed='true'] {
   filter: drop-shadow(0 0 6px rgba(201, 163, 62, 0.55));
 }
@@ -139,9 +107,43 @@
 
 .os-fidget-asset-window {
   position: absolute;
-  width: 181px;
-  height: 181px;
+  width: 183px;
+  height: 223px;
   overflow: visible;
   background: transparent;
   pointer-events: auto;
+}
+
+.fidget-module-footer-rotation {
+  position: absolute;
+  left: var(--fidget-footer-control-left);
+  top: var(--fidget-footer-control-top);
+  width: var(--fidget-footer-control-width);
+  height: var(--fidget-footer-control-height);
+  padding: 0;
+  border: 0;
+  outline: 0;
+  color: transparent;
+  background-color: transparent;
+  background-image: var(--fidget-rotation-normal);
+  background-position: 0 0;
+  background-repeat: no-repeat;
+  image-rendering: crisp-edges;
+  image-rendering: pixelated;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.fidget-module-footer-rotation:hover,
+.fidget-module-footer-rotation:focus-visible {
+  background-image: var(--fidget-rotation-hover);
+}
+
+.fidget-module-footer-rotation:active {
+  background-image: var(--fidget-rotation-pressed);
+}
+
+.fidget-module-footer-rotation:disabled {
+  background-image: var(--fidget-rotation-disabled);
+  cursor: not-allowed;
 }

@@ -5,6 +5,14 @@ const highestOpenZIndex = (windows) => Math.max(
     .map((windowState) => windowState.zIndex),
 )
 
+const isPinnedModule = (windowState) => (
+  windowState?.kind === 'module' && windowState.isPinned === true
+)
+
+const safeWindowZIndex = (windowState) => (
+  Number.isFinite(windowState?.zIndex) ? windowState.zIndex : 0
+)
+
 export const FORM_WINDOW_CASCADE_OFFSET = Object.freeze({ x: 18, y: 14 })
 
 const isPositiveFiniteNumber = (value) => Number.isFinite(value) && value > 0
@@ -218,6 +226,56 @@ export function bringWindowStateToFront(windows, id) {
     ...windows,
     [id]: { ...windowState, zIndex: highestOpenZIndex(windows) + 1 },
   }
+}
+
+export function setWindowPinnedState(windows, id, isPinned) {
+  const windowState = windows[id]
+  const nextPinned = isPinned === true
+
+  if (
+    !windowState
+    || windowState.kind !== 'module'
+    || !windowState.isOpen
+    || windowState.isMinimized
+    || windowState.isPinned === nextPinned
+  ) return windows
+
+  return {
+    ...windows,
+    [id]: {
+      ...windowState,
+      isPinned: nextPinned,
+      zIndex: highestOpenZIndex(windows) + 1,
+    },
+  }
+}
+
+export function toggleWindowPinnedState(windows, id) {
+  const windowState = windows[id]
+  if (!windowState) return windows
+  return setWindowPinnedState(windows, id, !windowState.isPinned)
+}
+
+export function getWindowPresentationOrder(windows, ids = Object.keys(windows)) {
+  return ids
+    .filter((id) => windows[id]?.isOpen && !windows[id].isMinimized)
+    .sort((firstId, secondId) => {
+      const firstWindow = windows[firstId]
+      const secondWindow = windows[secondId]
+      const pinTierDifference = Number(isPinnedModule(firstWindow))
+        - Number(isPinnedModule(secondWindow))
+
+      if (pinTierDifference !== 0) return pinTierDifference
+
+      return safeWindowZIndex(firstWindow) - safeWindowZIndex(secondWindow)
+        || String(firstId).localeCompare(String(secondId))
+    })
+}
+
+export function getWindowPresentationZIndexes(windows, ids = Object.keys(windows)) {
+  return Object.fromEntries(
+    getWindowPresentationOrder(windows, ids).map((id, index) => [id, index + 1]),
+  )
 }
 
 export function minimizeWindowState(windows, id) {

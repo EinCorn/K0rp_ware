@@ -40,11 +40,17 @@
 
 .clickaudit-liquid {
   position: absolute;
-  inset: 0;
   overflow: hidden;
   pointer-events: none;
   isolation: isolate;
   z-index: 1;
+}
+
+.clickaudit-basin {
+  left: var(--clickaudit-basin-left);
+  top: var(--clickaudit-basin-top);
+  width: var(--clickaudit-basin-width);
+  height: var(--clickaudit-basin-height);
 }
 
 .clickaudit-liquid-fill {

@@ -1,8 +1,9 @@
 # K0rp UI asset pack v01 runtime contract
 
 This directory is the dedicated curated runtime boundary for
-`design/ui-source/k0rp-ui-asset-pack-v01`. It establishes the resizable window-shell
-contract for Task 024A without changing any visible runtime surface.
+`design/ui-source/k0rp-ui-asset-pack-v01`. It preserves the family-level resize
+contract from Task 024A while defining the fixed authored compact-module pilot used by
+Task 024B.
 
 ## Ownership and boundaries
 
@@ -15,54 +16,67 @@ contract for Task 024A without changing any visible runtime surface.
   source tree.
 - Canonical desktop icons remain under `design/icon-source/k0rp-icons-v2/` and are not
   replaced by this pack.
-- Preview boards, complete 320x220 shells, baked reference screens and full source-pack
-  copies are excluded from runtime output.
+- Preview boards, historical 320x220 shells, baked reference screens and full
+  source-pack copies are excluded from runtime output.
 
 ## Manual files
 
 - `window-shell-contract.json` defines shared pixel-rendering rules and machine-readable
   geometry for module, audit and folder windows.
-- `runtime-allowlist.json` is the only source of assets eligible for the first future
-  module-window pilot. It contains 20 assets: the module nine-slice frame, active and
-  inactive module headers, the repeatable dark-panel surface, and four states for pin,
-  unpin, minimize and close.
+- `runtime-allowlist.json` is the only source of assets eligible for the Task 024B
+  module-window pilot. It contains 23 assets: two fixed authored 183x223 module shells,
+  the repeatable dark-panel surface, four states for pin, unpin, minimize and close,
+  and four authored 14x13 states for the Fidget footer rotation-mode control. Its
+  56x13 sprite sheet remains cataloged as reference-only and is not copied to runtime.
 
 Generated catalogs and copied assets are build output. Do not edit them by hand or add
 unlisted files to the generated runtime subset.
 
 ## Window-shell rules
 
-All geometry is expressed in integer logical pixels. Frames use nine-slice composition,
-headers use a fixed-height horizontal three-slice, and material surfaces tile at native
-resolution. Full shells and 32x32 textures must never be stretched. If scaling is ever
-unavoidable, use nearest-neighbor at an integer factor; fractional transforms, smoothing,
+All geometry is expressed in integer logical pixels. The Task 024B compact module uses
+the authored active or inactive 183x223 shell directly at 1:1; switching focus changes
+only that selected fixed asset. It is not a resizable nine-slice solution, and resize
+composition is deferred until a separate authored export contract exists. Audit, folder
+and future family work may still use explicitly prepared nine-slice frames and
+fixed-height horizontal three-slice headers. Material surfaces tile at native resolution.
+Full shells and 32x32 textures must never be stretched. Fractional transforms, smoothing,
 blur and filters are outside the contract.
 
-The frame cap insets are 8 px left, 30 px top, 8 px right and 8 px bottom. Content insets
-are measured independently from the authored transparent slot: module uses 8/31/8/25 px
-(left/top/right/bottom), while audit and folder use 8/31/8/8 px. The header is 27 px high,
-controls are fixed at 18x16 px, and all labels remain live DOM text using the current
-runtime font.
+The future slice-frame cap insets remain 8 px left, 30 px top, 8 px right and 8 px
+bottom. The fixed module viewport uses the measured authored transparent rect directly:
+5/28/5/22 px (left/top/right/bottom), producing a 173x173 content viewport inside the
+183x223 shell. Live content and clipping use that exact top-left-anchored integer rect.
+For device-pixel seam insurance, the opaque backing and repeated surface alone use its
+one-pixel expansion at x4/y27 with size 175x175; the authored shell masks this underlay,
+which remains clipped inside the outer rect. The tile origin stays anchored to the
+content rect. Percentage sizing, derived centering and translate-based placement are
+forbidden. Audit and folder continue to use 8/31/8/8 px content insets.
+Compact-module controls are fixed at 18x16 px and align to the authored slots at y=5;
+all labels remain live DOM text using the current runtime font.
 
 Family defaults are:
 
 | Family | Controls | Content | Derived outer | Orientation |
 | --- | ---: | ---: | ---: | --- |
-| Module | pin/unpin, minimize, close | 167x167 | 183x223 | content-derived |
+| Module | pin/unpin, minimize, close | 173x173 | 183x223 | content-derived |
 | Audit | minimize, close | 294x431 | 310x470 | portrait |
 | Folder | minimize, close | 252x321 | 268x360 | portrait |
 
-The 167x167 ClickAudit and Fidget content boxes are preserved exactly. The future module
-chrome wraps those boxes; it may not shrink, crop or rescale them. Audit remains a live
-form that can grow vertically. Folder remains a live vertically scrolling list; rows and
-scrollbars are not baked into its assets.
+The embedded ClickAudit and Fidget viewports both use the exact 173x173 authored cutout.
+Their intrinsic gameplay artwork is not rescaled: the Fidget rotor remains 132x132 and
+ClickAudit keeps its existing digit and effect sizing. The standalone 181px app windows
+retain their existing 167x167 inner boxes. Audit remains a live form that can grow
+vertically. Folder remains a live vertically scrolling list; rows and scrollbars are not
+baked into its assets.
 
 ## Pilot boundary
 
-Task 024A performs ingestion and contract work only. The next visual task may pilot this
-contract on ClickAudit and Fidget module windows. Audit and Formuláře portrait conversion
-comes later, and no gameplay, progression, authorization, audit, save-state or runtime
-behavior belongs in this task.
+Task 024B applies the fixed compact shell only to embedded ClickAudit and Fidget windows.
+The old module nine-slice and separate headers remain cataloged for future contract work
+but are not copied into the pilot runtime subset. Audit and Formuláře portrait conversion
+comes later, and gameplay, progression, authorization, audit and save-state behavior stay
+outside this visual integration.
 
 ## Windows PowerShell verification
 
@@ -94,9 +108,9 @@ foreach ($korpTarget in $korpCleanTargets) {
 }
 
 npm ci
-npm --prefix packages/korp-core install --no-package-lock
-npm --prefix packages/korp-modules install --no-package-lock
-npm --prefix packages/korp-progression install --no-package-lock
+npm --prefix packages/korp-core install --no-save --no-package-lock
+npm --prefix packages/korp-modules install --no-save --no-package-lock
+npm --prefix packages/korp-progression install --no-save --no-package-lock
 
 npm run build:korp-ui-pack-v01
 npm run validate:korp-icons
@@ -113,7 +127,7 @@ npm run typecheck:korp-modules
 npm run typecheck:korp-progression
 npm run build
 
-npm run dev -- --host 127.0.0.1 --port 5173 --strictPort
+npm.cmd run dev -- --host=127.0.0.1 --port=5173 --strictPort
 ```
 
 Open `http://127.0.0.1:5173/` while the final command is running.

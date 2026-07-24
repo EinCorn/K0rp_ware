@@ -41,6 +41,11 @@ control.reset.hover,assets/controls/individual/reset.hover.png,window-control,18
 control.reset.pressed,assets/controls/individual/reset.pressed.png,window-control,18,16,pressed,,neutral,reset control state,01-visual-style.md;06-screen-concepts.md
 control.reset.disabled,assets/controls/individual/reset.disabled.png,window-control,18,16,disabled,,neutral,reset control state,01-visual-style.md;06-screen-concepts.md
 control.reset.sheet,assets/controls/sheets/reset.sheet.png,window-control-sheet,72,16,normal|hover|pressed|disabled,,neutral,reset control sprite sheet,01-visual-style.md;06-screen-concepts.md
+control.rotation.normal,assets/controls/individual/rotation.normal.png,window-control,14,13,normal,,amber,Fidget footer rotation-mode control state,01-visual-style.md;06-screen-concepts.md
+control.rotation.hover,assets/controls/individual/rotation.hover.png,window-control,14,13,hover,,amber,Fidget footer rotation-mode control state,01-visual-style.md;06-screen-concepts.md
+control.rotation.pressed,assets/controls/individual/rotation.pressed.png,window-control,14,13,pressed,,amber,Fidget footer rotation-mode control state,01-visual-style.md;06-screen-concepts.md
+control.rotation.disabled,assets/controls/individual/rotation.disabled.png,window-control,14,13,disabled,,amber,Fidget footer rotation-mode control state,01-visual-style.md;06-screen-concepts.md
+control.rotation.sheet,assets/controls/individual/rotation.sheet.png,window-control-sheet,56,13,normal|hover|pressed|disabled,,amber,Fidget footer rotation-mode control sprite sheet,01-visual-style.md;06-screen-concepts.md
 control.help.normal,assets/controls/individual/help.normal.png,window-control,18,16,normal,,blue,help control state,01-visual-style.md;06-screen-concepts.md
 control.help.hover,assets/controls/individual/help.hover.png,window-control,18,16,hover,,blue,help control state,01-visual-style.md;06-screen-concepts.md
 control.help.pressed,assets/controls/individual/help.pressed.png,window-control,18,16,pressed,,blue,help control state,01-visual-style.md;06-screen-concepts.md
@@ -176,6 +181,8 @@ bar.tray.notice,assets/bars/tray.notice.png,taskbar-tray-icon,16,16,,,,notice tr
 bar.tray.sheet,assets/bars/tray.sheet.png,taskbar-tray-sheet,80,16,privacy|local|audio|nosync|notice,,,System tray icon sheet,05-privacy-model.md;06-screen-concepts.md
 window.module.active,assets/windows/shells/window.module.active.320x220.png,window-shell,320,220,active,"8,30,8,8",module,module window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
 window.module.inactive,assets/windows/shells/window.module.inactive.320x220.png,window-shell,320,220,inactive,"8,30,8,8",module,module window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.module.compact.active,assets/windows/shells/window.module.active.183x223.png,window-shell-fixed,183,223,active,,module,Fixed authored 1x compact module shell with a 173x173 content viewport at x5 y28,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
+window.module.compact.inactive,assets/windows/shells/window.module.inactive.183x223.png,window-shell-fixed,183,223,inactive,,module,Fixed authored 1x compact module shell with a 173x173 content viewport at x5 y28,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
 window.module.nine-slice,assets/windows/nine_slice/window.module.nine-slice.png,window-nine-slice,64,64,,"8,30,8,8",module,Resizable module window frame,01-visual-style.md;06-screen-concepts.md
 window.audit.active,assets/windows/shells/window.audit.active.320x220.png,window-shell,320,220,active,"8,30,8,8",audit,audit window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css
 window.audit.inactive,assets/windows/shells/window.audit.inactive.320x220.png,window-shell,320,220,inactive,"8,30,8,8",audit,audit window shell with transparent content slot,01-visual-style.md;06-screen-concepts.md;KorpOsShell.css

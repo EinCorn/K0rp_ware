@@ -526,6 +526,66 @@
       "source_docs": "01-visual-style.md;06-screen-concepts.md"
     },
     {
+      "id": "control.rotation.normal",
+      "path": "assets/controls/individual/rotation.normal.png",
+      "category": "window-control",
+      "width": 14,
+      "height": 13,
+      "states": "normal",
+      "nine_slice": "",
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control state",
+      "source_docs": "01-visual-style.md;06-screen-concepts.md"
+    },
+    {
+      "id": "control.rotation.hover",
+      "path": "assets/controls/individual/rotation.hover.png",
+      "category": "window-control",
+      "width": 14,
+      "height": 13,
+      "states": "hover",
+      "nine_slice": "",
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control state",
+      "source_docs": "01-visual-style.md;06-screen-concepts.md"
+    },
+    {
+      "id": "control.rotation.pressed",
+      "path": "assets/controls/individual/rotation.pressed.png",
+      "category": "window-control",
+      "width": 14,
+      "height": 13,
+      "states": "pressed",
+      "nine_slice": "",
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control state",
+      "source_docs": "01-visual-style.md;06-screen-concepts.md"
+    },
+    {
+      "id": "control.rotation.disabled",
+      "path": "assets/controls/individual/rotation.disabled.png",
+      "category": "window-control",
+      "width": 14,
+      "height": 13,
+      "states": "disabled",
+      "nine_slice": "",
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control state",
+      "source_docs": "01-visual-style.md;06-screen-concepts.md"
+    },
+    {
+      "id": "control.rotation.sheet",
+      "path": "assets/controls/individual/rotation.sheet.png",
+      "category": "window-control-sheet",
+      "width": 56,
+      "height": 13,
+      "states": "normal|hover|pressed|disabled",
+      "nine_slice": "",
+      "accent": "amber",
+      "usage": "Fidget footer rotation-mode control sprite sheet",
+      "source_docs": "01-visual-style.md;06-screen-concepts.md"
+    },
+    {
       "id": "control.help.normal",
       "path": "assets/controls/individual/help.normal.png",
       "category": "window-control",
@@ -2143,6 +2203,30 @@
       "nine_slice": "8,30,8,8",
       "accent": "module",
       "usage": "module window shell with transparent content slot",
+      "source_docs": "01-visual-style.md;06-screen-concepts.md;KorpOsShell.css"
+    },
+    {
+      "id": "window.module.compact.active",
+      "path": "assets/windows/shells/window.module.active.183x223.png",
+      "category": "window-shell-fixed",
+      "width": 183,
+      "height": 223,
+      "states": "active",
+      "nine_slice": "",
+      "accent": "module",
+      "usage": "Fixed authored 1x compact module shell with a 173x173 content viewport at x5 y28",
+      "source_docs": "01-visual-style.md;06-screen-concepts.md;KorpOsShell.css"
+    },
+    {
+      "id": "window.module.compact.inactive",
+      "path": "assets/windows/shells/window.module.inactive.183x223.png",
+      "category": "window-shell-fixed",
+      "width": 183,
+      "height": 223,
+      "states": "inactive",
+      "nine_slice": "",
+      "accent": "module",
+      "usage": "Fixed authored 1x compact module shell with a 173x173 content viewport at x5 y28",
       "source_docs": "01-visual-style.md;06-screen-concepts.md;KorpOsShell.css"
     },
     {

@@ -31,19 +31,22 @@ const GROUP_ID_PATTERN = /^[a-z0-9]+(?:-[a-z0-9]+)*$/
 const TEXT_EXTENSIONS = new Set(['.css', '.html', '.js', '.jsx', '.json', '.mjs', '.ts', '.tsx'])
 const CONTROL_STATES = Object.freeze(['normal', 'hover', 'pressed', 'disabled'])
 const PILOT_CONTROL_IDS = Object.freeze(['pin', 'unpin', 'minimize', 'close'])
+const FIDGET_ROTATION_CONTROL_IDS = Object.freeze(
+  CONTROL_STATES.map((state) => `control.rotation.${state}`),
+)
 const WINDOW_FAMILY_SURFACES = Object.freeze({
   module: 'dark-panel',
   audit: 'paper-light-ruled',
   folder: 'manila-folder',
 })
 const EXPECTED_PILOT_IDS = Object.freeze([
-  'window.module.nine-slice',
-  'window.header.module.active',
-  'window.header.module.inactive',
+  'window.module.compact.active',
+  'window.module.compact.inactive',
   'dark-panel',
   ...PILOT_CONTROL_IDS.flatMap((control) => (
     CONTROL_STATES.map((state) => `control.${control}.${state}`)
   )),
+  ...FIDGET_ROTATION_CONTROL_IDS,
 ])
 const RUNTIME_METADATA_FILES = new Set([
   'README.md',
@@ -406,6 +409,22 @@ function validateSemanticFamilies(manifestAssets, errors) {
       errors.push(`window family ${family} requires 32x32 surface tile ${surfaceId}`)
     }
   }
+  for (const state of ['active', 'inactive']) {
+    const compactShellId = `window.module.compact.${state}`
+    const compactShell = byId.get(compactShellId)
+    if (
+      !compactShell
+      || compactShell.category !== 'window-shell-fixed'
+      || compactShell.width !== 183
+      || compactShell.height !== 223
+      || compactShell.states !== state
+      || compactShell.nine_slice !== ''
+    ) {
+      errors.push(
+        `module pilot requires fixed 183x223 authored shell without slice metadata: ${compactShellId}`,
+      )
+    }
+  }
   for (const control of PILOT_CONTROL_IDS) {
     for (const state of CONTROL_STATES) {
       const id = `control.${control}.${state}`
@@ -414,6 +433,33 @@ function validateSemanticFamilies(manifestAssets, errors) {
         errors.push(`module pilot requires 18x16 control asset: ${id}`)
       }
     }
+  }
+  for (const state of CONTROL_STATES) {
+    const id = `control.rotation.${state}`
+    const asset = byId.get(id)
+    if (
+      !asset
+      || asset.path !== `assets/controls/individual/rotation.${state}.png`
+      || asset.category !== 'window-control'
+      || asset.width !== 14
+      || asset.height !== 13
+      || asset.states !== state
+      || asset.nine_slice !== ''
+    ) {
+      errors.push(`Fidget pilot requires authored 14x13 rotation control state: ${id}`)
+    }
+  }
+  const rotationSheet = byId.get('control.rotation.sheet')
+  if (
+    !rotationSheet
+    || rotationSheet.path !== 'assets/controls/individual/rotation.sheet.png'
+    || rotationSheet.category !== 'window-control-sheet'
+    || rotationSheet.width !== 56
+    || rotationSheet.height !== 13
+    || rotationSheet.states !== CONTROL_STATES.join('|')
+    || rotationSheet.nine_slice !== ''
+  ) {
+    errors.push('Fidget pilot requires authored 56x13 rotation control reference sheet: control.rotation.sheet')
   }
 }
 
@@ -450,6 +496,7 @@ export function classifyKorpUiV01Asset(asset) {
   else if (asset.category === 'window-nine-slice' || asset.category === 'os-bar-nine-slice') {
     textureMode = 'nine-slice'
   } else if (asset.category === 'window-header') textureMode = 'three-slice'
+  else if (asset.category === 'window-shell-fixed') textureMode = 'fixed'
   else if (
     asset.category === 'window-shell'
     || asset.category === 'os-bar'
@@ -557,6 +604,32 @@ function insetsEqual(actual, expected) {
     && actual?.bottom === expected.bottom
 }
 
+function rectEqual(actual, expected) {
+  return actual?.x === expected.x
+    && actual?.y === expected.y
+    && dimensionsEqual(actual, expected)
+}
+
+function expandRect(rect, amount) {
+  return {
+    x: rect.x - amount,
+    y: rect.y - amount,
+    width: rect.width + (amount * 2),
+    height: rect.height + (amount * 2),
+  }
+}
+
+function rectContains(outerRect, innerRect) {
+  return innerRect.x >= outerRect.x
+    && innerRect.y >= outerRect.y
+    && innerRect.x + innerRect.width <= outerRect.x + outerRect.width
+    && innerRect.y + innerRect.height <= outerRect.y + outerRect.height
+}
+
+function rectHasIntegerValues(rect) {
+  return ['x', 'y', 'width', 'height'].every((field) => Number.isInteger(rect?.[field]))
+}
+
 export function validateKorpUiV01WindowContract({ contract, catalog }) {
   const errors = []
   if (!contract || typeof contract !== 'object' || Array.isArray(contract)) {
@@ -602,23 +675,68 @@ export function validateKorpUiV01WindowContract({ contract, catalog }) {
   if (
     JSON.stringify(composition.allowedClassifications) !== JSON.stringify(KORP_UI_V01_TEXTURE_MODES)
   ) errors.push('compositionPolicy.allowedClassifications must match the catalog texture modes')
+  const modulePilotShell = composition.modulePilotShell
+  const moduleContentRect = { x: 5, y: 28, width: 173, height: 173 }
+  const moduleOuterRect = { x: 0, y: 0, width: 183, height: 223 }
+  const moduleApertureUnderlayRect = expandRect(moduleContentRect, 1)
+  if (
+    modulePilotShell?.classification !== 'fixed'
+    || !dimensionsEqual(modulePilotShell?.sizePx, { width: 183, height: 223 })
+    || modulePilotShell?.nativeScale !== 1
+    || modulePilotShell?.runtimeImportAllowed !== true
+    || modulePilotShell?.stateSelection !== 'whole-shell-asset'
+    || !rectEqual(modulePilotShell?.transparentAperturePx, moduleContentRect)
+    || !rectEqual(modulePilotShell?.contentRectPx, moduleContentRect)
+    || !rectEqual(modulePilotShell?.apertureUnderlayRectPx, moduleApertureUnderlayRect)
+    || !rectHasIntegerValues(modulePilotShell?.apertureUnderlayRectPx)
+    || !rectContains(moduleOuterRect, modulePilotShell?.apertureUnderlayRectPx ?? {})
+    || !rectContains(
+      modulePilotShell?.apertureUnderlayRectPx ?? {},
+      modulePilotShell?.contentRectPx ?? {},
+    )
+    || JSON.stringify(modulePilotShell?.apertureUnderlay) !== JSON.stringify({
+      derivedFrom: 'contentRectPx',
+      expansionPx: 1,
+      usage: ['opaque-backing', 'repeated-surface'],
+      backgroundCoverageOnly: true,
+      clipToOuterRect: true,
+      liveViewportUsesUnderlayRect: false,
+      shellMasksOverscan: true,
+      textureOrigin: 'contentRectPx',
+    })
+    || modulePilotShell?.contentPlacement?.anchor !== 'shell-top-left'
+    || modulePilotShell?.contentPlacement?.positioning !== 'absolute-integer-px'
+    || modulePilotShell?.contentPlacement?.clipToContentRect !== true
+    || modulePilotShell?.contentPlacement?.derivedOrPercentageLayoutAllowed !== false
+    || modulePilotShell?.contentPlacement?.translateCenteringAllowed !== false
+    || modulePilotShell?.binaryAlphaOnly !== true
+    || modulePilotShell?.stateAlphaMasksIdentical !== true
+    || modulePilotShell?.resizable !== false
+    || JSON.stringify(modulePilotShell?.assets) !== JSON.stringify({
+      active: 'window.module.compact.active',
+      inactive: 'window.module.compact.inactive',
+    })
+  ) {
+    errors.push('compositionPolicy.modulePilotShell must use the measured 173x173 authored content rect plus its one-pixel aperture underlay')
+  }
+  const futureResizablePieces = composition.futureResizablePieces
   const frameInsets = { left: 8, top: 30, right: 8, bottom: 8 }
-  if (composition.frame?.classification !== 'nine-slice') {
-    errors.push('compositionPolicy.frame must be nine-slice')
+  if (futureResizablePieces?.runtimeUsedByModulePilot !== false) {
+    errors.push('compositionPolicy future resizable pieces must be excluded from the fixed module pilot')
   }
-  if (!insetsEqual(composition.frame?.capInsetsPx, frameInsets)) {
-    errors.push('compositionPolicy.frame cap insets must be 8/30/8/8')
+  if (futureResizablePieces?.frame?.classification !== 'nine-slice') {
+    errors.push('compositionPolicy future frame must remain nine-slice')
   }
-  if (composition.frame?.stretchCompleteShell !== false) {
-    errors.push('compositionPolicy.frame must forbid stretching complete shells')
+  if (!insetsEqual(futureResizablePieces?.frame?.capInsetsPx, frameInsets)) {
+    errors.push('compositionPolicy future frame cap insets must be 8/30/8/8')
   }
   if (
-    composition.header?.classification !== 'three-slice'
-    || composition.header?.axis !== 'horizontal'
-    || composition.header?.heightPx !== 27
-    || composition.header?.capInsetsPx?.left !== 8
-    || composition.header?.capInsetsPx?.right !== 8
-  ) errors.push('compositionPolicy.header must be a 27px horizontal three-slice with 8px caps')
+    futureResizablePieces?.header?.classification !== 'three-slice'
+    || futureResizablePieces?.header?.axis !== 'horizontal'
+    || futureResizablePieces?.header?.heightPx !== 27
+    || futureResizablePieces?.header?.capInsetsPx?.left !== 8
+    || futureResizablePieces?.header?.capInsetsPx?.right !== 8
+  ) errors.push('compositionPolicy future header must be a 27px horizontal three-slice with 8px caps')
   if (
     composition.surfaceTile?.classification !== 'tile'
     || composition.surfaceTile?.repeatable !== true
@@ -629,15 +747,15 @@ export function validateKorpUiV01WindowContract({ contract, catalog }) {
     || !dimensionsEqual(composition.controls?.sizePx, { width: 18, height: 16 })
   ) errors.push('compositionPolicy controls must be fixed 18x16 assets')
   if (
-    composition.controls?.layoutPx?.top !== 6
-    || composition.controls?.layoutPx?.right !== 8
+    composition.controls?.layoutPx?.top !== 5
+    || composition.controls?.layoutPx?.right !== 5
     || composition.controls?.layoutPx?.gap !== 2
     || JSON.stringify(composition.controls?.states) !== JSON.stringify(CONTROL_STATES)
   ) errors.push('compositionPolicy controls must use the authored integer layout and four states')
   if (
-    composition.completeShell?.classification !== 'reference-only'
-    || composition.completeShell?.runtimeImportAllowed !== false
-  ) errors.push('compositionPolicy complete shells must remain reference-only')
+    composition.historicalCompleteShell?.classification !== 'reference-only'
+    || composition.historicalCompleteShell?.runtimeImportAllowed !== false
+  ) errors.push('compositionPolicy historical 320x220 shells must remain reference-only')
   if (
     contract.geometryPolicy?.outerSizeFormula?.width
       !== 'content.width + contentInsets.left + contentInsets.right'
@@ -655,11 +773,11 @@ export function validateKorpUiV01WindowContract({ contract, catalog }) {
     module: {
       orientation: 'content-derived',
       controls: ['pin-toggle', 'minimize', 'close'],
-      contentInsets: { left: 8, top: 31, right: 8, bottom: 25 },
-      content: { width: 167, height: 167 },
+      contentInsets: { left: 5, top: 28, right: 5, bottom: 22 },
+      content: { width: 173, height: 173 },
       outer: { width: 183, height: 223 },
       surface: 'dark-panel',
-      resizingComposition: 'nine-slice-frame-plus-three-slice-header',
+      resizingComposition: 'deferred-explicit-authored-export-contract',
     },
     audit: {
       orientation: 'portrait',
@@ -723,31 +841,79 @@ export function validateKorpUiV01WindowContract({ contract, catalog }) {
     if (family.assets?.surface !== expected.surface) {
       errors.push(`${familyId} surface must be ${expected.surface}`)
     }
-    const expectedFamilyAssets = {
-      frame: `window.${familyId}.nine-slice`,
-      headers: {
-        active: `window.header.${familyId}.active`,
-        inactive: `window.header.${familyId}.inactive`,
-      },
-      surface: expected.surface,
-      referenceOnlyShells: [`window.${familyId}.active`, `window.${familyId}.inactive`],
-    }
+    const expectedFamilyAssets = familyId === 'module'
+      ? {
+          fixedShells: {
+            active: 'window.module.compact.active',
+            inactive: 'window.module.compact.inactive',
+          },
+          surface: expected.surface,
+          futureResizablePieces: {
+            frame: 'window.module.nine-slice',
+            headers: {
+              active: 'window.header.module.active',
+              inactive: 'window.header.module.inactive',
+            },
+          },
+          referenceOnlyShells: ['window.module.active', 'window.module.inactive'],
+        }
+      : {
+          frame: `window.${familyId}.nine-slice`,
+          headers: {
+            active: `window.header.${familyId}.active`,
+            inactive: `window.header.${familyId}.inactive`,
+          },
+          surface: expected.surface,
+          referenceOnlyShells: [`window.${familyId}.active`, `window.${familyId}.inactive`],
+        }
     if (JSON.stringify(family.assets) !== JSON.stringify(expectedFamilyAssets)) {
-      errors.push(`${familyId} must reference only its canonical frame, headers, surface and shells`)
+      errors.push(`${familyId} must reference only its canonical pilot, future and reference assets`)
     }
-    if (
+    if (familyId === 'module') {
+      if (
+        family.pilotComposition?.kind !== 'fixed-authored-shell'
+        || !dimensionsEqual(family.pilotComposition?.nativeSizePx, { width: 183, height: 223 })
+        || family.pilotComposition?.nativeScale !== 1
+        || family.pilotComposition?.stateSelection !== 'whole-shell-asset'
+        || family.pilotComposition?.shellOwnsPermanentChrome !== true
+        || !rectEqual(family.pilotComposition?.contentRectPx, moduleContentRect)
+        || !rectEqual(
+          family.pilotComposition?.apertureUnderlayRectPx,
+          moduleApertureUnderlayRect,
+        )
+        || family.pilotComposition?.apertureUnderlayExpansionPx !== 1
+        || family.pilotComposition?.contentAnchor !== 'shell-top-left'
+        || family.pilotComposition?.contentClip !== 'exact-authored-rect'
+      ) errors.push('module pilot composition must use fixed authored whole-shell state assets at native size')
+      if (
+        family.resizing?.supported !== false
+        || family.resizing?.composition !== expected.resizingComposition
+        || JSON.stringify(family.resizing?.axes) !== JSON.stringify([])
+        || family.resizing?.contentDrivesOuterSize !== false
+      ) errors.push('module resizing must remain deferred for the fixed authored pilot')
+    } else if (
       family.resizing?.composition !== expected.resizingComposition
       || JSON.stringify(family.resizing?.axes) !== JSON.stringify(['horizontal', 'vertical'])
       || family.resizing?.contentDrivesOuterSize !== true
-      || (familyId !== 'module' && family.resizing?.preferredGrowthAxis !== 'vertical')
+      || family.resizing?.preferredGrowthAxis !== 'vertical'
     ) errors.push(`${familyId} resizing must use the declared slice composition on integer axes`)
-    const assetExpectations = [
-      [family.assets?.frame, 'nine-slice'],
-      [family.assets?.headers?.active, 'three-slice'],
-      [family.assets?.headers?.inactive, 'three-slice'],
-      [family.assets?.surface, 'tile'],
-      ...((family.assets?.referenceOnlyShells ?? []).map((id) => [id, 'reference-only'])),
-    ]
+    const assetExpectations = familyId === 'module'
+      ? [
+          [family.assets?.fixedShells?.active, 'fixed'],
+          [family.assets?.fixedShells?.inactive, 'fixed'],
+          [family.assets?.surface, 'tile'],
+          [family.assets?.futureResizablePieces?.frame, 'nine-slice'],
+          [family.assets?.futureResizablePieces?.headers?.active, 'three-slice'],
+          [family.assets?.futureResizablePieces?.headers?.inactive, 'three-slice'],
+          ...((family.assets?.referenceOnlyShells ?? []).map((id) => [id, 'reference-only'])),
+        ]
+      : [
+          [family.assets?.frame, 'nine-slice'],
+          [family.assets?.headers?.active, 'three-slice'],
+          [family.assets?.headers?.inactive, 'three-slice'],
+          [family.assets?.surface, 'tile'],
+          ...((family.assets?.referenceOnlyShells ?? []).map((id) => [id, 'reference-only'])),
+        ]
     for (const [assetId, textureMode] of assetExpectations) {
       const asset = catalogById.get(assetId)
       if (!asset) errors.push(`${familyId} references unknown catalog asset: ${String(assetId)}`)
@@ -758,8 +924,8 @@ export function validateKorpUiV01WindowContract({ contract, catalog }) {
   }
   const moduleFamily = families.module
   for (const instanceId of ['clickAudit', 'fidget']) {
-    if (!dimensionsEqual(moduleFamily?.preservedContentInstances?.[instanceId], { width: 167, height: 167 })) {
-      errors.push(`${instanceId} preservation constraint must remain exactly 167x167`)
+    if (!dimensionsEqual(moduleFamily?.preservedContentInstances?.[instanceId], { width: 173, height: 173 })) {
+      errors.push(`${instanceId} viewport constraint must remain exactly 173x173`)
     }
   }
   if (
@@ -792,8 +958,8 @@ export function validateKorpUiV01Allowlist({ allowlist, catalog }) {
     throw new KorpUiAssetValidationError(['runtime allowlist root must be an object'])
   }
   if (allowlist.schemaVersion !== 1) errors.push('runtime allowlist schemaVersion must be 1')
-  if (allowlist.targetTask !== 'Task 024A follow-up module-window pilot') {
-    errors.push('runtime allowlist targetTask must identify the Task 024A follow-up module-window pilot')
+  if (allowlist.targetTask !== 'Task 024B fixed authored module-shell pilot') {
+    errors.push('runtime allowlist targetTask must identify the Task 024B fixed authored module-shell pilot')
   }
   if (allowlist.sourceRoot !== KORP_UI_V01_SOURCE_ROOT) {
     errors.push(`runtime allowlist sourceRoot must be ${KORP_UI_V01_SOURCE_ROOT}`)

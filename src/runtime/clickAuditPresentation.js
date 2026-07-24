@@ -1,4 +1,14 @@
+import { KORP_MODULE_WINDOW_METRICS } from './moduleWindowPresentation.js'
+
 export const CLICK_AUDIT_PROGRESS_TARGET = 2_500
+export const CLICK_AUDIT_BASIN_RECT = Object.freeze({
+  x: 0,
+  y: 0,
+  width: KORP_MODULE_WINDOW_METRICS.contentRect.width,
+  height: KORP_MODULE_WINDOW_METRICS.contentRect.height,
+})
+export const CLICK_AUDIT_BASIN_FLOOR_Y = CLICK_AUDIT_BASIN_RECT.y
+  + CLICK_AUDIT_BASIN_RECT.height
 
 export function normalizeClickCount(value) {
   if (!Number.isFinite(value) || value < 0) return 0
