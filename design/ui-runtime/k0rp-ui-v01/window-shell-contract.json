@@ -54,6 +54,25 @@
         "width": 173,
         "height": 173
       },
+      "apertureUnderlayRectPx": {
+        "x": 4,
+        "y": 27,
+        "width": 175,
+        "height": 175
+      },
+      "apertureUnderlay": {
+        "derivedFrom": "contentRectPx",
+        "expansionPx": 1,
+        "usage": [
+          "opaque-backing",
+          "repeated-surface"
+        ],
+        "backgroundCoverageOnly": true,
+        "clipToOuterRect": true,
+        "liveViewportUsesUnderlayRect": false,
+        "shellMasksOverscan": true,
+        "textureOrigin": "contentRectPx"
+      },
       "contentPlacement": {
         "anchor": "shell-top-left",
         "positioning": "absolute-integer-px",
@@ -214,6 +233,13 @@
           "width": 173,
           "height": 173
         },
+        "apertureUnderlayRectPx": {
+          "x": 4,
+          "y": 27,
+          "width": 175,
+          "height": 175
+        },
+        "apertureUnderlayExpansionPx": 1,
         "contentAnchor": "shell-top-left",
         "contentClip": "exact-authored-rect"
       },

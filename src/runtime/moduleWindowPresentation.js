@@ -1,4 +1,10 @@
 const freezeRect = (x, y, width, height) => Object.freeze({ x, y, width, height })
+const expandRect = (rect, amount) => freezeRect(
+  rect.x - amount,
+  rect.y - amount,
+  rect.width + (amount * 2),
+  rect.height + (amount * 2),
+)
 
 const contentInsets = Object.freeze({
   top: 28,
@@ -41,6 +47,8 @@ const contentRect = freezeRect(
   content.width,
   content.height,
 )
+const apertureUnderlayExpansion = 1
+const apertureUnderlayRect = expandRect(contentRect, apertureUnderlayExpansion)
 const footerRect = freezeRect(8, 198, 167, 17)
 const bottomFrameRect = freezeRect(0, 215, 183, 8)
 const controlsRect = freezeRect(
@@ -88,6 +96,8 @@ export const KORP_MODULE_WINDOW_METRICS = Object.freeze({
   outerRect,
   shellRect,
   headerRect,
+  apertureUnderlayExpansion,
+  apertureUnderlayRect,
   contentRect,
   footerRect,
   footerSafeRect,
@@ -104,9 +114,17 @@ export const KORP_MODULE_WINDOW_METRICS = Object.freeze({
     hasOpaqueBacking: true,
     interiorBackingColor: '#1c1c19',
     backingColor: '#1c1c19',
-    tile: Object.freeze({ width: 32, height: 32, repeat: true }),
+    tile: Object.freeze({
+      width: 32,
+      height: 32,
+      repeat: true,
+      originOffset: Object.freeze({
+        x: contentRect.x - apertureUnderlayRect.x,
+        y: contentRect.y - apertureUnderlayRect.y,
+      }),
+    }),
     textureRegions: Object.freeze({
-      content: 'dark-panel',
+      apertureUnderlay: 'dark-panel',
       footer: null,
     }),
   }),

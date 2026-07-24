@@ -23,7 +23,15 @@
 }
 
 .korp-module-window-backing,
-.korp-module-window-content-surface,
+.korp-module-window-content-surface {
+  position: absolute;
+  left: var(--korp-module-underlay-left);
+  top: var(--korp-module-underlay-top);
+  width: var(--korp-module-underlay-width);
+  height: var(--korp-module-underlay-height);
+  overflow: hidden;
+}
+
 .korp-module-window-content {
   position: absolute;
   left: var(--korp-module-content-left);
@@ -31,6 +39,8 @@
   width: var(--korp-module-content-width);
   height: var(--korp-module-content-height);
   overflow: hidden;
+  z-index: var(--korp-module-layer-live-content);
+  background: transparent;
 }
 
 .korp-module-window-backing {
@@ -43,13 +53,10 @@
   z-index: var(--korp-module-layer-shell-backgrounds);
   background-color: var(--korp-module-backing-color);
   background-image: var(--korp-module-surface);
-  background-position: 0 0;
+  background-position:
+    var(--korp-module-surface-origin-x)
+    var(--korp-module-surface-origin-y);
   background-repeat: repeat;
-}
-
-.korp-module-window-content {
-  z-index: var(--korp-module-layer-live-content);
-  background: transparent;
 }
 
 .korp-module-window-shell {

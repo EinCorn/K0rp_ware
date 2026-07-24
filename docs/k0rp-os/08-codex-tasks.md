@@ -495,9 +495,12 @@ The Task 024B module pilot uses `window.module.compact.active` and
 `window.module.compact.inactive` as fixed authored `183×223` shells rendered at 1:1.
 ClickAudit and Fidget select the whole shell by focus state while preserving the shared
 `173×173` live viewport at `{ x: 5, y: 28 }`, exactly matching the authored transparent
-aperture. Backing, surface, live content and clipping use that one integer rect so the
-viewport cannot drift under fractional desktop scaling. The old module nine-slice and
-separate header pieces are not
+aperture. Live content and clipping keep that exact rect. The shared opaque backing and
+repeated surface use a shell-owned one-pixel underlay at `{ x: 4, y: 27, width: 175,
+height: 175 }`; the whole-shell PNG masks the overscan beneath its rails. This overlap
+prevents the desktop or document below from becoming a possible boundary sample at
+non-integer device-pixel phases such as Chrome page zoom 150%. The old module nine-slice
+and separate header pieces are not
 part of this runtime pilot; resizable module composition is deferred to a separate
 authored export contract.
 

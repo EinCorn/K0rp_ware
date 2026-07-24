@@ -228,6 +228,17 @@ test('window-shell geometry preserves module content and portrait two-control do
     },
     transparentAperturePx: { x: 5, y: 28, width: 173, height: 173 },
     contentRectPx: { x: 5, y: 28, width: 173, height: 173 },
+    apertureUnderlayRectPx: { x: 4, y: 27, width: 175, height: 175 },
+    apertureUnderlay: {
+      derivedFrom: 'contentRectPx',
+      expansionPx: 1,
+      usage: ['opaque-backing', 'repeated-surface'],
+      backgroundCoverageOnly: true,
+      clipToOuterRect: true,
+      liveViewportUsesUnderlayRect: false,
+      shellMasksOverscan: true,
+      textureOrigin: 'contentRectPx',
+    },
     contentPlacement: {
       anchor: 'shell-top-left',
       positioning: 'absolute-integer-px',
@@ -240,6 +251,11 @@ test('window-shell geometry preserves module content and portrait two-control do
     resizable: false,
   })
   assert.equal(contract.families.module.pilotComposition.kind, 'fixed-authored-shell')
+  assert.deepEqual(
+    contract.families.module.pilotComposition.apertureUnderlayRectPx,
+    { x: 4, y: 27, width: 175, height: 175 },
+  )
+  assert.equal(contract.families.module.pilotComposition.apertureUnderlayExpansionPx, 1)
   assert.equal(contract.families.module.resizing.supported, false)
   assert.equal(contract.families.module.resizing.composition, 'deferred-explicit-authored-export-contract')
   assert.deepEqual(contract.families.module.resizing.axes, [])
@@ -273,12 +289,51 @@ test('window-shell geometry preserves module content and portrait two-control do
     (error) => error instanceof KorpUiAssetValidationError
       && error.message.includes('module default content size is incorrect')
       && error.message.includes('geometryPolicy must forbid shrinking, cropping and rescaling module content')
-      && error.message.includes('compositionPolicy.modulePilotShell must use the measured 173x173 authored content rect')
+      && error.message.includes('compositionPolicy.modulePilotShell must use the measured 173x173 authored content rect plus its one-pixel aperture underlay')
       && error.message.includes('module resizing must remain deferred for the fixed authored pilot')
       && error.message.includes('audit orientation must be portrait')
       && error.message.includes('audit control slots must be minimize, close')
       && error.message.includes('audit must reference only its canonical pilot, future and reference assets')
       && error.message.includes('folder default outer size must be portrait'),
+  )
+})
+
+test('module aperture underlay contract rejects fractional, incomplete and escaped coverage', () => {
+  const invalidUnderlays = [
+    ['fractional coordinate', (candidate) => {
+      candidate.compositionPolicy.modulePilotShell.apertureUnderlayRectPx.x = 4.5
+    }],
+    ['missing left cover', (candidate) => {
+      candidate.compositionPolicy.modulePilotShell.apertureUnderlayRectPx.x = 5
+      candidate.compositionPolicy.modulePilotShell.apertureUnderlayRectPx.width = 174
+    }],
+    ['outer escape', (candidate) => {
+      candidate.compositionPolicy.modulePilotShell.apertureUnderlayRectPx.x = -1
+    }],
+    ['enlarged live viewport', (candidate) => {
+      candidate.compositionPolicy.modulePilotShell.contentRectPx.width = 175
+    }],
+  ]
+
+  for (const [name, mutate] of invalidUnderlays) {
+    const invalidContract = structuredClone(contract)
+    mutate(invalidContract)
+
+    assert.throws(
+      () => validateKorpUiV01WindowContract({ contract: invalidContract, catalog }),
+      /one-pixel aperture underlay/,
+      name,
+    )
+  }
+
+  const mismatchedFamilyContract = structuredClone(contract)
+  mismatchedFamilyContract.families.module.pilotComposition.apertureUnderlayRectPx.width = 174
+  assert.throws(
+    () => validateKorpUiV01WindowContract({
+      contract: mismatchedFamilyContract,
+      catalog,
+    }),
+    /module pilot composition must use fixed authored whole-shell state assets at native size/,
   )
 })
 

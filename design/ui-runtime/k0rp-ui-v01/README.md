@@ -44,9 +44,12 @@ blur and filters are outside the contract.
 The future slice-frame cap insets remain 8 px left, 30 px top, 8 px right and 8 px
 bottom. The fixed module viewport uses the measured authored transparent rect directly:
 5/28/5/22 px (left/top/right/bottom), producing a 173x173 content viewport inside the
-183x223 shell. Backing, tiled surface, live content and clipping share that one
-top-left-anchored integer rect; percentage sizing, derived centering and translate-based
-placement are forbidden. Audit and folder continue to use 8/31/8/8 px content insets.
+183x223 shell. Live content and clipping use that exact top-left-anchored integer rect.
+For device-pixel seam insurance, the opaque backing and repeated surface alone use its
+one-pixel expansion at x4/y27 with size 175x175; the authored shell masks this underlay,
+which remains clipped inside the outer rect. The tile origin stays anchored to the
+content rect. Percentage sizing, derived centering and translate-based placement are
+forbidden. Audit and folder continue to use 8/31/8/8 px content insets.
 Compact-module controls are fixed at 18x16 px and align to the authored slots at y=5;
 all labels remain live DOM text using the current runtime font.
 

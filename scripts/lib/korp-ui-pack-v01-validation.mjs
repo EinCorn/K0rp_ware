@@ -573,6 +573,32 @@ function insetsEqual(actual, expected) {
     && actual?.bottom === expected.bottom
 }
 
+function rectEqual(actual, expected) {
+  return actual?.x === expected.x
+    && actual?.y === expected.y
+    && dimensionsEqual(actual, expected)
+}
+
+function expandRect(rect, amount) {
+  return {
+    x: rect.x - amount,
+    y: rect.y - amount,
+    width: rect.width + (amount * 2),
+    height: rect.height + (amount * 2),
+  }
+}
+
+function rectContains(outerRect, innerRect) {
+  return innerRect.x >= outerRect.x
+    && innerRect.y >= outerRect.y
+    && innerRect.x + innerRect.width <= outerRect.x + outerRect.width
+    && innerRect.y + innerRect.height <= outerRect.y + outerRect.height
+}
+
+function rectHasIntegerValues(rect) {
+  return ['x', 'y', 'width', 'height'].every((field) => Number.isInteger(rect?.[field]))
+}
+
 export function validateKorpUiV01WindowContract({ contract, catalog }) {
   const errors = []
   if (!contract || typeof contract !== 'object' || Array.isArray(contract)) {
@@ -620,16 +646,33 @@ export function validateKorpUiV01WindowContract({ contract, catalog }) {
   ) errors.push('compositionPolicy.allowedClassifications must match the catalog texture modes')
   const modulePilotShell = composition.modulePilotShell
   const moduleContentRect = { x: 5, y: 28, width: 173, height: 173 }
+  const moduleOuterRect = { x: 0, y: 0, width: 183, height: 223 }
+  const moduleApertureUnderlayRect = expandRect(moduleContentRect, 1)
   if (
     modulePilotShell?.classification !== 'fixed'
     || !dimensionsEqual(modulePilotShell?.sizePx, { width: 183, height: 223 })
     || modulePilotShell?.nativeScale !== 1
     || modulePilotShell?.runtimeImportAllowed !== true
     || modulePilotShell?.stateSelection !== 'whole-shell-asset'
-    || JSON.stringify(modulePilotShell?.transparentAperturePx)
-      !== JSON.stringify(moduleContentRect)
-    || JSON.stringify(modulePilotShell?.contentRectPx)
-      !== JSON.stringify(moduleContentRect)
+    || !rectEqual(modulePilotShell?.transparentAperturePx, moduleContentRect)
+    || !rectEqual(modulePilotShell?.contentRectPx, moduleContentRect)
+    || !rectEqual(modulePilotShell?.apertureUnderlayRectPx, moduleApertureUnderlayRect)
+    || !rectHasIntegerValues(modulePilotShell?.apertureUnderlayRectPx)
+    || !rectContains(moduleOuterRect, modulePilotShell?.apertureUnderlayRectPx ?? {})
+    || !rectContains(
+      modulePilotShell?.apertureUnderlayRectPx ?? {},
+      modulePilotShell?.contentRectPx ?? {},
+    )
+    || JSON.stringify(modulePilotShell?.apertureUnderlay) !== JSON.stringify({
+      derivedFrom: 'contentRectPx',
+      expansionPx: 1,
+      usage: ['opaque-backing', 'repeated-surface'],
+      backgroundCoverageOnly: true,
+      clipToOuterRect: true,
+      liveViewportUsesUnderlayRect: false,
+      shellMasksOverscan: true,
+      textureOrigin: 'contentRectPx',
+    })
     || modulePilotShell?.contentPlacement?.anchor !== 'shell-top-left'
     || modulePilotShell?.contentPlacement?.positioning !== 'absolute-integer-px'
     || modulePilotShell?.contentPlacement?.clipToContentRect !== true
@@ -643,7 +686,7 @@ export function validateKorpUiV01WindowContract({ contract, catalog }) {
       inactive: 'window.module.compact.inactive',
     })
   ) {
-    errors.push('compositionPolicy.modulePilotShell must use the measured 173x173 authored content rect with integer top-left placement and clipping')
+    errors.push('compositionPolicy.modulePilotShell must use the measured 173x173 authored content rect plus its one-pixel aperture underlay')
   }
   const futureResizablePieces = composition.futureResizablePieces
   const frameInsets = { left: 8, top: 30, right: 8, bottom: 8 }
@@ -802,8 +845,12 @@ export function validateKorpUiV01WindowContract({ contract, catalog }) {
         || family.pilotComposition?.nativeScale !== 1
         || family.pilotComposition?.stateSelection !== 'whole-shell-asset'
         || family.pilotComposition?.shellOwnsPermanentChrome !== true
-        || JSON.stringify(family.pilotComposition?.contentRectPx)
-          !== JSON.stringify(moduleContentRect)
+        || !rectEqual(family.pilotComposition?.contentRectPx, moduleContentRect)
+        || !rectEqual(
+          family.pilotComposition?.apertureUnderlayRectPx,
+          moduleApertureUnderlayRect,
+        )
+        || family.pilotComposition?.apertureUnderlayExpansionPx !== 1
         || family.pilotComposition?.contentAnchor !== 'shell-top-left'
         || family.pilotComposition?.contentClip !== 'exact-authored-rect'
       ) errors.push('module pilot composition must use fixed authored whole-shell state assets at native size')
