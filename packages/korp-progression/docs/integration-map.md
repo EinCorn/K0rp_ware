@@ -1,8 +1,6 @@
 # Integration map — napojení progression dat na K0rp_ware
 
-Verze: `0.3.1 / Task 023 core-loop integration`
-
-Tento soubor popisuje doporučený technický postup integrace canonical Metric → Audit → Evidence modelu.
+Verze: `0.4.0 / post-Task-023 reconciliation map`
 
 Canonical design:
 
@@ -10,7 +8,13 @@ Canonical design:
 docs/k0rp-os/20-core-loop.md
 ```
 
-Aktuální runtime po Tasku 019 už má společný provider, persistence, Audit 00-A/10-A baseline a asset-backed ClickAudit. Další práce je migrace ekonomiky, ne přidání dalšího paralelního runtime.
+Future module strategy:
+
+```text
+docs/k0rp-os/21-activity-spectrum-and-arcade-modules.md
+```
+
+Runtime po Tasku 023 už obsahuje ClickAudit i Fidget packets, repeatable audits, Evidence certification, authorization a mixed backlog. Task 024 sjednotí machine-readable package data. Nesmí vzniknout další paralelní runtime.
 
 ## 1. Package boundary
 
@@ -18,66 +22,70 @@ Aktuální runtime po Tasku 019 už má společný provider, persistence, Audit 
 packages/korp-progression/
 ```
 
-Package zůstává čistá datová vrstva:
+Package je čistá datová vrstva:
 
-- žádný React;
-- žádný DOM;
+- žádný React/DOM/Canvas;
 - žádné Tauri API;
 - žádný localStorage adapter;
-- žádný window manager.
+- žádný window manager;
+- žádný action physics loop;
+- žádné raw design assets.
 
-Deklaruje IDs, definitions, requirements, effects a validation.
+Deklaruje:
 
-## 2. Resource migration
+- IDs;
+- resources;
+- events;
+- forms/templates;
+- packet definitions;
+- requirements/effects;
+- authorizations;
+- surface artifacts;
+- validation;
+- balance/progression data.
 
-Stávající technical ID:
+## 2. Resource semantics
+
+Technical ID:
 
 ```ts
 notionalWorkUnits: number;
 ```
 
-se v první migraci nepřejmenovává, aby se neštěpil core/save contract.
-
-Player-facing metadata:
+Player-facing:
 
 ```text
 Evidence / EV
 ```
 
-Reducer semantics se mění:
-
 ```text
 raw activation
-≠ resource reward
+≠ Evidence
+
+run-local XP
+≠ Evidence
 
 audit.evidenceCertified
 → notionalWorkUnits / Evidence
 ```
 
-Lifetime generated total zůstává ve stats, ale znamená lifetime certified Evidence, ne součet klikových pulse.
+Lifetime generated total znamená lifetime certified Evidence, ne raw pulse count.
 
-## 3. Runtime state additions
+## 3. Runtime state
 
-KorpRuntimeProvider potřebuje:
-
-```ts
-metricPackets: MetricPacket[];
-auditInstances: AuditInstance[];
-clickAuditBatchBaseline: number;
-fidgetSessionBatchBaseline: number;
-```
-
-Doporučený pragmatický shape:
+Current minimum:
 
 ```ts
 type MetricPacket = {
   id: string;
-  packetDefinitionId: string;
+  packetDefinitionId?: string;
   metricType: string;
   source: "manual" | "delegated" | "system-generated";
   quantity: number;
   status: "pending" | "certified" | "rejected";
   createdAt: number;
+  rangeStart?: number;
+  rangeEnd?: number;
   certifiedAt?: number;
 };
 
@@ -92,9 +100,20 @@ type AuditInstance = {
 };
 ```
 
+Runtime provider dále drží:
+
+```text
+clickBatchBaseline
+fidgetSessionBatchBaseline
+authorization state
+mixed pending count
+debug-only derived pressure
+save/migration helpers
+```
+
 `submittedFormIds` zůstává pro one-time forms. Repeatable packet audits používají `auditInstances`.
 
-## 4. New progression-bearing events
+## 4. Current progression-bearing events
 
 ```text
 audit.formSubmitted
@@ -106,140 +125,123 @@ system.memoAcknowledged
 system.auditCycleClosed
 ```
 
-Později:
+Future:
 
 ```text
 metric.packetCreated
 audit.discrepancyRaised
 delegation.activityGenerated
 delegation.trainingCompleted
+policy.interventionRequested
 ```
 
-## 5. Metric packet flows
+Priority/Alignment candidate event IDs se nepřidávají do package před Tasks 035/038.
 
-### ClickAudit
+## 5. ClickAudit flow
 
-### Raw click
+### Baseline and bootstrap
 
 ```text
-intentional K0rp_OS pointer down
-→ clickaudit.click(profile/source)
-→ raw click stat
+Audit 00-A submit
+→ clickBatchBaseline = current raw click count
+→ bootstrap armed once
 ```
 
-Žádná Evidence ani přímý Audit Pressure.
+```text
+first later intentional K0rp click
+→ clickaudit.click
+→ quantity-1 bootstrap packet
+→ Audit 10-A auto-open once
+```
 
-### Batch boundary
+### Normal packets
 
 ```text
-25 nových raw clicks od batch baseline
+25 new raw clicks from cursor
 → clickaudit.batchCompleted
-→ create packet.clickaudit.manual-25 instance
+→ create quantity-25 packet once
+→ queue Audit 10-A without focus steal
 ```
 
-Packet creation musí být idempotentní.
-
-### Audit instance
+### Certification
 
 ```text
-pending ClickAudit packet
-→ offer/create Audit 10-A instance
-→ local draft values
+Audit 10-A valid submit
 → audit.formSubmitted
 → audit.evidenceCertified
 → packet certified
-→ Evidence +1
+→ EV +1 exactly once
 ```
 
-Jedna vůle uživatele smí vytvořit maximálně jeden raw click. Jeden submit smí certifikovat maximálně jeden packet.
+## 6. Fidget flow
 
-### Fidget natural closure
+### Natural closure
 
 ```text
-úmyslný smysluplný spin
-→ přirozený doběh
-→ právě 1 `fidget.sessionSettled`
+meaningful intentional spin
+→ natural coast-down
+→ exactly 1 fidget.sessionSettled
 → raw settled-session stat
 ```
 
-Pointer moves, animation frames, průběžné physics ticks ani pouhé otevření/zavření okna progression event nevytvářejí. Event nese jen privacy-safe sequence/mode a `source: manual`; sám nepřidává Evidence.
+Pointer moves, frames, physics ticks a open/close neemitují closure. Raw settle nepřidává EV.
 
-### Fidget packet boundary
+### Packet boundary
 
 ```text
-3 nové `fidget.sessionSettled` od `fidgetSessionBatchBaseline`
-→ create `fidget-sessions-<rangeStart>-<rangeEnd>`
-→ create/offer repeatable Audit `audit-18-s`
-→ pending ve společné ClickAudit + Fidget queue
+3 new fidget.sessionSettled from baseline
+→ create fidget-sessions-<rangeStart>-<rangeEnd>
+→ create/offer Audit 18-S
+→ mixed pending queue
 ```
 
-Packet size `3` je fixed provisional/playtestable contract Tasku 023. Neúplný zbytek zůstává v cursoru. Packet creation musí být idempotentní, nikdy samo neotevře auditní okno a nikdy nepřevezme focus.
+Packet size `3` je current fixed provisional/playtestable value.
 
-### Fidget certification
+Packet creation:
+
+- exactly once;
+- preserves remainder;
+- neotevírá audit window;
+- nebere focus;
+- nepřidává EV.
+
+### Certification
 
 ```text
 Audit 18-S valid submit
 → audit.formSubmitted
 → audit.evidenceCertified
-→ Fidget packet certified
-→ Evidence +1 právě jednou
+→ packet certified
+→ EV +1 exactly once
 ```
 
-## 6. Audit interaction bridge
+## 7. Audit interaction bridge
 
-Aktivní field:
+Active field:
 
 ```text
-audit field change
-→ clickaudit.click(profile: active-audit-field)
-→ local field state
+field change
+→ exactly 1 clickaudit.click(profile: active-audit-field)
+→ local draft mutation
 ```
 
-Hotový audit body:
+Completed body:
 
 ```text
-click in completed document
+click
 → clickaudit.click(profile: completed-audit-body)
-→ no data mutation
+→ no audit data mutation
 ```
 
 Drag handle:
 
 ```text
 pointer down
-→ clickaudit.click(profile: window-drag-handle)
-→ pointer move does not generate click events
+→ exactly 1 clickaudit.click(profile: window-drag-handle)
+→ pointer move = 0 additional clicks
 ```
-
-## 7. Runtime provider contract
-
-Doporučené minimum po Tasku 020:
-
-```text
-KorpRuntimeProvider
-├─ korpState
-├─ lifetimeStats
-├─ dispatch(event)
-├─ metricPackets
-├─ auditInstances
-├─ createMetricPacket()
-├─ submitAuditInstance()
-├─ certifyEvidence()
-├─ mixed pending audit count
-├─ debug-only derived audit pressure
-├─ authorization state
-├─ unlock/memo queues
-├─ save/load/reset
-└─ migration helpers
-```
-
-Window positions, z-index, drag a minimize zůstávají presentation state v KorpOsShell.
-
-Pro Task 023 je debug-only pressure odvozen jako `clamp(0, 100, pendingCount * 10 + floor(oldestPendingAgeMinutes / 10) + discrepancyCount * 20)`. Provider jej nesmí ukládat do `korpState.resources.auditPressure`.
 
 ## 8. Resolver order
-
-Minimální pipeline:
 
 ```text
 validate event
@@ -249,144 +251,177 @@ validate event
 → evaluate audit availability
 → submit audit instance
 → certify packet once
-→ grant/spend Evidence
+→ grant/spend EV
 → apply authorization/unlocks
-→ memos/surface mutations
+→ queue memos/surface mutations
 → save
 ```
 
-Upgrade resolver nesmí přidávat všechna pravidla do jednoho obřího switch bez datových boundaries.
+Run-local XP budoucího action module zůstává před aggregate closure a nikdy nevstupuje přímo do EV resolveru.
 
-## 9. Initial module visibility
+## 9. Runtime/presentation boundary
 
-První spuštění:
+Provider vlastní:
+
+- resources/stats;
+- packets;
+- audit instances;
+- authorizations;
+- progression effects;
+- save/migrations.
+
+Presentation vlastní:
+
+- window positions;
+- z-index;
+- drag;
+- minimize/close;
+- active/inactive state;
+- module-local visual state tam, kde není progression-bearing.
+
+Action `SessionEngine` bude module-local. Do provideru emituje pouze privacy-safe raw aggregate/closure.
+
+## 10. Initial visibility
+
+First boot:
 
 ```text
 Audit 00-A = visible
 ClickAudit = locked
 Fidget = locked
 Bloom = locked
+future action modules = absent, ne vystavené jako locked cards
 ```
 
-Po Audit 00-A:
+After Audit 00-A:
 
 ```text
 ClickAudit = unlocked
-Evidence = hidden until first certification nebo 0
-pending audits = 0
+bootstrap = armed
+EV UI = hidden/0 until first certification
 ```
 
-Po první Evidence:
+After first EV:
 
 ```text
 Audit 16-C = available
 ```
 
-Po Audit 16-C a Evidence allocation:
+After Audit 16-C:
 
 ```text
-Fidget = authorized/unlocked
+Fidget = authorized
 ```
 
-## 10. Save migration
+## 11. Save migration
 
-Zvýšit samostatně:
+Separate versions:
 
 ```ts
 schemaVersion
 progressionDataVersion
 ```
 
-Při migraci v0.2 save:
+Current schema 5 migration:
 
 ```text
-clickBatchBaseline = current raw click count
-metricPackets = []
-auditInstances = []
+preserve ClickAudit packets/audits
+preserve EV/authorization/unlocks
+fidgetSessionBatchBaseline = current historical settled count
+new retroactive Fidget packets = 0
 ```
 
-Důvod: neudělit retroaktivní packets/Evidence za starý prototypový click history.
+Task 024 progression-data migration:
 
-Při migraci runtime save ze schema 4 na schema 5:
+- update data version;
+- preserve valid runtime state;
+- remove old direct-yield assumptions;
+- create zero retroactive packets/rewards;
+- keep definitions outside save.
+
+## 12. Debug pressure
+
+Current Task 023 derivation:
 
 ```text
-fidgetSessionBatchBaseline = current `fidget.sessionSettled` count
-nové Fidget metric packets = 0
-nové Audit 18-S instances = 0
+clamp(0, 100,
+  pendingCount * 10
+  + floor(oldestPendingAgeMinutes / 10)
+  + discrepancyCount * 20)
 ```
 
-Migrace zachová existující ClickAudit packet/audit stav, authorization, unlocky a ostatní validní runtime state. První Fidget packet vznikne až po třech nových settled sessions; stará historie nevytváří retroaktivní packet ani Evidence.
+Debug-only. Provider jej nesmí zapisovat do persistent `resources.auditPressure`.
 
-Save ukládá:
+## 13. Task status
 
 ```text
-metric packet instances
-audit instances
-resources/stats
-authorizations
-owned upgrades
-unlocked modules/memos
-one-time submitted forms
+Task 020 — Click packet / Audit 10-A / EV          DONE
+Task 021 — Audit 16-C / Fidget authorization       DONE
+Task 022 — asset-backed Fidget                     DONE
+Task 023 — Fidget packet / Audit 18-S / backlog    DONE / PR #45
+Task 024 — data and balance reconciliation         NEXT
+Task 025 — delegation after backlog playtest
 ```
 
-Neukládá celé definitions.
+Visual Tasks 024A–024D:
 
-## 11. Data migration tasks
+- oddělená UI/assets osa;
+- nemění progression semantics;
+- Task 024A je merged / PR #47.
 
-### Task 020
+Future action Tasks 031–038:
 
-Runtime + minimal data needed for ClickAudit packet and Audit 10-A.
+- nejdřív module-local standalone greybox;
+- package IDs až při OS integration;
+- žádný direct EV;
+- žádný action packet threshold před playtestem.
 
-### Task 021
-
-Evidence authorization and Audit 16-C.
-
-### Task 022
-
-Asset-backed Fidget surface.
-
-### Task 023
-
-**ACTIVE** — fixed provisional/playtestable Fidget packet size `3`, IDs `fidget-sessions-<rangeStart>-<rangeEnd>`, repeatable Audit 18-S, smíšená ClickAudit + Fidget queue, total pending count a debug-only backlog pressure. Vytvoření packetu neotevírá okno a nepřebírá focus. Windows manual gate není tímto dokumentem prohlášen za splněný.
-
-### Task 024
-
-Full reconciliation:
+## 14. Task 024 affected data
 
 - resources metadata;
-- events, včetně odstranění starých přímých yieldů `fidget.sessionSettled` a sjednocení s pravidlem „Evidence pouze z certifikace“;
-- audit forms;
-- upgrades;
-- CSV balance;
-- first-cycle phases;
+- events/direct yields;
+- audit forms/templates;
+- packet definitions/references;
+- authorizations;
+- upgrade assumptions;
+- first-cycle phases/CSV;
+- TypeScript exports/types;
 - validation;
-- docs/package parity.
+- package docs.
 
-Současný `events.json` direct-yield mismatch je vědomě odložený do tohoto tasku. Task 023 runtime nesmí z raw `fidget.sessionSettled` přímo udělit Evidence.
+Task 024 nesmí přidat:
 
-## 12. What not to implement yet
+- Priority Containment;
+- Alignment Rally;
+- Audit 27-P;
+- Audit 31-R;
+- run-local XP resource;
+- action capability groups.
 
-- cloud sync;
-- overlay;
-- generic BPMN/workflow engine;
-- all packet sources at once;
-- all 37 upgrades at once;
-- delegation before backlog playtest;
-- procedurally generated audit prose;
-- fake manual clicks from assistants;
-- external raw activity telemetry.
+## 15. Validation
 
-## 13. Validation additions
-
-Task 023 bounded validation musí pokrýt packet ranges/idempotency, exactly-once certifikaci, mixed pending count, zero-retro schema 4 → 5 migration a zákaz auto-open/focus stealu.
-
-Task 024 validation má kontrolovat:
+Task 024:
 
 - unique packet definition IDs;
-- valid metric/event/module references;
+- valid metric/event/module/resource references;
 - valid audit template references;
-- valid Evidence resource reference;
-- one-time versus repeatable audit semantics;
-- no missing packet definition in first-cycle phases;
-- no early direct raw-action currency effect;
-- deterministic save migration version.
+- one-time versus repeatable form semantics;
+- no early raw-action EV effect;
+- no Fidget raw direct yield;
+- exactly-once certification;
+- deterministic data/save migration;
+- CSV/JSON/TS parity;
+- action candidate IDs absent.
+
+Future action integration:
+
+- session closure exactly once;
+- no per-frame global dispatch;
+- run XP not global;
+- privacy-safe aggregate event;
+- accepted packet threshold;
+- authorization/surface reference parity.
+
+## 16. Důležité pravidlo
+
+> Progression package má popsat to, co systém uznává. Simulation může být hlučná, rychlá a plná priorit. Do package vstoupí až její schválený closure, packet a auditní důsledek.

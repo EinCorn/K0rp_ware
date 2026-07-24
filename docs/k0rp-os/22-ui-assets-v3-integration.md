@@ -1,30 +1,41 @@
-# K0rp_OS UI assets V3 — source and validation contract
+# K0rp_OS UI Assets V3 — Historical Source and Validation Contract
 
-## Scope
+Verze: `0.4.0 historical infrastructure note`  
+Status: Task 022A(2.1) source-validation infrastructure zůstává platná; V3 player-visible chrome pilot byl uzavřen bez merge a není runtime standard
 
-Task 022A(2.1) establishes a trustworthy source boundary for later visual integration. It does not convert any player-visible UI and does not copy raw assets into the Vite runtime graph.
+## 1. Co tento track skutečně dokončil
+
+Task 022A(2.1) vytvořil důvěryhodnou hranici pro exact V3 source snapshot:
 
 ```text
-design/ui-source/k0rp-os-ui-assets-v3/       canonical raw source snapshot
+design/ui-source/k0rp-os-ui-assets-v3/       immutable raw source snapshot
 design/ui-runtime/k0rp-v3/inventory.json     generated normalized inventory
-design/ui-runtime/k0rp-v3/runtime-allowlist.json maintained Task 022A(2.2) boundary
-src/assets/                                  unchanged by this task
+design/ui-runtime/k0rp-v3/runtime-allowlist.json historical pilot metadata
+src/assets/                                  tímto taskem nezměněno
 ```
 
-Commands:
+Příkazy:
 
 ```text
-npm run build:korp-ui-assets     regenerate only the normalized inventory
-npm run validate:korp-ui-assets  validate source, allowlist and generated drift
+npm run build:korp-ui-assets
+npm run validate:korp-ui-assets
 ```
 
-Both commands are offline and use only Node built-ins. The generator never rewrites the raw snapshot, its checksums or the runtime allowlist.
+Validátor a inventory zůstávají užitečné pro:
 
-## Actual source snapshot
+- ověření integrity raw packu;
+- kontrolu dimensions, paths, hashes, atlases a nine-slice metadata;
+- ochranu proti přímému runtime importu raw snapshotu;
+- archivní dohledatelnost assetů;
+- porovnání budoucích curated packů se starší produkční sadou.
 
-The committed source is an exact mirror of the reviewed local V3 kit.
+Task 022A(2.1) nikdy neměl měnit player-visible React/CSS rendering.
 
-| Inventory item | Actual value |
+## 2. Historical snapshot facts
+
+Committed V3 snapshot obsahuje:
+
+| Inventory item | Hodnota |
 |---|---:|
 | Total files | 1,494 |
 | Total bytes | 16,733,914 |
@@ -35,97 +46,141 @@ The committed source is an exact mirror of the reviewed local V3 kit.
 | Nearest-neighbour `@2x` PNG | 493 |
 | Lossless WebP | 493 |
 | Atlas PNG sheets | 4 |
-| Auxiliary/non-payload files | 15 |
-| Content rectangles | 138 |
-| Cap-inset declarations | 109 |
 | Materialized nine-slice families | 11 |
 | Materialized nine-slice pieces | 99 semantic / 297 format files |
 | Window metric families | 8 |
 | Atlas frames | 48 |
 
-The manifest has 52 categories and 56 functional roles. All 493 asset IDs and all 1,479 format paths are unique. Every production/reference payload has one native PNG, one exact-dimension `@2x` PNG and one lossless WebP. There are no missing manifest paths, unsafe paths, case-insensitive path collisions, dimension mismatches or orphan payload files.
+Tyto hodnoty popisují historický raw source snapshot. Neznamenají, že všech 493 assetů je schválených pro runtime použití.
 
-`qa/report.json` covers all 493 assets with zero failures. `manifest.csv` and `manifest.json` contain the same 493 IDs. The local `index.html` gallery references the production set; no physical source-board or preview PNG is included in this snapshot.
+## 3. Co se nepovedlo jako runtime směr
 
-Source-board provenance remains machine-readable in the manifest: 310 assets reference `bars`, `controls`, `documents`, `master` or `windows` source rectangles. Those labels are provenance, not paths that the runtime should load.
+Následný Audit 00-A + Formuláře V3 chrome pilot vznikl v PR #43 a byl uzavřen bez merge.
 
-## Window, nine-slice and atlas readiness
+Hlavní zjištění:
 
-The eight consistent window families are:
+- frame/titlebar/paper/controls nepůsobily jako jeden koherentní systém;
+- některé materiály byly při runtime composition roztažené nebo opticky rozmazané;
+- okna byla kvůli asset geometry zmenšena do nečitelné podoby;
+- compact module baseline ClickAudit/Fidget působila pixelově čistěji než nový chrome;
+- V3 assets nešly bezpečně aplikovat jedna ku jedné na živé React documents a folders;
+- budoucí resize by problém zvětšil, pokud by se používaly whole-shell bitmapy místo správné composition.
+
+Tento výsledek není selhání source ingestion. Je to zamítnutý player-visible visual hypothesis.
+
+## 4. Canonical rozhodnutí po uzavření pilotu
 
 ```text
-audit
-compact_module
-document_memo
-folder
-lock_panel
-standard_module
-system_modal
-toast
+V3 raw snapshot + validator
+= zachovat jako historickou source/inventory infrastrukturu
+
+V3 runtime chrome pilot
+= nepokračovat jako canonical visual track
+
+curated UI asset pack v01
+= nový runtime candidate pro reusable window composition
 ```
 
-Each family has matching production frame, content surface and fixed composite metadata. `window.folder` additionally supplies `window.folder.list_surface`.
+Nová curated hranice:
 
-Only 11 parents intentionally materialize nine separate pieces: three bar materials and all eight window frames. The other 98 assets with cap-inset metadata are resizable whole assets and are not missing pieces.
+```text
+design/ui-source/k0rp-ui-asset-pack-v01/
+design/ui-runtime/k0rp-ui-v01/
+```
 
-The atlas bundle contains:
+Task 024A / PR #47 vytvořil:
 
-| Atlas | Dimensions | Frames |
-|---|---:|---:|
-| Window controls | 280×160 | 28 |
-| Digits | 360×36 | 10 |
-| Lamps | 240×48 | 5 |
-| Taskbar states | 160×800 | 5 |
+- immutable curated source;
+- generated catalog/runtime subset;
+- module/audit/folder geometry contract;
+- nine-slice frame composition;
+- horizontal three-slice headers;
+- native-resolution tiled material surfaces;
+- fixed pin/unpin/minimize/close states;
+- live DOM text;
+- integer coordinates/scaling;
+- preserved `167×167` ClickAudit/Fidget content.
 
-Every atlas frame is within bounds, names an existing manifest ID and matches its declared dimensions.
+Player-visible rollout se řeší oddělenými Tasks 024B–024D podle `07-roadmap.md` a `08-codex-tasks.md`.
 
-## Validation and readiness model
+## 5. Status původního V3 allowlistu
 
-`npm run validate:korp-ui-assets` fails closed for:
+`design/ui-runtime/k0rp-v3/runtime-allowlist.json` zůstává:
 
-- malformed required JSON or manifest structure;
-- duplicate semantic IDs, duplicate format paths or duplicate runtime selections;
-- missing production assets, unsafe/path-escaping paths or manifest path mismatches;
-- native, `@2x` or WebP dimensions that disagree with headers;
-- malformed/out-of-bounds content rectangles or cap insets;
-- an incomplete materialized nine-slice family;
-- invalid atlas/window-metric/QA references;
-- unknown, reference-only or icon-like runtime allowlist selections;
-- checksum mismatches for files that exist;
+- historický záznam pilot boundary;
+- vstup pro V3 validator;
+- důkaz tehdejšího omezeného výběru.
+
+Není:
+
+- aktivní runtime import list;
+- source pro Task 024B;
+- canonical window family contract;
+- povolení kopírovat V3 assety do `src/assets`;
+- důvod obnovit Tasks 022A(2.2–2.5) pod původním visual assumptions.
+
+Pokud bude některý jednotlivý V3 asset někdy znovu použit, musí projít novým explicitním curated allowlistem, semantic ownership review a visual gate. Nesmí se přenést pouze proto, že je označený `production` ve starém manifestu.
+
+## 6. Runtime boundary zůstává závazná
+
+V3 validator dál musí failnout pro:
+
+- přímý runtime import z raw V3 rootu;
+- byte-identical raw copy do runtime roots;
+- unsafe/case-colliding paths;
+- malformed dimensions/content rectangles/cap insets;
+- incomplete materialized nine-slice family;
+- invalid atlas/window references;
 - generated inventory drift;
-- a deterministic runtime-source reference to the raw V3 root;
-- a byte-identical raw source file copied into `src`, `public`, `packages` or `desktop`.
+- symlink escape.
 
-Every normalized asset is classified as `core-now`, `derived-piece`, `later-state`, `reference-only` or `flavor-later`. The inventory stores relative source paths, intrinsic/header dimensions, byte sizes, SHA-256 values, category/role, production status, content/nine-slice metadata and pilot selection state. It contains no absolute Windows paths or timestamps.
+Tato ochrana je užitečná i tehdy, když se pack momentálně nepoužívá pro rendering.
 
-## Packaging findings
+## 7. Known non-blocking source warnings
 
-Blocking runtime-source findings: **none**.
+Historical source stále obsahuje čtyři známé non-blocking warnings:
 
-Four stable non-blocking warnings preserve upstream packaging truth without mutating the snapshot:
+1. stale checksum paths pro absent nested icon snapshot;
+2. absent optional QA overview sheets;
+3. README location mismatch pro nine-slice pieces;
+4. source docs tvrdící, že nested icon pack je součástí snapshotu.
 
-1. `SHA256SUMS.txt` has 106 stale paths under absent `icons/k0rp_icons_v2/`. The separately integrated `design/icon-source/k0rp-icons-v2/` remains authoritative and must not be duplicated.
-2. Six auxiliary QA overview sheets remain in checksums but are absent: `qa/bars.png`, `qa/controls.png`, `qa/documents.png`, `qa/system.png`, `qa/textures.png`, `qa/windows.png`.
-3. README documents a top-level `nine_slice/`; actual pieces live under `assets/{native,2x,webp}/nine_slice`.
-4. README and `tokens.json` state that the nested icon snapshot is included, although it is intentionally absent.
+Canonical icons zůstávají v:
 
-The checksum file contains 1,605 well-formed unique entries. All 1,493 paths that exist in the snapshot are covered and hash correctly; the 112 absent auxiliary paths above are reported, never regenerated or silently removed.
+```text
+design/icon-source/k0rp-icons-v2/
+```
 
-## Task 022A(2.2) runtime allowlist
+Warnings se nemají tiše „opravovat“ mutací exact raw snapshotu.
 
-The maintained pilot boundary contains exactly 45 unique, production, text-free semantic IDs:
+## 8. Co používat pro další práci
 
-| Pilot group | Count | Boundary |
-|---|---:|---|
-| Audit window | 11 | `window.audit.frame`, `window.audit.content`, 9 frame pieces |
-| Formuláře folder window | 12 | frame, content/list surfaces, 9 frame pieces |
-| Titlebar materials | 2 | active and inactive blanks |
-| Window controls | 8 | close/minimize × disabled/hover/normal/pressed |
-| Audit controls | 11 | 4 button, 4 checkbox and 3 radio states |
-| Folder row | 1 | blank resizable row |
+### Source integrity / historical inspection
 
-This allowlist is metadata only; Task 022A(2.1) copies zero assets into runtime.
+```text
+design/ui-source/k0rp-os-ui-assets-v3/
+design/ui-runtime/k0rp-v3/
+npm run validate:korp-ui-assets
+```
 
-The fixed `composite_blank` files remain source alternatives to `content → runtime content → frame` composition and are deliberately excluded from the pilot boundary. The independent baked `document.audit_00a.template` is also excluded: reference/example screens and document templates are not player-facing runtime copy. Existing React data remains authoritative for Audit text and Formuláře status text.
+### Current curated window implementation candidate
 
-Canonical icons continue to come only from `design/icon-source/k0rp-icons-v2` and its generated runtime subset. ClickAudit and Fidget retain their existing asset-backed module surfaces. Compact/standard modules, memo/modal/toast/lock families, bars, taskbar, extra controls, status language, textures and flavor surfaces remain reserved for Tasks 022A(2.3–2.5) or later.
+```text
+design/ui-source/k0rp-ui-asset-pack-v01/
+design/ui-runtime/k0rp-ui-v01/
+npm run validate:korp-ui-pack-v01
+```
+
+### Canonical icons
+
+```text
+design/icon-source/k0rp-icons-v2/
+src/assets/icons/korp-v2/
+npm run validate:korp-icons
+```
+
+Tyto tři hranice jsou samostatné. Nemají se smíchat do jednoho asset rootu ani přepsat navzájem.
+
+## 9. Důležité pravidlo
+
+> Exact source snapshot může být hodnotný, i když se jeho první runtime použití nepovedlo. Archivujeme materiál i důvod zamítnutí; runtime stavíme z curated části, která respektuje živý layout, resize, pixel clarity a čitelnost.

@@ -1,28 +1,26 @@
 # K0rp_OS — Architecture
 
-Verze: 0.2.0 pracovní návrh
+Verze: 0.4.0 pracovní návrh
 
 ## 1. Základní rozhodnutí
 
-K0rp_OS má být **web-native, TypeScript-first, modular-first systém**.
+K0rp_OS zůstává **web-native, TypeScript-first a modular-first systém**.
 
-Nedělat teď klasickou hru v Unity/Godotu. K0rp_OS není primárně fyzikální 2D hra. Je to falešný operační systém, launcher, sada widgetů, overlay, incremental engine a UI simulátor. Proto dává větší smysl stavět vlastní lehký engine nad webovým stackem.
+Přidání Priority Containment nebo Alignment Rally samo o sobě není důvod přepsat produkt do Unity nebo Godotu. Action modules jsou ohraničené runtime surfaces uvnitř stejného systému, ne nová hra přilepená vedle něj.
 
 Doporučený stack:
 
-- TypeScript jako hlavní jazyk,
-- Vite / současný frontend stack,
-- Tauri 2 pro desktop,
-- Rust jen pro tenkou Tauri/OS vrstvu,
-- Cloudflare Workers později pro API,
-- local-first save/load,
-- testy pro core logiku.
+- TypeScript jako hlavní jazyk;
+- Vite / současný frontend stack;
+- React pro desktop, documents, folders a shell;
+- DOM, Canvas 2D nebo jejich řízený hybrid podle potřeb konkrétního modulu;
+- Tauri 2 pro desktop;
+- Rust pouze pro tenkou Tauri/OS vrstvu;
+- local-first save/load;
+- testy pro core, packet/audit flow, module contracts a migrations;
+- Cloudflare Workers až pro pozdější volitelný sync/API.
 
-## 1.1 Platform strategy
-
-Primární platforma pro desktop release a seriózní UX testování je **Windows**.
-
-Mac je sekundární vývojové/testovací/design prostředí. Je důležitý, protože umožňuje pohodlné domácí workflow, Apple ecosystem file handoff, grafiku na tabletu, docs, core logiku a web preview. Nesmí ale určovat finální rozhodnutí u věcí, které jsou OS-sensitive.
+## 2. Platform strategy
 
 ```text
 Windows = primary release / desktop / overlay target
@@ -30,34 +28,33 @@ Mac     = secondary dev / design / smoke-test environment
 Web     = shared cross-platform surface
 ```
 
-Architektura proto musí držet ostrou hranici:
+Hranice:
 
 ```text
-korp-core       = platform-independent TypeScript
-korp-modules    = platform-independent manifests
-korp-ui         = mostly platform-independent UI
+korp-core       = platform-independent semantics
+korp-modules    = manifests a module contracts
+korp-progression= forms, packets, authorizations, balance
+korp-ui         = desktop/documents/window composition
+module runtime  = local gameplay/session state
 Tauri adapters  = platform-specific window/OS behavior
-overlay bridge  = platform-sensitive, Windows-first testing
+overlay bridge  = Windows-first a privacy-sensitive
 ```
 
-Více viz `12-platform-workflow.md`.
+Action module nesmí zatáhnout platform-specific input, window nebo telemetry kód do `korp-core`.
 
-## 2. Architektonický princip
-
-Nejdůležitější věta:
+## 3. Nejdůležitější princip
 
 > K0rp_OS nesmí být sbírka hardcoded appek. Musí být engine, do kterého se appky registrují jako moduly.
 
 To znamená:
 
-- appka nesmí být jediným místem, kde existuje její význam,
-- progress nesmí být zamčený v jednom UI komponentu,
-- modul musí deklarovat, jaké eventy emituje,
-- modul musí deklarovat, jaké resources produkuje,
-- modul musí deklarovat, kde může běžet,
-- K0rp_OS musí umět zobrazit / zamknout / odemknout modul z manifestu.
+- modul nemá význam pouze ve své React komponentě;
+- progress není zamčený v UI;
+- modul deklaruje ID, surfaces, raw metriky, closures, privacy a capability groups;
+- high-frequency local loop se nepropaguje frame po framu do globálního reduceru;
+- K0rp_OS umí modul autorizovat, nainstalovat, otevřít, zavřít, delegovat a auditovat přes společné contracts.
 
-## 3. Cílová struktura repa
+## 4. Cílová struktura repa
 
 ```text
 K0rp_ware/
@@ -67,9 +64,10 @@ K0rp_ware/
 │  ├─ overlay/
 │  ├─ click-audit/
 │  ├─ fidget/
-│  └─ bloom/
+│  ├─ bloom/
+│  └─ future module apps/
 ├─ desktop/
-│  └─ current tauri apps during migration
+│  └─ current Tauri apps during migration
 ├─ packages/
 │  ├─ korp-core/
 │  ├─ korp-modules/
@@ -79,206 +77,327 @@ K0rp_ware/
 │  ├─ korp-content/
 │  ├─ korp-save/
 │  └─ korp-api-client/
-├─ workers/
-│  └─ api/
+├─ design/
+│  ├─ icon-source/
+│  ├─ ui-source/
+│  └─ ui-runtime/
 ├─ docs/
 │  └─ k0rp-os/
 └─ scripts/
 ```
 
-Toto je cílová struktura, ne první refactor.
+Toto je cílová organizace, ne příkaz k okamžitému monorepo refactoru.
 
-## 4. Packages
+## 5. Package responsibilities
 
-### packages/korp-core
+### `packages/korp-core`
 
-Herní logika bez UI: event model, state, reducer, resources, stats a základní save interface. Nesmí obsahovat React, CSS, DOM ani Tauri API.
+Herní význam bez UI:
 
-### packages/korp-modules
+- event validation;
+- global resources/stats;
+- reducer;
+- manual/delegated/system-generated source distinction;
+- Evidence grant/spend primitives;
+- authorization records;
+- základní save interface.
 
-Registry a manifesty modulů: metadata, category, maturity, surfaces, events, resources, privacy profile a feature flags.
+Nesmí obsahovat React, DOM, Canvas, CSS ani Tauri API.
 
-### packages/korp-progression
+### `packages/korp-modules`
+
+Registry a manifests:
+
+- module metadata;
+- category a activity intensity;
+- maturity;
+- supported surfaces;
+- raw events a natural closures;
+- privacy profile;
+- content geometry class;
+- capability groups;
+- feature flags.
+
+### `packages/korp-progression`
 
 Datový source of truth pro:
 
-- resource metadata;
-- audit forms;
-- upgrades/procedures;
-- memos;
-- certifications;
+- resources;
+- audit templates;
+- metric packet definitions;
+- authorizations;
+- procedures/upgrades;
+- memos/certifications;
 - cross-module interactions;
 - first-cycle balance;
-- prestige directives;
-- desktop artifacts a surface mutations.
+- prestige;
+- desktop artifacts a mutations.
 
-Package je čistý TypeScript/JSON/CSV a sám nemění runtime appek.
+Action-module candidate IDs se do tohoto package nepřidávají před greybox a integration gate.
 
-### packages/korp-ui
+### `packages/korp-ui`
 
-Shared UI: app/window shell, taskbar, desktop icons, folders, documents, meters a interní controls.
+- desktop shell;
+- window manager;
+- taskbar;
+- folders/documents;
+- shared window composition;
+- meters a controls;
+- accessibility presentation.
 
-### packages/korp-assets
+### `packages/korp-assets`
 
-Sdílené shell/module assets, backgrounds, textures a sprite sheets.
+- curated runtime assets;
+- generated catalogs;
+- material textures;
+- sprite sheets;
+- audio metadata;
+- žádné přímé importy z raw design snapshots.
 
-### packages/korp-content
+### `packages/korp-content`
 
-Canonical české texty: mema, status messages, tooltips, knowledge base a localization packs.
+Canonical texty, template copy, mema, tooltips, audit prose a localization.
 
-### packages/korp-save
+### `packages/korp-save`
 
 Local storage/Tauri adapters, import/export a migrations.
 
-### packages/korp-api-client
+## 6. Module architecture
 
-Pozdější optional cloud/sync client. Není MVP.
-
-## 5. Module manifest
-
-Každý modul musí mít manifest a zachovat stejné ID/event semantics napříč webem, standalone oknem, K0rp_OS oknem a overlay surface.
-
-## 6. Event flow
+Každý interaktivní modul se dělí na čtyři vrstvy:
 
 ```text
-UI interaction
-→ module event
-→ korp-core base effect
-→ progression modifiers
-→ stats / unlocks / memos
-→ surface mutation
-→ UI update
-→ optional local save
+ModuleDefinition
+├─ manifest a static IDs
+├─ SessionEngine
+│  ├─ local state
+│  ├─ input interpretation
+│  ├─ update/physics loop
+│  ├─ run-local XP/build
+│  └─ natural closure
+├─ ModuleView
+│  ├─ DOM/Canvas rendering
+│  ├─ sensory feedback
+│  └─ accessibility
+└─ RuntimeBridge
+   ├─ privacy-safe raw events
+   ├─ aggregate closure
+   └─ packet/audit integration
 ```
 
-## 7. Feature churn jako design requirement
+### 6.1 SessionEngine
 
-- nový modul přidat přes manifest;
-- resource map rozšiřovat bez přepisování starých save files;
-- eventy verzovat;
-- content držet odděleně od logiky;
-- visuals držet odděleně od core;
-- experimentální moduly mohou být `idea` nebo `prototype`.
+Session engine je module-local. Smí používat:
 
-> „Hele, ještě mě napadla další appka.“
+- high-frequency ticks;
+- physics state;
+- collision data;
+- temporary run XP;
+- transient particles;
+- local upgrade selections.
 
-Architektura kvůli tomu nesmí spadnout jak firemní tracker v pondělí v 9:03.
+Nesmí při každém frame dispatchovat do globálního core.
 
-## 8. Storage
+### 6.2 RuntimeBridge
 
-MVP:
+Bridge emituje pouze player-meaningful a privacy-safe records:
 
-- lokální state;
-- export/import JSON;
-- jednoduché migrations;
-- save ukládá ID a stav, ne celé definice databáze.
+```text
+raw activation
+aggregate milestone
+natural closure
+session outcome
+```
 
-Později Tauri store, SQLite event log a optional cloud sync. Nesyncovat raw citlivou aktivitu.
+Priority Containment může lokálně zpracovat stovky collisions, ale globálně emitovat pouze relevantní raw aggregates a právě jeden `priority.sessionClosed` za closure.
 
-## 9. Testing
+### 6.3 Surface adapters
+
+Stejný module engine může běžet jako:
+
+- `osWindow`;
+- `standaloneWindow`;
+- `webCard` nebo web module page;
+- později omezený `overlayMini`, pokud to gameplay dovoluje.
+
+Surface mění chrome, placement a velikost. Nesmí přepisovat event semantics.
+
+## 7. Content geometry classes
+
+Manifest má dlouhodobě deklarovat geometrii místo univerzálního rozměru:
+
+```ts
+type KorpContentGeometry =
+  | { kind: "compact-square"; width: 167; height: 167 }
+  | { kind: "portrait-document"; minWidth: number; minHeight: number }
+  | { kind: "portrait-folder"; minWidth: number; minHeight: number }
+  | { kind: "action-square"; width: 320; height: 320 }
+  | { kind: "custom"; width: number; height: number };
+```
+
+Čísla jsou současné/provisional contracts, ne obecná engine konstanta.
+
+## 8. UI asset and window-shell boundary
+
+Task 024A zavedl curated source pack a runtime contract:
+
+```text
+design/ui-source/k0rp-ui-asset-pack-v01/
+design/ui-runtime/k0rp-ui-v01/
+```
+
+Závazné principy:
+
+- frame = nine-slice;
+- header = horizontal three-slice;
+- material surface = native-resolution tile;
+- complete shell = reference-only;
+- controls = fixed assets;
+- labels = live DOM text;
+- integer coordinates/scaling;
+- compact 167×167 ClickAudit/Fidget content se nesmí zmenšit, cropnout ani rescalovat.
+
+Action windows používají stejný compositional language, ale content-driven větší outer size.
+
+## 9. Event flow
+
+```text
+intentional input
+→ module-local update
+→ optional run-local XP/build change
+→ privacy-safe raw event nebo natural closure
+→ packet detector
+→ audit availability
+→ audit submit
+→ evidence certification
+→ authorization/progression
+→ surface mutation
+→ save
+```
+
+`run-local XP` se nikdy nezařazuje mezi packet a Evidence. Je to pouze pacing uvnitř session.
+
+## 10. Automation architecture
+
+Automatizace není boolean `auto = true` nad module counterem.
+
+```text
+manual session
+→ reusable loadout template
+→ delegated operator
+→ policy configuration
+→ autonomous execution
+→ confidence/outcome summary
+→ discrepancy/intervention
+```
+
+Minimální policy shape může později obsahovat:
+
+```ts
+type ModulePolicy = {
+  id: string;
+  moduleId: string;
+  loadoutTemplateId?: string;
+  targetWeights?: Record<string, number>;
+  riskTolerance: "low" | "standard" | "high";
+  supervisionInterval?: number;
+  allowedExceptionIds: string[];
+};
+```
+
+Toto je návrhová hranice, ne povolení stavět generic BPMN engine.
+
+## 11. Persistence
+
+Globální save ukládá:
+
+- resources/stats;
+- packet a audit instances;
+- authorizations;
+- unlocks/memos;
+- capability/proficiency flags;
+- policy a delegated state až po příslušném tasku;
+- stable IDs, ne celé definitions.
+
+Module session save je oddělený kontrakt. Krátký action run se v prvním prototype nemusí ukládat uprostřed. Tato volba musí být explicitní a testovaná, ne náhodný důsledek komponent lifecycle.
+
+## 12. Testing
 
 Minimum:
 
-- Vitest pro `korp-core`;
+- core reducer tests;
+- packet/audit idempotency;
+- save migrations;
 - manifest validation;
-- progression typecheck/reference validation;
-- reducer tests;
-- save/load migration tests;
-- smoke testy web/desktop;
-- Windows test pro native window/overlay behavior.
+- progression reference validation;
+- module-local deterministic tests tam, kde to dává smysl;
+- input-to-event cardinality;
+- no-per-frame-global-dispatch test/profiling guard;
+- window geometry tests;
+- accessibility smoke tests;
+- Windows desktop gate.
 
-## 10. Codex workflow
+Action prototype navíc:
 
-Codex používat na malé tasky. Nesahej na shared shell nebo lokální gameplay modulu, pokud to task výslovně neříká.
+- fixed-step nebo bounded delta behavior;
+- pause/resume;
+- closure exactly once;
+- resize neovlivní logical gameplay coordinates;
+- 1× a integer 2× render mapping;
+- performance při nejhustší plánované vlně.
 
-## 11. Důležité pravidlo
-
-> Robustnost tady neznamená enterprise overengineering. Znamená to, že další blbost půjde přidat bez toho, aby se předchozí blbosti začaly tvářit jako incident.
-
-## 12. Vrstvy progression a surface
-
-```text
-korp-core         = význam eventů, state, základní reducer a stats
-korp-progression  = thresholds, forms, upgrades, memos, certifications, prestige
-korp-surface      = desktop artifacts, folders, files, windows a system mutations
-korp-modules      = module contracts a registry
-korp-ui           = vykreslení desktopu, oken a interních komponent
-```
-
-`korp-surface` může být zpočátku datově součástí `korp-progression`, ale jeho model zůstává oddělený. Surface databáze nesmí duplikovat ceny ani balance; poslouchá progression ID.
-
-## 13. Runtime provider
-
-```text
-KorpRuntimeProvider
-├─ state
-├─ lifetimeStats
-├─ dispatch(event)
-├─ submitAuditForm(formId, values)
-├─ purchaseUpgrade(upgradeId)
-├─ acknowledgeMemo(memoId)
-├─ unlockQueue
-├─ memoQueue
-├─ desktopMutationQueue
-├─ save/load
-└─ closeAuditCycle()
-```
-
-Standalone modul může mít vlastní local/session state. Pokud běží uvnitř K0rp_OS nebo je připojený, globální eventy směřují do jediného runtime.
-
-## 14. Event effect pipeline
-
-```text
-base event effect
-→ click profile
-→ permanent prestige directives
-→ cycle upgrades
-→ cross-module modifiers
-→ meter caps / derived values
-→ lifetime stats
-→ certifications
-→ unlocks
-→ memos
-→ surface mutations
-→ local save
-```
-
-Nemá vzniknout univerzální enterprise rules engine. Cílem je zabránit tomu, aby každá nová procedura přidala další hardcoded větev do jednoho reduceru.
-
-## 15. Desktop architecture
+## 13. Desktop architecture
 
 ```text
 KorpOsShell
 ├─ DesktopSurface
 ├─ WindowManager
 ├─ Taskbar
-├─ StartMenu
 ├─ ArtifactRegistry
 ├─ ModuleHost
+│  ├─ CompactModuleHost
+│  └─ ActionModuleHost
 ├─ DocumentHost
 ├─ FolderHost
 ├─ ScreensaverHost
+├─ PolicyControlRoom (later)
 └─ SystemNotificationQueue
 ```
 
-Modulové okno není dashboard card. Document windows obsluhují audity, mema, reporty a certifikace. Folder windows zobrazují viditelné stopy progression.
+Module window není dashboard card. Document window obsluhuje audit, memo, report a certifikaci. Action host poskytuje větší logical viewport, ale nepřebírá vlastnictví progression.
 
-## 16. Audit interaction bridge
+## 14. Feature churn jako requirement
 
-První formulář `00-A` je součástí plochy. Každá úmyslná field activation:
+- nový modul přes manifest;
+- nový session engine bez změny core semantics;
+- nový raw metric source přes packet/audit contract;
+- visuals oddělené od logic;
+- content oddělený od reduceru;
+- experimental maturity `idea/spec/prototype`;
+- žádný modul se nestane canonical jen proto, že má hezký mockup.
 
-```text
-field interaction
-→ maximálně jeden clickaudit.click(profile: audit-form)
-→ změna local form state
-```
+> „Hele, ještě mě napadla další appka.“
 
-Pointer move, animační frame, fyzikální tick ani každý pixel dragu nesmí vytvářet auditovaný click.
+Architektura kvůli tomu nesmí spadnout jako firemní tracker v pondělí v 9:03.
 
-## 17. Source of truth
+## 15. Codex workflow
 
-- design: `docs/k0rp-os/13-*` až `19-*`;
-- machine data: `packages/korp-progression/data/`;
-- TypeScript constants: `packages/korp-progression/src/`;
-- runtime prototyp se nepřepisuje jedním velkým refactorem;
-- integrace probíhá po vertical slices a testech.
+Codex dostává ohraničené tasks.
+
+- Greybox action module je samostatný prototype task.
+- OS packet integration přijde až po playtest gate.
+- Agent nesmí sám přidat globální currency, packet threshold ani vysvětlit skrytou meta rovinu.
+- Každý task musí vypsat Windows PowerShell test/build postup.
+
+## 16. Source of truth
+
+1. `20-core-loop.md` — ekonomika a invarianty.
+2. `21-activity-spectrum-and-arcade-modules.md` — module spectrum a action prototype contracts.
+3. `07-roadmap.md` — pořadí.
+4. `08-codex-tasks.md` — task scope.
+5. `packages/korp-progression` — machine-readable data po schválené migraci.
+6. Runtime — implementace po vertical slices.
+
+## 17. Důležité pravidlo
+
+> Robustnost neznamená enterprise overengineering. Znamená, že další blbost půjde přidat bez toho, aby předchozí blbosti začaly vypadat jako incident — a bez toho, aby se každá nová horda stala důvodem přepsat celý operační systém.

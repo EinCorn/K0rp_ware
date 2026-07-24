@@ -1,304 +1,441 @@
 # K0rp_OS — Core Loop: Metric → Audit → Evidence
 
-Verze: `0.3.0 canonical gameplay contract`  
-Status: závazný produktový a ekonomický rámec pro další runtime práci
+Verze: `0.4.0 canonical gameplay contract`  
+Status: závazný produktový a ekonomický rámec pro runtime, data, modules, delegation a action prototypes
 
 ## 0. Účel dokumentu
 
-Tento dokument definuje herní páteř K0rp_OS. Není to lore dump, seznam vtipů ani přesný endgame balance sheet.
+Tento dokument definuje herní páteř K0rp_OS.
 
-Je to kontrakt, podle kterého musí fungovat další moduly, audity, automatizace, delegace a progression data.
+Není to:
 
-Současný runtime na `main` po Tasku 019 stále používá část starší v0.2 ekonomiky. Migrace proběhne po malých vertical slices podle `08-codex-tasks.md`; tento dokument je už nyní designový source of truth.
+- lore dump;
+- seznam vtipů;
+- přesný endgame balance sheet;
+- povolení přidat každý nový modul okamžitě do progression databáze.
+
+Je to kontrakt, podle kterého musí fungovat:
+
+- raw metriky;
+- module sessions;
+- metric packets;
+- audity;
+- Evidence;
+- authorizations;
+- backlog;
+- delegation;
+- automation;
+- budoucí action modules.
+
+Runtime po Tasku 023 už implementuje ClickAudit i Fidget packet/audit flow. Task 024 musí sjednotit starší machine-readable data, která ještě částečně reprezentují v0.2 direct-yield ekonomiku.
 
 ## 1. Canonical product statement
 
 > K0rp_OS je incremental management hra, ve které aktivita získává hodnotu teprve institucionálním potvrzením a každá automatizace vytváří větší potřebu dohledu.
 
-Ještě kratší verze:
+Ještě kratší:
 
 > Hráč nevyrábí práci. Vyrábí důkazy, že proběhla aktivita.
 
-K0rp_OS není Cookie Clicker s kancelářskou grafikou. Čísla mohou růst, ale hlavním spektáklem není astronomická produkce. Hlavním spektáklem je rostoucí byrokratická hustota a vzdálenost mezi činností a jejím uznaným účinkem.
+K0rp_OS není Cookie Clicker s kancelářskou grafikou a není launcher oddělených miniher. Čísla, score i hordy mohou existovat, ale hlavním dlouhodobým spektáklem je byrokratická hustota a rostoucí vzdálenost mezi činností a jejím uznaným účinkem.
 
-## 2. Canonical loop
+## 2. Canonical global loop
 
 ```text
 ÚMYSLNÁ ČINNOST
 → RAW METRIKA
+→ NATURAL CLOSURE NEBO THRESHOLD
 → AUDITOVATELNÁ DÁVKA
 → AUDITNÍ INSTANCE
 → CERTIFIKACE
 → EVIDENCE
-→ AUTORIZACE NOVÉHO SYSTÉMU
+→ AUTORIZACE NOVÉHO SYSTÉMU NEBO CAPABILITY GROUP
 → NOVÁ ČINNOST A NOVÁ METRIKA
 → VÍCE AUDITŮ
 → BACKLOG
 → DELEGACE
 → CHYBY A NESROVNALOSTI
+→ POLICY A DOHLED
 → DALŠÍ AUDITY
 ```
 
-Stručná systémová formule:
+Stručná formule:
 
 ```text
 Appka vytvoří metriku.
 Audit z metriky vytvoří skutečnost.
 Evidence dovolí systému vytvořit další metriku.
+Automatizace vytvoří potřebu dohledu.
 ```
 
-## 3. Základní pojmy
+## 3. Module-local loop versus global loop
 
-### 3.1 Úmyslná činnost
+Některé moduly mají pouze malou interakci:
+
+```text
+klik
+→ feedback
+→ raw count
+```
+
+Jiné mohou mít krátký run:
+
+```text
+pohyb / odraz / čištění
+→ run-local XP
+→ build choice
+→ wave/session closure
+→ aggregate raw record
+```
+
+Module-local loop může být bohatý, uspokojivý a dočasně odměňující. Globální K0rp progress ale vzniká až přes packet/audit/Evidence.
+
+## 4. Základní pojmy
+
+### 4.1 Úmyslná činnost
 
 Jedna hráčská aktivace, která má herní význam:
 
 - kliknutí;
 - změna auditního pole;
-- dokončená rotace nebo session;
-- vyřešený stav v modulu;
-- uzavřená mikrosekvence;
+- úmyslný spin;
+- dokončená rotace;
+- vyřešený stav;
+- odražená/routovaná priorita;
+- kvalifikovaný argumentační odraz;
 - jiná jasně ohraničená akce.
 
-Pointer move, animační frame, fyzikální tick a pasivní render nejsou hráčská činnost.
+Pointer move, animační frame, průběžný physics tick, passive render a dekorativní particle nejsou samy globální hráčská činnost.
 
-### 3.2 Raw metrika
+### 4.2 Raw metrika
 
-Raw metrika je doslovný záznam činnosti.
-
-Příklady:
+Doslovný záznam činnosti.
 
 ```text
-ClickAudit: manuální kliky
-Fidget: rotace a přirozeně ukončené sessions
-Bloom: změny stavů a dokončené vlny
-Bubble Wrap: skutečně prasklé bubliny
-Surface Compliance: skutečně vyčištěná plocha
+ClickAudit           → manual clicks
+Fidget               → settled sessions
+Bloom                → state changes / completed waves
+Bubble Wrap          → popped bubbles / completed sheets
+Surface Compliance   → cleaned patches / surfaces
+Priority Containment → operational outcomes / session closures
+Alignment Rally      → response/closure outcomes
 ```
 
 Raw metrika:
 
 - není spendable currency;
-- sama neodemkne nový modul;
-- nesmí být zpětně násobena tak, aby jeden fyzický klik znamenal desítky fyzických kliků;
-- může být klasifikována, zobrazena, batchována a auditována.
+- sama neodemkne modul;
+- nesmí být zpětně násobena tak, aby falšovala fyzickou činnost;
+- může být zobrazena, klasifikována, agregována, batchována a auditována.
 
-### 3.3 Auditovatelná dávka / metric packet
+### 4.3 Run-local XP a temporary build
 
-Dávka je ohraničený balík raw metriky připravený k ověření.
+Action/build module smí mít dočasnou hodnotu:
 
-První příklad:
+```text
+run XP
+```
+
+Run-local XP:
+
+- existuje pouze uvnitř module session;
+- nabídne dočasné upgrade choices;
+- po closure zanikne;
+- není Evidence;
+- není global resource;
+- nesmí se objevit na global taskbaru;
+- nesmí autorizovat persistentní capability bez auditu/procedure.
+
+### 4.4 Natural closure
+
+Natural closure je přirozený konec smysluplné činnosti:
+
+- Fidget se po úmyslném pohybu přirozeně zastaví;
+- Bloom dokončí vlnu;
+- sheet je dokončen;
+- operational session je uzavřena;
+- alignment relace skončí uznatelným outcome.
+
+Closure může být raw packet boundary candidate. Není automatický Evidence reward.
+
+### 4.5 Auditovatelná dávka / metric packet
+
+Ohraničený balík raw metriky připravený k ověření.
+
+Příklady:
 
 ```text
 25 clickaudit.click
-→ clickaudit.batchCompleted
-→ packet click-batch-0001
-→ stav PENDING
+→ ClickAudit packet
+→ PENDING
+
+3 fidget.sessionSettled
+→ Fidget packet
+→ PENDING
 ```
 
-Batch není odměna. Batch je nová administrativní povinnost.
+Budoucí candidate:
 
-### 3.4 Audit template a audit instance
+```text
+N priority.sessionClosed
+→ Priority packet
+→ PENDING
+```
 
-`Audit template` je datová definice formuláře.  
-`Audit instance` je konkrétní formulář navázaný na konkrétní packet, žádost nebo nesrovnalost.
+Packet není odměna. Packet je nová administrativní povinnost.
+
+### 4.6 Audit template a audit instance
+
+`Audit template` je datová definice.
+
+`Audit instance` je konkrétní formulář navázaný na konkrétní packet, authorization, discrepancy nebo closure.
 
 Jednorázové formuláře:
 
 - Audit 00-A;
 - Audit 16-C;
-- velká oprávnění;
-- closure formuláře.
+- zásadní authorizations;
+- cycle closure.
 
-Opakovatelné auditní templates:
+Repeatable templates:
 
-- certifikace ClickAudit dávky;
-- Audit 18-S — ověření Fidget stabilization packetu;
-- kontrola delegované aktivity;
-- oprava nesrovnalosti.
+- Audit 10-A pro ClickAudit packet;
+- Audit 18-S pro Fidget packet;
+- budoucí packet audits;
+- kontrola delegated activity;
+- discrepancy resolution.
 
-`submittedFormIds` smí dál evidovat jednorázové formuláře. Opakovatelné audity potřebují vlastní `auditInstances` se stavem a vazbou na packet.
+One-time forms používají `submittedFormIds`. Repeatable audits používají `auditInstances`.
 
-### 3.5 Evidence
+### 4.7 Evidence
 
-Evidence je první player-facing spendable měna.
-
-Pro počáteční migraci se nepřidává nový core resource ID. Stávající technický resource:
+Technical resource ID:
 
 ```text
 notionalWorkUnits
 ```
 
-bude hráčsky prezentován jako:
+Player-facing:
 
 ```text
 Evidence
 EV
 ```
 
-Jeho význam se mění:
+Význam:
 
 ```text
 raw činnost ≠ Evidence
+run-local XP ≠ Evidence
+packet ≠ Evidence
 certifikovaný packet = Evidence
 ```
 
-Evidence se používá na autorizace, žádosti, procedures a později delegaci. Není to mzda, výkon ani skutečný dopad. Je to množství aktivity, které systém uznal jako vykazatelné.
+Evidence se používá na authorizations, procedures, equipment, capability groups a později delegation/policy systems.
 
-### 3.6 Auditní backlog
+Není mzda, výkon ani skutečný dopad. Je to množství aktivity, které systém uznal jako vykazatelnou.
 
-Backlog je počet pending packetů nebo auditních instancí čekajících na zpracování.
+### 4.8 Authorization, capability a proficiency
 
-Backlog není jen menu badge. Je to tlak, který má hráč skutečně pocítit před odemčením delegace.
+```text
+capability
+= funkci lze prakticky vykonat
 
-### 3.7 Nesrovnalost
+authorization
+= systém dovolil funkci oficiálně použít
 
-Nesrovnalost vzniká, když:
+proficiency
+= persistentní zkušenost uvnitř systému
+```
+
+Capability není authorization.
+
+Hráč může capability objevit v runu, ale persistentní draft/policy pool ji smí používat až po authorization group.
+
+### 4.9 Auditní backlog
+
+Počet pending packetů nebo auditních instancí.
+
+Backlog:
+
+- není pouze badge;
+- má být skutečně pocítěný;
+- nesmí být agresivní FOMO;
+- je prerequisite pro delegation;
+- později zahrnuje discrepancies a control samples.
+
+### 4.10 Nesrovnalost
+
+Vzniká, když:
 
 - audit nepotvrdí metriku jednoznačně;
-- delegovaná aktivita selže;
-- dva systémy si odporují;
-- automatizace vytvoří výstup bez potřebné autorizace;
-- packet zestárne nebo ztratí ownera.
+- delegated activity selže;
+- dvě procedures si odporují;
+- automation použije nepovolenou exception;
+- packet zestárne nebo ztratí ownera;
+- policy optimalizuje špatný outcome;
+- closure proběhne bez prokázaného výsledku.
 
 Nesrovnalost nevynuluje hráče. Vytváří další práci, audit nebo incident.
 
-## 4. Neměnné designové invarianty
+## 5. Neměnné invarianty
 
-### 4.1 Jeden skutečný klik je jeden skutečný klik
-
-ClickAudit raw counter je posvátná doslovná metrika.
+### 5.1 Jeden skutečný klik je jeden skutečný klik
 
 ```text
 1 fyzický úmyslný klik = 1 manual click
 ```
 
-Upgrade může změnit zobrazení, interpretaci, auditní kapacitu, dashboard, kapalinu nebo dostupné analýzy. Nesmí tvrdit, že jeden fyzický klik byl ve skutečnosti padesát fyzických kliků.
+Upgrade může změnit zobrazení, analytics, material, batch procedure nebo interpretation. Nesmí tvrdit, že jeden fyzický klik byl padesát fyzických kliků.
 
-### 4.2 Raw činnost nevyrábí spendable měnu
+### 5.2 Raw činnost nevyrábí spendable měnu
 
-`clickaudit.click` nemá přímo přidávat Evidence.
+`clickaudit.click`, `fidget.sessionSettled`, priority impacts ani alignment responses nepřidávají přímo Evidence.
 
-Stejný princip platí pro další moduly: jejich primární akce vytvářejí raw metriku a module-local stav, nikoliv automaticky globální spendable currency.
+### 5.3 Run-local XP nevyrábí global currency
 
-### 4.3 Batch nevydělává
+Score, combo, wave XP a temporary build mohou vytvořit okamžitý pocit progression. Nesmějí obcházet audit.
 
-`clickaudit.batchCompleted` vytváří packet. Nevyplácí Evidence ani jiný hlavní reward.
+### 5.4 Packet nevydělává
 
-### 4.4 Audit certifikuje právě jednou
+Packet creation je persistence a audit obligation. Žádný automatic EV grant.
 
-Jeden packet může být certifikován maximálně jednou.
+### 5.5 Audit certifikuje právě jednou
 
-Repeated submit, refresh, double click nebo retry nesmí zdvojit Evidence.
+Repeated submit, double click, refresh nebo retry nesmí zdvojit Evidence.
 
-### 4.5 Evidence autorizuje nový systém
+### 5.6 Evidence autorizuje nový systém
 
-Early-game upgrade není `click power × 10`.
+Early meaningful reward je nový interaction/procedure/capability, ne click power multiplier.
 
-První významná Evidence autorizuje Fidget — tedy povolení být rozptýlen — a otevírá druhou raw metriku.
+### 5.7 Capability není authorization
 
-### 4.6 Automatizace nesmí falšovat manuální metriku
+Praktická schopnost sama neudělí persistentní oprávnění. Authorization musí mít declarative trail.
 
-Budoucí stážista nebo relay nesmí navyšovat `manualClicks`.
+### 5.8 Automatizace nesmí falšovat manual metric
 
-Minimální zdrojové rozlišení:
+Minimum source categories:
 
 ```text
 manual
- delegated
- system-generated
+delegated
+system-generated
 ```
 
-Delegovaná aktivita může být auditovatelná, ale má vlastní důvěryhodnost, chyby, backlog a supervision cost.
-
-### 4.7 Automatizace vytváří dohled
+### 5.9 Automatizace vytváří dohled
 
 Automatizace přebírá rutinu, ale vytváří:
 
-- kontrolní vzorky;
-- výjimky;
-- nesrovnalosti;
+- control samples;
+- exceptions;
+- confidence;
+- discrepancies;
 - potřebu schválení;
-- dalšího člověka nebo systém, který ji sleduje.
+- policy;
+- intervention.
 
-### 4.8 Složitost roste jako byrokracie
-
-K0rp_OS nepotřebuje jako hlavní atrakci noniliony.
-
-Pozdější stav může vypadat takto:
+### 5.10 Automatizace mění hráčské sloveso
 
 ```text
-5 modulů
-9 raw metrik
-3 stážisti
-4 dashboardy
-12 auditních závislostí
-2 nesrovnalosti
+vykonej
+→ nastav build
+→ přiděl operátora
+→ nastav policy
+→ sleduj výjimky
+→ zasáhni
+```
+
+Auto mode nesmí být pouze video nebo pasivní `+x/sec`.
+
+### 5.11 Složitost roste jako byrokracie
+
+Pozdější stav může být:
+
+```text
+7 modulů
+11 raw metrik
+3 operators
+5 policies
+14 auditních závislostí
+4 discrepancies
 1 incident
 0 prokázaných výsledků
 ```
 
-### 4.9 Privacy invariant
+### 5.12 Activity spectrum nesmí rozbít jednotu produktu
 
-Eventy smějí nést sémantický K0rp profil a agregovanou hodnotu. Nesmějí ukládat:
+K0rp_OS smí obsahovat:
 
-- souřadnice;
-- viditelný text;
+- formuláře;
+- desk objects;
+- puzzles;
+- action sessions;
+- idle management.
+
+Všechny vrstvy ale musí sdílet authorization, artifact, event a auditní jazyk. Action module nesmí udělat z OS nepovinný vestibul.
+
+### 5.13 Privacy invariant
+
+Eventy smějí nést semantic K0rp profile a aggregate hodnoty. Nesmějí ukládat:
+
+- coordinates;
+- visible text;
 - URL;
-- názvy externích aplikací;
-- aktivní okno mimo K0rp;
+- external app names;
+- external active window;
 - screenshots;
-- raw keys.
+- raw keys;
+- free-text claims;
+- full input replay.
 
-## 5. Event contract
+## 6. Event contract
 
-### 5.1 Raw activation
+### 6.1 Raw activation
 
 ```text
 clickaudit.click
 ```
 
-Význam:
+Zvyšuje raw stat a nepřidává Evidence.
 
-- zvyšuje doslovnou raw statistiku;
-- eviduje bezpečný sémantický source/profile;
-- nepřidává Evidence.
+Budoucí action raw events mohou být:
 
-### 5.2 Packet creation
+```text
+priority.deflected
+argument.responseLogged
+```
 
-První modulová varianta:
+High-frequency collisions/ticks se lokálně agregují. Globální event bus není physics profiler.
+
+### 6.2 Natural closure
+
+```text
+fidget.sessionSettled
+bloom.waveAdvanced
+priority.sessionClosed
+alignment.sessionClosed
+```
+
+Closure je privacy-safe aggregate a nesmí být emitovaný dvakrát za jednu session.
+
+### 6.3 Packet creation
 
 ```text
 clickaudit.batchCompleted
-```
-
-Význam:
-
-- ohraničená dávka raw kliků je kompletní;
-- runtime vytvoří právě jeden pending packet;
-- event sám nepřidává Evidence.
-
-Až vznikne druhý generátor metrik, lze zavést obecný event:
-
-```text
 metric.packetCreated
 ```
 
-Jeden packet ale nesmí být vytvořen dvakrát module-specific i generic eventem.
+Generic a module-specific event se nesmějí zdvojit pro stejný packet.
 
-### 5.3 Form submit
+### 6.4 Form submit
 
 ```text
 audit.formSubmitted
 ```
 
-Význam:
+U packet auditu nestačí bez vazby na konkrétní packet.
 
-- formulář byl řádně podán;
-- u jednorázového formuláře spustí jeho completion effects;
-- u packet auditu sám o sobě ještě není dostačující bez vazby na packet.
-
-### 5.4 Evidence certification
+### 6.5 Evidence certification
 
 ```text
 audit.evidenceCertified
@@ -315,27 +452,25 @@ Minimální metadata:
 }
 ```
 
-Význam:
+### 6.6 Authorization
 
-- konkrétní packet změnil stav z `pending` na `certified`;
-- Evidence byla přidána právě jednou;
-- vazba packet ↔ audit instance je persistována.
+```text
+authorization.granted
+authorization.capabilityGroupGranted
+```
 
-### 5.5 Future delegation events
-
-Budoucí minimum:
+### 6.7 Delegation and discrepancy
 
 ```text
 delegation.activityGenerated
-audit.discrepancyRaised
 delegation.trainingCompleted
+audit.discrepancyRaised
+policy.interventionRequested
 ```
 
-Neimplementovat předtím, než playtest prokáže, že auditní backlog skutečně vytváří potřebu delegace.
+Neimplementovat delegation před backlog product gate.
 
-## 6. Minimální runtime state
-
-Pragmatický model rozšířený v Tasku 023:
+## 7. Runtime state minimum
 
 ```ts
 type MetricPacket = {
@@ -369,11 +504,11 @@ type MetricAuditRuntimeState = {
 };
 ```
 
-Save ukládá state a ID, nikoliv celé definice templates.
+Action module může mít oddělený `ModuleSessionState` s run XP/buildem. Save ukládá stable IDs a stav, ne celé definitions.
 
-## 7. První hratelný vertical slice
+## 8. Implementovaný vertical slice
 
-### 7.1 Přítomnost
+### 8.1 Přítomnost
 
 ```text
 Audit 00-A
@@ -383,190 +518,188 @@ Audit 00-A
 
 Výsledek:
 
-- hráč je přijat do relace;
-- odemkne se ClickAudit;
-- nevzniká Evidence pouze za existenci.
+- relace přijata;
+- ClickAudit unlocked;
+- baseline captured;
+- bootstrap armed;
+- žádná Evidence.
 
-### 7.2 Raw aktivita
+### 8.2 Bootstrap raw activity
 
-ClickAudit zaznamenává úmyslné interakce napříč K0rp_OS.
-
-Po prvních 25 raw interakcích:
+První pozdější úmyslný click:
 
 ```text
-DÁVKA 00-01
-25 INTERAKCÍ
-STAV: NEOVĚŘENO
+quantity-1 packet
+→ Audit 10-A auto-open právě jednou
 ```
 
-### 7.3 Audit aktivity
+Tento bootstrap učí loop. Není long-term balance.
 
-Audit 10-A se stane opakovatelným packet audit template.
-
-První copy:
+### 8.3 Normal ClickAudit flow
 
 ```text
-Byla zaznamenaná aktivita provedena úmyslně?
-
-○ Ano
-○ Ne
-○ Nelze potvrdit
-
-[PODAT VÝKAZ]
-```
-
-Každá odpověď může být administrativně přípustná. Volba může později změnit skrytou interpretaci nebo pravděpodobnost nesrovnalosti; první slice za všechny validní odpovědi udělí stejnou Evidence.
-
-### 7.4 Evidence
-
-Po úspěšném submitu:
-
-```text
-DÁVKA 00-01 → CERTIFIKOVÁNA
-EVIDENCE +1
-```
-
-Kliky provedené během auditu už současně přispívají k další raw dávce. Systém tím vyrábí materiál pro vlastní pokračování.
-
-### 7.5 Fidget authorization
-
-Po získání první Evidence:
-
-```text
-Audit 16-C
-Žádost o přidělení rotační stabilizace
-```
-
-Jedna Evidence je alokována/spotřebována na autorizaci. Po schválení se odemkne Fidget.
-
-### 7.6 Druhá metrika
-
-Fidget nevyrábí Evidence přímo.
-
-```text
-`fidget.sessionSettled` × 3
-→ packet `fidget-sessions-<rangeStart>-<rangeEnd>`
-→ pending repeatable Audit 18-S
-→ platná certifikace právě jednou
+25 nových raw clicks
+→ quantity-25 packet
+→ queue ve Formulářích
+→ explicit open
+→ Audit 10-A
 → Evidence +1
 ```
 
-Packet size `3` je fixed provisional/playtestable hodnota Tasku 023. Neúplný zbytek sessions se zachová pro další packet. Raw session a packet creation nemají přímý Evidence reward; vytvoření packetu nikdy samo neotevře okno ani nepřevezme focus. Tím se prokáže, že core loop není hardcoded jen pro kliky.
+### 8.4 Fidget authorization
 
-## 8. Player-facing UI
+```text
+EV 1
+→ Audit 16-C
+→ allocate 1 EV
+→ Fidget authorized
+```
 
-Early taskbar smí ukazovat maximálně:
+### 8.5 Druhá metrika
+
+```text
+3 nové fidget.sessionSettled
+→ Fidget packet
+→ Audit 18-S
+→ Evidence +1 po certifikaci
+```
+
+Packet creation neotevírá okno a nebere focus.
+
+## 9. Player-facing UI
+
+Early taskbar maximálně:
 
 ```text
 EVIDENCE 1
 ČEKÁ NA AUDIT 2
 ```
 
-Raw metriky zůstávají uvnitř příslušných modulů.
+Raw metrics a run XP jsou v module windows.
 
-Formuláře řadí ClickAudit i Fidget audity do jedné queue. Taskbar `ČEKÁ NA AUDIT` je celkový pending count přes oba metric sources.
+Hidden KPI jsou telemetry/dashboard unlocky, ne early clutter.
 
-Task 023 smí pro debug/playtest zobrazit odvozený provisional Audit Pressure:
+## 10. Delegation contract
 
-```text
-clamp(0, 100, pendingCount * 10 + floor(oldestPendingAgeMinutes / 10) + discrepancyCount * 20)
-```
+Delegace přichází až po pocítěném backlogu.
 
-Tento debug readout není persistentní resource a nesmí se zapisovat do `korpState.resources.auditPressure`.
+Stážista smí:
 
-Audit Pressure, Perceived Productivity, Compliance Integrity a další KPI jsou:
-
-- skryté telemetry;
-- pozdější dashboardové unlocky;
-- podmínky incidentů nebo nesrovnalostí;
-- materiál pro reporty.
-
-Nemají od první minuty plnit taskbar jako cockpit rozbitého logistického centra.
-
-## 9. Delegation contract
-
-Delegace přichází až po tom, co hráč zažije skutečně nepříjemný auditní backlog.
-
-Budoucí stážista smí:
-
-- generovat delegovanou raw metriku;
+- generovat delegated raw metric;
 - předvyplnit audit;
-- obsluhovat autorizovaný modul;
-- vytvářet chyby;
-- školit dalšího stážistu.
+- obsluhovat authorized module;
+- používat assigned capability;
+- vytvářet errors;
+- školit další jednotku.
 
 Nesmí:
 
 - finálně certifikovat Evidence;
 - odstranit hráčovu odpovědnost;
-- být automaticky započítán jako manuální práce;
-- vlastnit proces jen proto, že ho prakticky drží při životě.
+- být započítán jako manual;
+- získat authorization jen proto, že prakticky drží proces při životě.
 
-Acting Lead Paradox je budoucí mechanický motiv:
+Acting Lead Paradox je mechanický motiv, ne explicitní lore dump.
 
-> Jednotka smí vykonávat funkci, školit funkci a nést odpovědnost funkce. Nesmí obdržet autorizaci funkce.
+## 11. Action-module boundary
 
-## 10. Copy a kánon
+Priority Containment a Alignment Rally jsou strategicky schválené prototype candidates.
 
-Core loop se má vysvětlovat mechanikou, ne lore dumpem.
+Před OS integration musí:
 
-Humor auditů:
+1. fungovat jako standalone greybox;
+2. mít čitelný main verb;
+3. mít natural closure;
+4. prokázat několik build paths;
+5. projít sensory/readability gate;
+6. projít launcher-risk test;
+7. mít schválený packet threshold.
 
-- začíná téměř normálně;
-- roste administrativním vrstvením;
-- používá mrtvou vážnost;
-- nesmí být každý field samostatný punchline.
+Prototype smí mít run-local XP. Nesmí mít direct EV.
 
-Interní kreativní zdroje, Hlas z chodby formulace a záchodové bláboly jsou content bank. Tento dokument z nich vytahuje pravidla, ale nevkládá autorskou meta rovinu do explicitního UI.
-
-## 11. Explicitní non-goals prvního slice
-
-Neimplementovat současně s Taskem 020:
-
-- stážisty;
-- celý první prestige;
-- všechny existující moduly;
-- procedurální generátor auditů;
-- osm viditelných měn;
-- offline automation;
-- cloud;
-- overlay;
-- exponenciální click multipliers;
-- finální analytics dashboard.
-
-## 12. Migration rule
-
-Pořadí migrace:
+Candidate global flows:
 
 ```text
-Task 020 — Click packet → Audit 10-A → Evidence
-Task 021 — Evidence authorization contract / Audit 16-C
-Task 022 — asset-backed Fidget integration
-Task 023 — Fidget packet → repeatable audit → backlog
-Task 024 — machine-readable first-cycle balance/data reconciliation
-Task 025 — delegation prototype až po backlog playtestu
+Priority session closure
+→ provisional packet
+→ Audit 27-P
+→ EV
+
+Alignment session closure
+→ provisional packet
+→ Audit 31-R
+→ EV
 ```
 
-Dokud konkrétní task není dokončen:
+Candidate thresholds nejsou machine-readable source před Tasks 035/038.
 
-- runtime může dočasně obsahovat starší v0.2 chování;
-- nové feature nesmí dále záviset na přímém `click → currency` modelu;
-- rozdíl musí být v PR výslovně uveden, ne tiše domyšlen.
+## 12. Copy and canon
 
-Schema 4 → 5 migration pro Task 023 zachová existující ClickAudit packet/audit stav, authorization a unlocky, nastaví `fidgetSessionBatchBaseline` na aktuální počet `fidget.sessionSettled` a vytvoří nula retroaktivních Fidget packetů. První packet vznikne až po třech nových settled sessions.
+Core loop se vysvětluje mechanikou.
 
-Současný machine-readable `events.json` obsahuje staré přímé yieldy pro `fidget.sessionSettled`, včetně `notionalWorkUnits`. Task 023 runtime tento direct-yield nepoužívá k udělení Evidence; oprava dat a parity patří do Tasku 024.
+Audit humor:
 
-## 13. Playtest gate
+- začíná skoro normálně;
+- roste vrstvením;
+- používá mrtvou vážnost;
+- nesmí být každý field punchline.
 
-Core loop je potvrzený teprve tehdy, když playtest prokáže, že je srozumitelné a alespoň krátkodobě uspokojivé:
+Interní kreativní zdroje jsou content bank. Skrytá autorská meta rovina se nevkládá do explicitního UI vysvětlení.
+
+## 13. Migration order
+
+```text
+Task 020 — Click packet → Audit 10-A → Evidence       DONE
+Task 021 — Audit 16-C / Fidget authorization          DONE
+Task 022 — asset-backed Fidget                         DONE
+Task 023 — Fidget packet → Audit 18-S → mixed backlog DONE
+Task 024 — machine-readable data/balance reconciliation NEXT
+Task 025 — delegation prototype after backlog gate
+```
+
+Visual Tasks 024A–024D jsou samostatná window/assets osa a nemění ekonomiku.
+
+Future action Tasks 031–038 jsou prototype/integration osa a nesmějí přeskočit current core/data gates.
+
+## 14. Playtest gates
+
+Current core je potvrzený, když je srozumitelné a krátkodobě uspokojivé:
 
 ```text
 udělat činnost
 → dostat auditní povinnost
 → certifikovat metriku
-→ získat Evidence
+→ získat EV
 → autorizovat Fidget
+→ vytvořit druhou metriku a backlog
 ```
 
-Pokud tento oblouk nefunguje, další moduly nejsou řešení. Jsou jen další důkazy, že se vývoj vyhnul odpovědi.
+Action module je potvrzený, když:
+
+```text
+pochopit verb
+→ získat immediate feedback
+→ vytvořit build
+→ uzavřít session
+→ chtít jiný build
+→ přijmout OS report/audit jako důsledek, ne daň
+```
+
+Pokud current core nefunguje, další modul není řešení. Pokud action greybox nefunguje bez Evidence, auditní ekonomika ho nezachrání.
+
+## 15. Explicitní non-goals
+
+- nový global resource pro každou appku;
+- direct EV za kill, click, pop nebo spin;
+- procedurální stovky audit jokes;
+- engine rewrite pouze kvůli action module;
+- action viewport natlačený do compact 167×167;
+- automatizace bez policy/supervision;
+- daily streak, energy, FOMO nebo offline penalty;
+- cloud/overlay před local-first stability;
+- external activity tracking;
+- explicitní vysvětlování skryté meta roviny.
+
+## 16. Důležité pravidlo
+
+> K0rp_OS může hráči dovolit odrážet stovky priorit. Pořád ale není důležité, kolik jich zmizelo. Důležité je, kolik z nich bylo uznáno jako řádně uzavřených, kdo to potvrdil a proč tím vznikla potřeba dalšího dohledu.

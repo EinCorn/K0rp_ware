@@ -1,100 +1,138 @@
 # K0rp_OS — Roadmap
 
-Verze: 0.3.0 pracovní návrh
+Verze: 0.4.0 pracovní návrh
 
 ## 0. Status dokumentu
 
-Roadmap po dokončených Taskech 020 / PR #29 a 021A / PR #31 zachovává fake-desktop produktovou osu a podřizuje další implementaci canonical core loopu:
+Roadmap drží tři oddělené osy:
 
 ```text
-raw metrika
-→ auditovatelná dávka
-→ audit
-→ Evidence
-→ autorizace nového systému
+GAMEPLAY / DATA
+→ Metric → Audit → Evidence → backlog → delegation
+
+VISUAL / WINDOW SYSTEM
+→ curated assets → reusable chrome → portrait documents → controls/bars
+
+FUTURE MODULE R&D
+→ greybox → playtest → sensory pass → teprve potom OS integration
 ```
 
-Canonical herní kontrakt je v `20-core-loop.md`.
+Tyto osy se smějí vyvíjet paralelně. Nesmějí si ale tiše přepisovat scope ani task čísla.
 
-Aktuální stav:
+Canonical sources:
 
-- Fáze 0–6 mají funkční baseline na `main`;
-- Audit 00-A, ClickAudit, společný runtime, lokální persistence, packet queue, repeatable Audit 10-A a Evidence certifikace jsou integrovány;
-- `clickaudit.click` je doslovná raw metrika a sama nepřidává spendable resource;
-- Task 021A window placement, dynamické form windows, cascade a close/minimize semantics jsou dokončené a mergnuté;
-- Task 022 je dokončený a mergnutý v PR #35 a canonical icon integration z Tasku 022A je dokončená v PR #37;
-- Task 022A(2.1) dokončil V3 UI source ingestion, inventory, allowlist a validator jako infrastrukturu bez player-visible změny;
-- runtime pilot Tasku 022A(2.2) z PR #43 byl po vizuálním review uzavřen bez merge; 022A(2.2–2.5) jsou odložené do revize s curated/redrawn assety;
-- aktivní gameplay krok je Task 023 — Fidget metric packet, repeatable Audit 18-S a první smíšený backlog.
+1. `20-core-loop.md` — ekonomika a invarianty;
+2. `21-activity-spectrum-and-arcade-modules.md` — activity spectrum a budoucí action modules;
+3. tento dokument — pořadí implementace;
+4. `08-codex-tasks.md` — scope konkrétních tasků.
 
-Současné standalone appky ClickAudit, Fidget a Bloom se neruší. Integrace probíhá přes společné module surface, bridge a runtime contracts.
+## 1. Aktuální stav na main
+
+Na `main` jsou dokončené:
+
+- fake desktop baseline;
+- Audit 00-A;
+- globální ClickAudit tracking;
+- versioned local persistence;
+- ClickAudit metric packets;
+- repeatable Audit 10-A;
+- Evidence certification;
+- Audit 16-C a Fidget authorization;
+- asset-backed Fidget module;
+- canonical icon pack;
+- window placement, cascade, minimize/close/taskbar semantics;
+- Task 023 / PR #45: Fidget packet po třech settled sessions, repeatable Audit 18-S a mixed ClickAudit + Fidget backlog;
+- Task 022A(2.1): V3 raw asset inventory/validator infrastruktura;
+- Task 024A / PR #47: curated UI asset pack v01 ingestion a reusable window-shell contract bez player-visible runtime změny.
+
+Odložené:
+
+- V3 runtime chrome pilot PR #43 byl uzavřen bez merge;
+- Tasky 022A(2.2–2.5) nejsou canonical runtime standard;
+- jejich účel nahrazuje curated v01 visual track 024A–024D.
+
+Aktuální bezprostřední gameplay krok:
+
+```text
+Task 024 — first-cycle data rebalance and machine-readable reconciliation
+```
+
+Aktuální bezprostřední visual candidate:
+
+```text
+Task 024B — ClickAudit + Fidget module-window chrome pilot nad v01 contractem
+```
+
+Task 024B je samostatný vizuální task. Nesmí blokovat Task 024 gameplay/data práci.
 
 ## Fáze 0 — Current consolidation
 
-Status: baseline dokončen.
+Status: dokončeno a průběžně chráněno.
 
-Cíl: Nezbourat, co už funguje.
-
-- app-specific polish;
-- žádný další velký shared-shell refactor bez důvodu;
-- zachovat standalone ClickAudit, Fidget a Bloom;
 - `main` je source of truth;
-- Windows je primary desktop target.
+- standalone ClickAudit, Fidget a Bloom se zachovávají;
+- žádný velký shared-shell refactor bez jasného gate;
+- Windows je primary desktop target;
+- nové feature se přidávají jako bounded vertical slices.
 
-## Fáze 1 — Docs, source index a progression RFC
+## Fáze 1 — Docs, research and progression RFC
 
-Status: baseline dokončen, v0.3 core-loop update probíhá.
+Status: baseline dokončen, v0.4 activity-spectrum update připraven.
 
 Výstupy:
 
-- docs `00–20`;
+- produktová vize;
+- architecture/event/privacy contracts;
 - progression/economy;
 - sensory feedback;
-- unlocks/memos/system mutations;
+- unlocks/surface mutations;
 - playtest checklist;
 - first-cycle balance;
-- desktop surface progression;
 - research/source index;
+- canonical core loop;
+- activity-spectrum a action-module RFC;
 - strojově čitelný `packages/korp-progression`.
 
-## Fáze 2 — Existing core and registry baseline
+## Fáze 2 — Core and registry baseline
 
 Status: dokončeno.
 
 - `packages/korp-core`;
 - `packages/korp-modules`;
 - typed events/resources;
-- manifest registry;
-- testy.
+- manifests;
+- reducer a registry testy.
 
-Další práce musí být inkrementální, ne kompletní přepis.
+Další práce je inkrementální, ne úplný přepis.
 
-## Fáze 3 — Progression package integration
+## Fáze 3 — Progression package baseline
 
 Status: základ integrován.
 
-- typecheck `packages/korp-progression`;
-- validace referencí;
-- resource metadata;
-- forms, upgrades, memos, certifications, prestige constants;
-- surface mutation constants;
-- datový source of truth pro Audit 00-A a 10-A.
+- resources;
+- forms;
+- upgrades;
+- memos;
+- certifications;
+- prestige/surface constants;
+- TypeScript/JSON/CSV validation.
 
-Strojová data budou ve Fázi 6–9 přebalancována na Evidence model.
+Machine-readable parity s v0.3 runtime se dokončuje v Tasku 024.
 
-## Fáze 4 — Shared runtime and local persistence
+## Fáze 4 — Shared runtime and persistence
 
-Status: dokončeno pro první slice.
+Status: dokončeno pro první dva metric sources.
 
 - `KorpRuntimeProvider`;
-- lifetime stats;
-- progression state;
-- local save/load;
-- bezpečný versioned save envelope;
-- module/memo/form unlock state;
-- standalone moduly si smějí ponechat local session state.
+- global state a lifetime stats;
+- local save/load/reset;
+- versioned envelope;
+- packet/audit instances;
+- authorization state;
+- zero-retro migrations;
+- mixed pending queue.
 
-Packet queue a repeatable audit instances jsou integrovány. Ještě chybí import/export a plný dlouhodobý migration surface.
+Později chybí import/export, policy/delegation save a dlouhodobý migration surface.
 
 ## Fáze 5 — Canonical desktop vertical slice
 
@@ -103,10 +141,9 @@ Status: dokončeno.
 ```text
 prázdná plocha
 → Audit 00-A jako dokument
-→ audit field clicks
-→ ClickAudit shortcut
-→ první memo v Doručených
-→ ClickAudit jako interní asset-backed okno
+→ ClickAudit unlock
+→ Doručené / Formuláře
+→ asset-backed module windows
 ```
 
 Hotové minimum:
@@ -115,320 +152,442 @@ Hotové minimum:
 - taskbar;
 - window manager;
 - folders/files;
-- fixed canvas;
-- wallpaper;
-- official fonts;
-- globální K0rp_OS click classification;
-- lokální privacy-safe persistence.
+- fixed logical canvas;
+- wallpaper a font baseline;
+- K0rp-only click classification;
+- privacy-safe local persistence.
 
-## Fáze 6 — Metric → Audit → Evidence vertical slice
+## Fáze 6 — Metric → Audit → Evidence
 
-Status: dokončeno a mergnuto v Tasku 020 / PR #29.
-
-Cíl: Dokázat skutečný ekonomický motor hry v jednom malém oblouku.
+Status: dokončeno v Tasku 020 / PR #29.
 
 ```text
-Audit 00-A nastaví baseline aktuálního raw počtu
-→ první pozdější K0rp_OS klik vytvoří bootstrap packet quantity 1
-→ opakovatelný Audit 10-A
-→ audit.evidenceCertified
+Audit 00-A nastaví raw baseline
+→ první pozdější klik vytvoří bootstrap packet quantity 1
+→ Audit 10-A
 → Evidence +1
 → další packety po 25 nových kliknutích
 ```
 
-Požadavky:
+Invarianty:
 
-- `clickaudit.click` zůstává doslovná raw metrika;
-- raw klik nepřidává spendable currency;
-- `clickaudit.batchCompleted` vytváří pending packet, ne reward;
-- kliky použité pro Audit 00-A jsou mimo packet baseline;
-- první post-unlock klik vytvoří právě jeden quantity-1 bootstrap packet;
-- po bootstrapu se další packety uzavírají po 25 nových kliknutích;
-- packet je persistovaný a certifikovatelný právě jednou;
-- Audit 10-A je audit instance navázaná na konkrétní packet;
-- technické `notionalWorkUnits` se hráčsky prezentuje jako `Evidence / EV`;
-- taskbar ukazuje pouze Evidence a počet pending auditů;
-- existující saves nedostanou retroaktivně desítky packetů;
-- žádní stážisti, Fidget ani plný upgrade shop v tomto tasku.
+- jeden fyzický klik = jeden manual click;
+- raw klik nevyrábí Evidence;
+- packet je povinnost, ne reward chest;
+- audit certifikuje packet právě jednou;
+- Evidence používá technický resource ID `notionalWorkUnits` do dokončení plné migrace.
 
-Completion gate:
+## Fáze 7 — Authorization and Fidget surface
 
-```text
-nová hra
-→ Audit 00-A
-→ ClickAudit unlock
-→ jeden pozdější klik
-→ právě 1 pending packet
-→ submit 10-A
-→ právě 1 Evidence
-→ refresh zachová stav
-→ další audit až po 25 dalších kliknutích
-```
+Status: dokončeno.
 
-## Fáze 7 — Window preflight, Evidence authorization and Fidget
+Obsah:
 
-Cíl: Uzavřít první celý loop a přidat druhý druh raw metriky.
+- Task 021A — placement, form cascade a close/minimize semantics;
+- Task 021B — Audit 16-C a atomická alokace EV;
+- Task 022 — reusable asset-backed Fidget;
+- Task 022A — canonical icon pack.
 
-Status: Task 021A, Task 021B, Task 022 i canonical icon Task 022A jsou dokončené a mergnuté. Task 022A(2.1) dokončil pouze V3 source/validation infrastrukturu. PR #43 s pilotem 022A(2.2) byl uzavřen bez merge a 022A(2.2–2.5) čekají na curated/redrawn asset revision. Aktivní je Task 023.
-
-Pořadí:
-
-1. Task 021A — dokončený first-open window placement a dynamický cascade auditních dokumentů;
-2. Task 021B — dokončený Evidence authorization contract z PR #33: Audit 16-C, alokace 1 EV a persistentní Fidget authorization;
-3. Task 022 — dokončený sdílený asset-backed Fidget module surface z PR #35;
-4. Task 022A — dokončená canonical icon pack integrace z PR #37;
-5. Task 022A(2.1) — dokončený exact V3 UI source snapshot, normalizovaný inventory, validator a pilot allowlist bez změny renderingu;
-6. Task 022A(2.2) — Audit 00-A + Formuláře window-chrome pilot z PR #43 uzavřen bez merge;
-7. Task 022A(2.2–2.5) — odložené do nové curated/redrawn asset revision; žádný neakceptovaný V3 chrome není runtime standard;
-8. Task 023 — aktivní gameplay krok: `fidget.sessionSettled`, packet po třech sessions, Audit 18-S a první skutečný backlog.
-
-Dokončený Task 021A presentation gate:
-
-```text
-Audit 00-A submit → baseline + unlock bez forced popupu
-→ první pozdější klik → quantity-1 bootstrap 10-A auto-open právě jednou
-→ pozdější quantity-25 packet → queue ve Formulářích bez focus steal
-→ explicit open z Formulářů → vlastní 10-A okno s cascade od current form anchor
-```
-
-Completion gate:
+Gate:
 
 ```text
 EV 1
-→ Audit 16-C se zpřístupní
-→ platný submit alokuje právě 1 EV
-→ EV 0
-→ Fidget je persistentně autorizován
-→ desktop ukazuje AUTORIZOVÁNO / NASAZENO
-→ explicitní otevření zobrazí skutečné asset-backed Fidget okno
-→ stejné FidgetModule používají standalone i window-only preview
-→ raw Fidget session nevytváří Evidence; Evidence vzniká až certifikací packet auditu v Tasku 023
+→ Audit 16-C
+→ EV 1 alokována
+→ Fidget authorized
+→ shortcut/surface mutation
 ```
 
-Fidget nesmí být odemčen pouze skrytým thresholdem NWU/AP. Musí být autorizován výsledkem auditního procesu.
+Fidget není odemčen hidden thresholdem. Je autorizován výsledkem auditního procesu.
 
-Task 022A drží raw icon source oddělený od runtime subsetu:
+## Fáze 8 — Second metric and first real backlog
+
+Status: dokončeno v Tasku 023 / PR #45.
 
 ```text
-design/icon-source/k0rp-icons-v2/   canonical raw pack, 32 semantic IDs
-src/assets/icons/korp-v2/           pouze aktuálně nasazené PNG64
-src/ui/korpIconCatalog.js            generovaný sémantický katalog
-npm run build:korp-icons             deterministická regenerace
-npm run validate:korp-icons          manifest, asset, atlas a drift gate
+3 nové fidget.sessionSettled
+→ Fidget packet
+→ repeatable Audit 18-S
+→ shared pending queue
+→ Evidence +1 po certifikaci
 ```
 
-Aktuálně se nasazují desktopové systémové/module ikony a document-row kategorie. Bloom, další budoucí moduly, pozdější progression folders, native references a neexistující window-control mappings zůstávají pouze katalogizované pro pozdější surface.
+Hotové invarianty:
 
-Task 022A(2.1) přidává druhou, samostatnou hranici pro V3 UI source:
+- raw settle nepřidává Evidence;
+- packet creation neotevírá okno a nebere focus;
+- ClickAudit a Fidget sdílejí packet/audit framework;
+- mixed pending count je player-facing;
+- debug Audit Pressure je odvozený, ne persistentní resource;
+- schema migration nevytvoří retroaktivní Fidget packets.
+
+Playtest backlogu zůstává produktový gate před delegací, i když technický Task 023 je hotový.
+
+## Fáze 9 — First-cycle data reconciliation
+
+Status: následující gameplay/data krok.
+
+### Task 024
+
+Cíl:
+
+- sjednotit prose docs, JSON, CSV, TypeScript exports a runtime;
+- odstranit staré direct-yield assumptions;
+- player-facing metadata Evidence/EV;
+- doplnit packet/audit template references;
+- přepsat first-cycle phase/balance data;
+- zachovat pozdější prestige hodnoty jako provisional tam, kde chybí playtest.
+
+Gate:
 
 ```text
-design/ui-source/k0rp-os-ui-assets-v3/   exact raw snapshot, bez runtime importů
-design/ui-runtime/k0rp-v3/inventory.json normalizovaný generated inventory
-design/ui-runtime/k0rp-v3/runtime-allowlist.json ručně omezený pilot 022A(2.2)
-npm run validate:korp-ui-assets          offline source, metadata, drift a runtime-boundary gate
+raw action
+≠ spendable reward
+
+audit.evidenceCertified
+= jediný early Evidence grant path
 ```
 
-Tento krok nekopíruje V3 assety do `src/assets`, nemění React/CSS a ponechává ClickAudit, Fidget i canonical icon source autoritativní v jejich stávajících surface.
+Priority Containment ani Alignment Rally se do Tasku 024 nepřidávají. Nemají ještě schválený greybox ani packet balance.
 
-Runtime chrome pilot nenavázal na tuto infrastrukturu jako přijatý standard: PR #43 byl uzavřen bez merge. Tasky 022A(2.2–2.5) zůstávají odložené, dokud nevznikne curated/redrawn asset revision odpovídající vizuální kvalitě ClickAuditu a Fidgetu.
+## Paralelní visual track — Curated window system
 
-## Fáze 8 — Second metric, repeatable audits and backlog
+### Historical V3 track
 
-Cíl: Prokázat, že core loop není hardcoded pouze pro ClickAudit.
+- Task 022A(2.1) zůstává validní jako raw inventory/validator infrastruktura;
+- PR #43 nebyl mergnut;
+- V3 chrome není runtime standard.
 
-Status: **ACTIVE / TASK 023**. Níže uvedené hodnoty jsou pevný provisional/playtestable contract; jejich finální machine-readable reconciliation patří do Tasku 024.
+### Task 024A — v01 ingestion and shell contract
 
-- každý `fidget.sessionSettled` přidá právě jeden raw stabilization record a nikdy nepřidá Evidence přímo;
-- každé tři nové settled sessions vytvoří právě jeden packet `fidget-sessions-<rangeStart>-<rangeEnd>` se zachovaným neúplným zbytkem;
-- packet dostane repeatable Audit `18-S` a jeho certifikace přidá `EV +1` právě jednou;
-- vytvoření Fidget packetu nikdy automaticky neotevře okno ani nepřevezme focus;
-- Formuláře zobrazí ClickAudit i Fidget audity v jedné queue a taskbar ukáže jejich celkový pending count;
-- debug-only provisional Audit Pressure se odvozuje jako `clamp(0, 100, pendingCount * 10 + floor(oldestPendingAgeMinutes / 10) + discrepancyCount * 20)` a neukládá se do `korpState.resources.auditPressure`;
-- schema 4 → 5 migration nastaví Fidget baseline na současný počet settled sessions a vytvoří nula retroaktivních packetů;
-- hráč musí backlog skutečně pocítit;
-- žádná delegace před playtestem tohoto kroku.
+Status: dokončeno / PR #47.
 
-Stávající přímé yieldy `fidget.sessionSettled` v `events.json` jsou známý machine-readable rozpor odložený do Tasku 024. Runtime Tasku 023 je nesmí použít k přímému udělení Evidence.
+- immutable raw source pack;
+- generated catalog/runtime subset;
+- module/audit/folder geometry contract;
+- nine-slice frame;
+- three-slice header;
+- tiled material surfaces;
+- live text;
+- integer rendering;
+- compact 167×167 content preservation;
+- žádná player-visible změna.
 
-Completion gate:
+### Task 024B — Compact module chrome pilot
 
-```text
-ClickAudit packet i Fidget packet
-→ stejný packet/audit framework
-→ různé raw metriky
-→ společná smíšená pending queue bez auto-openu
-→ společná Evidence
-```
+Navržený další visual task:
 
-## Fáze 9 — Delegation prototype
+- ClickAudit a Fidget pouze;
+- zachovat jejich 167×167 content beze změny;
+- v01 frame/header/pin/minimize/close;
+- active/inactive title state;
+- žádný resize feature ještě není nutný;
+- žádná gameplay, packet, audit nebo save změna;
+- comparison gate proti současnému ClickAudit/Fidget vzhledu.
 
-Cíl: Převést ruční incremental loop do management vrstvy až ve chvíli, kdy existuje problém k delegování.
+### Task 024C — Portrait audit and folder pilot
+
+Až po přijetí 024B compositional quality:
+
+- Audit 00-A a jeden repeatable audit;
+- Formuláře folder;
+- portrait geometry;
+- live controls, rows a text;
+- žádné baked labels;
+- žádné stretched paper/texture.
+
+### Task 024D — Bars, controls and status language
+
+Až po přijetí window families:
+
+- top rail;
+- taskbar;
+- taskbar window states;
+- evidence/pending readouts;
+- status lamps;
+- accessibility/contrast gate.
+
+Visual track nesmí změnit pořadí gameplay unlocků.
+
+## Fáze 10 — Delegation prototype
+
+### Task 025
+
+Prerequisite:
+
+- technický mixed backlog existuje;
+- playtest potvrdí, že hráč chce pomoc dřív, než ji dostane.
 
 První stážista:
 
-- generuje `delegated` raw activity, ne manual clicks;
+- generuje `delegated` raw activity;
 - může předvyplnit audit;
 - nemůže finálně certifikovat Evidence;
-- vytváří chyby a nesrovnalosti;
+- vytváří discrepancies;
 - vyžaduje supervision;
-- může později školit další jednotku bez získání plné autorizace.
+- může prakticky vykonávat funkci bez její formální authorization.
 
-Mechanický motiv:
+Gate:
 
 ```text
-capability ≠ authorization
-operational responsibility ≠ formal ownership
+delegace ubere rutinu
+→ vytvoří nový management problém
 ```
 
-Completion gate:
+## Fáze 11 — Consolidation tasks 026–030
 
-- delegace snižuje rutinní práci;
-- současně vytváří alespoň jeden nový typ auditní povinnosti;
-- automatizace není pouze `+x/sec` do manuálního counteru.
+### Task 026 — ClickAudit analytics
 
-## Fáze 10 — Current modules connected
+- safe source breakdown;
+- manual/delegated/system split;
+- aggregate history;
+- žádné coordinates/text/external app data;
+- interpretace stejného raw clicku bez multiplieru.
 
-Cíl: Připojit současnou trojici beze změny jejich lokální identity.
+### Task 027 — Bloom integration
 
-- Fidget je dokončen ve Fázích 7–8;
-- Bloom events + `bloom.waveAdvanced`;
-- Bloom packet/audit conversion;
-- shortcuts instalované progressionem;
-- cross-module modifiers;
-- společný save;
-- standalone bridge policy.
+- shared Bloom module;
+- `bloom.waveAdvanced` closure;
+- packet/audit/Evidence;
+- třetí odlišný metric source.
 
-Bloom je třetí důkaz, že stejný loop unese prostorovou/statusovou činnost, ne jen klik a rotaci.
+### Task 028 — First-cycle playtest harness
 
-## Fáze 11 — First-cycle content and prestige
+- local-only milestone timestamps;
+- packet/certification times;
+- Evidence earned/spent;
+- pending backlog;
+- unlock order;
+- export;
+- žádná cloud telemetry.
 
-Cíl: Sestavit první uzavíratelný auditní cyklus po ověření core loopu.
-
-- Button Compliance;
-- Corner Watch jako screensaver/idle surface;
-- certifikace;
-- 6–8 mem;
-- formulář 42-Z;
-- Audit Findings;
-- archive/reboot/build mutation;
-- post-prestige Bublinková Fólie.
-
-Dřívější target 4–5 hodin je provisional. Nový balance pass vznikne až po Metric → Audit → Evidence a backlog playtestu.
-
-Bubble Wrap je hlavní nový-system reward prvního prestige, ne jen násobitel.
-
-## Fáze 12 — Sensory foundation
-
-Cíl: Společná kvalita tactile feedbacku.
+### Task 029 — Sensory foundation
 
 - audio buses;
 - material profiles;
-- sample variation;
 - density management;
-- micro/meso/ceremonial reward levels;
 - reduce motion;
-- sensory intensity;
 - quiet mode;
-- input accessibility.
+- sensory intensity;
+- input accessibility;
+- hudba jako plánovaná vrstva, ne release-afterthought.
 
-Tato fáze musí být hotová před finalizací Bubble Wrap, Newtonovy kolíbky a Surface Compliance.
+### Task 030 — Standalone aggregate bridge
 
-## Fáze 13 — First expansion
+- unlinked local mode;
+- linked aggregate events;
+- authorized campaign rewards;
+- žádný raw pointer stream;
+- žádný cloud/overlay implementation.
 
-Pořadí podle engine value:
+## Fáze 12 — First-cycle content and closure
 
-1. Button Compliance — approvals, forms a exceptions.
-2. Corner Watch — screensaver, idle/offline reporting.
-3. Bublinková Fólie — sensory system a post-prestige new-system reward.
+Cíl: sestavit první uzavíratelný auditní cyklus až po ověření core, backlogu a datové parity.
 
-## Fáze 14 — Desk Object / ASMR
+Kandidáti:
+
+- Button Compliance;
+- Corner Watch jako screensaver;
+- 6–8 mem;
+- certifikace;
+- Audit Findings;
+- formulář 42-Z;
+- archive/reboot/build mutation;
+- post-prestige Bublinková Fólie.
+
+Původní target 4–5 hodin zůstává provisional do reálného playtestu.
+
+## Fáze 13 — Desk Object / ASMR-adjacent expansion
 
 - Newtonova Kolíbka;
 - Zenová Zahrádka;
-- desk-object shelf;
-- free mode i procedural mode;
-- přirozené closure events.
-
-## Fáze 15 — Care / Cleaning / Alignment
-
 - Surface Compliance;
 - Shape Compliance;
-- wipe masks;
-- drag/rotate/snap;
-- material-specific feedback;
-- hidden surface files/memos.
+- desk-object shelf;
+- natural closures;
+- sensory foundation prerequisite.
 
-## Fáze 16 — Attention Corruption
+## Fáze 14 — Attention companion
 
 - Attention Runner;
-- companion strip;
-- low-input mode;
-- nesmí převzít hlavní ekonomiku ani změnit K0rp_OS v běžnou arcade kolekci.
+- low-input companion strip;
+- nesmí převzít ekonomiku ani udělat z desktopu arcade catalog.
 
-## Fáze 17 — Standalone hardening
+## Fáze 15 — Activity-spectrum R&D
 
-Cíl: Moduly opravdu vytrhnutelné z OS.
+Tato fáze není bezprostřední implementační fronta. Je strategický vývojový track pro nové typy činnosti.
 
-- stejná module implementation;
+### Gate před action prototype
+
+Musí zůstat splněné:
+
+- current core loop funguje;
+- Task 024 data parity je hotová nebo není action prototypem dotčena;
+- action module je izolovaný standalone greybox;
+- žádný nový global resource;
+- žádný přímý raw action → Evidence reward;
+- žádný engine rewrite jen kvůli prototypu.
+
+### Task 031 — Action-module contract and prototype harness
+
+- module session boundary;
+- run-local XP definition;
+- 320×320 logical action viewport;
+- local-only summary;
+- no OS packet integration.
+
+### Task 032 — Priority Containment greybox
+
+- movement;
+- autofire;
+- Triage Pulse;
+- 3 basic archetypes;
+- 1 elite;
+- 1 boss;
+- 5 waves;
+- 12 upgrades max;
+- 4–6 minute closure.
+
+### Task 033 — Priority buildcraft and local summary
+
+- alespoň tři čitelné build archetypy;
+- closure outcomes;
+- local aggregate metrics;
+- no Evidence.
+
+### Task 034 — Priority sensory/readability pass
+
+Až po greybox gate:
+
+- audio/material stack;
+- music layers;
+- density management;
+- reduce motion;
+- quiet mode;
+- integer scaling;
+- readability under peak density.
+
+### Task 035 — Priority OS integration
+
+Až po potvrzeném prototype:
+
+- authorization;
+- surface mutation;
+- privacy-safe raw closure;
+- packet definition;
+- Audit 27-P;
+- exactly-once Evidence certification.
+
+### Task 036 — Priority delegated policy prototype
+
+- loadout template;
+- target weights;
+- risk tolerance;
+- supervision;
+- discrepancies;
+- manual/delegated split.
+
+### Task 037 — Alignment Rally greybox
+
+- 1 claim;
+- 1 paddle;
+- 4 response zones;
+- stakeholder rules;
+- closure outcomes;
+- 8 upgrades max;
+- 2–3 minute session.
+
+### Task 038 — Alignment OS integration
+
+Až po samostatném gate:
+
+- aggregate closure event;
+- Audit 31-R;
+- packet/Evidence;
+- future automation discrepancies.
+
+## Fáze 16 — Standalone hardening
+
+- shared implementation;
 - detached windows;
 - unlinked local mode;
 - linked aggregate bridge;
 - portable settings;
-- Windows release validation.
+- Windows release validation;
+- action modules pouze pokud jejich standalone prototype skutečně funguje.
 
-## Fáze 18 — Web fallback
+## Fáze 17 — Web fallback
 
 - browser fake desktop;
 - stejné progression IDs;
 - local browser save;
-- module cards/download portal jako sekundární vstup;
-- jasně popsané native limitations.
+- native limitation copy;
+- action viewport musí zachovat logical coordinates a integer scale.
 
-## Fáze 19 — Overlay MVP
+## Fáze 18 — Overlay MVP
 
 - Windows-first always-on-top bar;
 - K0rp-only mode;
 - Privacy Work Blob;
 - quick launch;
-- žádné raw app names, URL, text, screenshots ani keylogging;
-- platform-specific bridge mimo `korp-core`.
+- žádné app names, URL, text, screenshots ani keylogging;
+- high-intensity action modules nejsou automaticky overlay-compatible.
 
-## Fáze 20 — Account / sync
+## Fáze 19 — Account / sync
 
 Až po stabilním local-first systému.
 
 - voluntary account;
 - progress/settings/cosmetics;
 - export/delete;
-- žádný raw activity sync.
+- žádný raw activity sync;
+- žádný custom claim text nebo action replay sync.
+
+## Fáze 20 — Control room and orchestration
+
+Až existuje více delegovaných/automatizovaných procesů:
+
+- module policies;
+- operators;
+- loadout templates;
+- confidence;
+- intervention thresholds;
+- discrepancies;
+- incident summaries;
+- audit of orchestration.
+
+Control Room není early launcher. Je důsledkem management vrstvy.
 
 ## Fáze 21 — Content expansion
 
 - memo bank;
-- knowledge base;
+- Knowledge Base;
 - hallway screens;
 - training materials;
 - fake incidents;
 - procedural announcements;
-- nové moduly přes metric/packet/audit/surface contracts.
+- nové moduly pouze přes module contract a playtest gate.
 
 ## Gate pravidla
 
-Každá fáze musí splnit alespoň jedno:
+Každá implementační fáze musí splnit alespoň jedno:
 
 - posílí core/runtime;
 - prokáže další raw metric přes stejný audit framework;
-- přidá data přes progression package;
+- sjednotí data/prose/runtime;
 - přidá surface mutation;
 - integruje jeden modul bez změny ostatních;
-- prokazatelně zlepší sensory/accessibility;
-- projde playtest gate.
+- zlepší sensory/accessibility;
+- projde konkrétním playtest gate.
 
 Zakázané pokračování:
 
-- další modul bez vazby na metric/audit/Evidence loop;
-- automatizace před vznikem skutečné rutinní bolesti;
+- další modul bez metric/audit/Evidence vazby nebo explicitního prototype-only scope;
+- automatizace před zkušeností, kterou má řešit;
 - nový player-facing resource jen proto, že pro něj existuje zkratka;
-- další přímý `raw action → currency` reward.
+- přímý `raw action → currency` reward;
+- akční modul natlačený do nečitelného viewportu;
+- visual asset roztažený místo správného nine-slice/tile composition;
+- launcher plný lepších her, ze kterého se K0rp desktop stal nepovinným formulářem.
 
-> Pokud jen přidává další izolovanou hračku, je to scope creep v reflexní vestě.
+> Pokud task jen přidává izolovanou hračku, je to scope creep v reflexní vestě. Pokud přidává hordu bez closure, auditu a budoucí chyby automatizace, je to scope creep s municí.
